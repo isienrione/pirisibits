@@ -352,7 +352,7 @@ export const ES_LANDING = Object.freeze({
     monuments: {
       eyebrow: 'LAS PARADAS',
       headline: 'Descubre todos los lugares que puedes recorrer con ChronoWalk',
-      subheadline: 'Desliza para ver las paradas que llevan la historia por toda la ciudad.',
+      subheadline: 'Desliza las paradas. Toca una foto para voltearla y leer lo que escucharás.',
       expandLabel: 'Ver todas las paradas de la ruta',
       collapseLabel: 'Mostrar los puntos destacados',
       previewAriaLabel: 'Lugares destacados de la ruta por Roma',

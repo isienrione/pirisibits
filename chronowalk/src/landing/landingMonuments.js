@@ -1,5 +1,6 @@
 import { getModernPosterUrl } from '../content/modernPhotoRegistry.js'
 import { LANDING_ROUTE_STOPS, LANDING_TIER_ROUTES } from './landingTierRoutes.js'
+import { getLandingStopFlipCopy } from './landingStopFlipCopy.js'
 
 /** Highlight stops shown before expand - span Arena → Appian without a catalog.
  *  Pantheon (free preview) is the living-city beat; Forum uses Via Sacra, not Titus.
@@ -64,6 +65,7 @@ export function getLandingMonuments() {
 
   return stopIds.map((id, index) => {
     const stop = LANDING_ROUTE_STOPS[id]
+    const flip = getLandingStopFlipCopy(id)
     return {
       id,
       index: index + 1,
@@ -71,6 +73,9 @@ export function getLandingMonuments() {
       short: stop?.short ?? stop?.title ?? id,
       photo: getModernPosterUrl(id),
       featured: LANDING_ROUTE_PREVIEW_IDS.includes(id),
+      description: flip?.body ?? '',
+      duration: flip?.duration ?? '',
+      admission: flip?.admission ?? '',
     }
   })
 }

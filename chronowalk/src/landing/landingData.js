@@ -746,7 +746,7 @@ export const LANDING_CONTENT = {
     id: 'monuments',
     eyebrow: 'THE STOPS',
     headline: 'Browse through all the different waypoints you can discover with ChronoWalk',
-    subheadline: 'Swipe through the stops that carry the story across the city.',
+    subheadline: 'Swipe through the stops. Tap a photo to flip it and read what you’ll hear.',
     /** Always-on SEO / continuity line - full ordered names stay in the DOM via the trail. */
     routeName: 'Roma Eterna',
     expandLabel: 'See every stop on the route',

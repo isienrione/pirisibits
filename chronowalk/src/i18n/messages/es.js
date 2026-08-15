@@ -223,6 +223,10 @@ export const esMessages = Object.freeze({
   'landing.thenNow.availableStatus':
     '{hint}. También puedes usar el botón «{action}».',
   'landing.thenNow.phoneLabel': 'Antes/Ahora de ChronoWalk dentro de la app',
+  'landing.stops.tapToFlip': 'Toca para leer',
+  'landing.stops.tapToFlipBack': 'Toca para volver',
+  'landing.stops.showDescription': 'Mostrar descripción de {title}',
+  'landing.stops.hideDescription': 'Ocultar descripción de {title}',
   'landing.demo.errorTitle': 'La demostración no está disponible',
   'landing.demo.errorBody':
     'La demostración del producto no se pudo cargar en este dispositivo. El resto de ChronoWalk sigue funcionando: desplázate para ver los recorridos y precios.',

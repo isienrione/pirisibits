@@ -222,6 +222,10 @@ export const enMessages = Object.freeze({
   'landing.thenNow.revealingStatus': 'Revealing Ancient Rome',
   'landing.thenNow.availableStatus': '{hint}. {action} is also available as a button.',
   'landing.thenNow.phoneLabel': 'ChronoWalk Then/Now inside the app',
+  'landing.stops.tapToFlip': 'Tap to read',
+  'landing.stops.tapToFlipBack': 'Tap to flip back',
+  'landing.stops.showDescription': 'Show description for {title}',
+  'landing.stops.hideDescription': 'Hide description for {title}',
   'landing.demo.errorTitle': 'Demo unavailable',
   'landing.demo.errorBody':
     'The product demo could not load on this device. The rest of ChronoWalk still works - scroll for tours and pricing.',
