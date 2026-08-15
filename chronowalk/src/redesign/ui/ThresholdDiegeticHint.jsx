@@ -27,12 +27,15 @@ export default function ThresholdDiegeticHint({
   showText = true,
   showHand = true,
   fading = false,
+  /** Lucide Pointer size; defaults keep in-app journey teach sizing. */
+  handSize,
   className = '',
   testId = 'threshold-diegetic-hint',
 }) {
   const t = useT()
   const reducedMotion = useReducedMotion()
   const era = formatThenHintLabel(thenLabel ?? t('threshold.ancientRome'))
+  const pointerSize = handSize ?? (showText ? 34 : 28)
 
   return (
     <div
@@ -60,7 +63,7 @@ export default function ThresholdDiegeticHint({
             <span className="cw-diegetic-hint__finger-glow" />
             <Pointer
               className="cw-diegetic-hint__finger-icon"
-              size={showText ? 34 : 28}
+              size={pointerSize}
               strokeWidth={2.1}
               absoluteStrokeWidth
             />

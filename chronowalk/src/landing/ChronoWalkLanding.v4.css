@@ -1866,6 +1866,45 @@
   text-align: center;
 }
 
+/* Landing Then/Now: larger hold hand so interaction is unmistakable. */
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__ring {
+  width: 104px;
+  height: 104px;
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__ring-outer {
+  width: 104px;
+  height: 104px;
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__ring-mid {
+  width: 70px;
+  height: 70px;
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__ring-core {
+  width: 26px;
+  height: 26px;
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__finger {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__finger-glow {
+  width: 34px;
+  height: 14px;
+}
+
+.cw-v4-then-now-app .cw-diegetic-hint--landing-lg .cw-diegetic-hint__line {
+  max-width: 240px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 7px 14px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cw-v4-then-now-app .cw-diegetic-hint__ring-outer,
   .cw-v4-then-now-app .cw-diegetic-hint__ring-mid,
