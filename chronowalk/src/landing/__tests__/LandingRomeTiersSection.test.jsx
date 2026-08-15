@@ -215,8 +215,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     expect(screen.getByRole('tab', { name: 'Roma Antica' })).toHaveAttribute('aria-selected', 'false')
     expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'false')
 
-    expect(screen.getByTestId('cw-pricing-launch-note')).toHaveTextContent(/Launch offer/i)
-    expect(screen.getByTestId('cw-pricing-launch-note')).toHaveTextContent(/scratched list prices/i)
+    expect(screen.queryByTestId('cw-pricing-launch-note')).not.toBeInTheDocument()
 
     const panel = screen.getByRole('tabpanel')
     expect(panel).toHaveTextContent('€14.99')

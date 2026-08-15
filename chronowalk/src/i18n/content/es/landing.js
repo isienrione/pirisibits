@@ -284,28 +284,28 @@ export const ES_LANDING = Object.freeze({
           title: 'Empieza la ruta que elegiste.',
           body:
             'Abre tu recorrido por Roma y consulta los actos que tienes por delante. Empieza el acto I, salta al lugar donde estás o abre el mapa cuando lo necesites.',
-          beats: ['TU RECORRIDO', 'EMPEZAR ACTO I', 'EMPEZAR DONDE ESTÁS'],
+          beats: [],
         },
         {
           id: 'arrive',
-          title: 'Llegas. La historia adecuada está lista.',
+          title: 'Camina, y la historia te encontrará',
           body:
-            'ChronoWalk usa tu ubicación para mostrar la parada que tienes delante. Mantén pulsado para revelar una reconstrucción basada en evidencias desde el mismo punto de vista.',
-          beats: ['PARADA ACTUAL', 'MANTÉN PULSADO', 'ANTES Y AHORA', 'REVELAR'],
+            'ChronoWalk usa tu ubicación para mostrar la parada que tienes delante y su historia seleccionada.',
+          beats: [],
         },
         {
           id: 'listen',
           title: 'Escucha lo que ocurrió aquí.',
           body:
-            'Reproduce el capítulo junto al monumento o elige leerlo. Prepara el recorrido antes de dejar el Wi-Fi y sigue escuchando cuando se pierda la señal.',
-          beats: ['AUDIO', 'LEER', 'LISTO SIN CONEXIÓN'],
+            'Reproduce el capítulo junto al monumento o elige leerlo. Mantén pulsado para revelar una reconstrucción basada en evidencias desde el mismo punto de vista.',
+          beats: [],
         },
         {
           id: 'walk',
           title: 'Deambula libremente. No pierdas nunca el hilo.',
           body:
-            'Haz una pausa para comer, desvíate o continúa mañana. ChronoWalk guarda tu progreso y te muestra dónde retomar la ruta. Usa el mapa cuando lo necesites. Ignóralo cuando Roma te distraiga.',
-          beats: ['MAPA', 'PASOS', 'PAUSA', 'CONTINUAR'],
+            'Haz una pausa para comer, desvíate o continúa mañana. ChronoWalk guarda tu progreso y te muestra dónde retomar la ruta. Usa el mapa cuando lo necesites. Ignóralo cuando la belleza de Roma te distraiga.',
+          beats: [],
         },
       ],
     },
@@ -316,7 +316,7 @@ export const ES_LANDING = Object.freeze({
           id: 'no-tickets',
           headline: '¿No conseguiste entrada para el Coliseo?',
           body:
-            'Puede que el monumento esté agotado. La ciudad no. Sigue las historias, fachadas, miradores y espacios públicos que todavía están abiertos a tu alrededor.',
+            '¡Que no cunda el pánico! En Roma hay MUCHO que ver sin necesidad de entrada. Sigue las historias, fachadas, miradores y espacios públicos que todavía están abiertos a tu alrededor.',
           cta: 'Ver los recorridos por Roma',
         },
         {
@@ -352,7 +352,7 @@ export const ES_LANDING = Object.freeze({
     monuments: {
       eyebrow: 'LAS PARADAS',
       headline: 'Descubre todos los lugares que puedes recorrer con ChronoWalk',
-      subheadline: 'Desliza para ver las paradas que llevan la historia por toda la ciudad.',
+      subheadline: 'Desliza las paradas. Toca una foto para voltearla y leer lo que escucharás.',
       expandLabel: 'Ver todas las paradas de la ruta',
       collapseLabel: 'Mostrar los puntos destacados',
       previewAriaLabel: 'Lugares destacados de la ruta por Roma',
@@ -558,6 +558,16 @@ export const ES_LANDING = Object.freeze({
         { label: 'Paradas', href: '#monuments' },
         { label: 'Recorridos por Roma', href: '#pricing' },
         { label: 'Preguntas', href: '#faq' },
+      ],
+      exploreNav: [
+        { id: 'access', label: 'Acceso (ya compraste)', href: '/access', emphasis: 'access' },
+        { id: 'try-free', label: 'Prueba 1 parada gratis', href: '/preview', emphasis: 'try' },
+        { id: 'monuments', label: 'Lista completa de paradas', href: '#monuments' },
+        { id: 'how-it-works', label: 'Cómo funciona', href: '#how-it-works' },
+        { id: 'pricing', label: 'Alternativas, packs y precios', href: '#pricing' },
+        { id: 'get-app', label: 'Info de configuración', href: '#get-app' },
+        { id: 'faq', label: 'FAQ', href: '#faq' },
+        { id: 'support-legal', label: 'Soporte y legal', href: '#support-legal' },
       ],
     },
     footer: {

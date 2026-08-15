@@ -104,7 +104,13 @@ export default function LandingThenNowAppScreen({
             </div>
 
             {showDiegeticHint ? (
-              <ThresholdDiegeticHint thenLabel={thenLabel} showText showHand />
+              <ThresholdDiegeticHint
+                thenLabel={thenLabel}
+                showText
+                showHand
+                handSize={56}
+                className="cw-diegetic-hint--landing-lg"
+              />
             ) : null}
 
             <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />

@@ -480,30 +480,30 @@ export const LANDING_CONTENT = {
         id: 'begin',
         title: 'Begin your chosen walking route.',
         body: 'Open your Rome walk and see the acts ahead. Start Act I, jump from where you are, or open the route map whenever you need it.',
-        component: 'LandingDemoBeginTourScreen',
-        beats: ['YOUR TOUR', 'BEGIN ACT I', 'START WHERE YOU ARE'],
+        component: 'LandingDemoBeginLockup',
+        beats: [],
       },
       {
         id: 'arrive',
-        title: 'Arrive. The right story is ready.',
-        body: 'ChronoWalk uses your location to show the stop in front of you. Press and hold to reveal an evidence-based reconstruction from the same viewpoint.',
-        component: 'A2FreePreviewStory',
-        beats: ['CURRENT STOP', 'PRESS AND HOLD', 'THEN AND NOW', 'REVEAL'],
+        title: 'Walk around, and the story will find you',
+        body: 'ChronoWalk uses your location to show the stop in front of you and its curated story.',
+        component: 'LandingDemoArriveLockup',
+        beats: [],
         emotional: true,
       },
       {
         id: 'listen',
         title: 'Hear what happened here.',
-        body: 'Play the chapter at the landmark, or read instead. Prepare the walk before you leave Wi-Fi, then keep listening when mobile signal fades.',
-        component: 'A2FreePreviewStory',
-        beats: ['AUDIO', 'READ INSTEAD', 'OFFLINE READY'],
+        body: 'Play the chapter at the landmark, or read instead. Press and hold to reveal an evidence-based reconstruction from the same viewpoint.',
+        component: 'LandingDemoListenCampo',
+        beats: [],
       },
       {
         id: 'walk',
         title: 'Wander freely. Never lose your place.',
-        body: 'Pause for lunch, take a detour, or continue tomorrow. ChronoWalk keeps your progress and shows you where to pick up the route. Use the map when you need it. Ignore it when Rome distracts you.',
-        component: 'C2Walking',
-        beats: ['MAP', 'STEPS', 'PAUSE', 'CONTINUE'],
+        body: 'Pause for lunch, take a detour, or continue tomorrow. ChronoWalk keeps your progress and shows you where to pick up the route. Use the map when you need it. Ignore it when the beauty of Rome distracts you.',
+        component: 'LandingDemoWalkLockup',
+        beats: [],
       },
     ],
   },
@@ -517,7 +517,7 @@ export const LANDING_CONTENT = {
       {
         id: 'no-tickets',
         headline: 'No Colosseum ticket?',
-        body: 'The monument may be sold out. The city is not. Follow the stories, façades, viewpoints, and public spaces still open around you.',
+        body: 'Don’t fret! There is SO much to see in Rome that doesn’t need a ticket. Follow the stories, façades, viewpoints, and public spaces still open around you.',
         imageKey: 'trevi',
         cta: 'See the Rome walks',
         href: '#pricing',
@@ -746,7 +746,7 @@ export const LANDING_CONTENT = {
     id: 'monuments',
     eyebrow: 'THE STOPS',
     headline: 'Browse through all the different waypoints you can discover with ChronoWalk',
-    subheadline: 'Swipe through the stops that carry the story across the city.',
+    subheadline: 'Swipe through the stops. Tap a photo to flip it and read what you’ll hear.',
     /** Always-on SEO / continuity line - full ordered names stay in the DOM via the trail. */
     routeName: 'Roma Eterna',
     expandLabel: 'See every stop on the route',
@@ -908,6 +908,20 @@ export const LANDING_CONTENT = {
       { label: 'Stops', href: '#monuments' },
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
+    ],
+    /**
+     * Compact page map for the collapsible explore drawer (closed by default).
+     * Visitor-facing labels → purchase, free try, stops, setup, FAQ, support.
+     */
+    exploreNav: [
+      { id: 'access', label: 'Access (Already Purchased)', href: '/access', emphasis: 'access' },
+      { id: 'try-free', label: 'Try 1 Stop Free', href: '/preview', emphasis: 'try' },
+      { id: 'monuments', label: 'Full list of available stops', href: '#monuments' },
+      { id: 'how-it-works', label: 'How it works', href: '#how-it-works' },
+      { id: 'pricing', label: 'Tour Alternatives, Bundles & Pricing', href: '#pricing' },
+      { id: 'get-app', label: 'Set Up Info', href: '#get-app' },
+      { id: 'faq', label: 'FAQ', href: '#faq' },
+      { id: 'support-legal', label: 'Support & Legal', href: '#support-legal' },
     ],
     /** Shown in the nav only after the hero leaves the viewport. */
     get cta() {

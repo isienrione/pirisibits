@@ -11,24 +11,30 @@ import LandingThenNowAppScreen from './LandingThenNowAppScreen.jsx'
 import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
- * Top-of-page Then/Now proof — product Threshold inside the landing phone frame.
+ * Then/Now proof — product Threshold inside the landing phone frame.
  * Silent, user-driven hold (optional one-time peek via Threshold autoPeek).
- * Full scrollable product demo remains below.
+ *
+ * `variant="hero-slide"` embeds a compact layout inside the hero gallery.
+ * `active` gates peek/media when used as a hero slide layer.
  */
 export default function LandingThenNowProof({
   section = LANDING_CONTENT.thenNowProof,
+  variant = 'section',
+  active = true,
 }) {
   const t = useT()
   const reducedMotion = useReducedMotion()
   const reactId = useId()
   const statusId = `${reactId}-status`
   const headingId = `${section.id}-heading`
+  const isHero = variant === 'hero-slide'
 
   const rootRef = useRef(null)
   const phoneRef = useRef(null)
   const startedRef = useRef(false)
   const completedRef = useRef(false)
   const viaRef = useRef('hold')
+  const viewedRef = useRef(false)
 
   const [inView, setInView] = useState(false)
   const [autoPeek, setAutoPeek] = useState(false)
@@ -96,6 +102,20 @@ export default function LandingThenNowProof({
   }, [clickEraPill, revealed, trackComplete, trackStart])
 
   useEffect(() => {
+    if (isHero) {
+      if (!active) {
+        setInView(false)
+        setAutoPeek(false)
+        return undefined
+      }
+      setInView(true)
+      if (!viewedRef.current) {
+        viewedRef.current = true
+        trackThenNowDemoViewed()
+      }
+      return undefined
+    }
+
     const node = rootRef.current
     if (!node || typeof IntersectionObserver === 'undefined') {
       setInView(true)
@@ -114,13 +134,13 @@ export default function LandingThenNowProof({
     )
     observer.observe(node)
     return () => observer.disconnect()
-  }, [])
+  }, [active, isHero])
 
   useEffect(() => {
-    if (!inView || reducedMotion || autoPeek) return undefined
+    if (!inView || !active || reducedMotion || autoPeek) return undefined
     const id = window.setTimeout(() => setAutoPeek(true), 500)
     return () => window.clearTimeout(id)
-  }, [autoPeek, inView, reducedMotion])
+  }, [active, autoPeek, inView, reducedMotion])
 
   const statusText = revealed
     ? t('landing.thenNow.revealedStatus')
@@ -131,12 +151,16 @@ export default function LandingThenNowProof({
           action: section.revealLabel,
         })
 
+  const rootClass = `cw-v4-then-now${isHero ? ' cw-v4-then-now--hero' : ''}`
+  const Root = isHero ? 'div' : 'section'
+
   return (
-    <section
+    <Root
       ref={rootRef}
-      id={section.id}
-      className="cw-v4-then-now"
+      id={isHero ? undefined : section.id}
+      className={rootClass}
       aria-labelledby={headingId}
+      data-testid={isHero ? 'hero-then-now-slide' : 'then-now-proof'}
     >
       <div className="cw-v4-wrap cw-v4-then-now__layout">
         <header className="cw-v4-then-now__intro">
@@ -147,12 +171,18 @@ export default function LandingThenNowProof({
           <p className="cw-v4-then-now__support">{section.support}</p>
         </header>
 
-        <div className="cw-v4-then-now__stage-wrap">
+        <div
+          className="cw-v4-then-now__stage-wrap"
+          /* Keep hero swipe from stealing press-and-hold on the phone. */
+          onTouchStart={(event) => event.stopPropagation()}
+          onTouchEnd={(event) => event.stopPropagation()}
+          onTouchMove={(event) => event.stopPropagation()}
+        >
           <div ref={phoneRef} className="cw-v4-then-now__phone">
             <LandingProductPhoneFrame label={t('landing.thenNow.phoneLabel')}>
               <LandingThenNowAppScreen
-                active={inView}
-                autoPeek={autoPeek && !reducedMotion}
+                active={Boolean(active && inView)}
+                autoPeek={autoPeek && !reducedMotion && active}
                 onHoldStart={handleHoldStart}
                 onHoldEnd={handleHoldEnd}
                 onFullyRevealed={handleFullyRevealed}
@@ -170,14 +200,15 @@ export default function LandingThenNowProof({
               className="cw-v4-then-now__fallback"
               onClick={toggleFallback}
               aria-pressed={revealed}
+              tabIndex={active ? 0 : -1}
             >
               {revealed ? section.hideLabel : section.revealLabel}
             </button>
           </div>
 
-          <p className="cw-v4-then-now__note">{section.exampleNote}</p>
+          {!isHero ? <p className="cw-v4-then-now__note">{section.exampleNote}</p> : null}
         </div>
       </div>
-    </section>
+    </Root>
   )
 }

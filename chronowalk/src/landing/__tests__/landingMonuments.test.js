@@ -49,7 +49,28 @@ describe('getLandingRouteJourney', () => {
 
   it('frames the stop carousel without a catalog pitch', () => {
     expect(LANDING_CONTENT.monuments.headline).toMatch(/waypoints you can discover with ChronoWalk/i)
-    expect(LANDING_CONTENT.monuments.subheadline).toMatch(/swipe/i)
+    expect(LANDING_CONTENT.monuments.subheadline).toMatch(/tap a photo to flip/i)
     expect(LANDING_CONTENT.monuments.routeName).toBe('Roma Eterna')
+  })
+
+  it('attaches Viator-aligned flip copy to every complete-route stop', () => {
+    const monuments = getLandingMonuments()
+    expect(monuments.every((stop) => stop.description.length > 40)).toBe(true)
+    expect(monuments.every((stop) => stop.duration && stop.admission)).toBe(true)
+    const colosseum = monuments.find((stop) => stop.id === 'colosseum')
+    expect(colosseum.description).toMatch(/games day/i)
+    expect(colosseum.description).toMatch(/50,000|machinery|arena/i)
+    const pantheon = monuments.find((stop) => stop.id === 'pantheon')
+    expect(pantheon.description).toMatch(/oculus/i)
+    expect(pantheon.description).toMatch(/Agrippa/i)
+    expect(pantheon.description).not.toMatch(/—/)
+    const saturn = monuments.find((stop) => stop.id === 'forum-temple-saturn')
+    expect(saturn.description).toMatch(/treasury|Saturnalia/i)
+    const circus = monuments.find((stop) => stop.id === 'circus-maximus')
+    expect(circus.description).toMatch(/chariot/i)
+    expect(monuments.every((stop) => !stop.description.includes('—'))).toBe(true)
+    expect(monuments.every((stop) => !/\b(The audio|Narration covers|The narration)\b/i.test(stop.description))).toBe(
+      true,
+    )
   })
 })

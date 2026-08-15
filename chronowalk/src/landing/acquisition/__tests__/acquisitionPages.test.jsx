@@ -219,12 +219,30 @@ describe('acquisition pages', () => {
     expect(screen.getByTestId('how-it-works-sequential-demo')).toBeInTheDocument()
     expect(screen.getByText(/Begin your chosen walking route/i)).toBeInTheDocument()
     expect(screen.queryByText(/Choose your Rome walk/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/Walk around, and the story will find you/i)).toBeInTheDocument()
     expect(screen.getByText(/Wander freely/i)).toBeInTheDocument()
+    expect(screen.getByText(/beauty of Rome/i)).toBeInTheDocument()
+    expect(screen.queryByText(/YOUR TOUR/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/CURRENT STOP/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Scroll to follow the phone/i)).not.toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: /Try the Pantheon stop free/i }),
     ).toBeInTheDocument()
     expect(document.title).toBe(getPageMeta('/how-it-works').title)
+  })
+
+  it('exposes language choice on every acquisition landing header', () => {
+    renderPage('/how-it-works', <HowItWorksPage />)
+    expect(screen.getByTestId('landing-language-control')).toBeInTheDocument()
+    expect(screen.getByRole('group', { name: /choose language/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /english/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /español/i })).toBeInTheDocument()
+    expect(document.querySelector('.cw-acq-header__language-sign')).toBeNull()
+    expect(document.querySelectorAll('.cw-lang-switch__flag').length).toBe(2)
+    expect(screen.getByText('EN')).toBeInTheDocument()
+    expect(screen.getByText('ES')).toBeInTheDocument()
+    const emblem = document.querySelector('.cw-acq-header__emblem')
+    expect(emblem?.getAttribute('src')).toBe('/brand/emblem-light.png')
   })
 
   it('fires one page-view event per acquisition page type', async () => {

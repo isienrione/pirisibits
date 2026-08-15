@@ -5,7 +5,6 @@ import LandingAct from './LandingAct.jsx'
 import LandingIntroNav from './v4/LandingIntroNav.jsx'
 import LandingProductHero from './v4/LandingProductHero.jsx'
 import LandingHeroReassurance from './v4/LandingHeroReassurance.jsx'
-import LandingThenNowProof from './v4/LandingThenNowProof.jsx'
 import LandingGetAppSection from './v4/LandingGetAppSection.jsx'
 import LandingProductDemo from './v4/LandingProductDemo.jsx'
 import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
@@ -47,6 +46,7 @@ import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
 import LandingErrorBoundary from './LandingErrorBoundary.jsx'
 import { useI18n } from '../i18n/I18nProvider.jsx'
+import { scrollLandingAnchor } from './landingScroll.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
@@ -124,11 +124,7 @@ function ChronoWalkLandingInner() {
     let frame = 0
     let attempts = 0
     const scrollToHash = () => {
-      const target = document.getElementById(hash)
-      if (target) {
-        target.scrollIntoView({ behavior: 'auto', block: 'start' })
-        return
-      }
+      if (scrollLandingAnchor(hash, { behavior: 'auto' })) return
       attempts += 1
       if (attempts < 12) frame = window.requestAnimationFrame(scrollToHash)
     }
@@ -263,6 +259,7 @@ function ChronoWalkLandingInner() {
           <LandingProductHero
             hero={intentHero}
             tiers={localized.ROME_TIERS}
+            thenNowSection={localized.LANDING_CONTENT.thenNowProof}
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
             onGetApp={handleHeroUnlock}
@@ -272,7 +269,6 @@ function ChronoWalkLandingInner() {
             section={localized.LANDING_CONTENT.heroReassurance}
             onPreview={handlePreview}
           />
-          <LandingThenNowProof section={localized.LANDING_CONTENT.thenNowProof} />
         </LandingAct>
 
         <LandingAct

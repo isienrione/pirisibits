@@ -2927,6 +2927,7 @@
   border-top: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
   background: var(--v2-obsidian);
   padding: 4rem 1.5rem;
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
 }
 
 .cw-v2-footer__inner {

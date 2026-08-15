@@ -10,6 +10,9 @@ import { setActiveLocale } from '../../i18n/activeLocale.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
+  trackThenNowDemoViewed: vi.fn(),
+  trackThenNowDemoStarted: vi.fn(),
+  trackThenNowDemoCompleted: vi.fn(),
 }))
 
 function LocaleSwitcher() {
@@ -96,11 +99,11 @@ describe('LandingProductHero manual gallery', () => {
     )
   })
 
-  it('jumps to the first Spanish marketing frame after a locale swap', () => {
+  it('keeps the CTA hero active after a locale swap so buttons stay clickable', () => {
     localStorage.removeItem(LOCALE_STORAGE_KEY)
     renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
-    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+    expect(screen.getByRole('tab', { name: /Main hero image|Imagen principal/i })).toHaveAttribute(
       'aria-selected',
       'true',
     )
@@ -109,12 +112,38 @@ describe('LandingProductHero manual gallery', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
     })
 
+    expect(screen.getByRole('tab', { name: /Main hero image|Imagen principal/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    // Slide 0 stays active → hero CTAs keep pointer-events (inactive layers are inert).
+    expect(document.querySelector('.cw-v4-hero__slide-layer.is-active .cw-v4-hero__actions')).toBeTruthy()
+    expect(
+      screen.getByRole('button', { name: /Panteón|Pantheon|adelanto|sneak peek|gratis|free/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('shows the live Then/Now demo on the first story frame (not static Spanish art)', () => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Next hero image|Imagen siguiente/i }))
+
     expect(
       screen.getByRole('tab', { name: /ChronoWalk Roma\. Camina libremente/i }),
     ).toHaveAttribute('aria-selected', 'true')
 
-    const art = document.querySelector('.cw-v4-hero__slide-layer--art.is-active img.cw-v4-hero__art')
-    expect(art?.getAttribute('src')).toBe('/landing/hero-slides/es/then-now.png')
+    expect(screen.getByTestId('hero-then-now-slide')).toBeInTheDocument()
+    expect(
+      document.querySelector('.cw-v4-hero__slide-layer--then-now.is-active'),
+    ).toBeTruthy()
+    expect(
+      document.querySelector('.cw-v4-hero__slide-layer--art.is-active img.cw-v4-hero__art'),
+    ).toBeNull()
   })
 })
 
@@ -132,16 +161,26 @@ describe('LandingProductHero story slide enlarge', () => {
   it('opens a zoomable viewer when a story slide is enlarged', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
-    fireEvent.click(screen.getByRole('tab', { name: /ChronoWalk Rome/i }))
-    fireEvent.click(screen.getByRole('button', { name: /Enlarge ChronoWalk Rome/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /The ruin becomes the room/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Enlarge The ruin becomes the room/i }))
 
-    const dialog = screen.getByRole('dialog', { name: /ChronoWalk Rome/i })
+    const dialog = screen.getByRole('dialog', { name: /The ruin becomes the room/i })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     expect(dialog).toHaveTextContent(/Pinch or double-tap to zoom/i)
     expect(within(dialog).getByRole('button', { name: 'Zoom in' })).toBeInTheDocument()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Close viewer' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('embeds interactive Then/Now on the second hero slide without enlarge', () => {
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: /ChronoWalk Rome/i }))
+    expect(screen.getByTestId('hero-then-now-slide')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Enlarge ChronoWalk Rome/i }),
+    ).not.toBeInTheDocument()
   })
 
   it('keeps package hotspots while offering enlarge on the packages slide', () => {

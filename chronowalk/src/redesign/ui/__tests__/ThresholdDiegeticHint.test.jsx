@@ -24,4 +24,13 @@ describe('ThresholdDiegeticHint', () => {
     expect(screen.queryByText(/hold to reveal/i)).not.toBeInTheDocument()
     expect(screen.getByTestId('threshold-diegetic-finger')).toBeInTheDocument()
   })
+
+  it('accepts a larger handSize for landing teach cues', () => {
+    const { container } = render(
+      <ThresholdDiegeticHint thenLabel="ANCIENT ROME" showText showHand handSize={56} />,
+    )
+    const icon = container.querySelector('.cw-diegetic-hint__finger-icon')
+    expect(icon).toHaveAttribute('width', '56')
+    expect(icon).toHaveAttribute('height', '56')
+  })
 })

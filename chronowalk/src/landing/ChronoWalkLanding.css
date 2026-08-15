@@ -714,7 +714,8 @@
   top: 4.6cqw;
   left: 50%;
   width: 36cqw;
-  height: 6.8cqw;
+  aspect-ratio: 36 / 6.8;
+  height: auto;
   transform: translateX(-50%);
   border-radius: 999px;
   background: #050403;

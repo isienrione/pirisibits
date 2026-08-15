@@ -23,6 +23,8 @@ export const HERO_SLIDESHOW_SLIDES = [
     src: '/landing/hero-slides/then-now.png',
     width: 1024,
     height: 1536,
+    /** Live press-and-hold Threshold demo (not a static marketing frame). */
+    interactive: 'then-now',
   },
   {
     id: 'ruin-room',

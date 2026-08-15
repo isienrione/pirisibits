@@ -14,7 +14,7 @@ const BEGIN_CHAPTER = Object.freeze({
   id: 'begin',
   title: 'Begin your chosen walking route.',
   body: 'Open your Rome walk and see the acts ahead. Start Act I, jump from where you are, or open the route map whenever you need it.',
-  beats: ['YOUR TOUR', 'BEGIN ACT I', 'START WHERE YOU ARE'],
+  beats: [],
 })
 
 function withoutDashes(text) {
@@ -57,19 +57,12 @@ export default function LandingProductSequentialDemo({
                 {withoutDashes(chapter.title)}
               </h3>
               <p className="cw-acq-seq__body">{withoutDashes(chapter.body)}</p>
-              {chapter.beats?.length ? (
-                <ul className="cw-acq-seq__beats" aria-label={chapter.title}>
-                  {chapter.beats.map((beat) => (
-                    <li key={beat}>{withoutDashes(beat)}</li>
-                  ))}
-                </ul>
-              ) : null}
             </div>
             <div className="cw-acq-seq__phone">
               <LandingDemoChapterPhone
                 chapterId={chapter.id}
                 beat={CHAPTER_BEATS[chapter.id] ?? 0}
-                active={chapter.id === 'arrive'}
+                active={chapter.id === 'listen'}
                 label={`ChronoWalk: ${chapter.title}`}
               />
             </div>
