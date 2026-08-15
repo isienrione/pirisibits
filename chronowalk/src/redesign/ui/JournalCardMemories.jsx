@@ -195,33 +195,47 @@ export default function JournalCardMemories({ waypointId, stopName, accent = T.e
           <ImagePlus size={14} aria-hidden />
           {photoUrl ? t('journal.memory.changePhoto') : t('journal.memory.addPhoto')}
         </button>
-        <button
-          type="button"
-          data-testid={`journal-memory-expand-${waypointId}`}
-          aria-expanded={contentOpen}
-          aria-label={
-            contentOpen ? t('journal.memory.hideContent') : t('journal.memory.showContent')
-          }
-          onClick={() => {
-            setExpanded(!contentOpen)
-            if (contentOpen) {
-              setEditingNote(false)
-              setPickerOpen(false)
-            }
-          }}
-          style={{
-            ...actionButtonStyle(accent),
-            marginLeft: 'auto',
-            minWidth: 40,
-            padding: '0 10px',
-          }}
-        >
-          {contentOpen ? <ChevronUp size={16} aria-hidden /> : <ChevronDown size={16} aria-hidden />}
-          <span style={{ fontSize: 11 }}>
-            {contentOpen ? t('journal.memory.hideShort') : t('journal.memory.showShort')}
-          </span>
-        </button>
       </div>
+
+      <button
+        type="button"
+        data-testid={`journal-memory-expand-${waypointId}`}
+        aria-expanded={contentOpen}
+        aria-label={
+          contentOpen ? t('journal.memory.hideContent') : t('journal.memory.showContent')
+        }
+        onClick={() => {
+          setExpanded(!contentOpen)
+          if (contentOpen) {
+            setEditingNote(false)
+            setPickerOpen(false)
+          }
+        }}
+        style={{
+          marginTop: 10,
+          width: '100%',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 10,
+          minHeight: 42,
+          padding: '0 14px',
+          borderRadius: 12,
+          border: `1.5px solid ${accent}66`,
+          background: contentOpen ? `${accent}18` : '#FFFEFA',
+          color: accent,
+          fontFamily: F.body,
+          fontSize: 13,
+          fontWeight: 650,
+          cursor: 'pointer',
+        }}
+      >
+        <span>
+          {contentOpen ? t('journal.memory.hideContent') : t('journal.memory.showContent')}
+          {hasSavedContent && !contentOpen ? ` · ${t('journal.memory.hasSaved')}` : ''}
+        </span>
+        {contentOpen ? <ChevronUp size={18} aria-hidden /> : <ChevronDown size={18} aria-hidden />}
+      </button>
 
       {contentOpen ? (
         <div data-testid={`journal-memory-content-${waypointId}`}>

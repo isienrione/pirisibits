@@ -894,6 +894,7 @@ export const esMessages = Object.freeze({
   'journal.memory.showContent': 'Mostrar notas y fotos',
   'journal.memory.hideShort': 'Ocultar',
   'journal.memory.showShort': 'Mostrar',
+  'journal.memory.hasSaved': 'guardado',
   'journal.memory.emptyHint': 'Tu nota y foto de esta parada aparecen aquí.',
 
   // Memory detail

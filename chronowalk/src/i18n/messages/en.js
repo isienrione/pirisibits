@@ -882,6 +882,7 @@ export const enMessages = Object.freeze({
   'journal.memory.showContent': 'Show notes and photos',
   'journal.memory.hideShort': 'Hide',
   'journal.memory.showShort': 'Show',
+  'journal.memory.hasSaved': 'saved',
   'journal.memory.emptyHint': 'Your note and photo for this stop appear here.',
 
   // Memory detail

@@ -85,6 +85,9 @@ describe('JournalCardMemories', () => {
     fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
     expect(screen.queryByTestId('journal-memory-content-colosseum')).not.toBeInTheDocument()
     expect(screen.queryByTestId('journal-note-preview-colosseum')).not.toBeInTheDocument()
+    expect(screen.getByTestId('journal-memory-expand-colosseum')).toHaveTextContent(
+      /show notes and photos|mostrar notas/i,
+    )
 
     fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
     expect(screen.getByTestId('journal-note-preview-colosseum')).toBeInTheDocument()
