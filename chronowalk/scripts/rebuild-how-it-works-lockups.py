@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """Rebuild how-it-works phone lockups from Safari screenshots.
 
-Sources (checkout from origin/figma):
-  English_mock1.jpg → begin-tour-v4.jpeg (+ mirrors)
-  English_mock4.jpg → walk-v4.jpeg
-  Spanish_mock1.jpg → es/begin-tour-v4.jpeg
-  Spanish_mock2.jpg → es/arrive-v4.jpeg
-  Spanish_mock4.jpg → es/walk-v4.jpeg
+Sources (checkout from origin/figma into public/landing/):
+  English_mock1.jpg → begin-tour-v7.jpeg (+ mirrors)
+  English_mock4.jpg → walk-v7.jpeg
+  Spanish_mock1.jpg → es/begin-tour-v7.jpeg
+  Spanish_mock2.jpg → es/arrive-v7.jpeg
+  Spanish_mock4.jpg → es/walk-v7.jpeg
 
 Pipeline (no anisotropic warp):
   1. Strip Safari chrome / black letterbox / top hairlines
   2. Split body vs cream tab bar
   3. Uniform width-scale to 1170px
-  4. Paste body at TOP; pin tabs to BOTTOM
-  5. Fill the mid gap (between body and tabs) with cream or black
+  4. Paste body below a matching-color Dynamic Island inset
+  5. Pin tabs to the BOTTOM edge
+  6. Fill the mid gap (between body and tabs) with cream or dark
+
+The island inset uses the same cream/dark as the screen — never a fake
+black status bar on cream UI.
 """
 from __future__ import annotations
 
@@ -27,8 +31,13 @@ LANDING = ROOT / "public" / "landing"
 SCREENS = LANDING / "phone-screens"
 
 TARGET_W, TARGET_H = 1170, 2532
+# ~56px on the 390×844 artboard (168px at 3×). Clears the CSS Dynamic Island
+# (~island bottom ≈ 44px artboard) with a small breathing gap — matching fill,
+# not a black strip.
+SAFE_TOP = 168
 CREAM = (248, 245, 238)
 DARK = (12, 12, 12)
+OUT_TAG = "v7"
 
 
 def strip(im: Image.Image, force_top: int = 0) -> Image.Image:
@@ -100,7 +109,7 @@ def trim_body_hairline(body_r: Image.Image, gap_bg: tuple[int, int, int], max_tr
     return body_r
 
 
-def build(src: Path, dst: Path, *, force_top: int, gap_bg: tuple[int, int, int]) -> None:
+def build(src: Path, dst: Path, *, force_top: int, gap_bg: tuple[int, int, int], safe_top: int = SAFE_TOP) -> None:
     raw = Image.open(src).convert("RGB")
     im = strip(raw, force_top=force_top)
     w, _h = im.size
@@ -112,17 +121,22 @@ def build(src: Path, dst: Path, *, force_top: int, gap_bg: tuple[int, int, int])
     tabs_r = tabs.resize((TARGET_W, max(1, int(round(tabs.height * scale)))), Image.Resampling.LANCZOS)
     body_r = trim_body_hairline(body_r, gap_bg)
 
+    # Matching-color canvas (cream or dark) — island zone + mid gap share this fill.
     canvas = Image.new("RGB", (TARGET_W, TARGET_H), gap_bg)
     ty = TARGET_H - tabs_r.height
     canvas.paste(tabs_r, (0, ty))
-    if body_r.height <= ty:
-        canvas.paste(body_r, (0, 0))
+
+    body_top = safe_top
+    avail = ty - body_top
+    if body_r.height <= avail:
+        canvas.paste(body_r, (0, body_top))
     else:
-        overflow = body_r.height - ty
-        canvas.paste(body_r.crop((0, overflow, TARGET_W, body_r.height)), (0, 0))
+        # Prefer keeping the header under the island; crop overflow from the bottom of the body.
+        overflow = body_r.height - avail
+        canvas.paste(body_r.crop((0, 0, TARGET_W, body_r.height - overflow)), (0, body_top))
     dst.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(dst, "JPEG", quality=92, optimize=True)
-    print(f"wrote {dst.relative_to(ROOT)}")
+    print(f"wrote {dst.relative_to(ROOT)} safe_top={safe_top} gap={gap_bg}")
 
 
 def mirror(src: Path, names: list[str]) -> None:
@@ -133,16 +147,21 @@ def mirror(src: Path, names: list[str]) -> None:
 
 def main() -> None:
     jobs = [
-        (LANDING / "English_mock1.jpg", SCREENS / "begin-tour-v4.jpeg", 128, CREAM,
-         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg"]),
-        (LANDING / "English_mock4.jpg", SCREENS / "walk-v4.jpeg", 178, DARK,
-         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg"]),
-        (LANDING / "Spanish_mock1.jpg", SCREENS / "es" / "begin-tour-v4.jpeg", 128, CREAM,
-         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg"]),
-        (LANDING / "Spanish_mock2.jpg", SCREENS / "es" / "arrive-v4.jpeg", 145, CREAM,
-         ["arrive-lockup.jpeg", "arrive-v2.jpeg", "arrive-v3.jpeg"]),
-        (LANDING / "Spanish_mock4.jpg", SCREENS / "es" / "walk-v4.jpeg", 0, DARK,
-         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg"]),
+        (LANDING / "English_mock1.jpg", SCREENS / f"begin-tour-{OUT_TAG}.jpeg", 128, CREAM,
+         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg",
+          "begin-tour-v4.jpeg", "begin-tour-v5.jpeg", "begin-tour-v6.jpeg"]),
+        (LANDING / "English_mock4.jpg", SCREENS / f"walk-{OUT_TAG}.jpeg", 178, DARK,
+         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg",
+          "walk-v4.jpeg", "walk-v5.jpeg", "walk-v6.jpeg"]),
+        (LANDING / "Spanish_mock1.jpg", SCREENS / "es" / f"begin-tour-{OUT_TAG}.jpeg", 128, CREAM,
+         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg",
+          "begin-tour-v4.jpeg", "begin-tour-v5.jpeg", "begin-tour-v6.jpeg"]),
+        (LANDING / "Spanish_mock2.jpg", SCREENS / "es" / f"arrive-{OUT_TAG}.jpeg", 145, CREAM,
+         ["arrive-lockup.jpeg", "arrive-v2.jpeg", "arrive-v3.jpeg",
+          "arrive-v4.jpeg", "arrive-v5.jpeg", "arrive-v6.jpeg"]),
+        (LANDING / "Spanish_mock4.jpg", SCREENS / "es" / f"walk-{OUT_TAG}.jpeg", 0, DARK,
+         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg",
+          "walk-v4.jpeg", "walk-v5.jpeg", "walk-v6.jpeg"]),
     ]
     for src, dst, force_top, gap_bg, mirrors in jobs:
         if not src.exists():

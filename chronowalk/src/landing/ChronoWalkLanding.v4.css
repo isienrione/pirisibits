@@ -2176,7 +2176,8 @@
   width: 390px;
   height: 844px;
   overflow: hidden;
-  background: #0b0b0d;
+  /* Cream default so island clearance never flashes as a black status bar. */
+  background: #f8f5ee;
   display: grid;
   place-items: stretch;
   align-content: stretch;
@@ -2190,19 +2191,25 @@
   width: 100%;
   height: 100%;
   /* Never use fill — it anisotropically warps product screenshots.
-     Assets include a Dynamic Island safe-area inset at the top. */
+     Assets include a matching-color Dynamic Island inset (cream or dark). */
   object-fit: cover;
   object-position: center top;
   touch-action: manipulation;
   -webkit-user-drag: none;
   user-select: none;
   border: 0;
-  background: #0b0b0d;
+  background: transparent;
+}
+
+.cw-v4-lockup--dark {
+  background: #0c0c0c;
 }
 
 .cw-v4-lockup--video {
   position: relative;
+  background: #0b0b0d;
 }
+
 
 .cw-v4-lockup__play {
   position: absolute;

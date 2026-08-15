@@ -7,18 +7,18 @@ import { LOCALES, normalizeLocale } from '../../i18n/locales.js'
 
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 
-/* v6: matching-color inset under Dynamic Island (no fake black status bar). */
-const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v6.jpeg'
+/* v7: cream/dark island inset (matches screen) — never a fake black status bar. */
+const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v7.jpeg'
 const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
 const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
 const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
-const WALK_LOCKUP = '/landing/phone-screens/walk-v6.jpeg'
+const WALK_LOCKUP = '/landing/phone-screens/walk-v7.jpeg'
 
 /** Spanish stills under phone-screens/es/ when present; listen stays the shared video. */
 const LOCKUP_ES_BY_PATH = Object.freeze({
-  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v6.jpeg',
-  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v6.jpeg',
-  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v6.jpeg',
+  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v7.jpeg',
+  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v7.jpeg',
+  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v7.jpeg',
 })
 
 function resolveLockupSrc(enSrc, locale) {
@@ -181,11 +181,14 @@ const BeginScreen = memo(function BeginScreen() {
 
 const ArriveScreen = memo(function ArriveScreen() {
   const { t, locale } = useI18n()
+  const src = resolveLockupSrc(ARRIVE_LOCKUP, locale)
+  const dark = src === ARRIVE_LOCKUP
   return (
     <LockupImage
-      src={resolveLockupSrc(ARRIVE_LOCKUP, locale)}
+      src={src}
       alt={t('landing.demo.arriveAlt')}
       testId="landing-demo-arrive-lockup"
+      className={dark ? 'cw-v4-lockup--dark' : ''}
     />
   )
 })
@@ -210,6 +213,7 @@ const WalkScreen = memo(function WalkScreen() {
       src={resolveLockupSrc(WALK_LOCKUP, locale)}
       alt={t('landing.demo.walkAlt')}
       testId="landing-demo-walk-lockup"
+      className="cw-v4-lockup--dark"
     />
   )
 })
