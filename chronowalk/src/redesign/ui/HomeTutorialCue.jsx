@@ -238,7 +238,9 @@ function RevealCue({ accent }) {
   const startRef = useRef(0)
   const nowSrc = mediaUrl('/waypoints/colosseum/exterior/modern-poster.jpg')
   const thenSrc = mediaUrl('/waypoints/colosseum/exterior/ancient-reconstruction.jpg')
-  const HOLD_MS = 1400
+  /** Tutorial settles on a clean half/half compare — not a full wipe or mid-frame triple. */
+  const HOLD_TARGET = 0.5
+  const HOLD_MS = 900
 
   const clearRaf = () => {
     if (rafRef.current != null) {
@@ -257,16 +259,17 @@ function RevealCue({ accent }) {
     holdingRef.current = true
     setHolding(true)
     clearRaf()
-    startRef.current = performance.now()
     setReveal(0)
+    startRef.current = performance.now()
 
     const step = (now) => {
       if (!holdingRef.current) return
       const progress = Math.min(1, (now - startRef.current) / HOLD_MS)
-      setReveal(progress)
+      setReveal(progress * HOLD_TARGET)
       if (progress < 1) {
         rafRef.current = requestAnimationFrame(step)
       } else {
+        setReveal(HOLD_TARGET)
         rafRef.current = null
       }
     }
@@ -283,17 +286,20 @@ function RevealCue({ accent }) {
     document.body?.classList.remove('cw-threshold-holding')
   }
 
+  // Cover fills the frame so letterboxing cannot leak the other era through the sides.
   const layerStyle = {
     position: 'absolute',
     inset: 0,
     width: '100%',
     height: '100%',
-    objectFit: 'contain',
+    objectFit: 'cover',
     objectPosition: 'center center',
     pointerEvents: 'none',
     userSelect: 'none',
     WebkitUserSelect: 'none',
   }
+
+  const seamLeft = `${(1 - reveal) * 100}%`
 
   return (
     <CueFrame style={{ padding: 10, width: '100%' }}>
@@ -338,6 +344,23 @@ function RevealCue({ accent }) {
           }}
         />
 
+        {reveal > 0.02 ? (
+          <span
+            aria-hidden
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: seamLeft,
+              width: 2,
+              transform: 'translateX(-50%)',
+              background: accent,
+              boxShadow: `0 0 10px ${accent}88`,
+              pointerEvents: 'none',
+            }}
+          />
+        ) : null}
+
         <span
           style={{
             position: 'absolute',
@@ -355,8 +378,30 @@ function RevealCue({ accent }) {
             pointerEvents: 'none',
           }}
         >
-          {reveal > 0.45 ? t('journal.then') : t('journal.now')}
+          {t('journal.now')}
         </span>
+
+        {reveal > 0.2 ? (
+          <span
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              padding: '4px 8px',
+              borderRadius: 999,
+              background: 'rgba(11,11,13,0.58)',
+              color: T.warmWhite,
+              fontFamily: F.body,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              pointerEvents: 'none',
+            }}
+          >
+            {t('journal.then')}
+          </span>
+        ) : null}
 
         <span
           style={{
