@@ -60,7 +60,7 @@ export const enMessages = Object.freeze({
   'home.map.openAria': 'Open the full map',
   'home.routeViewer.title': '{name} route',
   'home.routeViewer.hint':
-    'Tap a numbered stop to walk there · pinch to zoom · drag to pan',
+    'Glow rings mark stops — tap a number to listen there · pinch to zoom · drag to pan',
   'home.reset.eyebrow': 'Are you sure?',
   'home.reset.cancel': 'Cancel',
   'home.startOver.title': 'Start the tour over?',

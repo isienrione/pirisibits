@@ -16,7 +16,8 @@ describe('routePosterHotspots', () => {
     expect(byArt['art-1']).toBe('w01')
     expect(byArt['art-2']).toBe('w02')
     expect(byArt['art-3']).toBe('w04')
-    expect(byArt['art-4']).toBe('enc_circus')
+    expect(byArt['art-4']).toBe('w04')
+    expect(byArt['art-5']).toBe('w04')
     expect(byArt['art-6']).toBe('w03')
     expect(byArt['art-7']).toBe('w06')
     expect(byArt['art-11']).toBe('w11_12')
@@ -31,6 +32,10 @@ describe('routePosterHotspots', () => {
     expect(byArt['art-20']).toBe('w19')
     expect(byArt['art-21']).toBe('w21')
     expect(byArt['art-22']).toBe('w22')
+
+    expect(eterna.find((spot) => spot.id === 'art-4')?.chapterIndex).toBe(1)
+    expect(eterna.find((spot) => spot.id === 'art-5')?.chapterIndex).toBe(2)
+    expect(eterna.find((spot) => spot.id === 'art-12')?.chapterIndex).toBe(1)
   })
 
   it('keeps hotspot boxes inside the poster', () => {

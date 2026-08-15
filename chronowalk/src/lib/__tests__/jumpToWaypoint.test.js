@@ -7,7 +7,10 @@ import {
   resetJourney,
   transitionJourney,
 } from '../../state/journey.js'
-import { jumpToWaypointInJourney } from '../jumpToWaypoint.js'
+import {
+  consumeStoryChapterIntent,
+  jumpToWaypointInJourney,
+} from '../jumpToWaypoint.js'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { JOURNEY_PACE } from '../../data/romePacing.js'
 
@@ -16,6 +19,9 @@ describe('jumpToWaypointInJourney progress', () => {
 
   beforeEach(() => {
     resetJourney()
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.clear()
+    }
   })
 
   it('preserves completed stops when jumping from IDLE to an earlier waypoint', () => {
@@ -56,5 +62,25 @@ describe('jumpToWaypointInJourney progress', () => {
     const after = getJourneySnapshot()
     expect(after.context.promotedOptionalIds).toContain('w04')
     expect(after.context.completedWaypointIds).toEqual([])
+  })
+
+  it('opens STORY and stores chapter intent for Curia / Forum-view route taps', () => {
+    beginJourney({ pace: JOURNEY_PACE.HEROIC, path: 'b', sequenceIndex: 0 })
+
+    const jumped = jumpToWaypointInJourney(
+      manifest,
+      'w11_12',
+      getJourneySnapshot().context,
+      JOURNEY_STATES.WALKING,
+      {
+        targetState: JOURNEY_STATES.STORY,
+        storyView: 'chapters',
+        chapterIndex: 1,
+      },
+    )
+    expect(jumped).toBe(true)
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(consumeStoryChapterIntent()).toBe(1)
+    expect(consumeStoryChapterIntent()).toBeNull()
   })
 })

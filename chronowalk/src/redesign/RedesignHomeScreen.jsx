@@ -240,17 +240,17 @@ export default function RedesignHomeScreen() {
       const waypointId = spot?.waypointId
       if (!manifest || !waypointId || geoBusy) return
       setGeoBusy(true)
-      const jumped = await requestJumpToWaypoint(manifest, waypointId, context, state)
+      // Route stickers should open the listen experience directly (not walk/threshold).
+      const jumped = await requestJumpToWaypoint(manifest, waypointId, context, state, {
+        targetState: JOURNEY_STATES.STORY,
+        storyView: 'chapters',
+        chapterIndex: spot.chapterIndex ?? null,
+      })
       setGeoBusy(false)
       if (jumped) {
         setRouteOpen(false)
         navigate('/journey')
-        return
       }
-      // Card-only stickers (e.g. Circus Maximus View) are not in the walk sequence —
-      // open the stop card so travelers can still hear the chapter.
-      setRouteOpen(false)
-      navigate(`/journal/${waypointId}`)
     },
     [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state],
   )

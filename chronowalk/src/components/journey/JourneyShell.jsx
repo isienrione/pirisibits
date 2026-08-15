@@ -16,7 +16,7 @@ import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useOptionalPromotion } from '../../hooks/useOptionalPromotion.js'
 import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
-import { consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
+import { consumeStoryChapterIntent, consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { JOURNEY_STATES, isImmersiveJourneyState } from '../../state/journey.js'
 import { HAPTIC_KIND, triggerHaptic } from '../../utils/haptics.js'
@@ -430,7 +430,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
           if (hasPausedSession) {
             return (await live.resumeNarration()) !== false
           }
-          return (await live.playWaypoint(waypointId)) ?? false
+          const started = (await live.playWaypoint(waypointId)) ?? false
+          if (started) {
+            const chapterIndex = consumeStoryChapterIntent()
+            if (chapterIndex != null && chapterIndex > 0 && typeof live.jumpToChapter === 'function') {
+              await live.jumpToChapter(chapterIndex, { play: true })
+            }
+          }
+          return started
         },
       )
     },

@@ -11,6 +11,7 @@ import { getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { normalizeRedesignJourneyState } from '../redesign/lib/redesignJourneyState.js'
 
 const STORY_VIEW_KEY = 'cw_story_view'
+const STORY_CHAPTER_KEY = 'cw_story_chapter'
 
 const IDLE_LIKE = new Set([
   JOURNEY_STATES.IDLE,
@@ -22,7 +23,7 @@ const IDLE_LIKE = new Set([
 export function jumpToWaypointInJourney(manifest, waypointId, context, state, options = {}) {
   if (!manifest || !waypointId) return false
 
-  const { targetState = null, storyView = null } = options
+  const { targetState = null, storyView = null, chapterIndex = null } = options
   const path = context.path || manifest.journey?.default_path || 'a'
   let promoted = context.promotedOptionalIds ?? []
   let index = findSequenceIndexForWaypoint(manifest, waypointId, path, promoted)
@@ -50,8 +51,15 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
     jumpToSequenceIndex(index)
   }
 
-  if (storyView && typeof window !== 'undefined') {
-    window.sessionStorage.setItem(STORY_VIEW_KEY, storyView)
+  if (typeof window !== 'undefined') {
+    if (storyView) {
+      window.sessionStorage.setItem(STORY_VIEW_KEY, storyView)
+    }
+    if (chapterIndex != null && Number.isFinite(Number(chapterIndex))) {
+      window.sessionStorage.setItem(STORY_CHAPTER_KEY, String(Math.max(0, Math.floor(chapterIndex))))
+    } else {
+      window.sessionStorage.removeItem(STORY_CHAPTER_KEY)
+    }
   }
 
   // When an explicit targetState is provided (e.g. STORY for "Listen here" or
@@ -76,4 +84,14 @@ export function consumeStoryViewIntent() {
   const value = window.sessionStorage.getItem(STORY_VIEW_KEY)
   if (value) window.sessionStorage.removeItem(STORY_VIEW_KEY)
   return value
+}
+
+/** Optional chapter index set by route-poster / listen jumps. */
+export function consumeStoryChapterIntent() {
+  if (typeof window === 'undefined') return null
+  const value = window.sessionStorage.getItem(STORY_CHAPTER_KEY)
+  if (value == null) return null
+  window.sessionStorage.removeItem(STORY_CHAPTER_KEY)
+  const index = Number(value)
+  return Number.isFinite(index) && index >= 0 ? Math.floor(index) : null
 }

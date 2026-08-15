@@ -60,7 +60,7 @@ export const esMessages = Object.freeze({
   'home.map.openAria': 'Abrir el mapa completo',
   'home.routeViewer.title': 'Ruta {name}',
   'home.routeViewer.hint':
-    'Toca un número para ir a esa parada · pellizca para ampliar · arrastra para mover',
+    'Los anillos marcan paradas — toca un número para escuchar · pellizca para ampliar · arrastra para mover',
   'home.reset.eyebrow': '¿Seguro?',
   'home.reset.cancel': 'Cancelar',
   'home.startOver.title': '¿Empezar el recorrido de nuevo?',
