@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
+import { scrollLandingAnchor } from '../landingScroll.js'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
@@ -89,6 +90,25 @@ export default function LandingExploreSidebar({
     }
   }, [open, onClose])
 
+  const handleItemClick = (event, href) => {
+    if (!href?.startsWith('#')) {
+      onClose?.()
+      return
+    }
+
+    event.preventDefault()
+    onClose?.()
+    // Wait for body overflow unlock + drawer teardown before measuring.
+    window.setTimeout(() => {
+      scrollLandingAnchor(href, { behavior: 'smooth' })
+      if (window.history?.replaceState) {
+        window.history.replaceState(null, '', href)
+      } else {
+        window.location.hash = href
+      }
+    }, 40)
+  }
+
   if (!items.length) return null
 
   return (
@@ -144,7 +164,7 @@ export default function LandingExploreSidebar({
                   <a
                     href={item.href}
                     className={`cw-v4-explore__link${item.emphasis ? ` cw-v4-explore__link--${item.emphasis}` : ''}`}
-                    onClick={onClose}
+                    onClick={(event) => handleItemClick(event, item.href)}
                   >
                     {item.emphasis === 'access' ? (
                       <span className="cw-v4-explore__access-mark" aria-hidden="true" />

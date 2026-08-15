@@ -46,6 +46,7 @@ import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
 import LandingErrorBoundary from './LandingErrorBoundary.jsx'
 import { useI18n } from '../i18n/I18nProvider.jsx'
+import { scrollLandingAnchor } from './landingScroll.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
@@ -123,11 +124,7 @@ function ChronoWalkLandingInner() {
     let frame = 0
     let attempts = 0
     const scrollToHash = () => {
-      const target = document.getElementById(hash)
-      if (target) {
-        target.scrollIntoView({ behavior: 'auto', block: 'start' })
-        return
-      }
+      if (scrollLandingAnchor(hash, { behavior: 'auto' })) return
       attempts += 1
       if (attempts < 12) frame = window.requestAnimationFrame(scrollToHash)
     }

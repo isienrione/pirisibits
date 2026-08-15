@@ -102,7 +102,25 @@ describe('LandingIntroNav', () => {
     }
   })
 
-  it('highlights Access and uses interactive row chrome in the explore menu', () => {
+  it('highlights Access and scrolls hash links below the sticky nav', () => {
+    vi.useFakeTimers()
+    const scrollTo = vi.fn()
+    vi.stubGlobal('scrollTo', scrollTo)
+    vi.stubGlobal('scrollY', 0)
+    document.body.innerHTML = '<div class="cw-landing--v4" style="--v4-nav-h: 68px"><section id="faq"></section></div>'
+    const section = document.getElementById('faq')
+    vi.spyOn(section, 'getBoundingClientRect').mockReturnValue({
+      top: 500,
+      bottom: 900,
+      left: 0,
+      right: 0,
+      width: 0,
+      height: 400,
+      x: 0,
+      y: 500,
+      toJSON: () => ({}),
+    })
+
     render(<LandingIntroNav onComplete={vi.fn()} />)
     fireEvent.click(screen.getByTestId('landing-explore-toggle'))
 
@@ -113,11 +131,15 @@ describe('LandingIntroNav', () => {
     expect(sidebar.querySelectorAll('.cw-v4-explore__chevron').length).toBe(
       LANDING_CONTENT.header.exploreNav.length,
     )
-    expect(sidebar.querySelector('a[href="/preview"]')?.textContent).toMatch(/try 1 stop free/i)
-    expect(sidebar.querySelector('a[href="#support-legal"]')?.textContent).toMatch(/support & legal/i)
-    expect(sidebar.querySelector('a[href="#pricing"]')?.textContent).toMatch(
-      /tour alternatives, bundles & pricing/i,
-    )
+
+    fireEvent.click(sidebar.querySelector('a[href="#faq"]'))
+    vi.advanceTimersByTime(50)
+    expect(scrollTo).toHaveBeenCalled()
+    const call = scrollTo.mock.calls.at(-1)?.[0]
+    expect(call?.top).toBeLessThan(500)
+    expect(call?.behavior).toBe('smooth')
+
+    vi.useRealTimers()
   })
 
   it('closes the explore sidebar via Escape and restores body scroll', () => {

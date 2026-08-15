@@ -18,6 +18,8 @@
   --v4-line: rgba(33, 28, 21, 0.12);
   --v4-max: 72rem;
   --v4-nav-h: 4.25rem;
+  /* Sticky-nav clearance for hash jumps (stops / FAQ / support). */
+  --v4-anchor-offset: calc(var(--v4-nav-h) + 1.65rem);
   --v4-dark: #0b0b0d;
   /* Remap shared V2 tokens so FAQ / footer / leftover V2 chrome stay light. */
   --v2-obsidian: var(--v4-paper);
@@ -1250,7 +1252,7 @@
 
 .cw-v4-getapp {
   padding: 3.5rem 0 2.5rem;
-  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
   background:
     radial-gradient(ellipse 70% 55% at 18% 0%, rgba(232, 161, 60, 0.28), transparent 68%),
     linear-gradient(180deg, #f0e6d4 0%, var(--v4-paper-2) 55%, var(--v4-paper) 100%);
@@ -2240,7 +2242,7 @@
 .cw-v4-demo {
   padding: 2rem 0 0.35rem;
   scroll-snap-type: none;
-  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 1.35rem);
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
 }
 
 .cw-v4-demo__intro {
@@ -2941,6 +2943,7 @@
 
 .cw-v4-stops {
   padding: 1.75rem 0 4rem;
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
 }
 
 @media (max-width: 39.99rem) {
@@ -3323,7 +3326,7 @@
     transparent;
   color: inherit;
   padding-block: 4.5rem 5.5rem;
-  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.5rem);
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
 }
 
 .cw-landing--v4 .cw-v4-pricing__head {
@@ -4629,6 +4632,7 @@
 .cw-landing--v4 .cw-v2-footer {
   background: transparent;
   color: var(--v4-ink);
+  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
 }
 
 .cw-landing--v4 .cw-v2-faq__question,
