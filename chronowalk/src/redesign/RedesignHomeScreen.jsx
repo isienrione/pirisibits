@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { BookOpen, HelpCircle, ListTree, Settings } from 'lucide-react'
-import { F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { BookOpen, HelpCircle, ListTree, MapPinned, Navigation, Settings } from 'lucide-react'
+import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import HomeMapPeek from './ui/HomeMapPeek.jsx'
 import HomeProgressArc from './ui/HomeProgressArc.jsx'
 import HomeSupportSheet from './ui/HomeSupportSheet.jsx'
@@ -25,66 +25,77 @@ import {
 } from '../content/myTourPlan.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 
-const HOME = {
-  canvas: '#F7F1E8',
-  card: '#FFFDF8',
-  line: '#E6DCCE',
-  ink: '#2C2823',
-  muted: '#7A7266',
-  accent: '#C45C2A',
-  accentSoft: '#F3E0D4',
-}
-
 function ChronowalkMark() {
   return (
     <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="9.5" stroke={HOME.accent} strokeWidth="1.5" />
-      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={HOME.accent} strokeWidth="1.5" />
-      <line x1="11" y1="7" x2="18" y2="15" stroke="#B14A6E" strokeWidth="1" opacity="0.55" />
-      <line x1="11" y1="7" x2="4" y2="15" stroke="#4E7D9B" strokeWidth="1" opacity="0.55" />
+      <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
+      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
+      <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.55" />
+      <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.55" />
     </svg>
   )
 }
 
-function QuickAction({ icon: Icon, label, onClick, testId }) {
+function DashCard({ children, onClick, testId, style = {} }) {
+  const Tag = onClick ? 'button' : 'div'
   return (
-    <button
-      type="button"
+    <Tag
+      type={onClick ? 'button' : undefined}
       data-testid={testId}
       onClick={onClick}
       style={{
-        flex: 1,
-        minWidth: 0,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 5,
-        padding: '8px 4px 7px',
-        borderRadius: 12,
-        border: `1px solid ${HOME.line}`,
-        background: HOME.card,
-        color: HOME.ink,
-        cursor: 'pointer',
+        border: 'none',
+        textAlign: 'left',
+        cursor: onClick ? 'pointer' : 'default',
+        borderRadius: 18,
+        background: 'linear-gradient(180deg, #222228 0%, #17171C 100%)',
+        boxShadow: 'inset 0 1px 0 rgba(250,246,239,0.06)',
+        color: T.warmWhite,
         fontFamily: F.body,
+        padding: 14,
+        ...style,
       }}
     >
-      <span
+      {children}
+    </Tag>
+  )
+}
+
+function ActionTile({ icon: Icon, label, hint, onClick, testId, accent = T.ember }) {
+  return (
+    <DashCard onClick={onClick} testId={testId} style={{ minHeight: 78, padding: '12px 12px 11px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <span
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 10,
+            display: 'grid',
+            placeItems: 'center',
+            background: `${accent}22`,
+            color: accent,
+          }}
+        >
+          <Icon size={15} strokeWidth={1.9} aria-hidden />
+        </span>
+      </div>
+      <p
         style={{
-          width: 28,
-          height: 28,
-          borderRadius: 999,
-          display: 'grid',
-          placeItems: 'center',
-          background: HOME.accentSoft,
-          color: HOME.accent,
+          margin: '10px 0 0',
+          fontSize: 13,
+          fontWeight: 650,
+          lineHeight: 1.2,
+          color: T.warmWhite,
         }}
       >
-        <Icon size={15} strokeWidth={1.9} aria-hidden />
-      </span>
-      <span style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.15, textAlign: 'center' }}>
         {label}
-      </span>
-    </button>
+      </p>
+      {hint ? (
+        <p style={{ margin: '3px 0 0', fontSize: 11, color: `${T.muted}`, lineHeight: 1.2 }}>
+          {hint}
+        </p>
+      ) : null}
+    </DashCard>
   )
 }
 
@@ -186,12 +197,12 @@ export default function RedesignHomeScreen() {
         className="cw-grain"
         data-testid="home-loading"
         style={{
-          background: HOME.canvas,
+          background: T.obsidian,
           height: '100%',
           display: 'grid',
           placeItems: 'center',
           fontFamily: F.body,
-          color: HOME.muted,
+          color: T.muted,
         }}
       >
         {t('home.loading')}
@@ -203,9 +214,9 @@ export default function RedesignHomeScreen() {
     return (
       <div
         className="cw-grain"
-        style={{ background: HOME.canvas, height: '100%', padding: 32, fontFamily: F.body }}
+        style={{ background: T.obsidian, height: '100%', padding: 32, fontFamily: F.body }}
       >
-        <p style={{ color: HOME.muted }}>{error?.message ?? t('home.unavailable')}</p>
+        <p style={{ color: T.muted }}>{error?.message ?? t('home.unavailable')}</p>
         <Link
           to="/begin"
           style={{
@@ -213,8 +224,8 @@ export default function RedesignHomeScreen() {
             marginTop: 16,
             padding: '12px 16px',
             borderRadius: 10,
-            background: HOME.accent,
-            color: '#fff',
+            background: T.ember,
+            color: T.obsidian,
             textDecoration: 'none',
             fontWeight: 600,
           }}
@@ -236,12 +247,12 @@ export default function RedesignHomeScreen() {
       className="cw-grain"
       data-testid="home-screen"
       style={{
-        background: HOME.canvas,
+        background: `radial-gradient(120% 80% at 50% -10%, #2A2418 0%, ${T.obsidian} 52%)`,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: F.body,
-        color: HOME.ink,
+        color: T.warmWhite,
         overflow: 'hidden',
         paddingBottom: SHELL_TAB_BAR_INSET,
       }}
@@ -252,7 +263,7 @@ export default function RedesignHomeScreen() {
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 12,
-          padding: '10px 16px 6px',
+          padding: '10px 16px 8px',
           paddingTop: 'max(10px, env(safe-area-inset-top))',
           flexShrink: 0,
         }}
@@ -267,7 +278,7 @@ export default function RedesignHomeScreen() {
                 fontSize: 22,
                 fontWeight: 450,
                 lineHeight: 1.1,
-                color: HOME.ink,
+                color: T.warmWhite,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -279,7 +290,7 @@ export default function RedesignHomeScreen() {
               style={{
                 margin: '2px 0 0',
                 fontSize: 12,
-                color: HOME.muted,
+                color: T.muted,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -299,12 +310,12 @@ export default function RedesignHomeScreen() {
             width: 36,
             height: 36,
             borderRadius: 999,
-            border: `1px solid ${HOME.line}`,
-            background: HOME.card,
+            border: `1px solid ${T.warmWhite}18`,
+            background: `${T.charcoal}`,
             display: 'grid',
             placeItems: 'center',
             cursor: 'pointer',
-            color: HOME.ink,
+            color: T.warmWhite,
             flexShrink: 0,
           }}
         >
@@ -318,8 +329,8 @@ export default function RedesignHomeScreen() {
           minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          gap: 8,
-          padding: '4px 16px 10px',
+          gap: 10,
+          padding: '2px 16px 10px',
           overflow: 'hidden',
         }}
       >
@@ -331,108 +342,140 @@ export default function RedesignHomeScreen() {
           currentStopTitle={currentStopTitle}
         />
 
-        <section
+        <div
           style={{
             flex: '1 1 0',
-            minHeight: 96,
-            maxHeight: 150,
-            borderRadius: 14,
-            overflow: 'hidden',
-            border: `1px solid ${HOME.line}`,
-            background: '#1F1C18',
-            position: 'relative',
+            minHeight: 0,
+            display: 'grid',
+            gridTemplateColumns: '1.15fr 0.85fr',
+            gap: 10,
           }}
         >
-          <HomeMapPeek manifest={manifest} context={context} />
-          <div
+          <DashCard
             style={{
-              position: 'absolute',
-              left: 10,
-              bottom: 10,
-              padding: '4px 8px',
-              borderRadius: 999,
-              background: 'rgba(20,18,15,0.72)',
-              color: '#F7F1E8',
-              fontSize: 10,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              fontWeight: 600,
-              pointerEvents: 'none',
+              padding: 0,
+              overflow: 'hidden',
+              minHeight: 0,
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            {t('home.map.badge')}
+            <div style={{ flex: 1, minHeight: 110, position: 'relative' }}>
+              <HomeMapPeek manifest={manifest} context={context} />
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 10,
+                  top: 10,
+                  padding: '4px 8px',
+                  borderRadius: 999,
+                  background: 'rgba(11,11,13,0.72)',
+                  color: T.warmWhite,
+                  fontSize: 10,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  fontWeight: 650,
+                  pointerEvents: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5,
+                }}
+              >
+                <MapPinned size={11} aria-hidden />
+                {t('home.map.badge')}
+              </div>
+            </div>
+          </DashCard>
+
+          <div style={{ display: 'grid', gap: 10, minHeight: 0 }}>
+            <DashCard
+              onClick={handleContinue}
+              testId="home-continue"
+              style={{
+                background: `linear-gradient(160deg, ${T.terracotta} 0%, #C24722 100%)`,
+                boxShadow: '0 10px 24px rgba(228, 85, 46, 0.28)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: 0,
+              }}
+            >
+              <Navigation size={18} color={T.warmWhite} aria-hidden />
+              <div>
+                <p
+                  style={{
+                    margin: 0,
+                    fontFamily: F.display,
+                    fontSize: 18,
+                    fontWeight: 500,
+                    lineHeight: 1.15,
+                    color: T.warmWhite,
+                  }}
+                >
+                  {continueLabel}
+                </p>
+                <p style={{ margin: '4px 0 0', fontSize: 11, color: 'rgba(250,246,239,0.78)' }}>
+                  {t('home.cta.continueHint')}
+                </p>
+              </div>
+            </DashCard>
+
+            <DashCard
+              onClick={() => void handleStartFromHere()}
+              testId="home-start-here"
+              style={{ opacity: geoBusy ? 0.7 : 1 }}
+            >
+              <MapPinned size={16} color={T.actIV} aria-hidden />
+              <p
+                style={{
+                  margin: '10px 0 0',
+                  fontSize: 13,
+                  fontWeight: 650,
+                  lineHeight: 1.25,
+                  color: T.warmWhite,
+                }}
+              >
+                {geoBusy ? t('home.cta.locating') : t('home.cta.startHere')}
+              </p>
+            </DashCard>
           </div>
-        </section>
-
-        <div style={{ flexShrink: 0, display: 'grid', gap: 7 }}>
-          <button
-            type="button"
-            data-testid="home-continue"
-            onClick={handleContinue}
-            style={{
-              width: '100%',
-              padding: '12px 14px',
-              borderRadius: 12,
-              border: 'none',
-              background: HOME.accent,
-              color: '#fff',
-              fontFamily: F.body,
-              fontWeight: 700,
-              fontSize: 15,
-              cursor: 'pointer',
-              boxShadow: '0 6px 16px rgba(196, 92, 42, 0.28)',
-            }}
-          >
-            {continueLabel}
-          </button>
-
-          <button
-            type="button"
-            data-testid="home-start-here"
-            disabled={geoBusy}
-            onClick={() => void handleStartFromHere()}
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              borderRadius: 12,
-              border: `1px solid ${HOME.line}`,
-              background: HOME.card,
-              color: HOME.ink,
-              fontFamily: F.body,
-              fontWeight: 600,
-              fontSize: 13,
-              cursor: geoBusy ? 'wait' : 'pointer',
-              opacity: geoBusy ? 0.7 : 1,
-            }}
-          >
-            {geoBusy ? t('home.cta.locating') : t('home.cta.startHere')}
-          </button>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
-          <QuickAction
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 8,
+            flexShrink: 0,
+          }}
+        >
+          <ActionTile
             icon={Settings}
             label={t('home.actions.settings')}
             onClick={openSettings}
             testId="home-quick-settings"
+            accent={T.ember}
           />
-          <QuickAction
+          <ActionTile
             icon={BookOpen}
             label={t('home.actions.tutorial')}
             onClick={handleRewatchTutorial}
             testId="home-quick-tutorial"
+            accent={T.actVI}
           />
-          <QuickAction
+          <ActionTile
             icon={HelpCircle}
             label={t('home.actions.support')}
             onClick={() => setSupportOpen(true)}
             testId="home-quick-support"
+            accent={T.actV}
           />
-          <QuickAction
+          <ActionTile
             icon={ListTree}
             label={t('home.actions.roadmap')}
             onClick={() => navigate('/tour')}
             testId="home-quick-roadmap"
+            accent={T.actII}
           />
         </div>
       </div>

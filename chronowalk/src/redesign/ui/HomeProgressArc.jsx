@@ -1,28 +1,14 @@
-import { F } from '../tokens.js'
+import { T, F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 
-/** Cool dawn → warm midday → deep dusk as the walk advances. */
-function progressHue(ratio) {
-  const t = Math.min(1, Math.max(0, ratio))
-  // teal 168 → amber 38 → terracotta/rose 12
-  const hue = t < 0.55 ? 168 - t * (130 / 0.55) : 38 - ((t - 0.55) / 0.45) * 26
-  const sat = 42 + t * 28
-  const light = 48 - t * 8
-  return `hsl(${hue} ${sat}% ${light}%)`
-}
-
-function beadColor(status, index, total, overallRatio) {
-  const localRatio = total <= 1 ? overallRatio : index / Math.max(total - 1, 1)
-  const vivid = progressHue(Math.max(localRatio, overallRatio * 0.85))
-  if (status === 'completed') return vivid
-  if (status === 'current') return progressHue(Math.max(overallRatio, localRatio))
-  if (status === 'skipped') return `color-mix(in srgb, ${vivid} 38%, #C9C0B2 62%)`
-  return '#D9D1C4'
-}
+const RING = 72
+const STROKE = 7
+const R = (RING - STROKE) / 2
+const C = 2 * Math.PI * R
 
 /**
- * Compact stop-by-stop progress path for Home.
- * Skipped stops stay visible in a weaker tone; no phase copy.
+ * Hero progress card — gold ChronoWalk accent, circular %, stop beads.
+ * Skipped stops stay in the total with a weaker bead.
  */
 export default function HomeProgressArc({
   stops = [],
@@ -33,9 +19,8 @@ export default function HomeProgressArc({
 }) {
   const t = useT()
   const safeTotal = Math.max(total, stops.length, 1)
-  const ratio = Math.min(1, Math.max(0, percent / 100))
-  const accent = progressHue(ratio)
-  const trackEnd = progressHue(Math.min(1, ratio + 0.18))
+  const clamped = Math.min(100, Math.max(0, percent))
+  const offset = C * (1 - clamped / 100)
 
   const beads =
     stops.length > 0
@@ -47,145 +32,136 @@ export default function HomeProgressArc({
 
   return (
     <section
-      aria-label={t('home.progress.aria', { percent })}
+      aria-label={t('home.progress.aria', { percent: clamped })}
       data-testid="home-progress-arc"
       style={{
-        borderRadius: 16,
-        padding: '12px 14px 11px',
-        background: 'linear-gradient(180deg, #FFFaf3 0%, #F3EBE0 100%)',
-        border: '1px solid #E4D9C8',
-        boxShadow: '0 6px 18px rgba(26, 22, 18, 0.06)',
+        borderRadius: 22,
+        padding: '16px 16px 14px',
+        background: `linear-gradient(145deg, ${T.ember} 0%, #C9A227 55%, #B8921F 100%)`,
+        color: T.obsidian,
+        boxShadow: '0 14px 36px rgba(212, 175, 55, 0.28)',
       }}
     >
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: 10,
-          marginBottom: 10,
+          justifyContent: 'space-between',
+          gap: 14,
         }}
       >
-        <p
-          style={{
-            margin: 0,
-            fontFamily: F.body,
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#3F3A34',
-          }}
-        >
-          {t('home.progress.count', { completed, total: safeTotal })}
-        </p>
-        <p
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: F.body,
+              fontSize: 12,
+              fontWeight: 650,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              opacity: 0.72,
+            }}
+          >
+            {t('home.progress.count', { completed, total: safeTotal })}
+          </p>
+          <p
+            style={{
+              margin: '6px 0 0',
+              fontFamily: F.display,
+              fontSize: currentStopTitle ? 22 : 20,
+              fontWeight: 500,
+              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {currentStopTitle
+              ? t('home.progress.nowAt', { title: currentStopTitle })
+              : t('home.progress.ready')}
+          </p>
+        </div>
+
+        <div
           data-testid="home-progress-percent"
           style={{
-            margin: 0,
-            fontFamily: F.display,
-            fontSize: 22,
-            fontWeight: 500,
-            lineHeight: 1,
-            color: accent,
-            letterSpacing: '-0.02em',
+            position: 'relative',
+            width: RING,
+            height: RING,
+            flexShrink: 0,
           }}
         >
-          {percent}%
-        </p>
+          <svg width={RING} height={RING} viewBox={`0 0 ${RING} ${RING}`} aria-hidden>
+            <circle
+              cx={RING / 2}
+              cy={RING / 2}
+              r={R}
+              fill="none"
+              stroke="rgba(11,11,13,0.14)"
+              strokeWidth={STROKE}
+            />
+            <circle
+              cx={RING / 2}
+              cy={RING / 2}
+              r={R}
+              fill="none"
+              stroke={T.obsidian}
+              strokeWidth={STROKE}
+              strokeLinecap="round"
+              strokeDasharray={C}
+              strokeDashoffset={offset}
+              transform={`rotate(-90 ${RING / 2} ${RING / 2})`}
+              style={{ transition: 'stroke-dashoffset 420ms ease' }}
+            />
+          </svg>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'grid',
+              placeItems: 'center',
+              fontFamily: F.display,
+              fontSize: 18,
+              fontWeight: 600,
+              letterSpacing: '-0.03em',
+            }}
+          >
+            {clamped}%
+          </div>
+        </div>
       </div>
 
       <div
         style={{
-          position: 'relative',
-          height: 22,
+          marginTop: 14,
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
+          gap: 2,
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            left: 4,
-            right: 4,
-            height: 4,
-            borderRadius: 999,
-            background: '#E7DFD2',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            left: 4,
-            width: `calc(${percent}% - 8px)`,
-            maxWidth: 'calc(100% - 8px)',
-            height: 4,
-            borderRadius: 999,
-            background: `linear-gradient(90deg, ${progressHue(0)}, ${trackEnd})`,
-            transition: 'width 380ms ease',
-          }}
-        />
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 1,
-          }}
-        >
-          {beads.map((stop, index) => {
-            const isYou = stop.status === 'current'
-            const isSkipped = stop.status === 'skipped'
-            const size = isYou ? 11 : isSkipped ? 7 : 8
-            const color = beadColor(stop.status, index, beads.length, ratio)
-            return (
-              <span
-                key={stop.id}
-                title={stop.status}
-                data-status={stop.status}
-                aria-hidden
-                style={{
-                  width: size,
-                  height: size,
-                  borderRadius: 999,
-                  flexShrink: 0,
-                  background: stop.status === 'upcoming' ? '#EFE7DB' : color,
-                  border:
-                    stop.status === 'skipped'
-                      ? `1.5px solid color-mix(in srgb, ${color} 55%, transparent)`
-                      : isYou
-                        ? '2px solid #FFFDF8'
-                        : stop.status === 'upcoming'
-                          ? '1px solid #D8CFC0'
-                          : 'none',
-                  boxShadow: isYou ? `0 0 0 3px color-mix(in srgb, ${color} 35%, transparent)` : 'none',
-                  opacity: isSkipped ? 0.85 : 1,
-                  boxSizing: 'border-box',
-                }}
-              />
-            )
-          })}
-        </div>
+        {beads.map((stop) => {
+          const isYou = stop.status === 'current'
+          const isSkipped = stop.status === 'skipped'
+          const isDone = stop.status === 'completed'
+          const size = isYou ? 9 : 6
+          return (
+            <span
+              key={stop.id}
+              data-status={stop.status}
+              aria-hidden
+              style={{
+                width: size,
+                height: size,
+                borderRadius: 999,
+                flexShrink: 0,
+                background: isDone || isYou ? T.obsidian : isSkipped ? 'rgba(11,11,13,0.28)' : 'rgba(11,11,13,0.14)',
+                boxShadow: isYou ? '0 0 0 3px rgba(11,11,13,0.18)' : 'none',
+                border: isSkipped ? '1px solid rgba(11,11,13,0.35)' : 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+          )
+        })}
       </div>
-
-      {currentStopTitle ? (
-        <p
-          style={{
-            margin: '9px 0 0',
-            fontFamily: F.body,
-            fontSize: 13,
-            fontWeight: 500,
-            color: '#5A534A',
-            lineHeight: 1.25,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {t('home.progress.nowAt', { title: currentStopTitle })}
-        </p>
-      ) : null}
     </section>
   )
 }
