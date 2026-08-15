@@ -279,9 +279,10 @@ export const esMessages = Object.freeze({
   'acquisition.header.howItWorks': 'Cómo funciona',
   'acquisition.header.primary': 'Obtener el recorrido completo por Roma',
   'acquisition.header.primaryShort': 'Recorrido completo',
-  'landing.demo.listenAlt': 'Reproductor de audio de ChronoWalk en la parada del Panteón',
-  'landing.demo.arriveAlt': "Revelado Antes/Ahora de Campo de' Fiori en ChronoWalk",
-  'landing.demo.walkAlt': 'Caminando hacia la Plaza de España con el mapa de la ruta',
+  'landing.demo.beginAlt': 'Inicio del recorrido ChronoWalk — empieza tu ruta por Roma',
+  'landing.demo.listenAlt': "Reproducción y revelado Antes/Ahora en Campo de' Fiori",
+  'landing.demo.arriveAlt': 'Llegada a una parada ChronoWalk con la historia lista',
+  'landing.demo.walkAlt': 'Caminando entre paradas con el mapa de la ruta',
   'acquisition.ancient.stops': '{count} paradas',
   'acquisition.ancient.verifiedStops':
     'La ruta incluye {count} paradas verificadas según los datos actuales de Roma Antica.',

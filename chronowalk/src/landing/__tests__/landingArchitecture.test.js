@@ -62,11 +62,18 @@ describe('landing product-story architecture (V4)', () => {
       'walk',
     ])
     expect(section.chapters.map((c) => c.component)).toEqual([
-      'LandingDemoBeginTourScreen',
-      'LandingDemoArriveCampo',
-      'LandingDemoListenLockup',
+      'LandingDemoBeginLockup',
+      'LandingDemoArriveLockup',
+      'LandingDemoListenCampo',
       'LandingDemoWalkLockup',
     ])
+    expect(section.chapters.every((c) => Array.isArray(c.beats) && c.beats.length === 0)).toBe(
+      true,
+    )
+    expect(section.chapters[1].title).toMatch(/walk around, and the story will find you/i)
+    expect(section.chapters[1].body).toMatch(/curated story/i)
+    expect(section.chapters[2].body).toMatch(/press and hold to reveal/i)
+    expect(section.chapters[3].body).toMatch(/beauty of Rome/i)
     expect(section.chapters[1].emotional).toBe(true)
     expect(resolveSequentialChapters(section.chapters).map((c) => c.id)).toEqual([
       'begin',

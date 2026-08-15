@@ -1,48 +1,35 @@
 import { memo, useEffect, useRef } from 'react'
-import { JOURNEY_PACE, PACE_OPTIONS } from '../../data/romePacing.js'
+import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
-import B4PaceSelector from '../../redesign/screens/B4PaceSelector.jsx'
-import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
-import LandingDemoBeginTourScreen from './LandingDemoBeginTourScreen.jsx'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 
-/** Landing demo only: purchasable Rome walks (omit begin-flow custom itinerary). */
-const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURNEY_PACE.OWN)
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
-const noop = () => {}
 
-const ARRIVE_CAMPO_VIDEO = '/landing/phone-mockups/arrive-campo-fiori.mp4'
-const ARRIVE_CAMPO_POSTER = '/landing/phone-mockups/arrive-campo-fiori-poster.jpg'
-const WALK_STEPS_REAL = '/landing/phone-screens/walk-spanish-steps-real.jpeg'
-const LISTEN_AUDIO_LOCKUP = '/landing/phone-mockups/screen-01.png'
+const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-lockup.jpeg'
+const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
+const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
+const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
+const WALK_LOCKUP = '/landing/phone-screens/walk-lockup.jpeg'
 
-/** Stable begin-route screen for acquisition sequential demos. */
-const BeginTourScreen = memo(function BeginTourScreen() {
-  return <LandingDemoBeginTourScreen />
-})
-
-/** Stable choose screen - never remounts a different root. */
-const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
-  const { t } = useI18n()
+/** Full-bleed photo lockup sized to the phone artboard. */
+const LockupImage = memo(function LockupImage({ src, alt, testId, className = '' }) {
   return (
-    <B4PaceSelector
-      options={LANDING_PACE_OPTIONS}
-      selectedPace={beat >= 1 ? JOURNEY_PACE.CENTRAL : JOURNEY_PACE.HEROIC}
-      onSelectPace={noop}
-      onContinue={noop}
-      showPrices
-      subtitle={beat >= 1 ? t('landing.demo.pace.short') : t('landing.demo.pace.eterna')}
-    />
+    <div className={`cw-v4-lockup${className ? ` ${className}` : ''}`} data-testid={testId}>
+      <img className="cw-v4-lockup__media" src={src} alt={alt} decoding="async" draggable={false} />
+    </div>
   )
 })
 
-/**
- * Arrive - Campo de' Fiori Then/Now screen recording (replaces Pantheon live player).
- * Plays while this chapter is the active scene.
- */
-const ArriveScreen = memo(function ArriveScreen({ active = false }) {
-  const { t } = useI18n()
+/** Looping muted screen recording sized to the phone artboard. */
+const LockupVideo = memo(function LockupVideo({
+  src,
+  poster,
+  alt,
+  testId,
+  active = false,
+  className = '',
+}) {
   const videoRef = useRef(null)
 
   useEffect(() => {
@@ -58,62 +45,74 @@ const ArriveScreen = memo(function ArriveScreen({ active = false }) {
   }, [active])
 
   return (
-    <div className="cw-v4-arrive-static" data-testid="landing-demo-arrive-campo">
+    <div className={`cw-v4-lockup${className ? ` ${className}` : ''}`} data-testid={testId}>
       <video
         ref={videoRef}
-        className="cw-v4-arrive-static__media"
-        src={ARRIVE_CAMPO_VIDEO}
-        poster={ARRIVE_CAMPO_POSTER}
+        className="cw-v4-lockup__media"
+        src={src}
+        poster={poster}
         muted
         playsInline
         loop
         preload="metadata"
-        aria-label={t('landing.demo.arriveAlt')}
+        aria-label={alt}
       />
     </div>
   )
 })
 
-/** Listen - audio-player lockup (distinct from arrive's Threshold story). */
-const ListenScreen = memo(function ListenScreen() {
+const BeginScreen = memo(function BeginScreen() {
   const { t } = useI18n()
   return (
-    <div className="cw-v4-listen-static" data-testid="landing-demo-listen-static">
-      <img
-        src={LISTEN_AUDIO_LOCKUP}
-        alt={t('landing.demo.listenAlt')}
-        decoding="async"
-        draggable={false}
-      />
-    </div>
+    <LockupImage
+      src={BEGIN_LOCKUP}
+      alt={t('landing.demo.beginAlt')}
+      testId="landing-demo-begin-lockup"
+    />
   )
 })
 
-/**
- * Walk - real Spanish Steps map lockup (IMG_1218), not the simplified basemap demo.
- */
+const ArriveScreen = memo(function ArriveScreen() {
+  const { t } = useI18n()
+  return (
+    <LockupImage
+      src={ARRIVE_LOCKUP}
+      alt={t('landing.demo.arriveAlt')}
+      testId="landing-demo-arrive-lockup"
+    />
+  )
+})
+
+const ListenScreen = memo(function ListenScreen({ active = false }) {
+  const { t } = useI18n()
+  return (
+    <LockupVideo
+      src={LISTEN_VIDEO}
+      poster={LISTEN_POSTER}
+      alt={t('landing.demo.listenAlt')}
+      testId="landing-demo-listen-campo"
+      active={active}
+    />
+  )
+})
+
 const WalkScreen = memo(function WalkScreen() {
   const { t } = useI18n()
   return (
-    <div className="cw-v4-walk-static" data-testid="landing-demo-walk-static">
-      <img
-        className="cw-v4-walk-static__shot"
-        src={WALK_STEPS_REAL}
-        alt={t('landing.demo.walkAlt')}
-        decoding="async"
-        draggable={false}
-      />
-    </div>
+    <LockupImage
+      src={WALK_LOCKUP}
+      alt={t('landing.demo.walkAlt')}
+      testId="landing-demo-walk-lockup"
+    />
   )
 })
 
-const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
-  if (chapterId === 'begin') return <BeginTourScreen />
-  if (chapterId === 'choose') return <ChooseScreen beat={beat} />
-  if (chapterId === 'arrive') return <ArriveScreen active={active} />
-  if (chapterId === 'listen') return <ListenScreen />
+const ChapterScreen = memo(function ChapterScreen({ chapterId, active }) {
+  if (chapterId === 'begin' || chapterId === 'choose') return <BeginScreen />
+  if (chapterId === 'arrive') return <ArriveScreen />
+  if (chapterId === 'listen') return <ListenScreen active={active} />
   if (chapterId === 'walk') return <WalkScreen />
-  return <ChooseScreen beat={0} />
+  return <BeginScreen />
 })
 
 /**
@@ -125,12 +124,13 @@ export function LandingDemoChapterPhone({
   active = true,
   label = 'ChronoWalk product demo',
 }) {
+  void beat
   return (
     <LandingProductPhoneFrame label={label}>
       <RedesignNavCtx.Provider value={NOOP_NAV}>
         <ThresholdChromeProvider>
           <div className="cw-v4-phone-app">
-            <ChapterScreen chapterId={chapterId} beat={beat} active={active} />
+            <ChapterScreen chapterId={chapterId} active={active} />
           </div>
         </ThresholdChromeProvider>
       </RedesignNavCtx.Provider>
@@ -148,6 +148,7 @@ export default function LandingProductPhoneStage({
   beats = [],
   activeIndex = 0,
 }) {
+  void beats
   return (
     <LandingProductPhoneFrame>
       <RedesignNavCtx.Provider value={NOOP_NAV}>
@@ -165,7 +166,6 @@ export default function LandingProductPhoneStage({
               >
                 <ChapterScreen
                   chapterId={chapter.id}
-                  beat={beats[index] ?? 0}
                   active={index === activeIndex}
                 />
               </div>

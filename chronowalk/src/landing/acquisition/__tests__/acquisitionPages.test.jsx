@@ -219,7 +219,11 @@ describe('acquisition pages', () => {
     expect(screen.getByTestId('how-it-works-sequential-demo')).toBeInTheDocument()
     expect(screen.getByText(/Begin your chosen walking route/i)).toBeInTheDocument()
     expect(screen.queryByText(/Choose your Rome walk/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/Walk around, and the story will find you/i)).toBeInTheDocument()
     expect(screen.getByText(/Wander freely/i)).toBeInTheDocument()
+    expect(screen.getByText(/beauty of Rome/i)).toBeInTheDocument()
+    expect(screen.queryByText(/YOUR TOUR/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/CURRENT STOP/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Scroll to follow the phone/i)).not.toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: /Try the Pantheon stop free/i }),

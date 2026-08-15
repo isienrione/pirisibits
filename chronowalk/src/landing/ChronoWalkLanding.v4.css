@@ -2015,28 +2015,30 @@
   height: 100%;
 }
 
-.cw-v4-walk-static__shot,
-.cw-v4-arrive-static__media,
-.cw-v4-listen-static img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  touch-action: manipulation;
-  -webkit-user-drag: none;
-  user-select: none;
-}
-
+/* Shared phone lockups — keep screenshots proportional inside the artboard. */
+.cw-v4-lockup,
 .cw-v4-arrive-static,
 .cw-v4-listen-static {
   width: 390px;
   height: 844px;
   overflow: hidden;
   background: #0b0b0d;
+  display: grid;
+  place-items: center;
 }
 
-.cw-v4-arrive-static__media {
+.cw-v4-lockup__media,
+.cw-v4-walk-static__shot,
+.cw-v4-arrive-static__media,
+.cw-v4-listen-static img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: top center;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
   border: 0;
   background: #0b0b0d;
 }

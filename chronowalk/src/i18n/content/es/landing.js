@@ -284,28 +284,28 @@ export const ES_LANDING = Object.freeze({
           title: 'Empieza la ruta que elegiste.',
           body:
             'Abre tu recorrido por Roma y consulta los actos que tienes por delante. Empieza el acto I, salta al lugar donde estás o abre el mapa cuando lo necesites.',
-          beats: ['TU RECORRIDO', 'EMPEZAR ACTO I', 'EMPEZAR DONDE ESTÁS'],
+          beats: [],
         },
         {
           id: 'arrive',
-          title: 'Llegas. La historia adecuada está lista.',
+          title: 'Camina, y la historia te encontrará',
           body:
-            'ChronoWalk usa tu ubicación para mostrar la parada que tienes delante. Mantén pulsado para revelar una reconstrucción basada en evidencias desde el mismo punto de vista.',
-          beats: ['PARADA ACTUAL', 'MANTÉN PULSADO', 'ANTES Y AHORA', 'REVELAR'],
+            'ChronoWalk usa tu ubicación para mostrar la parada que tienes delante y su historia seleccionada.',
+          beats: [],
         },
         {
           id: 'listen',
           title: 'Escucha lo que ocurrió aquí.',
           body:
-            'Reproduce el capítulo junto al monumento o elige leerlo. Prepara el recorrido antes de dejar el Wi-Fi y sigue escuchando cuando se pierda la señal.',
-          beats: ['AUDIO', 'LEER', 'LISTO SIN CONEXIÓN'],
+            'Reproduce el capítulo junto al monumento o elige leerlo. Mantén pulsado para revelar una reconstrucción basada en evidencias desde el mismo punto de vista.',
+          beats: [],
         },
         {
           id: 'walk',
           title: 'Deambula libremente. No pierdas nunca el hilo.',
           body:
-            'Haz una pausa para comer, desvíate o continúa mañana. ChronoWalk guarda tu progreso y te muestra dónde retomar la ruta. Usa el mapa cuando lo necesites. Ignóralo cuando Roma te distraiga.',
-          beats: ['MAPA', 'PASOS', 'PAUSA', 'CONTINUAR'],
+            'Haz una pausa para comer, desvíate o continúa mañana. ChronoWalk guarda tu progreso y te muestra dónde retomar la ruta. Usa el mapa cuando lo necesites. Ignóralo cuando la belleza de Roma te distraiga.',
+          beats: [],
         },
       ],
     },
