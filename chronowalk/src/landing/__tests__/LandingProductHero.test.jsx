@@ -10,6 +10,9 @@ import { setActiveLocale } from '../../i18n/activeLocale.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
+  trackThenNowDemoViewed: vi.fn(),
+  trackThenNowDemoStarted: vi.fn(),
+  trackThenNowDemoCompleted: vi.fn(),
 }))
 
 function LocaleSwitcher() {
