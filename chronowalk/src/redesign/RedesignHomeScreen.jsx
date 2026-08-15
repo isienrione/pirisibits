@@ -44,13 +44,13 @@ function DashCard({ children, onClick, testId, style = {} }) {
       data-testid={testId}
       onClick={onClick}
       style={{
-        border: 'none',
+        border: `1px solid ${T.limestone}`,
         textAlign: 'left',
         cursor: onClick ? 'pointer' : 'default',
         borderRadius: 18,
-        background: 'linear-gradient(180deg, #222228 0%, #17171C 100%)',
-        boxShadow: 'inset 0 1px 0 rgba(250,246,239,0.06)',
-        color: T.warmWhite,
+        background: `linear-gradient(180deg, #FFFEFA 0%, ${T.bone} 100%)`,
+        boxShadow: '0 8px 20px rgba(26, 22, 18, 0.05)',
+        color: T.ink,
         fontFamily: F.body,
         padding: 14,
         ...style,
@@ -72,7 +72,7 @@ function ActionTile({ icon: Icon, label, hint, onClick, testId, accent = T.ember
             borderRadius: 10,
             display: 'grid',
             placeItems: 'center',
-            background: `${accent}22`,
+            background: `${accent}1F`,
             color: accent,
           }}
         >
@@ -85,13 +85,13 @@ function ActionTile({ icon: Icon, label, hint, onClick, testId, accent = T.ember
           fontSize: 13,
           fontWeight: 650,
           lineHeight: 1.2,
-          color: T.warmWhite,
+          color: T.ink,
         }}
       >
         {label}
       </p>
       {hint ? (
-        <p style={{ margin: '3px 0 0', fontSize: 11, color: `${T.muted}`, lineHeight: 1.2 }}>
+        <p style={{ margin: '3px 0 0', fontSize: 11, color: '#8A8174', lineHeight: 1.2 }}>
           {hint}
         </p>
       ) : null}
@@ -197,12 +197,12 @@ export default function RedesignHomeScreen() {
         className="cw-grain"
         data-testid="home-loading"
         style={{
-          background: T.obsidian,
+          background: T.bone,
           height: '100%',
           display: 'grid',
           placeItems: 'center',
           fontFamily: F.body,
-          color: T.muted,
+          color: '#8A8174',
         }}
       >
         {t('home.loading')}
@@ -214,9 +214,9 @@ export default function RedesignHomeScreen() {
     return (
       <div
         className="cw-grain"
-        style={{ background: T.obsidian, height: '100%', padding: 32, fontFamily: F.body }}
+        style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}
       >
-        <p style={{ color: T.muted }}>{error?.message ?? t('home.unavailable')}</p>
+        <p style={{ color: '#8A8174' }}>{error?.message ?? t('home.unavailable')}</p>
         <Link
           to="/begin"
           style={{
@@ -247,12 +247,12 @@ export default function RedesignHomeScreen() {
       className="cw-grain"
       data-testid="home-screen"
       style={{
-        background: `radial-gradient(120% 80% at 50% -10%, #2A2418 0%, ${T.obsidian} 52%)`,
+        background: `linear-gradient(180deg, #FFFCF7 0%, ${T.bone} 42%, #F3EBE0 100%)`,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         fontFamily: F.body,
-        color: T.warmWhite,
+        color: T.ink,
         overflow: 'hidden',
         paddingBottom: SHELL_TAB_BAR_INSET,
       }}
@@ -260,25 +260,39 @@ export default function RedesignHomeScreen() {
       <header
         style={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'space-between',
           gap: 12,
-          padding: '10px 16px 8px',
-          paddingTop: 'max(10px, env(safe-area-inset-top))',
+          padding: '8px 16px 10px',
+          paddingTop: 'max(18px, calc(env(safe-area-inset-top) + 12px))',
           flexShrink: 0,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-          <ChronowalkMark />
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
+          <div style={{ paddingTop: 4 }}>
+            <ChronowalkMark />
+          </div>
           <div style={{ minWidth: 0 }}>
-            <h1
+            <p
               style={{
                 margin: 0,
+                fontSize: 11,
+                fontWeight: 650,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: T.bronze,
+              }}
+            >
+              {t('home.tourLabel')}
+            </p>
+            <h1
+              style={{
+                margin: '4px 0 0',
                 fontFamily: F.display,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 450,
                 lineHeight: 1.1,
-                color: T.warmWhite,
+                color: T.ink,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -288,9 +302,9 @@ export default function RedesignHomeScreen() {
             </h1>
             <p
               style={{
-                margin: '2px 0 0',
+                margin: '4px 0 0',
                 fontSize: 12,
-                color: T.muted,
+                color: '#8A8174',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -309,13 +323,14 @@ export default function RedesignHomeScreen() {
           style={{
             width: 36,
             height: 36,
+            marginTop: 2,
             borderRadius: 999,
-            border: `1px solid ${T.warmWhite}18`,
-            background: `${T.charcoal}`,
+            border: `1px solid ${T.limestone}`,
+            background: '#FFFEFA',
             display: 'grid',
             placeItems: 'center',
             cursor: 'pointer',
-            color: T.warmWhite,
+            color: T.ink,
             flexShrink: 0,
           }}
         >
@@ -330,7 +345,7 @@ export default function RedesignHomeScreen() {
           display: 'flex',
           flexDirection: 'column',
           gap: 10,
-          padding: '2px 16px 10px',
+          padding: '6px 16px 10px',
           overflow: 'hidden',
         }}
       >
@@ -392,8 +407,9 @@ export default function RedesignHomeScreen() {
               onClick={handleContinue}
               testId="home-continue"
               style={{
+                border: 'none',
                 background: `linear-gradient(160deg, ${T.terracotta} 0%, #C24722 100%)`,
-                boxShadow: '0 10px 24px rgba(228, 85, 46, 0.28)',
+                boxShadow: '0 10px 24px rgba(228, 85, 46, 0.24)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -432,7 +448,7 @@ export default function RedesignHomeScreen() {
                   fontSize: 13,
                   fontWeight: 650,
                   lineHeight: 1.25,
-                  color: T.warmWhite,
+                  color: T.ink,
                 }}
               >
                 {geoBusy ? t('home.cta.locating') : t('home.cta.startHere')}
