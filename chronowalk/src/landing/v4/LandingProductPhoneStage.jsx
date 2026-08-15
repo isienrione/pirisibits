@@ -3,6 +3,7 @@ import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
+import { LOCALES, normalizeLocale } from '../../i18n/locales.js'
 
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 
@@ -11,6 +12,18 @@ const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
 const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
 const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
 const WALK_LOCKUP = '/landing/phone-screens/walk-lockup.jpeg'
+
+/** Spanish stills under phone-screens/es/ when present; listen stays the shared video. */
+const LOCKUP_ES_BY_PATH = Object.freeze({
+  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-lockup.jpeg',
+  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-lockup.jpeg',
+  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-lockup.jpeg',
+})
+
+function resolveLockupSrc(enSrc, locale) {
+  if (normalizeLocale(locale) !== LOCALES.ES) return enSrc
+  return LOCKUP_ES_BY_PATH[enSrc] ?? enSrc
+}
 
 /** Full-bleed photo lockup sized to the phone artboard. */
 const LockupImage = memo(function LockupImage({ src, alt, testId, className = '' }) {
@@ -155,10 +168,10 @@ const LockupVideo = memo(function LockupVideo({
 })
 
 const BeginScreen = memo(function BeginScreen() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   return (
     <LockupImage
-      src={BEGIN_LOCKUP}
+      src={resolveLockupSrc(BEGIN_LOCKUP, locale)}
       alt={t('landing.demo.beginAlt')}
       testId="landing-demo-begin-lockup"
     />
@@ -166,10 +179,10 @@ const BeginScreen = memo(function BeginScreen() {
 })
 
 const ArriveScreen = memo(function ArriveScreen() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   return (
     <LockupImage
-      src={ARRIVE_LOCKUP}
+      src={resolveLockupSrc(ARRIVE_LOCKUP, locale)}
       alt={t('landing.demo.arriveAlt')}
       testId="landing-demo-arrive-lockup"
     />
@@ -190,10 +203,10 @@ const ListenScreen = memo(function ListenScreen({ active = false }) {
 })
 
 const WalkScreen = memo(function WalkScreen() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   return (
     <LockupImage
-      src={WALK_LOCKUP}
+      src={resolveLockupSrc(WALK_LOCKUP, locale)}
       alt={t('landing.demo.walkAlt')}
       testId="landing-demo-walk-lockup"
     />

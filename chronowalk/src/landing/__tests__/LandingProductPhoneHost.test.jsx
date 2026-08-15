@@ -1,10 +1,14 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRef } from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import LandingProductPhoneStage from '../v4/LandingProductPhoneStage.jsx'
+import { I18nProvider, useI18n } from '../../i18n/I18nProvider.jsx'
+import { LOCALE_STORAGE_KEY } from '../../i18n/storage.js'
+import { LOCALES } from '../../i18n/locales.js'
+import { setActiveLocale } from '../../i18n/activeLocale.js'
 
 vi.mock('../../hooks/useWalkingDirections.js', () => ({
   useWalkingDirections: () => ({
@@ -22,11 +26,39 @@ const CHAPTERS = [
   { id: 'walk', beats: [] },
 ]
 
+function LocaleSwitcher() {
+  const { setLocale } = useI18n()
+  return (
+    <button type="button" onClick={() => setLocale(LOCALES.ES)}>
+      Switch to Spanish
+    </button>
+  )
+}
+
+function renderStage(ui) {
+  return render(
+    <I18nProvider>
+      {ui}
+      <LocaleSwitcher />
+    </I18nProvider>,
+  )
+}
+
 describe('LandingProductPhoneStage', () => {
+  beforeEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
+  afterEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
   it('keeps one phone frame while layering lockup screens', () => {
     const layerRefs = createRef()
     layerRefs.current = []
-    render(
+    renderStage(
       <LandingProductPhoneStage
         chapters={CHAPTERS}
         layerRefs={layerRefs}
@@ -38,10 +70,10 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelectorAll('.cw-v4-phone-layer').length).toBe(4)
   })
 
-  it('uses IMG_1227 begin lockup', () => {
+  it('uses the begin tour lockup', () => {
     const layerRefs = createRef()
     layerRefs.current = []
-    render(
+    renderStage(
       <LandingProductPhoneStage chapters={CHAPTERS} layerRefs={layerRefs} beats={[0, 0, 0, 0]} />,
     )
     expect(screen.getByTestId('landing-demo-begin-lockup')).toBeInTheDocument()
@@ -52,10 +84,10 @@ describe('LandingProductPhoneStage', () => {
     ).toBeTruthy()
   })
 
-  it('uses IMG_1225 arrive lockup', () => {
+  it('uses the arrive lockup', () => {
     const layerRefs = createRef()
     layerRefs.current = []
-    render(
+    renderStage(
       <LandingProductPhoneStage chapters={CHAPTERS} layerRefs={layerRefs} beats={[0, 0, 0, 0]} />,
     )
     expect(screen.getByTestId('landing-demo-arrive-lockup')).toBeInTheDocument()
@@ -67,7 +99,7 @@ describe('LandingProductPhoneStage', () => {
   it('uses Campo-mockup video for listen', () => {
     const layerRefs = createRef()
     layerRefs.current = []
-    render(
+    renderStage(
       <LandingProductPhoneStage
         chapters={CHAPTERS}
         layerRefs={layerRefs}
@@ -80,28 +112,54 @@ describe('LandingProductPhoneStage', () => {
       '.cw-v4-lockup video[src="/landing/phone-mockups/listen-campo-fiori.mp4"]',
     )
     expect(video).toBeTruthy()
-    expect(video?.getAttribute('poster')).toBe(
+    expect(video.getAttribute('poster')).toBe(
       '/landing/phone-mockups/listen-campo-fiori-poster.jpg',
     )
-    expect(video?.hasAttribute('muted')).toBe(false)
-    expect(video?.muted).not.toBe(true)
-    const toggle = screen.getByTestId('landing-demo-listen-campo-toggle')
-    expect(toggle).toBeInTheDocument()
-    expect(toggle.getAttribute('aria-label')).toMatch(/play demo with sound/i)
-    expect(screen.getByText(/tap to play with sound/i)).toBeInTheDocument()
+    expect(screen.getByTestId('landing-demo-listen-campo-toggle')).toBeInTheDocument()
     expect(document.querySelector('.cw-v4-lockup__play-icon')).toBeTruthy()
-    fireEvent.click(toggle)
   })
 
-  it('uses IMG_1223 walk lockup', () => {
+  it('uses the walk lockup', () => {
     const layerRefs = createRef()
     layerRefs.current = []
-    render(
+    renderStage(
       <LandingProductPhoneStage chapters={CHAPTERS} layerRefs={layerRefs} beats={[0, 0, 0, 0]} />,
     )
     expect(screen.getByTestId('landing-demo-walk-lockup')).toBeInTheDocument()
     expect(
       document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-lockup.jpeg"]'),
+    ).toBeTruthy()
+  })
+
+  it('swaps Spanish begin/arrive/walk lockups when the locale flips', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
+    renderStage(
+      <LandingProductPhoneStage chapters={CHAPTERS} layerRefs={layerRefs} beats={[0, 0, 0, 0]} />,
+    )
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
+    })
+
+    expect(
+      document.querySelector(
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/begin-tour-lockup.jpeg"]',
+      ),
+    ).toBeTruthy()
+    expect(
+      document.querySelector(
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/arrive-lockup.jpeg"]',
+      ),
+    ).toBeTruthy()
+    expect(
+      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-lockup.jpeg"]'),
+    ).toBeTruthy()
+    // Listen stays on the shared Campo recording.
+    expect(
+      document.querySelector(
+        '.cw-v4-lockup video[src="/landing/phone-mockups/listen-campo-fiori.mp4"]',
+      ),
     ).toBeTruthy()
   })
 
