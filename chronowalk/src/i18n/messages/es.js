@@ -38,9 +38,51 @@ export const esMessages = Object.freeze({
   'home.actions.support': 'Soporte',
   'home.actions.route': 'Ruta',
   'home.actions.routeAria': 'Abrir el dibujo ampliable de la ruta {name}',
+  'home.actions.startOver': 'Empezar de nuevo',
+  'home.actions.startOverAria': 'Empezar el recorrido desde el principio',
   'home.map.openAria': 'Abrir el mapa completo',
   'home.routeViewer.title': 'Ruta {name}',
   'home.routeViewer.hint': 'Pellizca para ampliar · arrastra para mover · doble toque para restablecer',
+  'home.reset.eyebrow': '¿Seguro?',
+  'home.reset.cancel': 'Cancelar',
+  'home.startOver.title': '¿Empezar el recorrido de nuevo?',
+  'home.startOver.body':
+    'Esto borra tu progreso y te devuelve al inicio al 0%. Las paradas que ya escuchaste habrá que recorrerlas otra vez.',
+  'home.startOver.confirm': 'Sí, empezar de nuevo',
+  'home.restore.title': '¿Restaurar compra y reiniciar?',
+  'home.restore.body':
+    'Al continuar se borra el progreso del recorrido al 0% y se abre la restauración de compra. Hazlo solo si necesitas recuperar el acceso o empezar otra vez.',
+  'home.restore.confirm': 'Sí, reiniciar y restaurar',
+  'home.tutorial.eyebrow': 'Cómo funciona ChronoWalk',
+  'home.tutorial.step': 'Paso {current} de {total}',
+  'home.tutorial.back': 'Atrás',
+  'home.tutorial.next': 'Siguiente',
+  'home.tutorial.done': 'Entendido',
+  'home.tutorial.close': 'Cerrar tutorial',
+  'home.tutorial.walk.eyebrow': 'Caminar',
+  'home.tutorial.walk.title': 'Sigue la línea de la ruta',
+  'home.tutorial.walk.body':
+    'La distancia se actualiza mientras caminas. Mantente en el camino hacia la siguiente parada: el mapa te orienta.',
+  'home.tutorial.arrive.eyebrow': 'Llegar',
+  'home.tutorial.arrive.title': 'Toca Estoy aquí al llegar',
+  'home.tutorial.arrive.body':
+    'Cuando el mapa resalte tu zona, confirma que estás ahí para desbloquear la historia de esa parada.',
+  'home.tutorial.listen.eyebrow': 'Escuchar',
+  'home.tutorial.listen.title': 'Reproduce y pausa cuando quieras',
+  'home.tutorial.listen.body':
+    'La narración te espera. Usa el control amarillo para reproducir, pausar o ponerte al día a tu ritmo.',
+  'home.tutorial.transcript.eyebrow': 'Leer',
+  'home.tutorial.transcript.title': '¿Prefieres leer?',
+  'home.tutorial.transcript.body':
+    'Toca Leer en lugar de escuchar encima del reproductor cuando quieras el guion completo en pantalla.',
+  'home.tutorial.continue.eyebrow': 'Continuar',
+  'home.tutorial.continue.title': '¿Listo para la siguiente parada?',
+  'home.tutorial.continue.body':
+    'Usa Continuar caminando abajo cuando termines: tu progreso se guarda a medida que avanzas.',
+  'home.tutorial.reveal.eyebrow': 'Revelar',
+  'home.tutorial.reveal.title': 'Mantén pulsada la foto',
+  'home.tutorial.reveal.body':
+    'Mira el antes y el ahora. La narración sigue mientras mantienes la reconstrucción.',
   'home.support.eyebrow': 'Soporte',
   'home.support.title': 'Estamos a un correo de distancia.',
   'home.support.body':

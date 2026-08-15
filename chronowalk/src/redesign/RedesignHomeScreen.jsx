@@ -1,11 +1,23 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { BookOpen, HelpCircle, Map as MapIcon, MapPinned, Navigation, Route, Settings } from 'lucide-react'
+import {
+  BookOpen,
+  HelpCircle,
+  Map as MapIcon,
+  MapPinned,
+  Navigation,
+  RotateCcw,
+  Route,
+  Settings,
+} from 'lucide-react'
+import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import HomeMapPeek from './ui/HomeMapPeek.jsx'
 import HomeProgressArc from './ui/HomeProgressArc.jsx'
+import HomeResetConfirmSheet from './ui/HomeResetConfirmSheet.jsx'
 import HomeStopHero from './ui/HomeStopHero.jsx'
 import HomeSupportSheet from './ui/HomeSupportSheet.jsx'
+import HomeTutorialSheet from './ui/HomeTutorialSheet.jsx'
 import { LandingZoomableImageViewer } from '../landing/v4/LandingPackagePosterViewer.jsx'
 import { getPackRoutePreview } from '../landing/packRoutePreview.js'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
@@ -119,7 +131,7 @@ export default function RedesignHomeScreen() {
   const { t } = useI18n()
   const { openSettings } = useSettingsSheet()
   const { requestJumpToWaypoint } = useSharedWalkGuard()
-  const { state, context, begin } = useV2Journey()
+  const { state, context, begin, reset, openAtSequence } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -130,6 +142,8 @@ export default function RedesignHomeScreen() {
   const [geoBusy, setGeoBusy] = useState(false)
   const [supportOpen, setSupportOpen] = useState(false)
   const [routeOpen, setRouteOpen] = useState(false)
+  const [tutorialOpen, setTutorialOpen] = useState(false)
+  const [startOverOpen, setStartOverOpen] = useState(false)
 
   const acts = useMemo(
     () => (manifest ? buildMyTourActs(manifest, context) : []),
@@ -178,14 +192,28 @@ export default function RedesignHomeScreen() {
         findSequenceIndexForWaypoint(manifest, firstId, context.path, context.promotedOptionalIds),
       )
     }
-    begin({
-      pace: context.pace,
-      path: context.path,
-      sequenceIndex,
-      customWaypointIds: context.customWaypointIds,
-    })
+    const hasProgress =
+      (context.completedWaypointIds?.length ?? 0) > 0 ||
+      (context.completedTransitIds?.length ?? 0) > 0 ||
+      (context.currentSequenceIndex ?? 0) > 0
+
+    if (hasProgress) {
+      openAtSequence({
+        pace: context.pace,
+        path: context.path,
+        sequenceIndex,
+        customWaypointIds: context.customWaypointIds,
+      })
+    } else {
+      begin({
+        pace: context.pace,
+        path: context.path,
+        sequenceIndex,
+        customWaypointIds: context.customWaypointIds,
+      })
+    }
     navigate('/journey')
-  }, [begin, context, journeyActive, manifest, navigate])
+  }, [begin, context, journeyActive, manifest, navigate, openAtSequence])
 
   const handleStartFromHere = useCallback(async () => {
     if (!manifest || geoBusy) return
@@ -205,8 +233,20 @@ export default function RedesignHomeScreen() {
   }, [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state])
 
   const handleRewatchTutorial = useCallback(() => {
-    navigate('/begin?replayOnboarding=1')
-  }, [navigate])
+    setTutorialOpen(true)
+  }, [])
+
+  const handleConfirmStartOver = useCallback(() => {
+    setStartOverOpen(false)
+    reset()
+    begin({
+      pace: context.pace,
+      path: context.path,
+      sequenceIndex: 0,
+      customWaypointIds: context.customWaypointIds,
+    })
+    navigate('/journey')
+  }, [begin, context.customWaypointIds, context.pace, context.path, navigate, reset])
 
   const openRouteDrawing = useCallback(() => {
     if (routePreview?.cardImage) {
@@ -296,13 +336,8 @@ export default function RedesignHomeScreen() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
-            <div style={{ paddingTop: 4 }}>
-              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden>
-                <circle cx="11" cy="11" r="9.5" stroke={T.warmWhite} strokeWidth="1.5" />
-                <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.actIII} strokeWidth="1.5" />
-                <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.85" />
-                <line x1="11" y1="7" x2="4" y2="15" stroke={T.actIV} strokeWidth="1" opacity="0.85" />
-              </svg>
+            <div style={{ paddingTop: 2, flexShrink: 0 }}>
+              <ChronoWalkLogo size={28} variant="dark" />
             </div>
             <div style={{ minWidth: 0 }}>
               <p
@@ -533,11 +568,12 @@ export default function RedesignHomeScreen() {
           }}
         >
           <ActionTile
-            icon={Settings}
-            label={t('home.actions.settings')}
-            onClick={openSettings}
-            testId="home-quick-settings"
-            accent={T.actIII}
+            icon={RotateCcw}
+            label={t('home.actions.startOver')}
+            onClick={() => setStartOverOpen(true)}
+            testId="home-quick-start-over"
+            ariaLabel={t('home.actions.startOverAria')}
+            accent={T.actI}
           />
           <ActionTile
             icon={BookOpen}
@@ -567,6 +603,16 @@ export default function RedesignHomeScreen() {
       </div>
 
       <HomeSupportSheet open={supportOpen} onClose={() => setSupportOpen(false)} />
+      <HomeTutorialSheet open={tutorialOpen} onClose={() => setTutorialOpen(false)} />
+      <HomeResetConfirmSheet
+        open={startOverOpen}
+        onClose={() => setStartOverOpen(false)}
+        onConfirm={handleConfirmStartOver}
+        title={t('home.startOver.title')}
+        body={t('home.startOver.body')}
+        confirmLabel={t('home.startOver.confirm')}
+        testId="home-start-over-confirm"
+      />
 
       {routePreview?.cardImage ? (
         <LandingZoomableImageViewer

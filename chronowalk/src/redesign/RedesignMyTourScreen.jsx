@@ -55,7 +55,7 @@ export default function RedesignMyTourScreen() {
   const { t } = useI18n()
   const { openSettings } = useSettingsSheet()
   const { requestJumpToWaypoint } = useSharedWalkGuard()
-  const { state, context, begin, setCustomWaypointIds } = useV2Journey()
+  const { state, context, begin, openAtSequence, setCustomWaypointIds } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [sheetOpen, setSheetOpen] = useState(false)
   const [pickerMode, setPickerMode] = useState(false)
@@ -116,20 +116,34 @@ export default function RedesignMyTourScreen() {
 
     const tourIds = manifest ? getTourWaypointIds(manifest, context) : []
     const firstId = tourIds[0]
-    let sequenceIndex = 0
-    if (manifest && firstId) {
+    const hasProgress =
+      (context.completedWaypointIds?.length ?? 0) > 0 ||
+      (context.completedTransitIds?.length ?? 0) > 0 ||
+      (context.currentSequenceIndex ?? 0) > 0
+
+    let sequenceIndex = context.currentSequenceIndex ?? 0
+    if (!hasProgress && manifest && firstId) {
       sequenceIndex = Math.max(
         0,
         findSequenceIndexForWaypoint(manifest, firstId, context.path, context.promotedOptionalIds),
       )
     }
 
-    begin({
-      pace: context.pace,
-      path: context.path,
-      sequenceIndex,
-      customWaypointIds: context.customWaypointIds,
-    })
+    if (hasProgress) {
+      openAtSequence({
+        pace: context.pace,
+        path: context.path,
+        sequenceIndex,
+        customWaypointIds: context.customWaypointIds,
+      })
+    } else {
+      begin({
+        pace: context.pace,
+        path: context.path,
+        sequenceIndex,
+        customWaypointIds: context.customWaypointIds,
+      })
+    }
     navigate('/journey')
   }
 

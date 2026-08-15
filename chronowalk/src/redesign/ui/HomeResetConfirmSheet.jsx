@@ -1,0 +1,122 @@
+import { T, F } from '../tokens.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
+
+/**
+ * Confirm destructive progress reset (Start Over / Restore purchase).
+ */
+export default function HomeResetConfirmSheet({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  body,
+  confirmLabel,
+  cancelLabel,
+  testId = 'home-reset-confirm',
+}) {
+  const t = useT()
+  if (!open) return null
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={`${testId}-title`}
+      data-testid={testId}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 220,
+        display: 'grid',
+        placeItems: 'end center',
+        background: 'rgba(11,11,13,0.58)',
+        padding: '16px 16px calc(16px + env(safe-area-inset-bottom))',
+      }}
+      onClick={onClose}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') onClose()
+      }}
+    >
+      <div
+        style={{
+          width: 'min(420px, 100%)',
+          borderRadius: 20,
+          background: T.bone,
+          padding: '22px 20px 18px',
+          boxShadow: '0 -8px 40px rgba(11,11,13,0.28)',
+          fontFamily: F.body,
+          border: `1px solid ${T.limestone}`,
+        }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <p
+          style={{
+            margin: '0 0 6px',
+            fontSize: 11,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: T.actI,
+            fontWeight: 650,
+          }}
+        >
+          {t('home.reset.eyebrow')}
+        </p>
+        <h2
+          id={`${testId}-title`}
+          style={{
+            margin: '0 0 10px',
+            fontFamily: F.display,
+            fontSize: 24,
+            fontWeight: 450,
+            color: T.ink,
+            lineHeight: 1.15,
+          }}
+        >
+          {title}
+        </h2>
+        <p style={{ margin: '0 0 18px', fontSize: 15, lineHeight: 1.55, color: '#5A534A' }}>
+          {body}
+        </p>
+        <button
+          type="button"
+          data-testid={`${testId}-confirm`}
+          onClick={onConfirm}
+          style={{
+            display: 'block',
+            width: '100%',
+            textAlign: 'center',
+            border: 'none',
+            padding: '14px 16px',
+            borderRadius: 12,
+            background: T.actI,
+            color: T.warmWhite,
+            fontWeight: 650,
+            fontSize: 15,
+            marginBottom: 10,
+            cursor: 'pointer',
+            fontFamily: F.body,
+          }}
+        >
+          {confirmLabel}
+        </button>
+        <button
+          type="button"
+          data-testid={`${testId}-cancel`}
+          onClick={onClose}
+          style={{
+            width: '100%',
+            padding: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#7A7266',
+            fontFamily: F.body,
+            fontSize: 14,
+            cursor: 'pointer',
+          }}
+        >
+          {cancelLabel ?? t('home.reset.cancel')}
+        </button>
+      </div>
+    </div>
+  )
+}

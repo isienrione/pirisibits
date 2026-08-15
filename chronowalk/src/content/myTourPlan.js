@@ -184,12 +184,10 @@ export function summarizeHomeProgress(stops) {
   const advanced = completed + skipped
   const positionIndex =
     currentIndex >= 0 ? currentIndex : advanced > 0 ? Math.min(advanced, total) - 1 : -1
+  const fromCurrent = currentIndex >= 0 ? currentIndex + 1 : 0
+  // Rewinding to an earlier stop must not hide already-heard / skipped progress.
   const percent =
-    total <= 0
-      ? 0
-      : currentIndex >= 0
-        ? Math.round(((currentIndex + 1) / total) * 100)
-        : Math.round((advanced / total) * 100)
+    total <= 0 ? 0 : Math.round((Math.max(fromCurrent, advanced) / total) * 100)
 
   return {
     completed,

@@ -1,13 +1,19 @@
 import {
-  beginJourney,
   jumpToSequenceIndex,
   JOURNEY_STATES,
+  openJourneyAtSequence,
   transitionJourney,
 } from '../state/journey.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
 import { normalizeRedesignJourneyState } from '../redesign/lib/redesignJourneyState.js'
 
 const STORY_VIEW_KEY = 'cw_story_view'
+
+const IDLE_LIKE = new Set([
+  JOURNEY_STATES.IDLE,
+  JOURNEY_STATES.COMPLETE,
+  JOURNEY_STATES.DAY_COMPLETE,
+])
 
 /** Jump the linear journey to a manifest waypoint id and optional target state. */
 export function jumpToWaypointInJourney(manifest, waypointId, context, state, options = {}) {
@@ -23,11 +29,12 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
   )
   if (index < 0) return false
 
-  if (state === JOURNEY_STATES.IDLE || state === JOURNEY_STATES.COMPLETE) {
-    beginJourney({
+  // Never wipe completed stops when opening a stop from Tour/Map/Home.
+  // Fresh progress clears only via Start Over / Restore purchase (explicit reset).
+  if (IDLE_LIKE.has(state)) {
+    openJourneyAtSequence({
       pace: context.pace || 'classic',
       path,
-      waypointIndex: 0,
       sequenceIndex: index,
       customWaypointIds: context.customWaypointIds,
     })

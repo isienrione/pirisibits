@@ -393,6 +393,26 @@ export function jumpToSequenceIndex(index) {
   })
 }
 
+/**
+ * Open or resume the walk at a sequence index without wiping completed stops.
+ * Use for Tour/Map jumps and Home Continue when the traveler already has progress.
+ * Fresh tours (no history) should still call beginJourney().
+ */
+export function openJourneyAtSequence({
+  pace = snapshot.context.pace,
+  path = snapshot.context.path,
+  sequenceIndex = 0,
+  customWaypointIds = snapshot.context.customWaypointIds,
+} = {}) {
+  return transitionJourney(JOURNEY_STATES.WALKING, {
+    pace,
+    path,
+    currentSequenceIndex: Math.max(0, Math.floor(sequenceIndex)),
+    customWaypointIds,
+    pendingResumeCue: null,
+  })
+}
+
 export function completeStoryAfterThreshold(waypointId, manifest = null) {
   return completeWaypointAndAdvance(waypointId, manifest)
 }

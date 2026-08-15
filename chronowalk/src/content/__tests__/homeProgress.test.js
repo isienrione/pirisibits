@@ -26,4 +26,27 @@ describe('home progress stops', () => {
     expect(summary.percent).toBeGreaterThan(0)
     expect(summary.percent).toBeLessThanOrEqual(100)
   })
+
+  it('does not drop percent when rewinding to an earlier incomplete current stop', () => {
+    const stops = [
+      { id: 'a', status: 'completed' },
+      { id: 'b', status: 'completed' },
+      { id: 'c', status: 'current' },
+      ...Array.from({ length: 16 }, (_, i) => ({ id: `u${i}`, status: 'upcoming' })),
+    ]
+    // Simulate many completed later + early current (rewind without wipe)
+    const rewindStops = [
+      { id: 'a', status: 'current' },
+      { id: 'b', status: 'completed' },
+      { id: 'c', status: 'completed' },
+      ...Array.from({ length: 16 }, (_, i) => ({
+        id: `u${i}`,
+        status: i < 14 ? 'completed' : 'upcoming',
+      })),
+    ]
+    const advanced = summarizeHomeProgress(rewindStops)
+    expect(advanced.completed).toBeGreaterThan(10)
+    expect(advanced.percent).toBeGreaterThanOrEqual(Math.round((advanced.completed / advanced.total) * 100))
+    expect(summarizeHomeProgress(stops).percent).toBeGreaterThan(0)
+  })
 })

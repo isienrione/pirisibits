@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { T, F } from '../tokens.js'
@@ -24,9 +25,11 @@ import {
 } from '../../lib/pendingPurchase.js'
 import AnalyticsPreferencesControl from '../../components/analytics/AnalyticsPreferencesControl.jsx'
 import HomeScreenInstallOption from './HomeScreenInstallOption.jsx'
+import HomeResetConfirmSheet from './HomeResetConfirmSheet.jsx'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
+import { resetJourney } from '../../state/journey.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -173,6 +176,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const { locale, setLocale, t, labels } = useI18n()
   const offline = useOfflineAudio()
   const family = useOptionalFamilyWalk()
+  const [restoreConfirmOpen, setRestoreConfirmOpen] = useState(false)
   const entitlement = readAccessEntitlement()
   const purchasedProductId =
     family?.purchasedProductId ||
@@ -208,6 +212,12 @@ export default function SettingsBottomSheet({ open, onClose }) {
   }
 
   const handleRestore = () => {
+    setRestoreConfirmOpen(true)
+  }
+
+  const handleConfirmRestore = () => {
+    setRestoreConfirmOpen(false)
+    resetJourney()
     onClose()
     navigate('/access')
   }
@@ -458,6 +468,16 @@ export default function SettingsBottomSheet({ open, onClose }) {
           </p>
         </div>
       </div>
+
+      <HomeResetConfirmSheet
+        open={restoreConfirmOpen}
+        onClose={() => setRestoreConfirmOpen(false)}
+        onConfirm={handleConfirmRestore}
+        title={t('home.restore.title')}
+        body={t('home.restore.body')}
+        confirmLabel={t('home.restore.confirm')}
+        testId="settings-restore-confirm"
+      />
     </div>
   )
 }

@@ -16,6 +16,7 @@ import {
   completeWaypointAndAdvance,
   continueFromDayComplete,
   jumpToSequenceIndex,
+  openJourneyAtSequence,
   setCustomWaypointIds,
   setJourneyPace,
   isResumableJourney,
@@ -52,6 +53,7 @@ export function useV2Journey() {
     completeWaypointAndAdvance,
     continueFromDayComplete,
     jumpToSequence: jumpToSequenceIndex,
+    openAtSequence: openJourneyAtSequence,
     setCustomWaypointIds,
     setJourneyPace,
   }

@@ -38,9 +38,51 @@ export const enMessages = Object.freeze({
   'home.actions.support': 'Support',
   'home.actions.route': 'Route',
   'home.actions.routeAria': 'Open the zoomable {name} route drawing',
+  'home.actions.startOver': 'Start over',
+  'home.actions.startOverAria': 'Start the tour over from the beginning',
   'home.map.openAria': 'Open the full map',
   'home.routeViewer.title': '{name} route',
   'home.routeViewer.hint': 'Pinch to zoom · drag to pan · double-tap to reset',
+  'home.reset.eyebrow': 'Are you sure?',
+  'home.reset.cancel': 'Cancel',
+  'home.startOver.title': 'Start the tour over?',
+  'home.startOver.body':
+    'This clears your progress and returns you to the beginning at 0%. Stops you already heard will need to be walked again.',
+  'home.startOver.confirm': 'Yes, start over',
+  'home.restore.title': 'Restore purchase and reset?',
+  'home.restore.body':
+    'Continuing clears your tour progress back to 0% and opens purchase restore. Only do this if you need to reclaim access or begin again.',
+  'home.restore.confirm': 'Yes, reset and restore',
+  'home.tutorial.eyebrow': 'How ChronoWalk works',
+  'home.tutorial.step': 'Step {current} of {total}',
+  'home.tutorial.back': 'Back',
+  'home.tutorial.next': 'Next',
+  'home.tutorial.done': 'Got it',
+  'home.tutorial.close': 'Close tutorial',
+  'home.tutorial.walk.eyebrow': 'Walk',
+  'home.tutorial.walk.title': 'Follow the route line',
+  'home.tutorial.walk.body':
+    'Distance updates as you walk. Stay on the path toward your next stop — the map keeps you oriented.',
+  'home.tutorial.arrive.eyebrow': 'Arrive',
+  'home.tutorial.arrive.title': 'Tap I’m here when you arrive',
+  'home.tutorial.arrive.body':
+    'When the map highlights your zone, confirm you’re there to unlock the story for that stop.',
+  'home.tutorial.listen.eyebrow': 'Listen',
+  'home.tutorial.listen.title': 'Play and pause anytime',
+  'home.tutorial.listen.body':
+    'Narration waits for you. Use the yellow control to play, pause, or catch up at your own pace.',
+  'home.tutorial.transcript.eyebrow': 'Read',
+  'home.tutorial.transcript.title': 'Prefer reading?',
+  'home.tutorial.transcript.body':
+    'Tap Read instead above the player whenever you want the full script on screen.',
+  'home.tutorial.continue.eyebrow': 'Continue',
+  'home.tutorial.continue.title': 'Ready for the next stop?',
+  'home.tutorial.continue.body':
+    'Use Continue walking at the bottom when you’re done — your progress is saved as you go.',
+  'home.tutorial.reveal.eyebrow': 'Reveal',
+  'home.tutorial.reveal.title': 'Press & hold the photo',
+  'home.tutorial.reveal.body':
+    'See then and now. Narration keeps playing while you hold the reconstruction.',
   'home.support.eyebrow': 'Support',
   'home.support.title': 'We are a short email away.',
   'home.support.body':
