@@ -22,7 +22,7 @@ export default function AcquisitionHeader({
     <header className="cw-acq-header">
       <div className="cw-acq-header__inner">
         <Link to="/" className="cw-acq-header__brand" aria-label={t('landing.nav.homeAria')}>
-          <ChronoWalkLogo size={32} variant="dark" className="cw-acq-header__emblem" />
+          <ChronoWalkLogo size={32} variant="light" className="cw-acq-header__emblem" />
           <span className="cw-acq-header__name">ChronoWalk</span>
         </Link>
 

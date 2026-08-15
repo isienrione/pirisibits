@@ -34,6 +34,12 @@
   min-width: 0;
 }
 
+.cw-acq-header__emblem {
+  border-radius: 0.35rem;
+  /* Official light emblem (temple + beam) on paper — never the black plate. */
+  background: transparent;
+}
+
 .cw-acq-header__name {
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: 1.15rem;

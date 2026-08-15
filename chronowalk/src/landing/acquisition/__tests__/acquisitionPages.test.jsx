@@ -241,6 +241,8 @@ describe('acquisition pages', () => {
     expect(document.querySelectorAll('.cw-lang-switch__flag').length).toBe(2)
     expect(screen.getByText('EN')).toBeInTheDocument()
     expect(screen.getByText('ES')).toBeInTheDocument()
+    const emblem = document.querySelector('.cw-acq-header__emblem')
+    expect(emblem?.getAttribute('src')).toBe('/brand/emblem-light.png')
   })
 
   it('fires one page-view event per acquisition page type', async () => {
