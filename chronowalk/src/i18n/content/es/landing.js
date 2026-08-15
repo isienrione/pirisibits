@@ -559,6 +559,16 @@ export const ES_LANDING = Object.freeze({
         { label: 'Recorridos por Roma', href: '#pricing' },
         { label: 'Preguntas', href: '#faq' },
       ],
+      exploreNav: [
+        { id: 'top', label: 'Inicio', href: '#top', hint: 'Portada' },
+        { id: 'hero-reassurance', label: 'Fácil de empezar', href: '#hero-reassurance', hint: 'Por qué ChronoWalk' },
+        { id: 'monuments', label: 'Paradas', href: '#monuments', hint: 'Lo que verás' },
+        { id: 'how-it-works', label: 'Cómo funciona', href: '#how-it-works', hint: 'La app, paso a paso' },
+        { id: 'who-its-for', label: 'Para quién es', href: '#who-its-for', hint: 'Situaciones reales' },
+        { id: 'pricing', label: 'Recorridos por Roma', href: '#pricing', hint: 'Rutas y precios' },
+        { id: 'get-app', label: 'Obtén la app', href: '#get-app', hint: 'Abrir ChronoWalk' },
+        { id: 'faq', label: 'Preguntas', href: '#faq', hint: 'Dudas frecuentes' },
+      ],
     },
     footer: {
       tagline:

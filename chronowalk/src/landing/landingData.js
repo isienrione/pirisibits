@@ -909,6 +909,20 @@ export const LANDING_CONTENT = {
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
+    /**
+     * Full page map for the collapsible explore sidebar (closed by default).
+     * On-page hashes only — keeps visitors on the landing without confusion.
+     */
+    exploreNav: [
+      { id: 'top', label: 'Start', href: '#top', hint: 'Hero' },
+      { id: 'hero-reassurance', label: 'Easy to start', href: '#hero-reassurance', hint: 'Why ChronoWalk' },
+      { id: 'monuments', label: 'Stops', href: '#monuments', hint: 'What you’ll see' },
+      { id: 'how-it-works', label: 'How it works', href: '#how-it-works', hint: 'The app, step by step' },
+      { id: 'who-its-for', label: 'Who it’s for', href: '#who-its-for', hint: 'Real situations' },
+      { id: 'pricing', label: 'Rome walks', href: '#pricing', hint: 'Routes & pricing' },
+      { id: 'get-app', label: 'Get the app', href: '#get-app', hint: 'Open ChronoWalk' },
+      { id: 'faq', label: 'FAQ', href: '#faq', hint: 'Common questions' },
+    ],
     /** Shown in the nav only after the hero leaves the viewport. */
     get cta() {
       return LANDING_CTA.getApp

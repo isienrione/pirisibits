@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import {
   LandingLanguageControl,
 } from '../LandingLanguageSwitcher.jsx'
+import LandingExploreSidebar from './LandingExploreSidebar.jsx'
 
 /**
  * Cinematic logo open assets remain in the repo:
@@ -71,15 +72,18 @@ export default function LandingIntroNav({
   ctaCopy = LANDING_CTA,
 }) {
   const { t } = useI18n()
-  const { nav, cta, ctaHref, ctaShort } = header
+  const { nav, cta, ctaHref, ctaShort, exploreNav = [] } = header
   const [phase, setPhase] = useState(() => (shouldPlayIntro() ? 'intro' : 'nav'))
   const [pastHero, setPastHero] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
+  const [exploreOpen, setExploreOpen] = useState(false)
   const videoRef = useRef(null)
   const exitStarted = useRef(false)
   const bodyOverflowRef = useRef('')
   const completedRef = useRef(false)
   const playIntroOnMount = useRef(phase === 'intro')
+  const menuButtonRef = useRef(null)
+  const explorePanelId = useId()
 
   // Nav handoff - keep separate so intro→compress does not tear down timers.
   useEffect(() => {
@@ -221,6 +225,9 @@ export default function LandingIntroNav({
     onGetApp()
   }
 
+  const openExplore = () => setExploreOpen(true)
+  const closeExplore = () => setExploreOpen(false)
+
   return (
     <>
       {showIntroOverlay ? (
@@ -253,10 +260,32 @@ export default function LandingIntroNav({
       ) : null}
 
       <header
-        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${pastHero ? ' cw-v4-nav--scrolled' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}`}
+        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${pastHero ? ' cw-v4-nav--scrolled' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}${exploreOpen ? ' cw-v4-nav--explore-open' : ''}`}
         data-phase={phase}
       >
         <div className="cw-v4-nav__inner">
+          {exploreNav.length ? (
+            <button
+              ref={menuButtonRef}
+              type="button"
+              className="cw-v4-nav__menu"
+              aria-expanded={exploreOpen}
+              aria-controls={explorePanelId}
+              aria-label={
+                exploreOpen ? t('landing.nav.menuCloseAria') : t('landing.nav.menuOpenAria')
+              }
+              data-testid="landing-explore-toggle"
+              onClick={() => (exploreOpen ? closeExplore() : openExplore())}
+            >
+              <span className="cw-v4-nav__menu-icon" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+              <span className="cw-v4-nav__menu-label">{t('landing.nav.menu')}</span>
+            </button>
+          ) : null}
+
           <a href="#top" className="cw-v4-nav__brand" aria-label={t('landing.nav.homeAria')}>
             <ChronoWalkLogo size={32} variant={logoVariant} className="cw-v4-nav__emblem" />
             <span className="cw-v4-nav__name">ChronoWalk</span>
@@ -286,6 +315,19 @@ export default function LandingIntroNav({
           ) : null}
         </div>
       </header>
+
+      {exploreNav.length ? (
+        <LandingExploreSidebar
+          open={exploreOpen}
+          onClose={closeExplore}
+          items={exploreNav}
+          panelId={explorePanelId}
+          title={t('landing.nav.exploreTitle')}
+          lead={t('landing.nav.exploreLead')}
+          closeLabel={t('landing.nav.menuCloseAria')}
+          navLabel={t('landing.nav.exploreAria')}
+        />
+      ) : null}
     </>
   )
 }
