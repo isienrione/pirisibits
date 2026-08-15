@@ -269,7 +269,7 @@
   color: var(--v4-ink);
 }
 
-/* Shared EN/ES control — cool mint so it doesn’t compete with amber CTAs. */
+/* Shared EN/ES control — gold on light nav, metallic silver when scrolled dark. */
 .cw-lang-switch__control,
 .cw-v4-nav__language {
   margin-left: auto;
@@ -277,10 +277,12 @@
   align-items: center;
   flex: 0 0 auto;
   padding: 0.16rem;
-  border: 1.5px solid #2a8f82;
+  border: 1.5px solid color-mix(in srgb, var(--v4-amber, #e8a13c) 70%, #8b7355);
   border-radius: 999px;
-  background: #f3fffc;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  background: linear-gradient(180deg, #fff8e6 0%, #f0d89a 52%, #e2c16a 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75) inset,
+    0 1px 2px rgba(90, 55, 10, 0.12);
 }
 
 .cw-lang-switch__option {
@@ -290,13 +292,13 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #0f3d38;
+  color: #5a3a12;
   font: inherit;
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: 0.72;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -304,14 +306,15 @@
   transition:
     background 0.2s ease,
     opacity 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .cw-lang-switch__option.is-active {
-  background: #1f7a6f;
-  color: #f4fffb;
+  background: linear-gradient(180deg, var(--v4-amber, #e8a13c) 0%, var(--v4-amber-deep, #c97f1e) 100%);
+  color: #2a1206;
   opacity: 1;
-  box-shadow: none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
 }
 
 .cw-lang-switch__flag {
@@ -327,17 +330,23 @@
 
 .cw-v4-nav--scrolled .cw-lang-switch__control,
 .cw-v4-nav--scrolled .cw-v4-nav__language {
-  border-color: #3db5a6;
-  background: color-mix(in srgb, #0f3d38 55%, #f4fffb);
+  border-color: #a8b0ba;
+  background: linear-gradient(180deg, #eceff3 0%, #b7bfc9 48%, #8a939f 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .cw-v4-nav--scrolled .cw-lang-switch__option {
-  color: #e8fff9;
+  color: #1c2026;
 }
 
 .cw-v4-nav--scrolled .cw-lang-switch__option.is-active {
-  background: #3db5a6;
-  color: #062421;
+  background: linear-gradient(180deg, #f7f8fa 0%, #cfd5dc 100%);
+  color: #0b0b0d;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(80, 88, 98, 0.2);
 }
 
 .cw-v4-nav__language + .cw-v4-nav__cta {
@@ -4353,34 +4362,7 @@
   }
 }
 
-/* Launch Offer — landing layout hooks (base styles live in OfferPriceDisplay.css) */
-.cw-v4-pricing__launch-note {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.45rem 0.75rem;
-  margin: 0.85rem 0 0;
-  padding: 0.7rem 0.9rem;
-  border-radius: 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--v4-amber, #e8a13c) 34%, transparent);
-  background: color-mix(in srgb, var(--v4-amber, #e8a13c) 12%, var(--v4-paper, #faf6ef));
-}
-
-.cw-v4-pricing__launch-note-label {
-  font-family: var(--font-ui, 'DM Sans', sans-serif);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--v4-amber-deep, #c97f1e);
-}
-
-.cw-v4-pricing__launch-note-copy {
-  font-family: var(--font-ui, 'DM Sans', sans-serif);
-  font-size: 0.92rem;
-  line-height: 1.4;
-  color: var(--v4-muted);
-}
+/* Launch Offer — card/price chrome lives in OfferPriceDisplay.css */
 
 /*
  * Desktop poster Launch Offer panel — covers painted price + Buy art with a

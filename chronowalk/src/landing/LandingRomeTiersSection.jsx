@@ -497,16 +497,6 @@ export default function LandingRomeTiersSection({
           {section.subheadline ? (
             <p className="cw-v2-section__lead cw-v4-section-lead">{section.subheadline}</p>
           ) : null}
-          {tiers.some((tier) => tier.launchOffer) ? (
-            <p className="cw-v4-pricing__launch-note" data-testid="cw-pricing-launch-note">
-              <span className="cw-v4-pricing__launch-note-label">
-                {t('landing.pricing.launchLabel')}
-              </span>
-              <span className="cw-v4-pricing__launch-note-copy">
-                {t('landing.pricing.launchCopy')}
-              </span>
-            </p>
-          ) : null}
           {section.intro ? <p className="cw-v2-pricing__intro">{section.intro}</p> : null}
         </header>
 
