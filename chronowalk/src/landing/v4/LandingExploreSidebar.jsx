@@ -1,11 +1,12 @@
 import { useEffect, useId, useRef } from 'react'
+import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
 /**
  * Compact collapsible explore drawer — closed by default.
- * Slim on mobile so the page stays visible; labels are visitor actions.
+ * VoiceMap-style rows (dividers + chevrons); Access gets a colored mark.
  */
 export default function LandingExploreSidebar({
   open,
@@ -114,9 +115,15 @@ export default function LandingExploreSidebar({
         aria-labelledby={titleId}
       >
         <div className="cw-v4-explore__head">
-          <h2 id={titleId} className="cw-v4-explore__title">
-            {title}
-          </h2>
+          <div className="cw-v4-explore__brand">
+            <ChronoWalkLogo size={28} variant="light" className="cw-v4-explore__emblem" />
+            <div className="cw-v4-explore__brand-copy">
+              <p className="cw-v4-explore__brand-name">ChronoWalk</p>
+              <h2 id={titleId} className="cw-v4-explore__title">
+                {title}
+              </h2>
+            </div>
+          </div>
           <button
             type="button"
             className="cw-v4-explore__close"
@@ -130,13 +137,26 @@ export default function LandingExploreSidebar({
 
         <nav className="cw-v4-explore__nav" aria-label={navLabel}>
           <ul className="cw-v4-explore__list">
-            {items.map((item) => (
-              <li key={item.id || item.href} className="cw-v4-explore__item">
-                <a href={item.href} className="cw-v4-explore__link" onClick={onClose}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {items.map((item) => {
+              const emphasis = item.emphasis ? ` cw-v4-explore__item--${item.emphasis}` : ''
+              return (
+                <li key={item.id || item.href} className={`cw-v4-explore__item${emphasis}`}>
+                  <a
+                    href={item.href}
+                    className={`cw-v4-explore__link${item.emphasis ? ` cw-v4-explore__link--${item.emphasis}` : ''}`}
+                    onClick={onClose}
+                  >
+                    {item.emphasis === 'access' ? (
+                      <span className="cw-v4-explore__access-mark" aria-hidden="true" />
+                    ) : null}
+                    <span className="cw-v4-explore__label">{item.label}</span>
+                    <span className="cw-v4-explore__chevron" aria-hidden="true">
+                      ›
+                    </span>
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         </nav>
       </aside>

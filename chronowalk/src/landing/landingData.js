@@ -914,8 +914,8 @@ export const LANDING_CONTENT = {
      * Visitor-facing labels → purchase, free try, stops, setup, FAQ, support.
      */
     exploreNav: [
-      { id: 'access', label: 'Access (Already Purchased)', href: '/access' },
-      { id: 'try-free', label: 'Try 1 Stop Free', href: '/preview' },
+      { id: 'access', label: 'Access (Already Purchased)', href: '/access', emphasis: 'access' },
+      { id: 'try-free', label: 'Try 1 Stop Free', href: '/preview', emphasis: 'try' },
       { id: 'monuments', label: 'Full list of available stops', href: '#monuments' },
       { id: 'how-it-works', label: 'How it works', href: '#how-it-works' },
       { id: 'pricing', label: 'Tour Alternatives, Bundles & Pricing', href: '#pricing' },

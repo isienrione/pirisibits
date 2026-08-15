@@ -282,7 +282,6 @@ export default function LandingIntroNav({
                 <span />
                 <span />
               </span>
-              <span className="cw-v4-nav__menu-label">{t('landing.nav.menu')}</span>
             </button>
           ) : null}
 

@@ -560,8 +560,8 @@ export const ES_LANDING = Object.freeze({
         { label: 'Preguntas', href: '#faq' },
       ],
       exploreNav: [
-        { id: 'access', label: 'Acceso (ya compraste)', href: '/access' },
-        { id: 'try-free', label: 'Prueba 1 parada gratis', href: '/preview' },
+        { id: 'access', label: 'Acceso (ya compraste)', href: '/access', emphasis: 'access' },
+        { id: 'try-free', label: 'Prueba 1 parada gratis', href: '/preview', emphasis: 'try' },
         { id: 'monuments', label: 'Lista completa de paradas', href: '#monuments' },
         { id: 'how-it-works', label: 'Cómo funciona', href: '#how-it-works' },
         { id: 'pricing', label: 'Alternativas, packs y precios', href: '#pricing' },

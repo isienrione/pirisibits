@@ -59,13 +59,15 @@ describe('LandingIntroNav', () => {
     expect(onComplete).toHaveBeenCalled()
   })
 
-  it('keeps the explore sidebar closed by default with an obvious Menu control', () => {
+  it('keeps the explore sidebar closed by default with an icon-only menu control', () => {
     render(<LandingIntroNav onComplete={vi.fn()} />)
 
     const toggle = screen.getByTestId('landing-explore-toggle')
     expect(toggle).toBeTruthy()
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.getByText('Menu')).toBeTruthy()
+    expect(toggle).toHaveAttribute('aria-label', 'Open page menu')
+    expect(toggle.querySelector('.cw-v4-nav__menu-icon')).toBeTruthy()
+    expect(toggle.querySelector('.cw-v4-nav__menu-label')).toBeNull()
 
     const sidebar = screen.getByTestId('landing-explore-sidebar')
     expect(sidebar.classList.contains('is-open')).toBe(false)
@@ -100,12 +102,17 @@ describe('LandingIntroNav', () => {
     }
   })
 
-  it('routes access, free try, and support from the explore menu', () => {
+  it('highlights Access and uses interactive row chrome in the explore menu', () => {
     render(<LandingIntroNav onComplete={vi.fn()} />)
     fireEvent.click(screen.getByTestId('landing-explore-toggle'))
 
     const sidebar = screen.getByTestId('landing-explore-sidebar')
-    expect(sidebar.querySelector('a[href="/access"]')?.textContent).toMatch(/already purchased/i)
+    const access = sidebar.querySelector('a[href="/access"]')
+    expect(access?.classList.contains('cw-v4-explore__link--access')).toBe(true)
+    expect(access?.querySelector('.cw-v4-explore__access-mark')).toBeTruthy()
+    expect(sidebar.querySelectorAll('.cw-v4-explore__chevron').length).toBe(
+      LANDING_CONTENT.header.exploreNav.length,
+    )
     expect(sidebar.querySelector('a[href="/preview"]')?.textContent).toMatch(/try 1 stop free/i)
     expect(sidebar.querySelector('a[href="#support-legal"]')?.textContent).toMatch(/support & legal/i)
     expect(sidebar.querySelector('a[href="#pricing"]')?.textContent).toMatch(
