@@ -2029,16 +2029,17 @@
 }
 
 /*
- * Phone stays proportional (shell keeps 390/844 screen AR via aspect-ratio).
- * Cap width so copy + phone fit one mobile viewport without intra-chapter scroll.
+ * Phone stays proportional (screen locks 390/844).
+ * Size from available height × true phone AR so the device is not
+ * artificially skinny, and never stretch width/height independently.
  */
 .cw-acq-seq__phone {
-  width: min(100%, 14.75rem, calc((100svh - 14.5rem) * 0.46));
+  width: min(100%, 19.5rem, calc((100svh - 13.5rem) * 0.462));
   max-width: 100%;
   margin-inline: auto;
   justify-self: center;
   /* Keep titanium side buttons inside the viewport (they sit outside the shell). */
-  padding-inline: 0.55rem;
+  padding-inline: 0.65rem;
   box-sizing: border-box;
 }
 
@@ -2052,6 +2053,10 @@
 .cw-landing--v4 .cw-acq-seq__phone .cw-landing-phone__screen {
   position: relative;
   overflow: hidden;
+  aspect-ratio: 390 / 844;
+  width: 100%;
+  height: auto;
+  max-height: none;
 }
 
 @media (max-width: 799px) {
@@ -2068,7 +2073,7 @@
   }
 
   .cw-acq-seq__phone {
-    width: min(68vw, 13.75rem, calc((100svh - 15.25rem) * 0.46));
+    width: min(84vw, 20rem, calc((100svh - 13rem) * 0.462));
   }
 }
 
@@ -2093,7 +2098,7 @@
   }
 
   .cw-acq-seq__phone {
-    width: min(100%, 16.25rem);
+    width: min(100%, 19.5rem);
     margin-inline: 0;
     justify-self: end;
     padding-inline: 0.65rem;

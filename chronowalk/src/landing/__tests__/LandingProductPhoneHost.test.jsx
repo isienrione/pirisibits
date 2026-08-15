@@ -179,7 +179,10 @@ describe('LandingProductPhoneStage', () => {
       'utf8',
     )
     expect(css).toMatch(/\.cw-acq-seq__phone\s*\{[^}]*100svh/s)
-    expect(css).toMatch(/\.cw-acq-seq__phone\s*\{[^}]*14\.75rem/s)
+    expect(css).toMatch(/\.cw-acq-seq__phone\s*\{[^}]*19\.5rem/s)
     expect(css).toMatch(/\.cw-acq-seq__row\s*\{[^}]*min-height:\s*calc\(100svh/s)
+    expect(css).toMatch(
+      /\.cw-landing--v4\s+\.cw-acq-seq__phone\s+\.cw-landing-phone__screen\s*\{[^}]*aspect-ratio:\s*390\s*\/\s*844/s,
+    )
   })
 })
