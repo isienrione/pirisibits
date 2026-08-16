@@ -15,6 +15,8 @@ function MapFallback({ label }) {
   return (
     <div
       style={{
+        position: 'absolute',
+        inset: 0,
         width: '100%',
         height: '100%',
         background: T.charcoal,
@@ -90,22 +92,24 @@ export default function HomeMapPeek({ manifest, context }) {
   }
 
   return (
-    <Suspense fallback={<MapFallback label={t('home.map.loading')} />}>
-      <TourMap
-        tour={tour}
-        stops={stops}
-        activeTargetId={activeTargetId}
-        selectedStopId={activeTargetId}
-        activeLeg={activeLeg}
-        transitLegActive={transitLegActive}
-        geofenceThresholdM={40}
-        userPos={userPos}
-        state={userPos ? 'WALKING' : 'OVERVIEW'}
-        distance={null}
-        minimalUI
-        walkingCompanionUI={false}
-        fillContainer
-      />
-    </Suspense>
+    <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+      <Suspense fallback={<MapFallback label={t('home.map.loading')} />}>
+        <TourMap
+          tour={tour}
+          stops={stops}
+          activeTargetId={activeTargetId}
+          selectedStopId={activeTargetId}
+          activeLeg={activeLeg}
+          transitLegActive={transitLegActive}
+          geofenceThresholdM={40}
+          userPos={userPos}
+          state={userPos ? 'WALKING' : 'OVERVIEW'}
+          distance={null}
+          minimalUI
+          walkingCompanionUI={false}
+          fillContainer
+        />
+      </Suspense>
+    </div>
   )
 }

@@ -384,13 +384,34 @@ function TourMapboxView({
         : bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
     let cancelled = false
     let loadTimeoutId = null
-    let bootstrapTimeoutId = window.setTimeout(() => {
-      if (cancelled || map.current?.loaded?.()) return
-      console.warn('Mapbox bootstrap timed out before the map became ready')
-      reportMapboxInitFailure('bootstrap_timeout')
-      onMapFailureRef.current?.()
-    }, MAP_BOOTSTRAP_TIMEOUT_MS)
+    let bootstrapTimeoutId = null
+    let bootstrapAttempts = 0
+    const scheduleBootstrapCheck = () => {
+      if (bootstrapTimeoutId != null) window.clearTimeout(bootstrapTimeoutId)
+      bootstrapTimeoutId = window.setTimeout(() => {
+        if (cancelled || map.current?.loaded?.()) return
 
+        // Safari often paints this card at 0×0 on the first pass. Keep waiting for
+        // ResizeObserver instead of permanently falling back to the route sketch.
+        const el = mapContainer.current
+        if (!map.current && (!el || el.clientWidth === 0 || el.clientHeight === 0)) {
+          bootstrapAttempts += 1
+          if (bootstrapAttempts < 6) {
+            scheduleBootstrapCheck()
+            return
+          }
+        }
+
+        if (!map.current && mapboxglRef.current) {
+          initMap(mapboxglRef.current)
+          if (map.current || cancelled) return
+        }
+
+        console.warn('Mapbox bootstrap timed out before the map became ready')
+        reportMapboxInitFailure('bootstrap_timeout')
+        onMapFailureRef.current?.()
+      }, MAP_BOOTSTRAP_TIMEOUT_MS)
+    }
     const clearBootstrapTimeout = () => {
       if (bootstrapTimeoutId != null) {
         window.clearTimeout(bootstrapTimeoutId)
@@ -441,6 +462,16 @@ function TourMapboxView({
       mapboxgl.accessToken = mapboxToken
 
       try {
+        // Safari can reject WebGL when the "major performance caveat" heuristic
+        // trips (Low Power Mode / older GPUs). Prefer a soft software fallback
+        // over permanently swapping the Home peek for the route sketch.
+        if (
+          typeof mapboxgl.supported === 'function' &&
+          !mapboxgl.supported({ failIfMajorPerformanceCaveat: false })
+        ) {
+          throw new Error('WebGL is not available in this browser')
+        }
+
         map.current = new mapboxgl.Map({
           container: mapContainer.current,
           style: styleOptions.style,
@@ -451,6 +482,7 @@ function TourMapboxView({
           // Let one-finger vertical drags scroll the walking companion page.
           cooperativeGestures: Boolean(walkingCompanionUI),
           transformRequest: createMapboxTransformRequest(),
+          failIfMajorPerformanceCaveat: false,
         })
       } catch (error) {
         console.error('Mapbox initialization failed:', error)
@@ -511,6 +543,9 @@ function TourMapboxView({
         onMapFailureRef.current?.()
       }, MAP_BOOTSTRAP_TIMEOUT_MS)
     }
+
+    // Start after initMap exists so delayed checks can construct the map.
+    scheduleBootstrapCheck()
 
     void loadMapboxRuntime()
       .then((mapboxgl) => {
@@ -958,8 +993,33 @@ function TourMapboxView({
   const activeTitle = activeTarget?.title ?? 'waypoint'
 
   return (
-    <div className={fillContainer ? 'relative h-full w-full' : 'relative h-screen w-full'}>
-      <div ref={mapContainer} className="h-full w-full" />
+    <div
+      className={fillContainer ? 'relative h-full w-full min-h-0' : 'relative h-screen w-full'}
+      style={
+        fillContainer
+          ? {
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+            }
+          : undefined
+      }
+    >
+      <div
+        ref={mapContainer}
+        className="h-full w-full"
+        style={
+          fillContainer
+            ? {
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+              }
+            : undefined
+        }
+      />
       {!mapLoaded ? (
         <div className="absolute inset-0 z-10">
           <LoadingPanel
@@ -1017,9 +1077,20 @@ const TourMap = ({
   preferOfflineStyle = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
+  const [mapEpoch, setMapEpoch] = useState(0)
+  const failureRetriesRef = useRef(0)
+
   const handleMapFailure = useCallback(() => {
+    // Compact Home / embed peeks: remount once before accepting the sketch fallback.
+    // Safari often fails the first paint when the flex card is still 0×0.
+    const canRetry = (fillContainer || minimalUI) && failureRetriesRef.current < 1
+    if (canRetry) {
+      failureRetriesRef.current += 1
+      setMapEpoch((value) => value + 1)
+      return
+    }
     setOfflineMapMode(true)
-  }, [])
+  }, [fillContainer, minimalUI])
 
   useEffect(() => {
     if (!isMapboxConfigured()) {
@@ -1070,7 +1141,7 @@ const TourMap = ({
       walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
       preferOfflineStyle={preferOfflineStyle || isOffline}
-      key={preferOfflineStyle || isOffline ? 'map-offline-style' : 'map-online-style'}
+      key={`${preferOfflineStyle || isOffline ? 'map-offline-style' : 'map-online-style'}-${mapEpoch}`}
     />
   )
 }

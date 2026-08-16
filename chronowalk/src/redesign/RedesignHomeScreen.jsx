@@ -475,7 +475,10 @@ export default function RedesignHomeScreen() {
             }}
           >
             <div style={{ flex: 1, minHeight: 0, position: 'relative', pointerEvents: 'none' }}>
-              <HomeMapPeek manifest={manifest} context={context} />
+              {/* Absolute host so Safari gets a non-zero Mapbox container inside the flex card. */}
+              <div style={{ position: 'absolute', inset: 0 }} data-testid="home-map-host">
+                <HomeMapPeek manifest={manifest} context={context} />
+              </div>
               <div
                 style={{
                   position: 'absolute',
@@ -493,6 +496,7 @@ export default function RedesignHomeScreen() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 5,
+                  zIndex: 2,
                 }}
               >
                 <MapIcon size={11} aria-hidden />
