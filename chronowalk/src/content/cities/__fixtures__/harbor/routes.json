@@ -1,0 +1,34 @@
+[
+  {
+    "routeId": "harbor-loop-main",
+    "cityId": "harbor",
+    "productId": "harbor-loop",
+    "name": "Harbor Loop — main",
+    "stops": [
+      {
+        "stopId": "quay-north",
+        "displayOrder": 0
+      },
+      {
+        "stopId": "lighthouse",
+        "displayOrder": 1
+      }
+    ]
+  },
+  {
+    "routeId": "harbor-loop-alt",
+    "cityId": "harbor",
+    "productId": "harbor-loop",
+    "name": "Harbor Loop — alt",
+    "stops": [
+      {
+        "stopId": "lighthouse",
+        "displayOrder": 0
+      },
+      {
+        "stopId": "quay-north",
+        "displayOrder": 1
+      }
+    ]
+  }
+]

@@ -32,6 +32,7 @@
     "git-add-expansion-media": "bash scripts/git-add-expansion-media.sh",
     "cleanup-expansion-folders": "bash scripts/cleanup-expansion-folders.sh",
     "normalize-audio": "bash scripts/normalize-audio.sh",
+    "generate:city": "node scripts/generate-city-manifest.mjs",
     "generate:rome-manifest": "node scripts/generate-rome-manifest.mjs",
     "measure:durations": "node scripts/measure-rome-durations.mjs",
     "check:content": "node scripts/check-content.mjs",

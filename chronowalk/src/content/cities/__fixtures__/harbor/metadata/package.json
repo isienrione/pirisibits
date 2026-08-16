@@ -1,0 +1,9 @@
+{
+  "cityId": "harbor",
+  "schemaVersion": 1,
+  "catalogSchemaVersion": 1,
+  "cityPackageSchemaVersion": 1,
+  "manifestSchemaVersion": 1,
+  "packageVersion": "0.0.0-fixture",
+  "published": false
+}

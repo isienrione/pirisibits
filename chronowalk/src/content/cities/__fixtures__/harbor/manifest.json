@@ -1,0 +1,72 @@
+{
+  "city": "harbor",
+  "id": "harbor",
+  "name": "Harbor Fixture",
+  "acts": [
+    {
+      "id": "act1",
+      "numeral": "I",
+      "title": "Quay",
+      "waypoints": [
+        "quay-north",
+        "lighthouse"
+      ]
+    }
+  ],
+  "journey": {
+    "paths": [
+      "a"
+    ],
+    "default_path": "a",
+    "path_reorder": {},
+    "sequences": {
+      "a": [
+        "quay-north",
+        "lighthouse"
+      ]
+    }
+  },
+  "waypoints": {
+    "quay-north": {
+      "title": "North Quay",
+      "act": "act1",
+      "zone": "waterfront",
+      "geofence": {
+        "lat": 44.1,
+        "lng": 9.2,
+        "radius_m": 40
+      },
+      "chapters": [
+        "quay-north.mp3"
+      ]
+    },
+    "lighthouse": {
+      "title": "Lighthouse",
+      "act": "act1",
+      "zone": "waterfront",
+      "geofence": {
+        "lat": 44.11,
+        "lng": 9.21,
+        "radius_m": 40
+      },
+      "chapters": [
+        "lighthouse.mp3"
+      ]
+    }
+  },
+  "transits": {},
+  "inserts": {},
+  "beds": {
+    "waterfront": "bed_waterfront.mp3"
+  },
+  "system": {
+    "presence": "sfx_presence.mp3",
+    "longwalk": "t_longwalk.mp3",
+    "no_ticket": [],
+    "ui": {
+      "arrival": "ui_arrival_chime.mp3"
+    },
+    "preview": "preview.mp3"
+  },
+  "durations": {}
+}
