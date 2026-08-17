@@ -1,0 +1,13 @@
+{
+  "appId": "com.chronowalk.app",
+  "appName": "ChronoWalk",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#16130F",
+    "scrollEnabled": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

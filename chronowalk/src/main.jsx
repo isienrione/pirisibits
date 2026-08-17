@@ -17,6 +17,7 @@ import {
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
+  void import('./lib/platform.js').then(({ logPlatformDiagnostics }) => logPlatformDiagnostics())
 }
 
 // Mark / clear interrupted-boot sentinel, but never block React mount.
