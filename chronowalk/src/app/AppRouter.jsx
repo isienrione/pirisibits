@@ -52,6 +52,8 @@ import {
   LazyContextPage,
   LazyExperiencePage,
   LazyExplorePage,
+  LazyDiscoveryPage,
+  LazyBestNextPage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
   LazyLegalRefundPage,
@@ -134,7 +136,9 @@ function JourneyChrome() {
     JOURNEY_CHROME_PATHS.has(pathname) ||
     pathname.startsWith('/journal/') ||
     pathname.startsWith('/preview/') ||
-    pathname.startsWith('/experience/')
+    pathname.startsWith('/experience/') ||
+    pathname.startsWith('/discovery/') ||
+    pathname === '/next'
 
   if (!onJourneyChrome) return null
 
@@ -170,6 +174,8 @@ function AppRoutes() {
         <Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />
         <Route path="/explore" element={<AppShell requireOnboardedGuest><LazyExplorePage /></AppShell>} />
         <Route path="/experience/:heroId" element={<AppShell requireOnboardedGuest><LazyExperiencePage /></AppShell>} />
+        <Route path="/discovery/:discoveryId" element={<AppShell requireOnboardedGuest><LazyDiscoveryPage /></AppShell>} />
+        <Route path="/next" element={<AppShell requireOnboardedGuest><LazyBestNextPage /></AppShell>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<AppShell requireOnboardedGuest><LazyJourneyPage /></AppShell>} />
         <Route path="/map" element={<AppShell requireOnboardedGuest><LazyMapPage /></AppShell>} />

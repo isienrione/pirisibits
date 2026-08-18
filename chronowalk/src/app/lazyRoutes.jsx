@@ -153,6 +153,16 @@ export const LazyExplorePage = lazyRoute(
   'explore',
 )
 
+export const LazyDiscoveryPage = lazyRoute(
+  () => import('../redesign/pages/NativeDiscoveryPage.jsx'),
+  'discovery',
+)
+
+export const LazyBestNextPage = lazyRoute(
+  () => import('../redesign/pages/NativeBestNextPage.jsx'),
+  'best next',
+)
+
 export const LazyWalkTogetherPage = lazyRoute(
   () => import('../redesign/pages/RedesignWalkTogetherPage.jsx'),
   'walk together',

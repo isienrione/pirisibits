@@ -180,6 +180,25 @@ export function recordLikedExperience(experienceId) {
   return recordExperienceSignal('liked', experienceId)
 }
 
+export function removeSavedExperience(experienceId) {
+  const current = ensureGuestSession()
+  const saved = (current.context.history?.savedExperienceIds || []).filter((id) => id !== experienceId)
+  const merged = applyContextPatch(current.context, {
+    history: {
+      ...current.context.history,
+      savedExperienceIds: saved,
+    },
+    completedAt: current.context.completedAt,
+  })
+  const next = { ...current, context: merged }
+  writeGuestSession(next)
+  return next
+}
+
+export function isExperienceSaved(experienceId) {
+  return Boolean(readGuestContext()?.history?.savedExperienceIds?.includes(experienceId))
+}
+
 export function readGuestContext() {
   return readGuestSession()?.context ?? emptyContext()
 }

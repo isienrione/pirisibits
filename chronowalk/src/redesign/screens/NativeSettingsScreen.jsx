@@ -1,13 +1,17 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
 import { isNativeIOS } from '../../lib/platform.js'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
+import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
+import { ROME_SCOPE_IDS } from '../../content/rome/coverage.js'
 
 export default function NativeSettingsScreen() {
   const navigate = useNavigate()
   const { locale, setLocale, t } = useI18n()
+  const [coverageOpen, setCoverageOpen] = useState(false)
 
   return (
     <div
@@ -64,11 +68,23 @@ export default function NativeSettingsScreen() {
       >
         {t('native.settings.about')}
       </GhostButton>
+      <GhostButton
+        data-testid="native-settings-coverage"
+        onClick={() => setCoverageOpen(true)}
+        style={{ marginTop: 10, minHeight: 48, color: T.ink, borderColor: `${T.muted}66`, background: 'transparent' }}
+      >
+        {t('native.coverage.headline')}
+      </GhostButton>
       {isNativeIOS() ? (
         <p style={{ marginTop: 28, color: T.muted, fontSize: 13, lineHeight: 1.45 }}>
           {t('native.settings.downloadLater')}
         </p>
       ) : null}
+      <NativeCoverageSheet
+        open={coverageOpen}
+        item={{ title: 'Rome', unlockScopes: [ROME_SCOPE_IDS.ANCIENT, ROME_SCOPE_IDS.HISTORIC, ROME_SCOPE_IDS.COMPLETE] }}
+        onClose={() => setCoverageOpen(false)}
+      />
     </div>
   )
 }

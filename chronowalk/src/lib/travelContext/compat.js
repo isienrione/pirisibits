@@ -43,6 +43,10 @@ export function toRankerSignals(context, overrides = {}) {
     timeBudgetId: timeBudgetId || null,
     position: position || null,
     completedIds,
+    dismissedIds: uniqueStrings([
+      ...(overrides.dismissedIds || []),
+      ...(history?.dismissedExperienceIds || []),
+    ]),
     avoidInterestIds,
     iconicVsHidden: traveler?.iconicVsHidden ?? null,
     expandedInterestIds: expandInterestIds(surpriseMe ? [] : interestIds),

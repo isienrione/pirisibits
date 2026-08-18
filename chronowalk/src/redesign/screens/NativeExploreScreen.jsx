@@ -1,15 +1,46 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loadRomeManifest } from '../../content/manifest.js'
-import { getRomeHeroCatalog } from '../../content/rome/heroCatalog.js'
-import { canAccessHero } from '../../lib/contentAccess.js'
-import { COVERAGE_LABELS } from '../../content/rome/heroRecommendationMeta.js'
-import { track, TRACK_EVENTS } from '../../lib/track.js'
+import { contentRoute, getRomeRankableCatalog } from '../../content/rome/registry.js'
+import { buildExploreSections } from '../../content/rome/exploreSections.js'
+import { canAccessContentId } from '../../lib/contentAccess.js'
+import { readGuestContext } from '../../lib/guestSession.js'
+import { rankHeroes } from '../../lib/rankHeroes.js'
+import { getJourneySnapshot } from '../../state/journey.js'
 import { F, T } from '../tokens.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
+import NativeContentCard from '../ui/NativeContentCard.jsx'
 
 export default function NativeExploreScreen() {
+  const t = useT()
   const navigate = useNavigate()
-  const catalog = useMemo(() => getRomeHeroCatalog(loadRomeManifest()), [])
+  const guest = readGuestContext()
+  const catalog = useMemo(() => getRomeRankableCatalog(), [])
+  const completedIds = [
+    ...(getJourneySnapshot()?.context?.completedWaypointIds ?? []),
+    ...(guest.history?.completedExperienceIds ?? []),
+  ]
+  const ranked = useMemo(
+    () =>
+      rankHeroes({
+        catalog,
+        context: guest,
+        position: guest.lastPosition,
+        canAccess: (id) => canAccessContentId(id),
+        completedIds,
+      }),
+    [catalog, completedIds, guest],
+  )
+  const sections = useMemo(
+    () =>
+      buildExploreSections({
+        catalog: ranked.ranked,
+        ranked: ranked.ranked,
+        position: guest.lastPosition,
+        availableTimeNow: guest.session?.availableTimeNow || guest.timeBudgetId,
+        completedIds,
+      }),
+    [catalog, completedIds, guest.lastPosition, guest.session?.availableTimeNow, guest.timeBudgetId, ranked.ranked],
+  )
 
   return (
     <div
@@ -25,57 +56,34 @@ export default function NativeExploreScreen() {
       <p style={{ margin: 0, fontSize: 12, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted }}>
         ChronoWalk · Rome
       </p>
-      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '12px 0 18px' }}>All Rome</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {catalog.map((hero) => {
-          const locked = !canAccessHero(hero.heroId)
-          const label = locked
-            ? COVERAGE_LABELS[(hero.unlockScopes || []).find((scope) => scope !== 'rome-free')] || 'Locked'
-            : 'Free'
-          return (
-            <button
-              key={hero.heroId}
-              type="button"
-              data-testid={`explore-hero-${hero.heroId}`}
-              onClick={() => {
-                track(TRACK_EVENTS.RECOMMENDATION_OPENED, { hero_id: hero.heroId, source: 'explore' })
-                navigate(`/experience/${hero.heroId}`)
-              }}
-              style={{
-                minHeight: 64,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: 10,
-                borderRadius: 14,
-                border: '1px solid rgba(250,246,239,0.12)',
-                background: 'rgba(250,246,239,0.04)',
-                color: T.bone,
-                textAlign: 'left',
-              }}
-            >
-              <span
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 10,
-                  backgroundImage: hero.photo ? `url(${hero.photo})` : 'none',
-                  backgroundSize: 'cover',
-                  flexShrink: 0,
-                }}
-              />
-              <span style={{ flex: 1 }}>
-                <strong style={{ display: 'block', fontFamily: F.display, fontWeight: 400, fontSize: 18 }}>
-                  {hero.title}
-                </strong>
-                <span style={{ color: T.muted, fontSize: 13 }}>
-                  {label} · {hero.timeCostMin} min
-                </span>
-              </span>
-            </button>
-          )
-        })}
-      </div>
+      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '12px 0 8px' }}>
+        {t('native.explore.title')}
+      </h1>
+      <p style={{ margin: '0 0 18px', color: T.muted, lineHeight: 1.45 }}>{t('native.explore.body')}</p>
+      {sections.map((section) => (
+        <section key={section.id} data-testid={`explore-section-${section.id}`} style={{ marginBottom: 28 }}>
+          <h2
+            style={{
+              margin: '0 0 12px',
+              fontFamily: F.body,
+              fontSize: 12,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: T.muted,
+            }}
+          >
+            {section.title}
+          </h2>
+          {section.items.slice(0, 6).map((item) => (
+            <NativeContentCard
+              key={`${section.id}-${item.id}`}
+              item={item}
+              testId={`explore-item-${item.id}`}
+              onOpen={(next) => navigate(contentRoute(next))}
+            />
+          ))}
+        </section>
+      ))}
     </div>
   )
 }

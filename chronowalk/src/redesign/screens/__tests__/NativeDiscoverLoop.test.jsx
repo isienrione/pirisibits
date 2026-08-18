@@ -121,8 +121,15 @@ describe('native Context + Discover + lock sheet', () => {
 
   it('keeps the unlock CTA disabled', () => {
     render(
-      <NativeUnlockSheet open heroId="w01" title="The Colosseum" onClose={() => {}} />,
+      <MemoryRouter>
+        <I18nProvider>
+          <NativeUnlockSheet open heroId="w01" title="The Colosseum" onClose={() => {}} />
+        </I18nProvider>
+      </MemoryRouter>,
     )
     expect(screen.getByTestId('native-unlock-purchase')).toBeDisabled()
+    expect(screen.getByTestId('native-coverage-preview')).toBeInTheDocument()
+    expect(screen.queryByText(/historica|antica|eterna|rome-essential/i)).not.toBeInTheDocument()
+    expect(paddle.openPaddleCheckout).not.toHaveBeenCalled()
   })
 })

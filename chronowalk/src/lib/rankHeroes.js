@@ -23,6 +23,10 @@ function distanceScore(distanceM) {
   return Math.max(0, 40 - distanceM / 50)
 }
 
+function itemId(item) {
+  return item?.id || item?.heroId || ''
+}
+
 function matchingUserIds(interestIds, heroTags) {
   const heroExpanded = expandInterestIds(heroTags)
   return (interestIds || []).filter((id) => {
@@ -68,6 +72,7 @@ export function scoreHero(
     position = null,
     canAccess = () => false,
     completedIds = [],
+    dismissedIds = [],
     avoidInterestIds = [],
     iconicVsHidden = null,
   } = {},
@@ -76,7 +81,7 @@ export function scoreHero(
   const whyReasons = []
 
   let distanceM = null
-  if (position && hero.geo) {
+  if (position && hero.geo && Number.isFinite(hero.geo.lat) && Number.isFinite(hero.geo.lng)) {
     distanceM = getDistance(position.lat, position.lng, hero.geo.lat, hero.geo.lng)
     score += distanceScore(distanceM)
     const mins = walkingMinutes(distanceM)
@@ -117,12 +122,14 @@ export function scoreHero(
     score += 6
   }
 
-  const completed = (completedIds || []).includes(hero.heroId)
+  const completed = (completedIds || []).includes(itemId(hero))
   if (completed) score -= 50
+  if ((dismissedIds || []).includes(itemId(hero))) score -= 35
 
   score += (Number(hero.intrinsicPriority) || 0) / 10
 
-  const accessible = Boolean(canAccess?.(hero.heroId))
+  const accessId = itemId(hero)
+  const accessible = Boolean(canAccess?.(accessId))
   if (accessible) score += 8
 
   return {
@@ -144,6 +151,7 @@ export function rankHeroes({
   position,
   canAccess = () => false,
   completedIds,
+  dismissedIds,
 } = {}) {
   const overrides = {}
   if (interestIds !== undefined) overrides.interestIds = interestIds
@@ -151,6 +159,7 @@ export function rankHeroes({
   if (timeBudgetId !== undefined) overrides.timeBudgetId = timeBudgetId
   if (position !== undefined) overrides.position = position
   if (completedIds !== undefined) overrides.completedIds = completedIds
+  if (dismissedIds !== undefined) overrides.dismissedIds = dismissedIds
   const signals = toRankerSignals(context, overrides)
   const ranked = catalog
     .map((hero) =>
@@ -160,11 +169,12 @@ export function rankHeroes({
         position: signals.position,
         canAccess,
         completedIds: signals.completedIds,
+        dismissedIds: signals.dismissedIds,
         avoidInterestIds: signals.avoidInterestIds,
         iconicVsHidden: signals.iconicVsHidden,
       }),
     )
-    .sort((a, b) => b.score - a.score || a.heroId.localeCompare(b.heroId))
+    .sort((a, b) => b.score - a.score || itemId(a).localeCompare(itemId(b)))
 
   return {
     primary: ranked[0] ?? null,
@@ -177,4 +187,13 @@ export function discoverCards(rankedResult) {
   const primary = rankedResult?.primary ?? null
   const alternatives = (rankedResult?.alternatives ?? []).slice(0, 2)
   return { primary, alternatives }
+}
+
+export const rankContent = rankHeroes
+export const scoreContent = scoreHero
+
+export function bestNext({ excludeIds = [], ...rest } = {}) {
+  const excluded = new Set(excludeIds.filter(Boolean))
+  const catalog = (rest.catalog || []).filter((item) => !excluded.has(itemId(item)))
+  return rankHeroes({ ...rest, catalog })
 }

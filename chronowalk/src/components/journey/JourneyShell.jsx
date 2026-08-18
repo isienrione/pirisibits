@@ -1490,6 +1490,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   if (state === JOURNEY_STATES.COMPLETE || step?.done) {
+    if (isNativeIOS()) {
+      const excludeId = context?.customWaypointIds?.[0] || step?.id || ''
+      const search = excludeId ? `?exclude=${encodeURIComponent(excludeId)}` : ''
+      return <Navigate to={`/next${search}`} replace />
+    }
     if (variant === 'redesign') {
       const moment = getJourneyCompleteMoment(manifest)
       return withInterruptionBanner(

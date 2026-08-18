@@ -5,9 +5,24 @@ export function isNativeApp() {
   return Capacitor.isNativePlatform()
 }
 
+/**
+ * DEV-only screenshot / QA preview of native screens in a browser.
+ * Production builds ignore this — Capacitor iOS is the real signal.
+ */
+function isDevNativePreview() {
+  if (!import.meta.env.DEV) return false
+  try {
+    if (typeof window === 'undefined') return false
+    if (new URLSearchParams(window.location.search).get('nativePreview') === '1') return true
+    return window.localStorage?.getItem('cw_dev_native_preview') === '1'
+  } catch {
+    return false
+  }
+}
+
 /** Running inside the Capacitor iOS binary. */
 export function isNativeIOS() {
-  return Capacitor.getPlatform() === 'ios'
+  return Capacitor.getPlatform() === 'ios' || isDevNativePreview()
 }
 
 /** Running in a normal browser tab (not a native shell). */

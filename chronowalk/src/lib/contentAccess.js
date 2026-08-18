@@ -11,6 +11,7 @@
 
 import { HERO_STOP_IDS, PANTHEON_STOP_IDS } from '../i18n/audio/heroStopAudioMap.js'
 import { hasValidLocalAccess, readAccessEntitlement } from './accessSession.js'
+import { SCOPE_DISCOVERY_IDS, unlockScopesForDiscovery } from '../content/rome/coverage.js'
 
 export const UNLOCK_SCOPES = Object.freeze({
   ROME_FREE: 'rome-free',
@@ -104,6 +105,28 @@ export function canAccessHero(heroId, options) {
   if (!heroId) return false
   const granted = getGrantedScopeIds(options)
   return granted.some((scopeId) => SCOPE_HERO_IDS[scopeId]?.includes(heroId))
+}
+
+export function canAccessDiscovery(discoveryId, options) {
+  if (!discoveryId) return false
+  const granted = getGrantedScopeIds(options)
+  return unlockScopesForDiscovery(discoveryId).some((scopeId) => granted.includes(scopeId))
+}
+
+export function canAccessContentId(id, options) {
+  if (!id) return false
+  if (String(id).startsWith('d_rome_')) return canAccessDiscovery(id, options)
+  if (String(id).startsWith('reveal:')) return canAccessHero(String(id).slice(7), options)
+  return canAccessHero(id, options)
+}
+
+export function discoveriesForScope(scopeId) {
+  return SCOPE_DISCOVERY_IDS[scopeId] ? [...SCOPE_DISCOVERY_IDS[scopeId]] : []
+}
+
+export function accessibleDiscoveryIds(options) {
+  const granted = getGrantedScopeIds(options)
+  return uniqueIds(granted.flatMap((scopeId) => discoveriesForScope(scopeId)))
 }
 
 export function hasCompleteRomeEntitlement(options) {

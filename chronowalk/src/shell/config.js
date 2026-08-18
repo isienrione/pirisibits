@@ -75,13 +75,16 @@ export function getShellTabs({ native = false, walkActive = false } = {}) {
 export function isCompanionShellPath(pathname) {
   if (SHELL_COMPANION_PATHS.includes(pathname)) return true
   if (pathname === '/journey') return true
-  return Boolean(pathname?.startsWith('/experience/'))
+  if (pathname?.startsWith('/experience/')) return true
+  if (pathname?.startsWith('/discovery/')) return true
+  if (pathname === '/next') return true
+  return false
 }
 
 /** Which shell tab should highlight for the current pathname. */
 export function isShellTabActive(tabTo, pathname) {
   if (tabTo === '/home') {
-    return pathname === '/home' || pathname === '/explore' || Boolean(pathname?.startsWith('/experience/'))
+    return pathname === '/home' || pathname === '/explore' || pathname === '/next' || Boolean(pathname?.startsWith('/experience/')) || Boolean(pathname?.startsWith('/discovery/'))
   }
   if (tabTo === '/journey') return pathname === '/journey'
   if (tabTo === '/tour') return pathname === '/tour' || pathname === '/stops'
