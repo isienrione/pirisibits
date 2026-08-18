@@ -6,7 +6,7 @@ import { JOURNEY_STATES } from '../../state/journey.js'
 import { T } from '../tokens.js'
 
 /** Primary shell tabs already have bottom nav + their own headers. */
-const SHELL_TAB_ROOTS = new Set(['/home', '/tour', '/map', '/journal'])
+const SHELL_TAB_ROOTS = new Set(['/home', '/tour', '/map', '/journal', '/settings', '/explore'])
 
 function homePath() {
   return hasAccess() ? '/home' : '/'

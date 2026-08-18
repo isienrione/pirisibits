@@ -1,6 +1,6 @@
 import rawManifest from './rome/manifest.json'
 import { parseRomeManifest } from './romeManifestZod.schema.js'
-import { buildEffectiveSequence } from './optionalPromotion.js'
+import { buildPlayableSequence } from './playableSequence.js'
 import { applyDevGeofenceOverrides } from './applyDevGeofenceOverrides.js'
 import { getDevGeofencesMode } from '../config/env.js'
 import { getActiveLocale } from '../i18n/activeLocale.js'
@@ -97,8 +97,8 @@ export function isWaypointId(manifest, stepId) {
   return Boolean(manifest.waypointsById?.[stepId] ?? manifest.waypoints?.[stepId])
 }
 
-export function getStepIdAtIndex(manifest, path, index, promotedOptionalIds = []) {
-  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+export function getStepIdAtIndex(manifest, path, index, promotedOptionalIds = [], context = null) {
+  const sequence = buildPlayableSequence(manifest, path, promotedOptionalIds, context)
   return sequence[index] ?? null
 }
 
@@ -107,10 +107,11 @@ export function getPreviousWaypointInSequence(
   manifest,
   path,
   sequenceIndex,
-  promotedOptionalIds = []
+  promotedOptionalIds = [],
+  context = null,
 ) {
   for (let index = sequenceIndex - 1; index >= 0; index -= 1) {
-    const stepId = getStepIdAtIndex(manifest, path, index, promotedOptionalIds)
+    const stepId = getStepIdAtIndex(manifest, path, index, promotedOptionalIds, context)
     if (stepId && isWaypointId(manifest, stepId)) {
       return getWaypoint(manifest, stepId)
     }
@@ -118,8 +119,8 @@ export function getPreviousWaypointInSequence(
   return null
 }
 
-export function resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds = []) {
-  const stepId = getStepIdAtIndex(manifest, path, sequenceIndex, promotedOptionalIds)
+export function resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds = [], context = null) {
+  const stepId = getStepIdAtIndex(manifest, path, sequenceIndex, promotedOptionalIds, context)
   if (!stepId) {
     return { done: true, id: null, type: null, record: null, targetWaypoint: null }
   }
@@ -136,7 +137,7 @@ export function resolveJourneyStep(manifest, path, sequenceIndex, promotedOption
   }
 
   const record = getTransit(manifest, stepId)
-  const nextStepId = getStepIdAtIndex(manifest, path, sequenceIndex + 1, promotedOptionalIds)
+  const nextStepId = getStepIdAtIndex(manifest, path, sequenceIndex + 1, promotedOptionalIds, context)
   const targetWaypoint = nextStepId && isWaypointId(manifest, nextStepId)
     ? getWaypoint(manifest, nextStepId)
     : null

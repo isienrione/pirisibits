@@ -49,6 +49,9 @@ import {
   LazyTourPage,
   LazyHomePage,
   LazyWelcomePage,
+  LazyContextPage,
+  LazyExperiencePage,
+  LazyExplorePage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
   LazyLegalRefundPage,
@@ -116,6 +119,8 @@ const JOURNEY_CHROME_PATHS = new Set([
   '/map',
   '/begin',
   '/setup',
+  '/context',
+  '/explore',
   '/walk-together',
   '/journal',
   '/letter',
@@ -128,7 +133,8 @@ function JourneyChrome() {
   const onJourneyChrome =
     JOURNEY_CHROME_PATHS.has(pathname) ||
     pathname.startsWith('/journal/') ||
-    pathname.startsWith('/preview/')
+    pathname.startsWith('/preview/') ||
+    pathname.startsWith('/experience/')
 
   if (!onJourneyChrome) return null
 
@@ -159,16 +165,19 @@ function AppRoutes() {
         <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
+        <Route path="/context" element={<AppShell><LazyContextPage /></AppShell>} />
         <Route path="/begin" element={<AppShell><LazyBeginPage /></AppShell>} />
         <Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />
+        <Route path="/explore" element={<AppShell requireOnboardedGuest><LazyExplorePage /></AppShell>} />
+        <Route path="/experience/:heroId" element={<AppShell requireOnboardedGuest><LazyExperiencePage /></AppShell>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
-        <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
-        <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />
+        <Route path="/journey" element={<AppShell requireOnboardedGuest><LazyJourneyPage /></AppShell>} />
+        <Route path="/map" element={<AppShell requireOnboardedGuest><LazyMapPage /></AppShell>} />
         <Route path="/stops" element={<Paid><Navigate to="/tour" replace /></Paid>} />
-        <Route path="/journal" element={<Paid><LazyJournalPage /></Paid>} />
-        <Route path="/journal/:waypointId" element={<Paid><LazyMemoryDetailPage /></Paid>} />
+        <Route path="/journal" element={<AppShell requireOnboardedGuest><LazyJournalPage /></AppShell>} />
+        <Route path="/journal/:waypointId" element={<AppShell requireOnboardedGuest><LazyMemoryDetailPage /></AppShell>} />
         <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />
-        <Route path="/settings" element={<Paid><LazySettingsPage /></Paid>} />
+        <Route path="/settings" element={<AppShell requireOnboardedGuest><LazySettingsPage /></AppShell>} />
         <Route path="/walk-together" element={<Paid><LazyWalkTogetherPage /></Paid>} />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />

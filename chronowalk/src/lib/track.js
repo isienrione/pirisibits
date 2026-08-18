@@ -71,6 +71,14 @@ export const TRACK_EVENTS = {
   NATIVE_WELCOME_VIEWED: 'native_welcome_viewed',
   NATIVE_GUEST_STARTED: 'native_guest_started',
   NATIVE_GUEST_RETURNED: 'native_guest_returned',
+  CONTEXT_COMPLETED: 'context_completed',
+  DISCOVER_VIEWED: 'discover_viewed',
+  RECOMMENDATION_IMPRESSION: 'recommendation_impression',
+  RECOMMENDATION_OPENED: 'recommendation_opened',
+  RECOMMENDATION_ACCEPTED: 'recommendation_accepted',
+  FREE_EXPERIENCE_STARTED: 'free_experience_started',
+  FREE_EXPERIENCE_COMPLETED: 'free_experience_completed',
+  LOCKED_EXPERIENCE_OPENED: 'locked_experience_opened',
 }
 
 function notifyConsentListeners(value) {

@@ -19,7 +19,8 @@ export function useActAccent() {
       manifest,
       context.path,
       context.currentSequenceIndex,
-      context.promotedOptionalIds
+      context.promotedOptionalIds,
+      context,
     )
 
     if (step.done) return actAccentValue('encore')
@@ -34,6 +35,8 @@ export function useActAccent() {
     context.path,
     context.currentSequenceIndex,
     context.promotedOptionalIds,
+    context.pace,
+    context.customWaypointIds,
   ])
 }
 

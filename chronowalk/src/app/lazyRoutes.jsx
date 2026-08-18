@@ -138,6 +138,21 @@ export const LazySettingsPage = lazyRoute(
   'settings',
 )
 
+export const LazyContextPage = lazyRoute(
+  () => import('../redesign/pages/NativeContextPage.jsx'),
+  'context',
+)
+
+export const LazyExperiencePage = lazyRoute(
+  () => import('../redesign/pages/NativeExperiencePage.jsx'),
+  'experience',
+)
+
+export const LazyExplorePage = lazyRoute(
+  () => import('../redesign/pages/NativeExplorePage.jsx'),
+  'explore',
+)
+
 export const LazyWalkTogetherPage = lazyRoute(
   () => import('../redesign/pages/RedesignWalkTogetherPage.jsx'),
   'walk together',

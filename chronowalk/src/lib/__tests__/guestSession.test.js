@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   clearGuestSession,
+  completeNativeContext,
   ensureGuestSession,
   GUEST_SESSION_KEY,
   hasCompletedGuestOnboarding,
@@ -36,12 +37,12 @@ describe('guestSession', () => {
     expect(JSON.parse(localStorage.getItem(GUEST_SESSION_KEY)).id).toBe(first.id)
   })
 
-  it('Start exploring initializes guest state and points at existing Context/setup', () => {
+  it('Start exploring initializes guest state and points at Context V0', () => {
     const { session, nextPath } = startNativeGuestExploration()
 
-    expect(nextPath).toBe('/setup')
-    expect(session.onboardingCompleted).toBe(true)
-    expect(hasCompletedGuestOnboarding()).toBe(true)
+    expect(nextPath).toBe('/context')
+    expect(session.onboardingCompleted).toBe(false)
+    expect(hasCompletedGuestOnboarding()).toBe(false)
     expect(hasValidLocalAccess()).toBe(false)
   })
 
@@ -53,5 +54,20 @@ describe('guestSession', () => {
     expect(done.id).toBe(created.id)
     expect(again.id).toBe(created.id)
     expect(again.onboardingCompleted).toBe(true)
+  })
+
+  it('completeNativeContext persists interests and time and marks onboarding done', () => {
+    ensureGuestSession()
+    const next = completeNativeContext({
+      interestIds: ['architecture', 'sacred'],
+      timeBudgetId: '30min',
+      locationStatus: 'denied',
+    })
+
+    expect(next.onboardingCompleted).toBe(true)
+    expect(next.context.interestIds).toEqual(['architecture', 'sacred'])
+    expect(next.context.timeBudgetId).toBe('30min')
+    expect(next.context.locationStatus).toBe('denied')
+    expect(hasCompletedGuestOnboarding()).toBe(true)
   })
 })

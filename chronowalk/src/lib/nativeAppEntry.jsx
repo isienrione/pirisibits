@@ -17,6 +17,7 @@ export function resolveNativeRootEntry() {
   if (!isNativeIOS()) return { path: null, reason: 'web' }
   if (hasValidLocalAccess()) return { path: '/home', reason: 'entitled' }
   if (hasCompletedGuestOnboarding()) return { path: '/home', reason: 'guest' }
+  if (hasGuestSession()) return { path: '/context', reason: 'context' }
   return { path: '/welcome', reason: 'first-run' }
 }
 

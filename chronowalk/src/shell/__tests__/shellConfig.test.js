@@ -11,6 +11,17 @@ describe('shell config', () => {
     expect(SHELL_TAB_META[NAV_TABS.TOUR].to).toBe('/tour')
   })
 
+  it('uses Discover · Map · Saved · Settings on native when no walk is active', () => {
+    const tabs = getShellTabs({ native: true, walkActive: false })
+    expect(tabs.map((tab) => tab.label)).toEqual(['Discover', 'Map', 'Saved', 'Settings'])
+    expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/map', '/journal', '/settings'])
+  })
+
+  it('exposes Walk only when a native walk is active', () => {
+    const tabs = getShellTabs({ native: true, walkActive: true })
+    expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/journey', '/map', '/journal', '/settings'])
+  })
+
   it('highlights Home, Walk on /journey and Tour on legacy /stops', () => {
     expect(isShellTabActive('/home', '/home')).toBe(true)
     expect(isShellTabActive('/journey', '/journey')).toBe(true)

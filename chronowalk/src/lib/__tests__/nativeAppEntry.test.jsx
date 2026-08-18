@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { grantTestAccess } from '../../test/grantTestAccess.js'
 import { RequireAccess, RequireAppShell } from '../requireAccess.jsx'
 import { clearLocalAccessState } from '../accessSession.js'
-import { clearGuestSession, startNativeGuestExploration } from '../guestSession.js'
+import { clearGuestSession, completeNativeContext, startNativeGuestExploration } from '../guestSession.js'
 import {
   NativePublicLandingRoute,
   getNativeRootRedirect,
@@ -54,18 +54,42 @@ function renderNativeEntry(initialEntry) {
           }
         />
         <Route
+          path="/context"
+          element={
+            <RequireAppShell>
+              <div>CONTEXT</div>
+            </RequireAppShell>
+          }
+        />
+        <Route
           path="/journey"
           element={
-            <RequireAccess>
+            <RequireAppShell requireOnboardedGuest>
               <div>JOURNEY</div>
-            </RequireAccess>
+            </RequireAppShell>
           }
         />
         <Route
           path="/map"
           element={
-            <RequireAccess>
+            <RequireAppShell requireOnboardedGuest>
               <div>MAP</div>
+            </RequireAppShell>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <RequireAppShell requireOnboardedGuest>
+              <div>SETTINGS</div>
+            </RequireAppShell>
+          }
+        />
+        <Route
+          path="/tour"
+          element={
+            <RequireAccess>
+              <div>TOUR</div>
             </RequireAccess>
           }
         />
@@ -119,6 +143,7 @@ describe('native iOS product entry', () => {
   it('sends a returning native guest "/" to /home', () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
+    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '30min' })
 
     expect(getNativeRootRedirect()).toBe('/home')
     expect(resolveNativeRootEntry().reason).toBe('guest')
@@ -128,9 +153,20 @@ describe('native iOS product entry', () => {
     expect(screen.getByText('HOME')).toBeInTheDocument()
   })
 
+  it('resumes incomplete native Context instead of Welcome', () => {
+    capacitor.platform = 'ios'
+    startNativeGuestExploration()
+
+    expect(getNativeRootRedirect()).toBe('/context')
+    expect(resolveNativeRootEntry().reason).toBe('context')
+    renderNativeEntry('/')
+    expect(screen.getByText('CONTEXT')).toBeInTheDocument()
+  })
+
   it('lets a native guest reach /home without a paid entitlement', async () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
+    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '1h' })
     renderNativeEntry('/home')
 
     expect(await screen.findByText('HOME')).toBeInTheDocument()
@@ -138,15 +174,28 @@ describe('native iOS product entry', () => {
     expect(screen.queryByText('JOURNEY')).not.toBeInTheDocument()
   })
 
-  it('does not let a native guest consume /journey', async () => {
+  it('lets a native guest open Map and Settings', async () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
+    completeNativeContext({ interestIds: ['art'], timeBudgetId: '2h' })
+
+    renderNativeEntry('/map')
+    expect(await screen.findByText('MAP')).toBeInTheDocument()
+    expect(screen.queryByText('ACCESS')).not.toBeInTheDocument()
+
+    renderNativeEntry('/settings')
+    expect(await screen.findByText('SETTINGS')).toBeInTheDocument()
+    expect(screen.queryByText('ACCESS')).not.toBeInTheDocument()
+  })
+
+  it('lets an onboarded native guest enter /journey without a paid credential', async () => {
+    capacitor.platform = 'ios'
+    startNativeGuestExploration()
+    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '30min' })
     renderNativeEntry('/journey')
 
-    await waitFor(() => {
-      expect(screen.getByText('HOME')).toBeInTheDocument()
-    })
-    expect(screen.queryByText('JOURNEY')).not.toBeInTheDocument()
+    expect(await screen.findByText('JOURNEY')).toBeInTheDocument()
+    expect(screen.queryByText('ACCESS')).not.toBeInTheDocument()
   })
 
   it('keeps native /access directly reachable', () => {
@@ -157,15 +206,15 @@ describe('native iOS product entry', () => {
     expect(screen.queryByText('MARKETING LANDING')).not.toBeInTheDocument()
   })
 
-  it('does not replace native internal routes; RequireAccess still gates /journey', async () => {
+  it('does not replace native internal routes; RequireAccess still gates /tour', async () => {
     capacitor.platform = 'ios'
 
-    renderNativeEntry('/journey')
+    renderNativeEntry('/tour')
 
     await waitFor(() => {
       expect(screen.getByText('ACCESS')).toBeInTheDocument()
     })
-    expect(screen.queryByText('JOURNEY')).not.toBeInTheDocument()
+    expect(screen.queryByText('TOUR')).not.toBeInTheDocument()
     expect(screen.queryByText('HOME')).not.toBeInTheDocument()
     expect(screen.queryByText('MARKETING LANDING')).not.toBeInTheDocument()
   })

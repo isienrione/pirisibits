@@ -1477,6 +1477,22 @@ html.redesign-pwa #root {
   overscroll-behavior: none;
 }
 
+/* Native iOS: WebView fills the device. Capacitor contentInset is "never",
+   so env(safe-area-inset-*) is the only inset. Do not pad html/body/#root. */
+html.cw-native-ios,
+html.cw-native-ios body,
+html.cw-native-ios #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  --app-height: 100dvh;
+  --wc-browser-chrome: 0px;
+  background: #0b0b0d;
+  overflow: hidden;
+}
+
 .redesign-app-shell {
   width: 100%;
   min-height: 100dvh;

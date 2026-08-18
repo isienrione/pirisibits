@@ -29,7 +29,10 @@ describe('AppRouter apex home', () => {
       '<Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />',
     )
     expect(routerSource).toContain(
-      '<Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />',
+      '<Route path="/journey" element={<AppShell requireOnboardedGuest><LazyJourneyPage /></AppShell>} />',
+    )
+    expect(routerSource).toContain(
+      '<Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />',
     )
     expect(routerSource).toContain('<Route path="/access" element={<LazyAccessPage />} />')
     expect(routerSource).toContain('<Route path="/welcome" element={<LazyWelcomePage />} />')

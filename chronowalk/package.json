@@ -56,7 +56,9 @@
     "pretest": "npm run check:commerce-drift"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
     "@capacitor/core": "^8.5.0",
+    "@capacitor/geolocation": "^8.2.2",
     "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",

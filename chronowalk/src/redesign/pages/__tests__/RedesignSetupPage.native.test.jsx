@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nProvider } from '../../../i18n/I18nProvider.jsx'
 import { clearAppEntryComplete } from '../../../lib/appEntry.js'
+import { grantTestAccess } from '../../../test/grantTestAccess.js'
+import { clearLocalAccessState } from '../../../lib/accessSession.js'
 import RedesignSetupPage from '../RedesignSetupPage.jsx'
 
 const capacitor = vi.hoisted(() => ({
@@ -56,6 +58,7 @@ describe('native iOS setup A2HS', () => {
     capacitor.platform = 'web'
     localStorage.clear()
     clearAppEntryComplete()
+    clearLocalAccessState()
   })
 
   it('still shows Add to Home Screen on web setup', () => {
@@ -69,6 +72,7 @@ describe('native iOS setup A2HS', () => {
 
   it('hides A2HS and Safari install instructions on native iOS setup', () => {
     capacitor.platform = 'ios'
+    grantTestAccess()
     renderSetup()
 
     expect(screen.getByTestId('app-entry-prepare')).toBeInTheDocument()

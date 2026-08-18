@@ -1,3 +1,5 @@
+import { isNativeApp } from '../lib/platform.js'
+
 /** Keep layout inside the visible viewport when mobile browser chrome overlaps content. */
 export function initMobileViewportChrome() {
   if (typeof window === 'undefined' || typeof document === 'undefined') return () => {}
@@ -6,7 +8,9 @@ export function initMobileViewportChrome() {
   const standalone =
     window.matchMedia?.('(display-mode: standalone)')?.matches || window.navigator.standalone === true
 
-  if (standalone) {
+  // Native Capacitor and installed PWA already own the screen. Do not shrink
+  // --app-height to visualViewport (that recreates a web-rectangle inset).
+  if (isNativeApp() || standalone) {
     root.style.setProperty('--app-height', '100dvh')
     root.style.setProperty('--wc-browser-chrome', '0px')
     return () => {}

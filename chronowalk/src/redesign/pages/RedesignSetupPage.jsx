@@ -9,7 +9,9 @@ import {
   packBlurbForPurchasedTier,
   packTitleForPurchasedTier,
 } from '../../lib/appEntry.js'
-import { markGuestOnboardingComplete } from '../../lib/guestSession.js'
+import { hasCompletedGuestOnboarding, hasGuestSession, markGuestOnboardingComplete } from '../../lib/guestSession.js'
+import { hasValidLocalAccess } from '../../lib/accessSession.js'
+import { isNativeIOS } from '../../lib/platform.js'
 import { shouldSkipNativeA2hs } from '../../lib/nativeAppEntry.jsx'
 import { readPurchasedTier } from '../../lib/pendingPurchase.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
@@ -61,6 +63,12 @@ export default function RedesignSetupPage() {
     if (!offline.isDownloading && !offline.isReady) {
       void offline.startDownload()
     }
+  }
+
+  if (isNativeIOS() && !hasValidLocalAccess()) {
+    if (hasCompletedGuestOnboarding()) return <Navigate to="/home" replace />
+    if (hasGuestSession()) return <Navigate to="/context" replace />
+    return <Navigate to="/welcome" replace />
   }
 
   if (isAppEntryComplete()) {

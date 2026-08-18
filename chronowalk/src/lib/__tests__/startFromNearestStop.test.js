@@ -14,6 +14,7 @@ vi.mock('../../content/manifest.js', () => ({
 
 vi.mock('../locationAccess.js', () => ({
   requestLocationAccess: vi.fn(async () => 'granted'),
+  resolveCurrentPosition: vi.fn(async () => null),
 }))
 
 import {
@@ -21,7 +22,7 @@ import {
   findNearestTourWaypointId,
   startFromNearestTourStop,
 } from '../startFromNearestStop.js'
-import { requestLocationAccess } from '../locationAccess.js'
+import { requestLocationAccess, resolveCurrentPosition } from '../locationAccess.js'
 
 describe('startFromNearestStop', () => {
   beforeEach(() => {
@@ -39,12 +40,7 @@ describe('startFromNearestStop', () => {
   })
 
   it('jumps to the nearest stop after a GPS fix', async () => {
-    vi.stubGlobal('navigator', {
-      geolocation: {
-        getCurrentPosition: (success) =>
-          success({ coords: { latitude: 41.8903, longitude: 12.4923 } }),
-      },
-    })
+    resolveCurrentPosition.mockResolvedValue({ lat: 41.8903, lng: 12.4923 })
     const requestJumpToWaypoint = vi.fn(async () => true)
     const result = await startFromNearestTourStop({
       manifest: {},
@@ -58,11 +54,7 @@ describe('startFromNearestStop', () => {
   })
 
   it('returns no_gps when location is unavailable', async () => {
-    vi.stubGlobal('navigator', {
-      geolocation: {
-        getCurrentPosition: (_success, error) => error?.(new Error('denied')),
-      },
-    })
+    resolveCurrentPosition.mockResolvedValue(null)
     const result = await startFromNearestTourStop({
       manifest: {},
       context: {},

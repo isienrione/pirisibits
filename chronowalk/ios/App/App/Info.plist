@@ -61,5 +61,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ChronoWalk uses your location while the app is open so it can recommend what’s nearby and unlock stories when you arrive. Location is never used in the background.</string>
 </dict>
 </plist>

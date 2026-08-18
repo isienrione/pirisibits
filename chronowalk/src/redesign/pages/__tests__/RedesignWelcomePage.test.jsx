@@ -29,6 +29,7 @@ function renderWelcome() {
         <Routes>
           <Route path="/welcome" element={<RedesignWelcomePage />} />
           <Route path="/setup" element={<div>SETUP CONTEXT</div>} />
+          <Route path="/context" element={<div>CONTEXT V0</div>} />
           <Route path="/access" element={<div>ACCESS</div>} />
           <Route path="/home" element={<div>HOME</div>} />
         </Routes>
@@ -59,6 +60,9 @@ describe('native Welcome', () => {
 
     expect(screen.getByTestId('native-welcome')).toBeInTheDocument()
     expect(screen.getByTestId('native-welcome-start')).toHaveTextContent(/start exploring/i)
+    expect(screen.getByTestId('native-welcome-proposition')).toHaveTextContent(/explore rome as you go/i)
+    expect(screen.queryByText(/private audio guide/i)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('native-welcome-video')).not.toBeInTheDocument()
     expect(screen.getByTestId('native-welcome-access')).toHaveTextContent(/already have access/i)
     expect(screen.queryByText(/paddle/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/transaction/i)).not.toBeInTheDocument()
@@ -66,15 +70,15 @@ describe('native Welcome', () => {
     expect(screen.queryByText(/add to home screen/i)).not.toBeInTheDocument()
   })
 
-  it('Start exploring initializes guest state and enters existing Context/setup', () => {
+  it('Start exploring initializes guest state and enters Context V0', () => {
     capacitor.platform = 'ios'
     renderWelcome()
 
     fireEvent.click(screen.getByTestId('native-welcome-start'))
 
-    expect(hasCompletedGuestOnboarding()).toBe(true)
+    expect(hasCompletedGuestOnboarding()).toBe(false)
     expect(readGuestSession()?.id).toMatch(/^cw_guest_/)
-    expect(screen.getByText('SETUP CONTEXT')).toBeInTheDocument()
+    expect(screen.getByText('CONTEXT V0')).toBeInTheDocument()
   })
 
   it('I already have access keeps /access reachable', () => {

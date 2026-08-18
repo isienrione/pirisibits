@@ -1,22 +1,9 @@
 import { getWaypoint } from '../content/manifest.js'
 import { getTourWaypointIds } from '../content/myTourPlan.js'
 import { getDistance } from '../utils/distance.js'
-import { requestLocationAccess } from './locationAccess.js'
+import { requestLocationAccess, resolveCurrentPosition } from './locationAccess.js'
 
-/** One-shot GPS fix for "start from where I am". */
-export function resolveCurrentPosition({ timeoutMs = 12000 } = {}) {
-  return new Promise((resolve) => {
-    if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      resolve(null)
-      return
-    }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => resolve(null),
-      { enableHighAccuracy: true, timeout: timeoutMs },
-    )
-  })
-}
+export { resolveCurrentPosition } from './locationAccess.js'
 
 /** Nearest visit stop on the traveler's current tour plan (id + meters). */
 export function findNearestTourWaypoint(manifest, context, position) {

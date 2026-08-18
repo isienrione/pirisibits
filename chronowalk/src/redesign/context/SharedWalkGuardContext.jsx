@@ -39,6 +39,7 @@ function currentJourneyStepId(manifest) {
     ctx.path,
     ctx.currentSequenceIndex ?? 0,
     ctx.promotedOptionalIds ?? [],
+    ctx,
   )
 }
 

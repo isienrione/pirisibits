@@ -3,11 +3,16 @@
   "appName": "ChronoWalk",
   "webDir": "dist",
   "ios": {
-    "contentInset": "automatic",
-    "backgroundColor": "#16130F",
+    "contentInset": "never",
+    "backgroundColor": "#0B0B0D",
     "scrollEnabled": true
   },
   "server": {
     "androidScheme": "https"
+  },
+  "plugins": {
+    "Geolocation": {
+      "locationWhenInUse": true
+    }
   }
 }
