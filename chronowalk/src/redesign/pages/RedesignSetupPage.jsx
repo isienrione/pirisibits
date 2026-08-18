@@ -9,6 +9,7 @@ import {
   packBlurbForPurchasedTier,
   packTitleForPurchasedTier,
 } from '../../lib/appEntry.js'
+import { shouldSkipNativeA2hs } from '../../lib/nativeAppEntry.jsx'
 import { readPurchasedTier } from '../../lib/pendingPurchase.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import AppEntryThreshold from '../screens/AppEntryThreshold.jsx'
@@ -23,6 +24,7 @@ export default function RedesignSetupPage() {
   const navigate = useNavigate()
   const purchasedTier = readPurchasedTier()
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
+  const skipA2hs = shouldSkipNativeA2hs()
   const offline = useOfflineAudio()
   // Land on prepare (offline + A2HS) - the screen travelers expect before the tour.
   // Threshold pack splash remains reachable only if we add an explicit back later.
@@ -73,10 +75,10 @@ export default function RedesignSetupPage() {
           <AppEntryThreshold
             packTitle={packTitleForPurchasedTier(purchasedTier)}
             packBlurb={packBlurbForPurchasedTier(purchasedTier)}
-            installed={installed}
-            canPromptInstall={canPromptInstall}
-            showIosInstructions={showIosInstructions || showIosHelp}
-            onInstall={handleInstall}
+            installed={skipA2hs || installed}
+            canPromptInstall={skipA2hs ? false : canPromptInstall}
+            showIosInstructions={skipA2hs ? false : showIosInstructions || showIosHelp}
+            onInstall={skipA2hs ? undefined : handleInstall}
             onContinue={() => setStep('prepare')}
           />
         ) : null}
@@ -89,10 +91,11 @@ export default function RedesignSetupPage() {
             downloadError={offline.error}
             mapTilesPartial={offline.status?.error === 'map_tiles_partial'}
             installed={installed}
-            canPromptInstall={canPromptInstall}
-            showIosInstructions={showIosInstructions || showIosHelp}
+            canPromptInstall={skipA2hs ? false : canPromptInstall}
+            showIosInstructions={skipA2hs ? false : showIosInstructions || showIosHelp}
+            hideA2hs={skipA2hs}
             onDownload={handleDownload}
-            onInstall={handleInstall}
+            onInstall={skipA2hs ? undefined : handleInstall}
             onContinue={() => setStep('family')}
           />
         ) : null}

@@ -17,6 +17,7 @@ export default function AppEntryPrepare({
   installed = false,
   canPromptInstall = false,
   showIosInstructions = false,
+  hideA2hs = false,
   onDownload,
   onInstall,
   onContinue,
@@ -90,38 +91,40 @@ export default function AppEntryPrepare({
           {t('entry.prepare.lead')}
         </p>
 
-        <div
-          style={{
-            borderRadius: 14,
-            border: `1.5px solid ${installed ? `${T.actII}66` : `${T.ember}55`}`,
-            background: installed ? `${T.actII}0f` : `${T.ember}0a`,
-            padding: '18px 16px 8px',
-            marginBottom: 12,
-          }}
-          data-testid="app-entry-a2hs"
-          data-installed={installed ? 'true' : 'false'}
-        >
-          <p
+        {hideA2hs ? null : (
+          <div
             style={{
-              margin: '0 0 4px',
-              fontSize: 10,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: installed ? T.actII : T.ember,
-              fontWeight: 600,
+              borderRadius: 14,
+              border: `1.5px solid ${installed ? `${T.actII}66` : `${T.ember}55`}`,
+              background: installed ? `${T.actII}0f` : `${T.ember}0a`,
+              padding: '18px 16px 8px',
+              marginBottom: 12,
             }}
+            data-testid="app-entry-a2hs"
+            data-installed={installed ? 'true' : 'false'}
           >
-            {installed ? t('entry.prepare.done') : t('entry.prepare.recommended')}
-          </p>
-          <HomeScreenInstallOption
-            installed={installed}
-            canPromptInstall={canPromptInstall}
-            showIosInstructions={showIosInstructions}
-            onInstall={onInstall}
-            tone="dark"
-            embedded
-          />
-        </div>
+            <p
+              style={{
+                margin: '0 0 4px',
+                fontSize: 10,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: installed ? T.actII : T.ember,
+                fontWeight: 600,
+              }}
+            >
+              {installed ? t('entry.prepare.done') : t('entry.prepare.recommended')}
+            </p>
+            <HomeScreenInstallOption
+              installed={installed}
+              canPromptInstall={canPromptInstall}
+              showIosInstructions={showIosInstructions}
+              onInstall={onInstall}
+              tone="dark"
+              embedded
+            />
+          </div>
+        )}
 
         <button
           type="button"

@@ -24,6 +24,7 @@ import {
   clearSkipSwOnce,
 } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
+import { NativePublicLandingRoute } from '../lib/nativeAppEntry.jsx'
 import { RequireAccess } from '../lib/requireAccess.jsx'
 import {
   LazyAccessConfirmedPage,
@@ -76,8 +77,14 @@ if (import.meta.env.DEV) {
 // Apex chronowalk.com serves the public marketing homepage directly.
 // Purchasers reach setup only via /access and post-purchase routes - not a
 // silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
+// Native iOS never mounts the landing: `/` redirects at render time to
+// `/home` or `/access` from the existing local entitlement session.
 function PublicLandingRoute() {
-  return <LazyLandingPage />
+  return (
+    <NativePublicLandingRoute>
+      <LazyLandingPage />
+    </NativePublicLandingRoute>
+  )
 }
 
 function TourDebugBootstrap() {
