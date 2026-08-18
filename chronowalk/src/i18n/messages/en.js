@@ -733,7 +733,7 @@ export const enMessages = Object.freeze({
   'native.content.locked': 'Locked',
   'native.explore.title': 'Explore Rome',
   'native.explore.body': 'Heroes and small things worth noticing, grouped by what you can actually use.',
-  'native.discovery.done': 'Done — keep exploring',
+  'native.discovery.done': 'Done',
   'native.discovery.keep': 'Keep exploring',
   'native.discovery.lookHere': 'Look here:',
   'native.discovery.audio': 'Audio will play here when the file is ready.',

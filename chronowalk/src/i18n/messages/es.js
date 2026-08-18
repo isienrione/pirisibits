@@ -737,7 +737,7 @@ export const esMessages = Object.freeze({
   'native.content.locked': 'Bloqueado',
   'native.explore.title': 'Explorar Roma',
   'native.explore.body': 'Experiencias y cosas pequeñas que vale la pena notar, agrupadas por lo que puedes usar.',
-  'native.discovery.done': 'Listo — seguir explorando',
+  'native.discovery.done': 'Listo',
   'native.discovery.keep': 'Seguir explorando',
   'native.discovery.lookHere': 'Mira aquí:',
   'native.discovery.audio': 'El audio se reproducirá aquí cuando el archivo esté listo.',

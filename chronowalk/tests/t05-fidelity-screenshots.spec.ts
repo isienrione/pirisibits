@@ -52,8 +52,11 @@ test.describe('T05.2 native fidelity screenshots', () => {
         localStorage.setItem('cw_dev_native_preview', '1')
         localStorage.setItem('cw_marketing_consent', 'declined')
         localStorage.setItem('cw_analytics_consent', 'declined')
-        localStorage.removeItem('cw_guest_v1')
-        localStorage.removeItem('cw_route_v1')
+        if (!sessionStorage.getItem('cw_fidelity_boot')) {
+          localStorage.removeItem('cw_guest_v1')
+          localStorage.removeItem('cw_route_v1')
+          sessionStorage.setItem('cw_fidelity_boot', '1')
+        }
       })
 
       await page.goto('/welcome?nativePreview=1')
@@ -96,7 +99,7 @@ test.describe('T05.2 native fidelity screenshots', () => {
       await page.getByTestId('native-context-location-skip').click()
 
       await page.waitForURL(/\/plan/)
-      await expect(page.getByTestId('plan-title').or(page.getByTestId('native-plan'))).toBeVisible({ timeout: 20_000 })
+      await expect(page.getByTestId('plan-title')).toBeVisible({ timeout: 20_000 })
       await shot(page, dirs, '03-plan')
 
       await page.goto('/home?nativePreview=1')
@@ -133,9 +136,7 @@ test.describe('T05.2 native fidelity screenshots', () => {
       await shot(page, dirs, '11-map')
 
       await page.goto('/journal?nativePreview=1')
-      await expect(page.getByTestId('native-saved').or(page.getByTestId('saved-empty')).or(page.locator('[data-testid="native-saved"]'))).toBeVisible({
-        timeout: 12_000,
-      })
+      await expect(page.getByTestId('native-saved')).toBeVisible({ timeout: 12_000 })
       await shot(page, dirs, '12-saved')
 
       await page.goto('/route?nativePreview=1')
