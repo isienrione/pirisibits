@@ -3,10 +3,11 @@
 **Contract:** [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md)  
 **Checklist:** [`IOS_SUBMISSION_CHECKLIST.md`](./IOS_SUBMISSION_CHECKLIST.md)  
 **Commerce:** [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)  
+**Identity:** [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md)  
 **Branch:** `cursor/ios-appstore-2026-08-29` from `figma`  
 **Calendar:** 17 Aug (planning) → 29 Aug (Submit for Review)
 
-**Amendment 2026-08-18:** free-entry Welcome; `/access` is secondary; Rome IAPs are geographic coverage mapped to existing entitlements.
+**Amendment 2026-08-18:** guest-first Welcome; Sign in secondary; access codes = external claim; optional ChronoWalk account; canonical entitlements ≠ purchases.
 
 This plan calendarizes **P0 only**. P1 ships solely if it is already stable before RC freeze on 28 Aug. P1 must never slip 29 Aug.
 
@@ -101,10 +102,11 @@ Apple admin + bundle ID (17)
 **Build:** P0.2, P0.3, start P0.15/P0.16 constraints
 
 - iOS root ≠ marketing `/` and ≠ A2HS / Prepare-as-install
-- **First run → `/welcome`** (new native first-run screen; do not reuse web post-purchase `WelcomeFlow` as the front door)
-- Primary CTA starts free exploration → Context; secondary CTA → existing `/access`
-- Returning free user → `/home` (Discover); entitled → `/home`
-- **Do not** send unentitled first-run users to `/access` or a purchase wall
+- **First run → `/welcome`** (new native first-run screen; do not reuse web post-purchase `WelcomeFlow`)
+- Primary CTA starts **guest** exploration → Context; secondary CTA → **Sign in** (stub OK if Auth is not ready; must not be access-code paste)
+- Returning guest → `/home`; returning authenticated → `/home`
+- **Do not** send first-run guests to `/access` or a purchase/signup wall
+- Claim UI (“I bought elsewhere”) is Settings, not onboarding
 - Purchase UI may still be a stub until 25 Aug, but **must not** open Paddle
 - When-In-Use Info.plist strings
 - Capacitor Geolocation wired to existing `watchPosition` path
@@ -114,7 +116,7 @@ Apple admin + bundle ID (17)
 - Do **not** re-enable the service worker
 - Hide debug / Santiago / `debugGeo` in Release
 
-**Exit:** Cold launch looks like an app. New traveler reaches Welcome then free Home without buying. Location deny does not freeze. Narration continues when the phone locks (or a tracked gap is filed as P0 bug, not ignored).
+**Exit:** Cold launch looks like an app. New traveler reaches Welcome then **guest** Home without buying, emailing, or creating an account. Location deny does not freeze. Narration continues when the phone locks (or a tracked gap is filed as P0 bug, not ignored).
 
 ---
 
@@ -206,6 +208,8 @@ Apple admin + bundle ID (17)
 - Map Apple product IDs → existing `rome-essential` / `rome-central` / `rome-complete`
 - Native UI names: Ancient Rome / Historic Center / All Central Rome (not Historica / Antica / Eterna)
 - Contextual paywall on **start locked content** (StoreKit localized prices; Restore)
+- Optional account prompt **at purchase**, not as a gate to the paywall browse
+- Apple Restore without ChronoWalk account or access code
 - iOS compile-time/runtime gate: **no** Paddle/Lemon checkout
 - Free Pantheon (`w17`/`w23`) remains playable without IAP
 - Sandbox buy on device
@@ -223,8 +227,9 @@ Apple admin + bundle ID (17)
 
 **Build:** P0.13, P0.14, P0.15, finish P0.17
 
-- Native Restore Purchases
-- Email restore remains for web purchases only, labeled, reached from Welcome secondary CTA / Settings — **not** first-run
+- Native Restore Purchases (StoreKit; no access code; no account required)
+- External claim: Settings → “I bought ChronoWalk elsewhere” (reuse `redeem_purchase_claim`) — **not** Welcome secondary
+- If accounts ship this sprint: Sign in with Apple (+ Google/email as ready); **in-app deletion**
 - Reviewer Mode: not a debug panel, not production `debugGeo` URL
 - Reviewer can finish one full loop outside Rome without paying
 - PostHog replay **off** on iOS; no Google Ads in native binary
@@ -289,6 +294,7 @@ Apple admin + bundle ID (17)
 | Icons, splash, screenshots | 18–28 | Assets can lag code; listing cannot lag 28 Aug |
 | Flagship Reveal visual QA | 23 | Content, not architecture |
 | Web Paddle watch | every day after 19 | Any iOS checkout gate must be platform-specific |
+| Auth / Sign in with Apple | 25–26 | Guest loop on 19 **must not wait**. Account prompt at purchase. If Google ships, Apple Sign In is mandatory. Deletion if accounts ship. |
 | EN/ES copy for Context/Discover/Best Next | 20–24 | Can trail ranking by hours, not days |
 
 ---
@@ -312,7 +318,7 @@ Do not schedule:
 |---|---|---|
 | No iOS project exists | Audit 2026-08-17 | 18 Aug is 100% Capacitor; no product UI that day |
 | 3.1.1 Paddle | Only digital checkout is Paddle | Platform gate + StoreKit 25 Aug; cannot slip past 26 |
-| Paywall-before-product | Prior contract sent unentitled users to `/access` | 19 Aug Welcome + free Home; paywall only on start-locked |
+| Paywall-before-product | Prior contract / T02 sent guests to `/access` | 19 Aug Welcome + **guest** Home; paywall only on start-locked; Sign in is Welcome secondary, not claim paste |
 | Home is a tour hub | `RedesignHomeScreen.jsx` | Replace Home on 21 Aug for **all** iOS users, not a visual tweak on 28 Aug |
 | No Hero ranking fields | Manifest has geo, not interest/timeCost | 20 Aug metadata is mandatory |
 | Reviewer not in Rome | Geofence + production debug placement gated | Reviewer Mode 26 Aug is P0, not a notes footnote |
@@ -335,4 +341,4 @@ They join on **24 Aug** for loop integration and **25–26 Aug** for commerce + 
 
 ## Amendment rule
 
-If reality forces a contract change (e.g. only Complete IAP ships), amend [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md) in a dated section **Amendments** and never silently shrink Discover / Best Next back into a linear tour. Never restore “unentitled → `/access`” as the iOS front door without a written amendment.
+If reality forces a contract change (e.g. only Complete IAP ships, or accounts slip to P1), amend [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md) in a dated section **Amendments**. Never silently shrink Discover / Best Next back into a linear tour. Never restore “guest → `/access`” as the iOS front door without a written amendment. Guest loop must not be blocked on Auth.

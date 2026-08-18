@@ -5,7 +5,7 @@
 **App root:** `chronowalk/`  
 **This document overrides** informal audit scope cuts that reduced iOS 1.0 to “the existing linear Rome tour.”
 
-**Amendment 2026-08-18:** iOS is a **free-entry** app. Native first-run is `/welcome`, not `/access`. Rome iOS commerce is **geographic coverage** (Ancient Rome / Historic Center / All Central Rome), mapped to existing canonical entitlements. Details: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md).
+**Amendment 2026-08-18 (identity):** Guest → optional ChronoWalk account → canonical entitlements. Access codes are external purchase claiming only. Details: [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md). Geographic Rome coverage membership remains in [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md).
 
 Do not treat this file as a wishlist. If a later task conflicts with this contract, the contract wins unless a later written amendment is committed to this path.
 
@@ -119,9 +119,9 @@ P1 may never delay these items.
 - Lock-screen playback behavior
 - **No** background location requirement
 
-### P0.3 — iOS app entry
+### P0.3 — iOS app entry (guest)
 
-ChronoWalk iOS is **free-to-enter**. Purchase, email, transaction id, and access code are **not** required to enter.
+ChronoWalk iOS is **guest-first**. Purchase, access code, email, and account creation are **not** required to enter or to complete the free product loop.
 
 The native binary must **not** open on:
 
@@ -129,27 +129,32 @@ The native binary must **not** open on:
 - Add to Home Screen flow
 - website-oriented installation flow
 - `/access` as the primary first-run front door
+- a signup / login wall as the first screen
+
+Four objects stay separate: **User/Account**, **Journey state**, **Purchase**, **Entitlement**. Device credentials and access codes are not “the user.”
 
 Native root behavior:
 
 ```
-IF an existing valid entitlement/session exists
+IF ChronoWalk Auth session exists
   → /home
-ELSE IF the traveler has completed native onboarding previously
-  → /home in FREE mode
+ELSE IF guest has completed native onboarding
+  → /home
 ELSE
   → /welcome
 ```
 
-`/home` is Discover / Near Me for **both** free and entitled travelers (Context first if Context is unset).
+`/home` is Discover / Near Me for **guests and accounts** (Context first if Context is unset).
 
-**Welcome (native-only first-run):** premium travel-app opening, not a login form. Primary CTA **Start exploring — free** → Context. Secondary CTA **I already have access** → existing `/access`. Reuse existing cinematic assets (see commerce model); do not invent a new logo.
+**Welcome (native-only first-run):** cinematic brand opening (reuse existing video/stills). Primary CTA **Start exploring — free** → Context. Secondary CTA **Sign in** (returning accounts). Not a login form. Not access-code paste.
 
-`/access` remains the **secondary** recovery path for web / Viator / Paddle purchases.
+Account creation appears later (save/sync, purchase, link external purchases) — see identity model.
+
+**Purchases & Access** (Settings): “I bought ChronoWalk elsewhere” reuses claim/email infrastructure. `/access` may remain as that claim route.
 
 Web `/` remains the marketing landing.
 
-**Supersedes** the earlier assumption “native unentitled → `/access`.”
+**Supersedes** native unentitled → `/access` (including T02 `nativeAppEntry.jsx` behavior until a later runtime task).
 
 ### P0.4 — Context V0
 
@@ -198,7 +203,7 @@ The manifest / structured content layer is sufficient for iOS 1.0.
 
 ### P0.6 — Discover / Near Me V0
 
-The product Home for **every** iOS traveler (free or entitled) must become a simple recommendation surface.
+The product Home for **every** iOS traveler (guest or entitled) must become a simple recommendation surface.
 
 It must answer: **“What's worth experiencing from here?”**
 
@@ -319,7 +324,7 @@ Native iOS Rome offerings are **geographic coverage** (not customer-facing Histo
 
 Treat as **non-consumable** one-time unlocks, subject to App Store Connect.
 
-Exact Hero membership, overlaps, and flags: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md). Do not guess waypoint lists in UI copy.
+Exact Hero membership, overlaps, and flags: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md). Identity / guest / account / entitlement objects: [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md).
 
 Architecture must be **city → offerings → unlock scopes → content membership**. Do not hardcode three zones as a global rule (a later city may be one pass).
 
@@ -331,9 +336,21 @@ Do not implement Couple / Family IAP in 1.0 (P1). Upgrade/crossgrade rules are *
 
 ### P0.13 — Restore Purchases
 
-Native Restore Purchases must exist and restore Apple transactions.
+Native Restore Purchases must exist and restore **Apple** transactions via StoreKit. It must work **without** a ChronoWalk account and **without** an access code.
 
-Email / code restoration via `/access` remains for web-originated purchases. It is **not** the iOS first-run door and is **not** a substitute for Apple restore.
+External (Paddle / Viator / web) claiming is a separate Settings flow using existing claim tokens. It is not Apple Restore and not first-run.
+
+### P0.13a — ChronoWalk account (iOS 1.0 target)
+
+Optional account. Providers: Sign in with Apple, Continue with Google, Continue with email. **No Facebook.**
+
+Do not implement auth in the same commit as this contract. Guest loop must not wait on auth UI.
+
+If Google ships, Sign in with Apple is mandatory (App Store 4.8).
+
+### P0.13b — Account deletion
+
+If accounts ship, in-app account deletion is required (5.1.1(v)). Minimal profile. Guest core features remain without an account.
 
 ### P0.14 — Reviewer Mode
 
@@ -367,6 +384,9 @@ For iOS:
 - App Privacy answers must match actual collection
 - no ATT unless actual cross-app / site tracking requires it
 - location purpose text must match actual When-In-Use behavior
+- Sign in with Apple / Google / email declared only if actually shipped
+- in-app account deletion if accounts ship
+- no unnecessary social profile collection
 
 ### P0.16 — Offline / resume
 
@@ -490,7 +510,9 @@ Submission is allowed only when:
 - [ ] at least flagship Reveal path works
 - [ ] completion triggers Best Next
 - [ ] Best Next can start another experience
-- [ ] first-run `/welcome` → free Context/Discover works without purchase
+- [ ] first-run `/welcome` → guest Context/Discover/Pantheon works without purchase, email, code, or account
+- [ ] Welcome secondary is Sign in, not access-code onboarding
+- [ ] `/access` is claim-only, not the native front door
 - [ ] contextual paywall appears only when starting locked content
 - [ ] purchases work
 - [ ] Restore Purchases works
@@ -529,9 +551,10 @@ At Release Candidate freeze, only fix:
 
 - Practical pass/fail list: [`IOS_SUBMISSION_CHECKLIST.md`](./IOS_SUBMISSION_CHECKLIST.md)
 - Day-by-day plan: [`IOS_SPRINT_PLAN_2026-08-29.md`](./IOS_SPRINT_PLAN_2026-08-29.md)
-- Commerce / free mode / zone membership: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)
+- Identity / guest / account / entitlements: [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md)
+- Rome zone Hero membership: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)
 
-Capacitor T01 is already on this branch. This amendment is **docs only** — do not implement Welcome, StoreKit, or zone gating in the same commit.
+This amendment is **docs only** — do not implement Welcome, Auth, StoreKit, or zone gating in the same commit.
 
 ---
 
@@ -548,3 +571,11 @@ Capacitor T01 is already on this branch. This amendment is **docs only** — do 
 **Now:** Ancient Rome / Historic Center / All Central Rome, mapped to existing `rome-essential` / `rome-central` / `rome-complete` entitlements. Proposed Apple IDs and Hero membership live in [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md).
 
 **Does not change:** Golden Loop, 21 Hero inventory, Paddle-web-only, Capacitor local bundle, Reviewer Mode, P1/P2 lists.
+
+### 2026-08-18 — Guest / account / entitlement split
+
+**Replaces:** entitlement-or-access-code as native identity; Welcome secondary “I already have access.”
+
+**Now:** Guest (local journey) → optional ChronoWalk account (Apple / Google / email) → canonical entitlements[]. Purchases are a separate object. Access codes = Settings “bought elsewhere.” Welcome secondary = **Sign in**. Account deletion required if accounts ship.
+
+**Does not implement:** Auth, StoreKit, Welcome UI.

@@ -3,11 +3,12 @@
 **Status:** Working checklist for the August 29, 2026 submission  
 **Contract:** [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md)  
 **Plan:** [`IOS_SPRINT_PLAN_2026-08-29.md`](./IOS_SPRINT_PLAN_2026-08-29.md)  
-**Commerce:** [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)  
+**Commerce:** [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md) (Rome membership)  
+**Identity:** [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md)  
 **Branch:** `cursor/ios-appstore-2026-08-29`  
 **Base:** `figma`
 
-**Amendment 2026-08-18:** free-entry iOS; `/welcome` first-run; geographic IAPs. `/access` is secondary restore only.
+**Amendment 2026-08-18:** guest-first; optional ChronoWalk account; entitlements ≠ purchases ≠ access codes. `/access` is external claim only.
 
 Mark each item `[x]` only when objectively true. If an item cannot be verified, it is **FAIL**.
 
@@ -97,13 +98,13 @@ Contract loop: Context → Discover → Walk → Arrive → Experience → Revea
 - [ ] **Context V0** collects interests (closed set), time budget, and location permission + fix (or explicit skip).
 - [ ] Context selections persist across kill / relaunch (`localStorage` or equivalent Capacitor storage).
 - [ ] Context is not a long survey (one short screen, not a multi-page quiz).
-- [ ] Product Home is **Discover / Near Me** for free **and** entitled travelers, not a linear “stop 4 of 21” tour dashboard as the primary story.
+- [ ] Product Home is **Discover / Near Me** for **guests** and entitled travelers, not a linear “stop 4 of 21” tour dashboard as the primary story.
 - [ ] Discover shows **1 primary** + **up to 2 alternatives**.
 - [ ] Each card has a “Why this?” line derived only from ranking inputs (distance, interest, time, entitlement/lock, not completed).
 - [ ] Ranking uses only the 21 Heroes; no ML; no LLM; no Discoveries required.
 - [ ] Completed Heroes are excluded or ranked last according to the documented rule (document the rule in code comments + this box: `________________`).
 - [ ] Locked premium Heroes remain **visible** but are not recommended as immediately playable when a playable option exists.
-- [ ] Starting a locked Hero shows the **contextual paywall** (zone + Complete, StoreKit prices) — not `/access` as the only path.
+- [ ] Starting a locked Hero shows the **contextual paywall** (zone + Complete, StoreKit prices) — not `/access` as onboarding.
 - [ ] Accepting primary or an alternative enters **Walk** for that Hero.
 - [ ] Walk shows distance / directions using existing Mapbox / geofence stack.
 - [ ] Approaching and Arrival still function (dwell + accuracy and/or “I'm here”).
@@ -192,11 +193,12 @@ Metadata (P0.5) present for all 21:
 
 - [ ] Settings (or Access) has a control labeled **Restore Purchases** (or localized equivalent).
 - [ ] Control calls StoreKit restore / current entitlements API, not only `/access` email.
-- [ ] Restoring on a second device with the same Apple ID grants the same ChronoWalk unlock scopes.
+- [ ] Restoring on a second device with the same **Apple ID** grants the same ChronoWalk unlock scopes **without** an access code.
 - [ ] Restore with no purchases shows a clear empty state (not a crash, not a silent no-op).
-- [ ] Email / code restore remains available for **web-originated** purchases and is labeled as such (`/access` is secondary, not the first-run door).
-- [ ] Email restore is not the only restore path in the iOS binary.
+- [ ] External claim (“I bought ChronoWalk elsewhere”) remains for **web/Viator/Paddle** and is labeled as such.
+- [ ] Email/code claim is not the only restore path in the iOS binary and is **not** first-run.
 - [ ] Restore does not wipe tour progress unless the user confirms a separate “Start over” action.
+- [ ] ChronoWalk account is optional for Apple Restore.
 
 **Pass/fail:** H is FAIL if Apple restore is missing or is implemented as “paste your email code.”
 
@@ -204,16 +206,18 @@ Metadata (P0.5) present for all 21:
 
 ## I. Entitlement mapping
 
-- [ ] Apple transaction → existing access model (`purchasedProductId` / `contentProductId` / device credential) — no second parallel “iOS-only inventory.”
+- [ ] Apple transaction → canonical **entitlement** row (`cityId` / `scopeId` / `source`), mapped from existing `contentProductId` — not a second inventory.
+- [ ] User/account, journey state, purchase, and entitlement are stored as separate concepts (see identity model).
+- [ ] Guests persist Context/progress locally without a purchase credential.
 - [ ] `rome-complete` unlocks all 21 Heroes (iOS name: All Central Rome).
-- [ ] `rome-essential` (Ancient Rome) and `rome-central` (Historic Center) unlock sets match [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md) Hero tables (not landing `stopCount` 8/12).
-- [ ] Server or on-device mapping is idempotent (replayed webhook / restore does not duplicate-corrupt seats).
-- [ ] Free mode: traveler can complete Pantheon `w17`+`w23` with no paid entitlement.
-- [ ] Unentitled user cannot **start** other paid Hero audio (cards remain visible; start → contextual paywall).
+- [ ] `rome-ancient` (`rome-essential`) and `rome-historic-center` (`rome-central`) match [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md) Hero tables.
+- [ ] Free grant: traveler can complete Pantheon `w17`+`w23` with no paid entitlement and no account.
+- [ ] Unentitled guest cannot **start** other paid Hero audio (cards remain visible; start → contextual paywall).
+- [ ] Web Paddle entitlements still redeem via claim tokens; Settings “bought elsewhere” attaches them to guest session or account.
 - [ ] Reviewer credentials do not grant production customers extra access and cannot be guessed from the UI.
-- [ ] Web Paddle entitlements still redeem via `/access` on the website **and** as a secondary iOS path.
+- [ ] Server or on-device mapping is idempotent (replayed webhook / restore does not duplicate-corrupt seats).
 
-**Pass/fail:** I is FAIL if IAP unlocks a different 21-stop truth than web, paid audio plays without entitlement, or Pantheon requires purchase on iOS.
+**Pass/fail:** I is FAIL if IAP unlocks a different 21-stop truth than web, paid audio plays without entitlement, Pantheon requires purchase/account on iOS, or device-credential is treated as the only user model.
 
 ---
 
@@ -254,6 +258,9 @@ Metadata (P0.5) present for all 21:
 - [ ] Privacy Nutrition: Purchases, Product Interaction, Diagnostics as applicable — each with correct linked/not linked.
 - [ ] Support URL and Privacy Policy URL are HTTPS and load.
 - [ ] Location purpose string == actual behavior (foreground walk only).
+- [ ] If accounts ship: Sign in with Apple / Google / email listed in App Privacy.
+- [ ] If accounts ship: **in-app account deletion** works; guest core features remain.
+- [ ] No Facebook login; no extra social profile scrape.
 
 P0.17 events observed in a debug build log or PostHog project (iOS source):
 
@@ -271,7 +278,7 @@ P0.17 events observed in a debug build log or PostHog project (iOS source):
 - [ ] `offline_session`
 - [ ] `session_resumed`
 
-**Pass/fail:** K is FAIL if replay/ads leak into iOS, or nutrition labels omit location / purchase / analytics that the binary uses.
+**Pass/fail:** K is FAIL if replay/ads leak into iOS, nutrition labels omit location / purchase / analytics / sign-in that the binary uses, or accounts ship without in-app deletion.
 
 ---
 
@@ -314,12 +321,13 @@ P0.17 events observed in a debug build log or PostHog project (iOS source):
 - [ ] Portrait only **or** landscape explicitly tested; contract default is portrait.
 - [ ] No “Add to Home Screen”, “Open in Safari”, “Refresh the app shell”, or PWA update toast in the native binary.
 - [ ] No marketing landing (`ChronoWalkLanding`) as the iOS root.
-- [ ] Cold install without entitlement opens **Welcome** (`/welcome`), not `/access` and not the website landing.
-- [ ] Welcome primary CTA starts free exploration (Context); secondary CTA is “I already have access.”
+- [ ] Cold install without account or purchase opens **Welcome** (`/welcome`), not `/access` and not the website landing.
+- [ ] Welcome primary CTA starts **guest** exploration (Context); secondary CTA is **Sign in**.
+- [ ] “I bought ChronoWalk elsewhere” lives under Settings / Purchases & Access (claim), not first-run.
 - [ ] Dark/light: shipping look matches design (obsidian/bone) without iOS inverted colors glitch.
 - [ ] Dynamic Type: primary CTAs remain tappable at Larger Text (spot check).
 
-**Pass/fail:** N is FAIL if iOS root is the website landing, first-run is `/access`, A2HS appears, or safe-area CTAs are unusable on a notched device.
+**Pass/fail:** N is FAIL if iOS root is the website landing, first-run is `/access` or a signup wall, A2HS appears, or safe-area CTAs are unusable on a notched device.
 
 ---
 

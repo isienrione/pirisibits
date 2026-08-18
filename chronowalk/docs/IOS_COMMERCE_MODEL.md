@@ -1,12 +1,14 @@
 # ChronoWalk iOS commerce model
 
-**Status:** FROZEN product intent for iOS 1.0 (amended 2026-08-18)  
+**Status:** FROZEN Rome **coverage membership** for iOS 1.0  
+**Identity / guest / account / entitlements:** [`IOS_IDENTITY_AND_COMMERCE_MODEL.md`](./IOS_IDENTITY_AND_COMMERCE_MODEL.md)  
 **Contract:** [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md)  
-**This file does not implement StoreKit.** Runtime mapping ships in later tasks.
+**This file does not implement StoreKit.**
 
 Rome consumer packaging on **native iOS** is geographic coverage, not Historica / Antica / Eterna.  
-Web Paddle may keep existing catalog names until a separate web amendment.  
-Apple transactions and web transactions must grant the **same canonical entitlements**.
+Guest-first identity is defined in the identity model. This file keeps the **audited Hero membership tables**.
+
+Canonical scope ids: `rome-free`, `rome-ancient` (maps `rome-essential`), `rome-historic-center` (maps `rome-central`), `rome-complete`.
 
 ---
 
@@ -27,27 +29,28 @@ Do **not** require purchase, email, transaction id, or access code to:
 - receive Best Next
 - use Settings
 
-`/access` is a **secondary** recovery path for people who already bought on web / Viator / Paddle.
+`/access` is **external purchase claiming** (Settings → Purchases & Access), not first-run. See identity model.
 
 ---
 
 ## 2. Native iOS entry (not a paywall)
 
 ```
-IF valid entitlement/session exists
+IF ChronoWalk Auth session exists
   → /home
-ELSE IF native onboarding previously completed
-  → /home in FREE mode
+ELSE IF guest has completed native onboarding
+  → /home
 ELSE
   → /welcome
 ```
 
 | Native state | Destination |
 |---|---|
-| First run (no onboarding, no entitlement) | `/welcome` |
-| Returning, free (onboarding done, no paid entitlement) | `/home` in FREE mode |
-| Returning, entitled | `/home` |
-| Explicit “I already have access” | `/access` |
+| First-run guest | `/welcome` |
+| Returning guest (onboarding done) | `/home` |
+| Returning authenticated user | `/home` |
+| Sign in | Auth — **not** `/access` |
+| I bought elsewhere | Settings claim flow (may reuse `/access` internals) |
 
 Web `/` remains the marketing landing.  
 Do not use native unentitled → `/access` as the front door.
@@ -268,7 +271,7 @@ When the traveler **starts** locked premium content:
 3. Primary CTA: unlock the relevant zone — **StoreKit localized price**.
 4. Secondary CTA: unlock All Central Rome — **StoreKit localized price**.
 5. Tertiary: Restore Purchases.
-6. Optional: “I already have access” → `/access` (web/OTA recovery).
+6. Optional: Restore Purchases (Apple) and “I bought ChronoWalk elsewhere” (claim) — not first-run.
 
 Example (copy intent, not final strings):
 
