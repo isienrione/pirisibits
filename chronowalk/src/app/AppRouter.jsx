@@ -54,6 +54,12 @@ import {
   LazyExplorePage,
   LazyDiscoveryPage,
   LazyBestNextPage,
+  LazyPlanPage,
+  LazyActiveRoutePage,
+  LazyWalkPage,
+  LazyArrivalPage,
+  LazyAdjustPlanPage,
+  LazyMysteryPage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
   LazyLegalRefundPage,
@@ -123,6 +129,11 @@ const JOURNEY_CHROME_PATHS = new Set([
   '/setup',
   '/context',
   '/explore',
+  '/plan',
+  '/route',
+  '/walk',
+  '/arrive',
+  '/next',
   '/walk-together',
   '/journal',
   '/letter',
@@ -138,6 +149,11 @@ function JourneyChrome() {
     pathname.startsWith('/preview/') ||
     pathname.startsWith('/experience/') ||
     pathname.startsWith('/discovery/') ||
+    pathname.startsWith('/plan') ||
+    pathname.startsWith('/route') ||
+    pathname === '/walk' ||
+    pathname === '/arrive' ||
+    pathname.startsWith('/mystery') ||
     pathname === '/next'
 
   if (!onJourneyChrome) return null
@@ -176,6 +192,13 @@ function AppRoutes() {
         <Route path="/experience/:heroId" element={<AppShell requireOnboardedGuest><LazyExperiencePage /></AppShell>} />
         <Route path="/discovery/:discoveryId" element={<AppShell requireOnboardedGuest><LazyDiscoveryPage /></AppShell>} />
         <Route path="/next" element={<AppShell requireOnboardedGuest><LazyBestNextPage /></AppShell>} />
+        <Route path="/plan" element={<AppShell requireOnboardedGuest><LazyPlanPage /></AppShell>} />
+        <Route path="/route" element={<AppShell requireOnboardedGuest><LazyActiveRoutePage /></AppShell>} />
+        <Route path="/route/adjust" element={<AppShell requireOnboardedGuest><LazyAdjustPlanPage /></AppShell>} />
+        <Route path="/walk" element={<AppShell requireOnboardedGuest><LazyWalkPage /></AppShell>} />
+        <Route path="/arrive" element={<AppShell requireOnboardedGuest><LazyArrivalPage /></AppShell>} />
+        <Route path="/mystery" element={<AppShell requireOnboardedGuest><LazyMysteryPage /></AppShell>} />
+        <Route path="/mystery/:routeItemId" element={<AppShell requireOnboardedGuest><LazyMysteryPage /></AppShell>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<AppShell requireOnboardedGuest><LazyJourneyPage /></AppShell>} />
         <Route path="/map" element={<AppShell requireOnboardedGuest><LazyMapPage /></AppShell>} />

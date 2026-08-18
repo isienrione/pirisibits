@@ -4,6 +4,8 @@ import { hasValidLocalAccess } from './accessSession.js'
 import { hasCompletedGuestOnboarding, hasGuestSession } from './guestSession.js'
 import { isNativeIOS } from './platform.js'
 import { track, TRACK_EVENTS } from './track.js'
+import { getActiveRoute } from './route/store.js'
+import { isRouteLive } from './route/model.js'
 
 /**
  * Native iOS boot destination for the root path only.
@@ -15,8 +17,13 @@ import { track, TRACK_EVENTS } from './track.js'
  */
 export function resolveNativeRootEntry() {
   if (!isNativeIOS()) return { path: null, reason: 'web' }
-  if (hasValidLocalAccess()) return { path: '/home', reason: 'entitled' }
-  if (hasCompletedGuestOnboarding()) return { path: '/home', reason: 'guest' }
+  if (hasValidLocalAccess() || hasCompletedGuestOnboarding()) {
+    const active = getActiveRoute()
+    if (isRouteLive(active)) {
+      return { path: '/route', reason: active.status === 'paused' ? 'resume' : 'active-route' }
+    }
+    return { path: '/home', reason: hasValidLocalAccess() ? 'entitled' : 'guest' }
+  }
   if (hasGuestSession()) return { path: '/context', reason: 'context' }
   return { path: '/welcome', reason: 'first-run' }
 }

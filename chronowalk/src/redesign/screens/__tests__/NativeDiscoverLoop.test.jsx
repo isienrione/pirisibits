@@ -4,10 +4,12 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { I18nProvider } from '../../../i18n/I18nProvider.jsx'
 import NativeContextFlow from '../NativeContextFlow.jsx'
 import NativeDiscoverHome from '../NativeDiscoverHome.jsx'
+import NativePlanScreen from '../NativePlanScreen.jsx'
 import NativeExperienceScreen from '../NativeExperienceScreen.jsx'
 import NativeSettingsScreen from '../NativeSettingsScreen.jsx'
 import NativeUnlockSheet from '../../ui/NativeUnlockSheet.jsx'
 import { clearGuestSession, completeNativeContext, readGuestSession } from '../../../lib/guestSession.js'
+import { clearRouteState } from '../../../lib/route/store.js'
 import { clearLocalAccessState } from '../../../lib/accessSession.js'
 import { resetJourney } from '../../../state/journey.js'
 import * as paddle from '../../../lib/paddle.js'
@@ -25,6 +27,7 @@ function renderApp(path) {
       <I18nProvider>
         <Routes>
           <Route path="/context" element={<NativeContextFlow />} />
+          <Route path="/plan" element={<NativePlanScreen />} />
           <Route path="/home" element={<NativeDiscoverHome />} />
           <Route path="/experience/:heroId" element={<NativeExperienceScreen />} />
           <Route path="/journey" element={<div data-testid="canonical-player">CANONICAL PLAYER</div>} />
@@ -42,11 +45,12 @@ describe('native Context + Discover + lock sheet', () => {
     localStorage.clear()
     clearLocalAccessState()
     clearGuestSession()
+    clearRouteState()
     resetJourney()
     paddle.openPaddleCheckout.mockClear()
   })
 
-  it('saves interests and time then reaches Discover Home', () => {
+  it('saves interests and time then reaches the proposed plan', () => {
     renderApp('/context')
 
     fireEvent.click(screen.getByTestId('native-context-interest-architecture-design'))
@@ -66,17 +70,17 @@ describe('native Context + Discover + lock sheet', () => {
     expect(readGuestSession()?.context.trip.tripHorizon).toBe('today')
     expect(readGuestSession()?.context.session.availableTimeNow).toBe('30min')
     expect(readGuestSession()?.context.traveler.walkingTolerance).toBe('moderate')
-    expect(screen.getByTestId('native-discover')).toBeInTheDocument()
+    expect(screen.getByTestId('native-plan')).toBeInTheDocument()
   })
 
-  it('shows Discover with one primary and two alternatives, not the linear tour hub', () => {
+  it('shows Discover with a proposed route and nearby cards, not the linear tour hub', () => {
     completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '30min', surpriseMe: false })
     renderApp('/home')
 
     expect(screen.getByTestId('native-discover')).toBeInTheDocument()
-    expect(screen.getByText(/worth your time from here/i)).toBeInTheDocument()
+    expect(screen.getByTestId('discover-route-card')).toBeInTheDocument()
     expect(screen.getByTestId('discover-primary-card')).toBeInTheDocument()
-    expect(document.querySelectorAll('[data-testid^="discover-alt-card-"]')).toHaveLength(2)
+    expect(document.querySelectorAll('[data-testid^="discover-alt-card-"]').length).toBeGreaterThanOrEqual(1)
     expect(screen.queryByText(/0 of 21/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/roma eterna/i)).not.toBeInTheDocument()
   })

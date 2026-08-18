@@ -10,6 +10,7 @@ import {
   removeSavedExperience,
 } from '../../lib/guestSession.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
+import { completeRouteContent } from '../../lib/route/complete.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
@@ -46,6 +47,10 @@ export default function NativeDiscoveryScreen() {
     }
     recordCompletedExperience(item.id)
     track(TRACK_EVENTS.RECOMMENDATION_ACCEPTED, { content_id: item.id, type: 'discovery' })
+    if (completeRouteContent(item.id)) {
+      navigate('/next')
+      return
+    }
     navigate(`/next?exclude=${encodeURIComponent(item.id)}`)
   }
 

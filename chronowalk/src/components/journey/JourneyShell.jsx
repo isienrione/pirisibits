@@ -38,6 +38,7 @@ import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '..
 import { canAccessHero } from '../../lib/contentAccess.js'
 import { shouldTrackFreeExperienceComplete } from '../../lib/heroExperience.js'
 import { isNativeIOS } from '../../lib/platform.js'
+import { completeRouteContent, hasLiveRoute } from '../../lib/route/complete.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
 import {
@@ -1491,8 +1492,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (state === JOURNEY_STATES.COMPLETE || step?.done) {
     if (isNativeIOS()) {
-      const excludeId = context?.customWaypointIds?.[0] || step?.id || ''
-      const search = excludeId ? `?exclude=${encodeURIComponent(excludeId)}` : ''
+      const completedId = context?.customWaypointIds?.[0] || step?.id || ''
+      if (hasLiveRoute()) {
+        completeRouteContent(completedId || step?.id)
+        return <Navigate to="/next" replace />
+      }
+      const search = completedId ? `?exclude=${encodeURIComponent(completedId)}` : ''
       return <Navigate to={`/next${search}`} replace />
     }
     if (variant === 'redesign') {

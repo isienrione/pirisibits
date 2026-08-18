@@ -36,6 +36,11 @@ export const SHELL_COMPANION_PATHS = [
   '/stops',
   '/settings',
   '/explore',
+  '/plan',
+  '/route',
+  '/walk',
+  '/arrive',
+  '/next',
 ]
 
 export function isWalkTabVisible(state) {
@@ -78,13 +83,16 @@ export function isCompanionShellPath(pathname) {
   if (pathname?.startsWith('/experience/')) return true
   if (pathname?.startsWith('/discovery/')) return true
   if (pathname === '/next') return true
+  if (pathname === '/plan' || pathname === '/walk' || pathname === '/arrive') return true
+  if (pathname?.startsWith('/route')) return true
+  if (pathname?.startsWith('/mystery')) return true
   return false
 }
 
 /** Which shell tab should highlight for the current pathname. */
 export function isShellTabActive(tabTo, pathname) {
   if (tabTo === '/home') {
-    return pathname === '/home' || pathname === '/explore' || pathname === '/next' || Boolean(pathname?.startsWith('/experience/')) || Boolean(pathname?.startsWith('/discovery/'))
+    return pathname === '/home' || pathname === '/explore' || pathname === '/next' || pathname === '/plan' || pathname === '/route' || pathname === '/walk' || pathname === '/arrive' || Boolean(pathname?.startsWith('/experience/')) || Boolean(pathname?.startsWith('/discovery/')) || Boolean(pathname?.startsWith('/route')) || Boolean(pathname?.startsWith('/mystery'))
   }
   if (tabTo === '/journey') return pathname === '/journey'
   if (tabTo === '/tour') return pathname === '/tour' || pathname === '/stops'

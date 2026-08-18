@@ -19,6 +19,7 @@ import {
   subInterestsForParents,
 } from '../../lib/travelContext/index.js'
 import { completeNativeContext } from '../../lib/guestSession.js'
+import { composeAndSave } from '../../lib/route/index.js'
 import { getLocationFix, LOCATION_STATUS } from '../../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
@@ -183,7 +184,8 @@ export default function NativeContextFlow() {
       trip_horizon: tripHorizon,
       location_status: locationStatus,
     })
-    navigate('/home', { replace: true })
+    composeAndSave()
+    navigate('/plan', { replace: true })
   }
 
   const requestLocation = async () => {

@@ -79,6 +79,21 @@ export const TRACK_EVENTS = {
   FREE_EXPERIENCE_STARTED: 'free_experience_started',
   FREE_EXPERIENCE_COMPLETED: 'free_experience_completed',
   LOCKED_EXPERIENCE_OPENED: 'locked_experience_opened',
+  ROUTE_PROPOSED: 'route_proposed',
+  ROUTE_STARTED: 'route_started',
+  ROUTE_ADJUSTED: 'route_adjusted',
+  ROUTE_ITEM_STARTED: 'route_item_started',
+  ROUTE_ITEM_COMPLETED: 'route_item_completed',
+  ROUTE_ITEM_SKIPPED: 'route_item_skipped',
+  ROUTE_ALTERNATIVE_VIEWED: 'route_alternative_viewed',
+  ROUTE_ALTERNATIVE_SELECTED: 'route_alternative_selected',
+  MYSTERY_DISCOVERY_OFFERED: 'mystery_discovery_offered',
+  MYSTERY_DISCOVERY_ACCEPTED: 'mystery_discovery_accepted',
+  MYSTERY_DISCOVERY_REVEALED_EARLY: 'mystery_discovery_revealed_early',
+  ROUTE_PAUSED: 'route_paused',
+  ROUTE_RESUMED: 'route_resumed',
+  ROUTE_ENDED: 'route_ended',
+  ROUTE_COMPLETED: 'route_completed',
 }
 
 function notifyConsentListeners(value) {

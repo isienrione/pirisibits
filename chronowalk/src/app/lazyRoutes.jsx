@@ -163,6 +163,36 @@ export const LazyBestNextPage = lazyRoute(
   'best next',
 )
 
+export const LazyPlanPage = lazyRoute(
+  () => import('../redesign/pages/NativePlanPage.jsx'),
+  'plan',
+)
+
+export const LazyActiveRoutePage = lazyRoute(
+  () => import('../redesign/pages/NativeActiveRoutePage.jsx'),
+  'active route',
+)
+
+export const LazyWalkPage = lazyRoute(
+  () => import('../redesign/pages/NativeWalkPage.jsx'),
+  'walk',
+)
+
+export const LazyArrivalPage = lazyRoute(
+  () => import('../redesign/pages/NativeArrivalPage.jsx'),
+  'arrive',
+)
+
+export const LazyAdjustPlanPage = lazyRoute(
+  () => import('../redesign/pages/NativeAdjustPlanPage.jsx'),
+  'adjust plan',
+)
+
+export const LazyMysteryPage = lazyRoute(
+  () => import('../redesign/pages/NativeMysteryPage.jsx'),
+  'mystery',
+)
+
 export const LazyWalkTogetherPage = lazyRoute(
   () => import('../redesign/pages/RedesignWalkTogetherPage.jsx'),
   'walk together',

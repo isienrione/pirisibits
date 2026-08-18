@@ -7,6 +7,13 @@ import { getLocationFix, LOCATION_STATUS } from '../../lib/locationAccess.js'
 import { rankHeroes } from '../../lib/rankHeroes.js'
 import { getJourneySnapshot } from '../../state/journey.js'
 import { CONTENT_TYPES } from '../../content/registry/constants.js'
+import {
+  bifurcationOptions,
+  isMysteryHidden,
+  isRouteLive,
+  liveItems,
+} from '../../lib/route/index.js'
+import { useRouteState } from '../../lib/route/useRouteState.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
@@ -31,6 +38,10 @@ export default function NativeMapScreen() {
   const [zoom, setZoom] = useState('city')
   const [selected, setSelected] = useState(null)
   const [lockItem, setLockItem] = useState(null)
+  const [showAlts, setShowAlts] = useState(false)
+  const { active } = useRouteState()
+  const live = isRouteLive(active)
+  const routeItems = live ? liveItems(active) : []
 
   const catalog = useMemo(() => getRomeRankableCatalog(), [])
   const completedIds = [
@@ -83,8 +94,26 @@ export default function NativeMapScreen() {
         padding: 'max(16px, calc(env(safe-area-inset-top) + 8px)) 0 calc(var(--shell-tab-bar-height, 72px) + 8px)',
       }}
     >
-      <div style={{ padding: '0 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ padding: '0 20px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
         <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: 0 }}>{t('native.map.title')}</h1>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {live ? (
+            <button
+              type="button"
+              data-testid="native-map-alts"
+              onClick={() => setShowAlts((value) => !value)}
+              style={{
+                minHeight: 40,
+                padding: '8px 12px',
+                borderRadius: 999,
+                border: '1px solid rgba(250,246,239,0.2)',
+                background: 'transparent',
+                color: T.bone,
+              }}
+            >
+              {showAlts ? t('native.map.hideAlts') : t('native.map.showAlts')}
+            </button>
+          ) : null}
         <button
           type="button"
           data-testid="native-map-zoom"
@@ -100,6 +129,7 @@ export default function NativeMapScreen() {
         >
           {zoom === 'city' ? t('native.map.streets') : t('native.map.city')}
         </button>
+        </div>
       </div>
       <div
         data-testid="native-map-canvas"
@@ -115,6 +145,7 @@ export default function NativeMapScreen() {
       >
         {markers.map((item) => {
           if (!item.geo || !Number.isFinite(item.geo.lat)) return null
+          if (routeItems.some((row) => row.contentId === item.id && isMysteryHidden(row))) return null
           const clustered = Boolean(item.clusterCount)
           const discovery = !clustered && item.contentType === CONTENT_TYPES.DISCOVERY
           const locked = item.clusterCount ? false : !canAccessContentId(item.id)
@@ -156,6 +187,84 @@ export default function NativeMapScreen() {
             />
           )
         })}
+        {live && routeItems.length ? (
+          <div data-testid="map-active-route" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+              <polyline
+                fill="none"
+                stroke={T.gold}
+                strokeWidth="1.2"
+                points={routeItems
+                  .map((item) => catalog.find((row) => row.id === item.contentId))
+                  .filter((rec) => rec?.geo)
+                  .map((rec) => {
+                    const pos = project(rec.geo.lat, rec.geo.lng)
+                    return `${parseFloat(pos.left)} ${parseFloat(pos.top)}`
+                  })
+                  .join(' ')}
+              />
+            </svg>
+            {routeItems.map((item, index) => {
+              const rec = catalog.find((row) => row.id === item.contentId)
+              if (!rec?.geo) return null
+              const pos = project(rec.geo.lat, rec.geo.lng)
+              const mystery = isMysteryHidden(item)
+              const current = item.routeItemId === active.currentRouteItemId
+              return (
+                <span
+                  key={item.routeItemId}
+                  data-testid={`map-route-marker-${item.contentId}`}
+                  data-mystery={mystery ? 'true' : 'false'}
+                  data-current={current ? 'true' : 'false'}
+                  aria-label={mystery ? t('native.route.mysteryTitle') : rec.title}
+                  style={{
+                    position: 'absolute',
+                    left: pos.left,
+                    top: pos.top,
+                    transform: 'translate(-50%, -50%)',
+                    width: mystery ? 14 : 22,
+                    height: mystery ? 14 : 22,
+                    borderRadius: '50%',
+                    background: mystery ? '#7A9E8A' : current ? T.gold : T.bone,
+                    color: T.obsidian,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    display: 'grid',
+                    placeItems: 'center',
+                    pointerEvents: 'auto',
+                    boxShadow: current ? '0 0 0 6px rgba(212,175,55,0.25)' : 'none',
+                  }}
+                >
+                  {mystery ? '✦' : index + 1}
+                </span>
+              )
+            })}
+          </div>
+        ) : null}
+        {showAlts && live
+          ? (bifurcationOptions({ active, catalog, context: guest, position }).alternatives || []).map((option) => {
+              if (!option.item?.geo) return null
+              const pos = project(option.item.geo.lat, option.item.geo.lng)
+              return (
+                <span
+                  key={option.contentId}
+                  data-testid={`map-alt-marker-${option.contentId}`}
+                  style={{
+                    position: 'absolute',
+                    left: pos.left,
+                    top: pos.top,
+                    width: 10,
+                    height: 10,
+                    marginLeft: -5,
+                    marginTop: -5,
+                    borderRadius: '50%',
+                    border: `1.5px dashed ${T.gold}`,
+                    background: 'transparent',
+                  }}
+                />
+              )
+            })
+          : null}
         {position ? (
           <span
             data-testid="map-user-location"
@@ -178,13 +287,22 @@ export default function NativeMapScreen() {
           data-testid="native-map-preview"
           style={{ margin: '14px 16px 0', padding: 14, borderRadius: 16, background: T.charcoal }}
         >
+          {(() => {
+            const mystery = routeItems.find((row) => row.contentId === selected.id && isMysteryHidden(row))
+            const title = mystery ? t('native.route.mysteryTitle') : selected.title
+            const body = mystery ? t('native.route.mysteryTeaser') : selected.whyWorthIt
+            return (
+              <>
           <p style={{ margin: 0, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: T.muted }}>
-            {selected.contentType === CONTENT_TYPES.DISCOVERY ? t('native.content.notice') : t('native.content.experience')}
+            {mystery ? t('native.route.mysteryTitle') : selected.contentType === CONTENT_TYPES.DISCOVERY ? t('native.content.notice') : t('native.content.experience')}
             {!canAccessContentId(selected.id) ? ` · ${t('native.content.locked')}` : ''}
           </p>
-          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 22, margin: '6px 0' }}>{selected.title}</h2>
-          <p style={{ margin: 0, color: 'rgba(250,246,239,0.8)', lineHeight: 1.4 }}>{selected.whyWorthIt}</p>
+          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 22, margin: '6px 0' }}>{title}</h2>
+          <p style={{ margin: 0, color: 'rgba(250,246,239,0.8)', lineHeight: 1.4 }}>{body}</p>
           <p style={{ margin: '8px 0 12px', color: T.muted, fontSize: 13 }}>{formatDuration(selected.timeCostMin)}</p>
+              </>
+            )
+          })()}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
               type="button"

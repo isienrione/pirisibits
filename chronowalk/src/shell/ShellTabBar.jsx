@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
 import { isStandaloneMode } from '../utils/pwaInstall.js'
+import NativeRoutePill from '../redesign/ui/NativeRoutePill.jsx'
 import { getShellTabs, isCompanionShellPath, isShellTabActive, isWalkTabVisible } from './config.js'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { isNativeIOS } from '../lib/platform.js'
@@ -50,6 +51,7 @@ export default function ShellTabBar() {
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
+      <NativeRoutePill />
       <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-0.5">
         {tabs.map((tab) => {
           const active = isShellTabActive(tab.to, location.pathname)
