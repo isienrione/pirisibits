@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { I18nProvider } from '../../../i18n/I18nProvider.jsx'
 import { HERO_STOP_IDS } from '../../../i18n/audio/heroStopAudioMap.js'
@@ -111,6 +111,7 @@ describe('Rome product skeleton T04', () => {
     renderNative('/experience/w01')
     expect(screen.getByTestId('native-experience')).toBeInTheDocument()
     expect(screen.getByText(/the colosseum/i)).toBeInTheDocument()
+    cleanup()
 
     renderNative('/discovery/d_rome_22')
     expect(screen.getByTestId('native-discovery')).toBeInTheDocument()
@@ -125,6 +126,7 @@ describe('Rome product skeleton T04', () => {
     expect(screen.getByTestId('native-unlock-sheet')).toBeInTheDocument()
     expect(screen.queryByTestId('canonical-player')).not.toBeInTheDocument()
     expect(paddle.openPaddleCheckout).not.toHaveBeenCalled()
+    cleanup()
 
     renderNative('/discovery/d_rome_01')
     fireEvent.click(screen.getByTestId('discovery-done'))
