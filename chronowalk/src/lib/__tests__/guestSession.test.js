@@ -68,6 +68,41 @@ describe('guestSession', () => {
     expect(next.context.interestIds).toEqual(['architecture', 'sacred'])
     expect(next.context.timeBudgetId).toBe('30min')
     expect(next.context.locationStatus).toBe('denied')
+    expect(next.context.traveler.positiveInterestIds).toEqual(['architecture', 'sacred'])
+    expect(next.context.session.availableTimeNow).toBe('30min')
     expect(hasCompletedGuestOnboarding()).toBe(true)
+  })
+
+  it('upgrades a stored v1 context blob on read', () => {
+    ensureGuestSession()
+    const raw = JSON.parse(localStorage.getItem(GUEST_SESSION_KEY))
+    raw.version = 1
+    raw.context = {
+      interestIds: ['art'],
+      surpriseMe: false,
+      timeBudgetId: '2h',
+      locationStatus: 'granted',
+      lastPosition: { lat: 41.9, lng: 12.48, accuracy: 12, timestamp: 1 },
+      completedAt: '2026-08-01T00:00:00.000Z',
+    }
+    localStorage.setItem(GUEST_SESSION_KEY, JSON.stringify(raw))
+
+    const session = readGuestSession()
+    expect(session.context.traveler.positiveInterestIds).toEqual(['art'])
+    expect(session.context.session.availableTimeNow).toBe('2h')
+    expect(session.context.session.location.lat).toBe(41.9)
+    expect(session.context.trip.anchors).toEqual([])
+  })
+
+  it('keeps tripHorizon and availableTimeNow as different fields', () => {
+    ensureGuestSession()
+    const next = completeNativeContext({
+      traveler: { positiveInterestIds: ['history'] },
+      trip: { cityId: 'rome', tripHorizon: 'week-plus' },
+      session: { availableTimeNow: '30min' },
+    })
+    expect(next.context.trip.tripHorizon).toBe('week-plus')
+    expect(next.context.session.availableTimeNow).toBe('30min')
+    expect(next.context.timeBudgetId).toBe('30min')
   })
 })

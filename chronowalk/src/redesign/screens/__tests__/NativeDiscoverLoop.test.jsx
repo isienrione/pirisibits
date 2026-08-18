@@ -49,15 +49,23 @@ describe('native Context + Discover + lock sheet', () => {
   it('saves interests and time then reaches Discover Home', () => {
     renderApp('/context')
 
-    fireEvent.click(screen.getByTestId('native-context-interest-architecture'))
+    fireEvent.click(screen.getByTestId('native-context-interest-architecture-design'))
     fireEvent.click(screen.getByTestId('native-context-interests-continue'))
+    fireEvent.click(screen.getByTestId('native-context-refine-skip'))
+    fireEvent.click(screen.getByTestId('native-context-style-continue'))
+    fireEvent.click(screen.getByTestId('native-context-mobility-continue'))
+    fireEvent.click(screen.getByTestId('native-context-trip-horizon-today'))
+    fireEvent.click(screen.getByTestId('native-context-trip-continue'))
     fireEvent.click(screen.getByTestId('native-context-time-30min'))
     fireEvent.click(screen.getByTestId('native-context-time-continue'))
     fireEvent.click(screen.getByTestId('native-context-location-skip'))
 
     expect(readGuestSession()?.onboardingCompleted).toBe(true)
-    expect(readGuestSession()?.context.interestIds).toEqual(['architecture'])
+    expect(readGuestSession()?.context.interestIds).toEqual(['architecture-design'])
     expect(readGuestSession()?.context.timeBudgetId).toBe('30min')
+    expect(readGuestSession()?.context.trip.tripHorizon).toBe('today')
+    expect(readGuestSession()?.context.session.availableTimeNow).toBe('30min')
+    expect(readGuestSession()?.context.traveler.walkingTolerance).toBe('moderate')
     expect(screen.getByTestId('native-discover')).toBeInTheDocument()
   })
 

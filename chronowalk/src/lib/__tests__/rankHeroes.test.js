@@ -68,4 +68,30 @@ describe('Rome hero catalog + ranker V0', () => {
     })
     expect(ranked.ranked.some((hero) => hero.heroId === 'w01' && hero.locked)).toBe(true)
   })
+
+  it('accepts a TravelContext object without using tripHorizon as time available', () => {
+    const withHorizon = rankHeroes({
+      catalog,
+      context: {
+        traveler: { positiveInterestIds: ['architecture-design'] },
+        trip: { tripHorizon: 'week-plus' },
+        session: { availableTimeNow: '30min' },
+      },
+      position: { lat: 41.89885, lng: 12.47687 },
+      canAccess: (id) => canAccessHero(id),
+    })
+    const exploring = rankHeroes({
+      catalog,
+      context: {
+        traveler: { positiveInterestIds: ['architecture-design'] },
+        trip: { tripHorizon: 'week-plus' },
+        session: { availableTimeNow: 'exploring' },
+      },
+      position: { lat: 41.89885, lng: 12.47687 },
+      canAccess: (id) => canAccessHero(id),
+    })
+    expect(withHorizon.primary.heroId).toBe('w17')
+    expect(withHorizon.primary.whyReasons).toContain('Fits your 30 minutes')
+    expect(exploring.primary.whyReasons).not.toContain('Fits your 30 minutes')
+  })
 })

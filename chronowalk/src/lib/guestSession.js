@@ -5,10 +5,24 @@
  * entitled travelers. This is not a Supabase user, not a device credential,
  * and not an entitlement. The stable `id` is reserved so a future ChronoWalk
  * account can attach this guest's local journey state.
+ *
+ * Context is a Travel Context Profile (traveler / trip / session / history).
+ * Flat V0 mirrors (interestIds, timeBudgetId, …) stay on the blob for
+ * Discover and existing tests.
  */
 
+import {
+  appendHistoryEvent,
+  applyContextPatch,
+  emptyTravelContext,
+  inferTimeOfDay,
+  normalizePosition,
+  normalizeTravelContext,
+  TRAVEL_CONTEXT_VERSION,
+} from './travelContext/schema.js'
+
 export const GUEST_SESSION_KEY = 'cw_guest_v1'
-export const GUEST_SESSION_VERSION = 1
+export const GUEST_SESSION_VERSION = TRAVEL_CONTEXT_VERSION
 
 function randomGuestId() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -18,14 +32,7 @@ function randomGuestId() {
 }
 
 function emptyContext() {
-  return {
-    interestIds: [],
-    surpriseMe: false,
-    timeBudgetId: null,
-    locationStatus: null,
-    lastPosition: null,
-    completedAt: null,
-  }
+  return emptyTravelContext()
 }
 
 function emptySession() {
@@ -39,32 +46,8 @@ function emptySession() {
   }
 }
 
-function normalizePosition(value) {
-  if (!value || typeof value !== 'object') return null
-  const lat = Number(value.lat)
-  const lng = Number(value.lng)
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
-  return {
-    lat,
-    lng,
-    accuracy: Number.isFinite(Number(value.accuracy)) ? Number(value.accuracy) : null,
-    timestamp: Number(value.timestamp) || Date.now(),
-  }
-}
-
 function normalizeContext(raw) {
-  const source = raw && typeof raw === 'object' ? raw : {}
-  const interestIds = Array.isArray(source.interestIds)
-    ? source.interestIds.filter((id) => typeof id === 'string' && id.length > 0).slice(0, 3)
-    : []
-  return {
-    interestIds,
-    surpriseMe: source.surpriseMe === true,
-    timeBudgetId: typeof source.timeBudgetId === 'string' ? source.timeBudgetId : null,
-    locationStatus: typeof source.locationStatus === 'string' ? source.locationStatus : null,
-    lastPosition: normalizePosition(source.lastPosition),
-    completedAt: typeof source.completedAt === 'string' ? source.completedAt : null,
-  }
+  return normalizeTravelContext(raw)
 }
 
 function normalizeSession(parsed) {
@@ -72,7 +55,7 @@ function normalizeSession(parsed) {
   const id = typeof parsed.id === 'string' && parsed.id.startsWith('cw_guest_') ? parsed.id : null
   if (!id) return null
   return {
-    version: Number(parsed.version) || GUEST_SESSION_VERSION,
+    version: GUEST_SESSION_VERSION,
     id,
     createdAt: typeof parsed.createdAt === 'string' ? parsed.createdAt : new Date().toISOString(),
     onboardingCompleted: parsed.onboardingCompleted === true,
@@ -124,25 +107,19 @@ export function markGuestOnboardingComplete() {
 }
 
 /**
- * Persist Context V0 (interests, time, location) and mark native onboarding done.
- * Discover Home is reachable only after this.
+ * Persist the Travel Context Profile and mark native onboarding done.
+ * Accepts nested `{ traveler, trip, session, history }` and/or flat V0
+ * `{ interestIds, timeBudgetId, surpriseMe, locationStatus, lastPosition }`.
  */
 export function completeNativeContext(partial = {}) {
   const current = ensureGuestSession()
-  const merged = {
-    ...current.context,
+  const merged = applyContextPatch(current.context, {
     ...partial,
-    interestIds: Array.isArray(partial.interestIds)
-      ? partial.interestIds.filter((id) => typeof id === 'string').slice(0, 3)
-      : current.context.interestIds,
-    lastPosition:
-      partial.lastPosition !== undefined
-        ? normalizePosition(partial.lastPosition)
-        : current.context.lastPosition,
     completedAt: new Date().toISOString(),
-  }
+  })
   const next = {
     ...current,
+    version: GUEST_SESSION_VERSION,
     onboardingCompleted: true,
     onboardingCompletedAt: current.onboardingCompletedAt || merged.completedAt,
     context: merged,
@@ -152,17 +129,55 @@ export function completeNativeContext(partial = {}) {
 }
 
 export function writeGuestLocation(position, locationStatus) {
+  return updateSessionContext({
+    location: position !== undefined ? normalizePosition(position) : undefined,
+    locationStatus,
+    timeOfDay: inferTimeOfDay(),
+  })
+}
+
+export function updateSessionContext(patch = {}) {
   const current = ensureGuestSession()
-  const next = {
-    ...current,
-    context: {
-      ...current.context,
-      locationStatus: locationStatus ?? current.context.locationStatus,
-      lastPosition: position !== undefined ? normalizePosition(position) : current.context.lastPosition,
+  const merged = applyContextPatch(current.context, {
+    session: {
+      ...current.context.session,
+      ...patch,
     },
-  }
+    lastPosition: patch.location !== undefined ? patch.location : current.context.lastPosition,
+    locationStatus: patch.locationStatus ?? current.context.locationStatus,
+    completedAt: current.context.completedAt,
+  })
+  const next = { ...current, context: merged }
   writeGuestSession(next)
   return next
+}
+
+export function recordExperienceSignal(type, experienceId) {
+  const current = ensureGuestSession()
+  const history = appendHistoryEvent(current.context.history, type, experienceId)
+  const merged = applyContextPatch(current.context, {
+    history,
+    completedAt: current.context.completedAt,
+  })
+  const next = { ...current, context: merged }
+  writeGuestSession(next)
+  return next
+}
+
+export function recordCompletedExperience(experienceId) {
+  return recordExperienceSignal('completed', experienceId)
+}
+
+export function recordSavedExperience(experienceId) {
+  return recordExperienceSignal('saved', experienceId)
+}
+
+export function recordDismissedExperience(experienceId) {
+  return recordExperienceSignal('dismissed', experienceId)
+}
+
+export function recordLikedExperience(experienceId) {
+  return recordExperienceSignal('liked', experienceId)
 }
 
 export function readGuestContext() {
@@ -178,7 +193,7 @@ export function hasCompletedGuestOnboarding() {
 }
 
 /**
- * Welcome primary CTA: persist guest identity and send them into Context V0.
+ * Welcome primary CTA: persist guest identity and send them into Context.
  * Does not grant paid Rome access and does not skip Context.
  * @returns {{ session: object, nextPath: '/context' }}
  */

@@ -1,17 +1,7 @@
-import {
-  CONTEXT_INTERESTS,
-  TIME_BUDGETS,
-} from '../content/rome/heroRecommendationMeta.js'
+import { CONTEXT_INTERESTS, INTEREST_REASON_LABEL, TIME_BUDGETS } from './travelContext/taxonomy.js'
+import { expandInterestIds } from './travelContext/taxonomy.js'
+import { toRankerSignals } from './travelContext/compat.js'
 import { getDistance } from '../utils/distance.js'
-
-const INTEREST_REASON_LABEL = Object.freeze({
-  'ancient-power': 'ancient Rome',
-  art: 'art',
-  architecture: 'architecture',
-  everyday: 'everyday life',
-  sacred: 'sacred Rome',
-  hidden: 'hidden details',
-})
 
 const WALK_METERS_PER_MIN = 80
 
@@ -33,19 +23,55 @@ function distanceScore(distanceM) {
   return Math.max(0, 40 - distanceM / 50)
 }
 
+function matchingUserIds(interestIds, heroTags) {
+  const heroExpanded = expandInterestIds(heroTags)
+  return (interestIds || []).filter((id) => {
+    const userExpanded = expandInterestIds([id])
+    for (const tag of userExpanded) {
+      if (heroExpanded.has(tag)) return true
+    }
+    return false
+  })
+}
+
+function intersects(a, b) {
+  for (const value of a) {
+    if (b.has(value)) return true
+  }
+  return false
+}
+
 /**
  * Transparent V0 ranker. Locked premium Heroes remain visible.
  * A lock affects START ACCESS, not whether ChronoWalk may recommend the place.
+ *
+ * Accepts a full TravelContext via `context` but only scores reliable signals:
+ * interests, avoid (light), availableTimeNow, location, completed, iconic/hidden.
+ * Does not score tripHorizon, dates, anchors, or mealIntent and does not
+ * generate an itinerary.
  *
  * score =
  *   max(0, 40 - distanceM/50)          if GPS
  *   + 18 per matching interest
  *   + 15 if timeCostMin <= budget, else +6 if within 1.25×
  *   − 50 if completed
+ *   − 12 if hero matches an avoid interest
+ *   + 6 iconic/hidden preference when tagged
  *   + intrinsicPriority / 10
  *   + 8 if currently startable
  */
-export function scoreHero(hero, { interestIds = [], timeBudgetId = null, position = null, canAccess = () => false, completedIds = [] } = {}) {
+export function scoreHero(
+  hero,
+  {
+    interestIds = [],
+    timeBudgetId = null,
+    position = null,
+    canAccess = () => false,
+    completedIds = [],
+    avoidInterestIds = [],
+    iconicVsHidden = null,
+  } = {},
+) {
   let score = 0
   const whyReasons = []
 
@@ -60,12 +86,20 @@ export function scoreHero(hero, { interestIds = [], timeBudgetId = null, positio
   }
 
   const tags = Array.isArray(hero.interestTags) ? hero.interestTags : []
-  const matches = (interestIds || []).filter((id) => tags.includes(id))
+  const matches = matchingUserIds(interestIds, tags)
   score += matches.length * 18
   if (matches.length > 0) {
-    const cue = INTEREST_REASON_LABEL[matches[0]] || CONTEXT_INTERESTS.find((item) => item.id === matches[0])?.label
+    const cue =
+      INTEREST_REASON_LABEL[matches[0]] || CONTEXT_INTERESTS.find((item) => item.id === matches[0])?.label
     if (cue) whyReasons.push(`Matches ${cue}`)
   }
+
+  if (avoidInterestIds.length > 0 && intersects(expandInterestIds(avoidInterestIds), expandInterestIds(tags))) {
+    score -= 12
+  }
+
+  if (iconicVsHidden === 'hidden' && tags.includes('hidden-places')) score += 6
+  if (iconicVsHidden === 'iconic' && tags.includes('iconic-sights')) score += 6
 
   const minutes = budgetMinutes(timeBudgetId)
   const cost = Number(hero.timeCostMin) || 0
@@ -103,22 +137,31 @@ export function scoreHero(hero, { interestIds = [], timeBudgetId = null, positio
 
 export function rankHeroes({
   catalog = [],
-  interestIds = [],
-  surpriseMe = false,
-  timeBudgetId = null,
-  position = null,
+  context = null,
+  interestIds,
+  surpriseMe,
+  timeBudgetId,
+  position,
   canAccess = () => false,
-  completedIds = [],
+  completedIds,
 } = {}) {
-  const interests = surpriseMe ? [] : interestIds
+  const overrides = {}
+  if (interestIds !== undefined) overrides.interestIds = interestIds
+  if (surpriseMe !== undefined) overrides.surpriseMe = surpriseMe
+  if (timeBudgetId !== undefined) overrides.timeBudgetId = timeBudgetId
+  if (position !== undefined) overrides.position = position
+  if (completedIds !== undefined) overrides.completedIds = completedIds
+  const signals = toRankerSignals(context, overrides)
   const ranked = catalog
     .map((hero) =>
       scoreHero(hero, {
-        interestIds: interests,
-        timeBudgetId,
-        position,
+        interestIds: signals.interestIds,
+        timeBudgetId: signals.timeBudgetId,
+        position: signals.position,
         canAccess,
-        completedIds,
+        completedIds: signals.completedIds,
+        avoidInterestIds: signals.avoidInterestIds,
+        iconicVsHidden: signals.iconicVsHidden,
       }),
     )
     .sort((a, b) => b.score - a.score || a.heroId.localeCompare(b.heroId))

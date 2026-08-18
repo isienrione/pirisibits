@@ -141,14 +141,12 @@ export default function NativeDiscoverHome() {
     () =>
       rankHeroes({
         catalog,
-        interestIds: guest.interestIds,
-        surpriseMe: guest.surpriseMe,
-        timeBudgetId: guest.timeBudgetId,
+        context: guest,
         position,
         canAccess: (id) => canAccessHero(id),
         completedIds,
       }),
-    [catalog, completedIds, guest.interestIds, guest.surpriseMe, guest.timeBudgetId, position],
+    [catalog, completedIds, guest, position],
   )
 
   const { primary, alternatives } = discoverCards(ranked)
