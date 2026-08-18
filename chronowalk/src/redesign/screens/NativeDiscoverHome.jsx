@@ -129,7 +129,9 @@ export default function NativeDiscoverHome() {
           />
           <div style={{ padding: '0 0 16px', display: 'flex', flexDirection: 'column', gap: 8, marginTop: -8 }}>
             <PrimaryButton color={T.gold} data-testid="discover-start" onClick={() => startItem(primary)} style={{ minHeight: 48 }}>
-              {primary.locked ? t('native.discover.view') : t('native.discover.start')}
+              {primary.locked || primary.contentType === CONTENT_TYPES.DISCOVERY
+                ? t('native.discover.view')
+                : t('native.discover.start')}
             </PrimaryButton>
             <GhostButton data-testid="discover-view" onClick={() => openItem(primary)} style={{ minHeight: 44 }}>
               {t('native.discover.view')}
