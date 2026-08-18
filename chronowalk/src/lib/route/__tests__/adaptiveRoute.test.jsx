@@ -149,6 +149,13 @@ describe('T05 adaptive curated route', () => {
     expect(proposed.items.length).toBeGreaterThanOrEqual(2)
   })
 
+  it('collapses Pantheon to one consumer route node', () => {
+    const proposed = composeFromContext()
+    const ids = proposed.items.map((item) => item.contentId)
+    expect(ids.filter((id) => id === 'w17' || id === 'w23')).toHaveLength(1)
+    expect(ids).not.toContain('w23')
+  })
+
   it('starts a free guest route with startable content', () => {
     const proposed = composeFromContext()
     expect(canAccessContentId(proposed.items[0].contentId)).toBe(true)

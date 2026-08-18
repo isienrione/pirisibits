@@ -82,8 +82,9 @@ function OptionRow({ option, testId, onChoose, variant = 'alt' }) {
       <p style={{ fontFamily: F.display, fontSize: recommended ? 22 : 18, margin: '6px 0 4px', color: R.ink }}>
         {mystery ? '✦ Surprise Discovery' : option.item?.title}
       </p>
-      <p style={{ margin: 0, color: R.muted, fontSize: 13, fontFamily: F.body }}>
-        {option.walkMin} min walk · {option.experienceMin} min
+      <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 13, fontFamily: F.body }}>
+        {option.walkMin != null ? `${option.walkMin} min walk · ` : ''}
+        {option.experienceMin} min
       </p>
       <p style={{ margin: '8px 0 0', lineHeight: 1.4, fontFamily: F.body, color: R.ink }}>{option.reason}</p>
     </button>

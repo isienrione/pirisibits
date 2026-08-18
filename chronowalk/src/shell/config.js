@@ -53,11 +53,9 @@ export function isWalkTabVisible(state) {
  */
 export function getShellTabs({ native = false, walkActive = false } = {}) {
   const byId = Object.fromEntries(NAV_ITEMS.map((item) => [item.id, item]))
-  const order = native
-    ? walkActive
-      ? [NAV_TABS.HOME, NAV_TABS.WALK, ...NATIVE_SHELL_TAB_ORDER.filter((id) => id !== NAV_TABS.HOME)]
-      : NATIVE_SHELL_TAB_ORDER
-    : SHELL_TAB_ORDER
+  // Native persistent tabs never include Walk. An active route uses NativeRoutePill.
+  const order = native ? NATIVE_SHELL_TAB_ORDER : SHELL_TAB_ORDER
+  void walkActive
 
   return order
     .map((id) => {

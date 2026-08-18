@@ -10,7 +10,7 @@ import { COVERAGE_LABELS } from '../content/rome/heroRecommendationMeta.js'
 import { ROME_HERO_META } from '../content/rome/heroRecommendationMeta.js'
 
 function playableIdsForHero(heroId) {
-  if (heroId === 'w17') return [...PANTHEON_STOP_IDS]
+  if (heroId === 'rome:pantheon' || PANTHEON_STOP_IDS.includes(heroId)) return [...PANTHEON_STOP_IDS]
   return [heroId]
 }
 

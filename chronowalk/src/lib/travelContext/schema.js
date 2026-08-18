@@ -49,7 +49,7 @@ export const MAX_HISTORY_EVENTS = 200
 /** @typedef {'30min'|'1h'|'2h'|'halfday'|'allday'|'exploring'|null} AvailableTimeNow */
 /** @typedef {'morning'|'afternoon'|'evening'|'night'|null} TimeOfDay */
 /** @typedef {'lunch'|'dinner'|'aperitivo'|'none'|null} MealIntent */
-/** @typedef {'granted'|'denied'|'timeout'|'unavailable'|null} LocationStatus */
+/** @typedef {'granted'|'denied'|'timeout'|'unavailable'|'skipped'|null} LocationStatus */
 /** @typedef {'completed'|'saved'|'dismissed'|'liked'} HistoryEventType */
 
 /**

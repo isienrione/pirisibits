@@ -15,6 +15,8 @@ import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
+import { R, RouteSurface, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 export default function NativeExperienceScreen() {
   const t = useT()
@@ -26,7 +28,11 @@ export default function NativeExperienceScreen() {
   const hero = useMemo(() => getRegistryItem(heroId), [heroId])
 
   if (!hero) {
-    return <p style={{ color: T.bone, padding: 24 }}>Experience unavailable.</p>
+    return (
+      <RouteSurface testId="native-experience">
+        <p style={{ color: R.ink }}>Experience unavailable.</p>
+      </RouteSurface>
+    )
   }
 
   const locked = !canAccessContentId(hero.id)
@@ -50,40 +56,29 @@ export default function NativeExperienceScreen() {
   }
 
   return (
-    <div
-      data-testid="native-experience"
-      data-hero-id={hero.id}
-      style={{
-        minHeight: '100%',
-        background: T.obsidian,
-        color: T.bone,
-        paddingBottom: 'calc(var(--shell-tab-bar-height, 72px) + 12px)',
-      }}
-    >
-      <div
-        style={{
-          height: 280,
-          backgroundImage: hero.photo ? `url(${hero.photo})` : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: '#1a1a1f',
-        }}
-      />
-      <div style={{ padding: '20px 20px 0' }}>
-        <p style={{ margin: 0, fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: T.muted }}>
-          {t('native.content.experience')} · {label} · {hero.timeCostMin} min
-        </p>
-        <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 32, margin: '10px 0' }}>{hero.title}</h1>
-        <p style={{ margin: '0 0 24px', lineHeight: 1.5, color: 'rgba(250,246,239,0.82)' }}>{hero.whyWorthIt}</p>
-        <PrimaryButton color={T.gold} data-testid="experience-start" onClick={handleStart} style={{ minHeight: 48 }}>
-          {locked ? t('native.experience.unlock') : t('native.experience.start')}
-        </PrimaryButton>
-        <GhostButton data-testid="experience-save" onClick={toggleSave} style={{ marginTop: 10, minHeight: 48 }}>
-          {saved ? t('native.saved.remove') : t('native.saved.save')}
-        </GhostButton>
-        <GhostButton data-testid="experience-back" onClick={() => navigate('/home')} style={{ marginTop: 10, minHeight: 48 }}>
-          {t('native.experience.back')}
-        </GhostButton>
+    <RouteSurface testId="native-experience" style={{ paddingLeft: 0, paddingRight: 0 }}>
+      <div data-hero-id={hero.id} style={{ color: R.ink }}>
+        <div style={{ padding: '0 20px' }}>
+          <PlaceMedia item={hero} height={220} radius={20} />
+        </div>
+        <div style={{ padding: '18px 20px 0' }}>
+          <p style={routeType}>
+            {t('native.content.experience')} · {label} · {hero.timeCostMin} min
+          </p>
+          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0', color: R.ink }}>
+            {hero.title}
+          </h1>
+          <p style={{ margin: '0 0 20px', lineHeight: 1.5, color: R.ink, fontFamily: F.body }}>{hero.whyWorthIt}</p>
+          <PrimaryButton color={T.gold} data-testid="experience-start" onClick={handleStart} style={routePrimary}>
+            {locked ? t('native.experience.unlock') : t('native.experience.start')}
+          </PrimaryButton>
+          <GhostButton data-testid="experience-save" onClick={toggleSave} style={{ marginTop: 10, ...routeGhost }}>
+            {saved ? t('native.saved.remove') : t('native.saved.save')}
+          </GhostButton>
+          <GhostButton data-testid="experience-back" onClick={() => navigate('/home')} style={{ marginTop: 10, ...routeGhost }}>
+            {t('native.experience.back')}
+          </GhostButton>
+        </div>
       </div>
       <NativeCoverageSheet
         open={lockOpen}
@@ -92,6 +87,6 @@ export default function NativeExperienceScreen() {
         title={hero.title}
         onClose={() => setLockOpen(false)}
       />
-    </div>
+    </RouteSurface>
   )
 }

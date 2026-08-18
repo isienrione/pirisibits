@@ -1534,6 +1534,7 @@ html.cw-native-ios #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
+  background: #FAF6EF;
   /* Sit above the fixed ShellTabBar so MAP/TOUR/JOURNAL stay tappable.
      Must override base .redesign-phone-frame min-height — otherwise min-height
      wins over a shorter height/max-height and Pause / I'm here sit under the nav. */

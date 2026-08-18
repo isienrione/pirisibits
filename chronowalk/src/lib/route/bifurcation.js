@@ -2,7 +2,7 @@ import { CONTENT_TYPES } from '../../content/registry/constants.js'
 import { rankHeroes } from '../rankHeroes.js'
 import { canAccessContentId } from '../contentAccess.js'
 import { currentRouteItem, remainingItems } from './model.js'
-import { getDistance } from '../../utils/distance.js'
+import { travelerFacingDistanceM } from '../geoSanity.js'
 import { walkingMinutesFromM } from './model.js'
 import { trackRoute, ROUTE_TRACK_EVENTS } from './analytics.js'
 
@@ -54,14 +54,14 @@ export function bifurcationOptions({
 
   const withWalk = (item, reason) => {
     if (!item) return null
-    const dist = origin && geo(item) ? getDistance(origin.lat, origin.lng, item.geo.lat, item.geo.lng) : null
+    const dist = origin && geo(item) ? travelerFacingDistanceM(origin, item.geo) : null
     return {
       item,
       contentId: item.id,
       contentType: item.contentType,
       reason,
       distanceM: dist,
-      walkMin: walkingMinutesFromM(dist || 0),
+      walkMin: dist == null ? null : walkingMinutesFromM(dist),
       experienceMin: Number(item.timeCostMin) || 8,
       isMystery: Boolean(item.mysteryEligible) && item.contentType === CONTENT_TYPES.DISCOVERY,
     }

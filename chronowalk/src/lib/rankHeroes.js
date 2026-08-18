@@ -1,7 +1,7 @@
 import { CONTEXT_INTERESTS, INTEREST_REASON_LABEL, TIME_BUDGETS } from './travelContext/taxonomy.js'
 import { expandInterestIds } from './travelContext/taxonomy.js'
 import { toRankerSignals } from './travelContext/compat.js'
-import { getDistance } from '../utils/distance.js'
+import { travelerFacingDistanceM } from './geoSanity.js'
 
 const WALK_METERS_PER_MIN = 80
 
@@ -81,11 +81,12 @@ export function scoreHero(
   const whyReasons = []
 
   let distanceM = null
-  if (position && hero.geo && Number.isFinite(hero.geo.lat) && Number.isFinite(hero.geo.lng)) {
-    distanceM = getDistance(position.lat, position.lng, hero.geo.lat, hero.geo.lng)
+  const displayDistance = travelerFacingDistanceM(position, hero.geo)
+  if (displayDistance != null) {
+    distanceM = displayDistance
     score += distanceScore(distanceM)
     const mins = walkingMinutes(distanceM)
-    if (mins != null && Number.isFinite(distanceM)) {
+    if (mins != null) {
       whyReasons.push(`${mins} min away`)
     }
   }

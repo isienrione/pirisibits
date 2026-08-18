@@ -89,10 +89,11 @@ export const routeSheet = {
   color: R.ink,
 }
 
-export function RouteSurface({ testId, children, style }) {
+export function RouteSurface({ testId, children, style, ...rest }) {
   return (
     <div
       data-testid={testId}
+      {...rest}
       style={{
         minHeight: '100%',
         background: R.bg,

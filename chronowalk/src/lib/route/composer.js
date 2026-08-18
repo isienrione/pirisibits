@@ -1,8 +1,10 @@
-import { getDistance } from '../../utils/distance.js'
 import { CONTENT_TYPES } from '../../content/registry/constants.js'
 import { rankHeroes } from '../rankHeroes.js'
 import { TIME_BUDGETS } from '../travelContext/taxonomy.js'
 import { toRankerSignals } from '../travelContext/compat.js'
+import { consumerExperienceIdFor, placeFamilyFor } from '../../content/rome/consumerHeroes.js'
+import { isPlausibleRomePosition, travelerFacingDistanceM } from '../geoSanity.js'
+import { getDistance } from '../../utils/distance.js'
 import {
   MAX_ROUTE_ITEMS,
   MIN_ROUTE_ITEMS,
@@ -30,6 +32,9 @@ function distanceBetween(a, b) {
   const ga = geoOf(a)
   const gb = geoOf(b)
   if (!ga || !gb) return null
+  const facing = travelerFacingDistanceM(ga, gb)
+  if (facing != null) return facing
+  if (!isPlausibleRomePosition(ga) || !isPlausibleRomePosition(gb)) return null
   return getDistance(ga.lat, ga.lng, gb.lat, gb.lng)
 }
 
@@ -42,9 +47,28 @@ function historicPrefer(item) {
   return scopes.includes('rome-free') || scopes.includes('rome-historic-center')
 }
 
+function experienceKey(item) {
+  return consumerExperienceIdFor(item) || item?.id || ''
+}
+
+function markUsed(used, item) {
+  if (!item) return
+  used.add(item.id)
+  used.add(experienceKey(item))
+  used.add(placeFamilyFor(item))
+  for (const id of item.waypointIds || item.playerSequence || []) used.add(id)
+}
+
+function alreadyUsed(used, item) {
+  if (!item) return true
+  if (used.has(item.id) || used.has(experienceKey(item))) return true
+  if (item.contentType === CONTENT_TYPES.HERO && used.has(placeFamilyFor(item))) return true
+  return (item.waypointIds || item.playerSequence || []).some((id) => used.has(id))
+}
+
 /**
  * Greedy geographically coherent composer on top of rankHeroes.
- * Not an itinerary generator and not an LLM.
+ * Operates on consumer Experiences, not every technical waypoint ID.
  */
 export function composeProposedRoute({
   context = null,
@@ -67,43 +91,49 @@ export function composeProposedRoute({
   const ranked = rankHeroes({
     catalog,
     context,
-    position,
+    position: isPlausibleRomePosition(position) ? position : null,
     canAccess,
     completedIds: signals.completedIds,
     dismissedIds: signals.dismissedIds,
   }).ranked.filter((item) => item.contentType === CONTENT_TYPES.HERO || item.contentType === CONTENT_TYPES.DISCOVERY)
 
   const used = new Set(signals.completedIds.concat(signals.dismissedIds))
-  const startable = ranked.filter((item) => canAccess(item.id) && !used.has(item.id))
-  const pool = ranked.filter((item) => !used.has(item.id))
+  const startable = ranked.filter((item) => canAccess(item.id) && !alreadyUsed(used, item))
+  const pool = ranked.filter((item) => !alreadyUsed(used, item))
+  const validPosition = isPlausibleRomePosition(position) ? position : null
 
   let seed = null
-  if (position && startable.length) {
+  if (validPosition && startable.length) {
     seed = [...startable].sort((a, b) => {
-      const da = a.distanceM ?? distanceBetween({ geo: position }, a) ?? 99999
-      const db = b.distanceM ?? distanceBetween({ geo: position }, b) ?? 99999
+      const da = a.distanceM ?? distanceBetween({ geo: validPosition }, a) ?? 99999
+      const db = b.distanceM ?? distanceBetween({ geo: validPosition }, b) ?? 99999
       return da - db || (b.score || 0) - (a.score || 0)
     })[0]
   } else {
-    seed = startable.find((item) => item.id === 'w17') || startable[0] || pool[0] || null
+    seed =
+      startable.find((item) => experienceKey(item) === 'rome:pantheon' || item.id === 'w17') ||
+      startable[0] ||
+      pool[0] ||
+      null
   }
   if (!seed) return null
 
   const chosen = [seed]
-  used.add(seed.id)
+  markUsed(used, seed)
   let elapsed = Number(seed.timeCostMin) || 8
-  if (position && geoOf(seed)) {
-    const toSeed = getDistance(position.lat, position.lng, seed.geo.lat, seed.geo.lng)
-    elapsed += walkingMinutesFromM(toSeed)
+  if (validPosition && geoOf(seed)) {
+    const toSeed = travelerFacingDistanceM(validPosition, seed.geo)
+    if (toSeed != null) elapsed += walkingMinutesFromM(toSeed)
   }
   let walked = 0
   let last = seed
 
   const targetCount = budget <= 35 ? 2 : budget <= 70 ? 3 : budget <= 140 ? 4 : 5
+  const typesSeen = new Set([seed.contentType])
 
   while (chosen.length < Math.min(MAX_ROUTE_ITEMS, Math.max(MIN_ROUTE_ITEMS, targetCount))) {
     const lastType = last.contentType
-    const candidates = pool.filter((item) => !used.has(item.id))
+    const candidates = pool.filter((item) => !alreadyUsed(used, item))
     if (!candidates.length) break
 
     const scored = candidates
@@ -113,11 +143,17 @@ export function composeProposedRoute({
         if (chosen.length >= 1 && dist < 140) {
           const fartherExists = candidates.some((other) => {
             const d = distanceBetween(last, other)
-            return d != null && d >= 140 && d <= limits.maxLegM && !used.has(other.id)
+            return (
+              d != null &&
+              d >= 140 &&
+              d <= limits.maxLegM &&
+              !alreadyUsed(used, other) &&
+              canAccess(other.id)
+            )
           })
           if (fartherExists) return null
         }
-        if (dist > limits.maxLegM && candidates.some((other) => (distanceBetween(last, other) || 99999) <= limits.maxLegM)) {
+        if (dist > limits.maxLegM && candidates.some((other) => canAccess(other.id) && (distanceBetween(last, other) || 99999) <= limits.maxLegM)) {
           return null
         }
         const walkMin = walkingMinutesFromM(dist)
@@ -133,6 +169,9 @@ export function composeProposedRoute({
         if (lastType === CONTENT_TYPES.HERO && item.contentType === CONTENT_TYPES.DISCOVERY) score += 10
         if (lastType === CONTENT_TYPES.DISCOVERY && item.contentType === CONTENT_TYPES.HERO) score += 6
         if (item.mysteryEligible && chosen.length >= 1) score += 4
+        if (typesSeen.has(item.contentType) && item.contentType === CONTENT_TYPES.HERO && typesSeen.has(CONTENT_TYPES.DISCOVERY)) {
+          score -= 4
+        }
         if (locked) score -= 12
         return { item, dist, walkMin, exp, score }
       })
@@ -142,7 +181,8 @@ export function composeProposedRoute({
     const next = scored[0]
     if (!next) break
     chosen.push(next.item)
-    used.add(next.item.id)
+    markUsed(used, next.item)
+    typesSeen.add(next.item.contentType)
     elapsed += next.walkMin + next.exp
     walked += next.dist
     last = next.item
@@ -150,14 +190,23 @@ export function composeProposedRoute({
   }
 
   if (chosen.length === 1) {
-    const extra = pool.find((item) => !used.has(item.id) && item.contentType === CONTENT_TYPES.DISCOVERY && canAccess(item.id))
-    if (extra) chosen.push(extra)
+    const extra = pool.find(
+      (item) =>
+        !alreadyUsed(used, item) && item.contentType === CONTENT_TYPES.DISCOVERY && canAccess(item.id),
+    )
+    if (extra) {
+      chosen.push(extra)
+      markUsed(used, extra)
+    }
   }
 
   const hasHero = chosen.some((item) => item.contentType === CONTENT_TYPES.HERO)
   if (!hasHero && budget >= 45) {
-    const hero = pool.find((item) => !used.has(item.id) && item.contentType === CONTENT_TYPES.HERO)
-    if (hero && canAccess(hero.id)) chosen.splice(1, 0, hero)
+    const hero = pool.find((item) => !alreadyUsed(used, item) && item.contentType === CONTENT_TYPES.HERO)
+    if (hero && canAccess(hero.id)) {
+      chosen.splice(1, 0, hero)
+      markUsed(used, hero)
+    }
   }
 
   if (!canAccess(chosen[0].id)) {
@@ -168,8 +217,16 @@ export function composeProposedRoute({
     }
   }
 
-  const items = chosen.slice(0, MAX_ROUTE_ITEMS).map((item, index) => {
-    const previous = index === 0 ? (position ? { geo: position } : null) : chosen[index - 1]
+  const uniqueKeys = new Set()
+  const uniqueChosen = chosen.filter((item) => {
+    const key = experienceKey(item)
+    if (uniqueKeys.has(key)) return false
+    uniqueKeys.add(key)
+    return true
+  })
+
+  const items = uniqueChosen.slice(0, MAX_ROUTE_ITEMS).map((item, index) => {
+    const previous = index === 0 ? (validPosition ? { geo: validPosition } : null) : uniqueChosen[index - 1]
     const dist = previous ? distanceBetween(previous, item) || 0 : 0
     const mystery = Boolean(item.mysteryEligible) && index > 0 && item.contentType === CONTENT_TYPES.DISCOVERY
     return createRouteItem({
@@ -212,7 +269,7 @@ export function pathZigzagRatio(items, catalogById) {
   const ga = first?.geo
   const gb = last?.geo
   if (!ga || !gb) return 1
-  const straight = getDistance(ga.lat, ga.lng, gb.lat, gb.lng)
+  const straight = travelerFacingDistanceM(ga, gb) || getDistance(ga.lat, ga.lng, gb.lat, gb.lng)
   if (!straight) return 1
   return path / straight
 }
@@ -220,4 +277,15 @@ export function pathZigzagRatio(items, catalogById) {
 export function walkingMinutes(distanceM) {
   if (!Number.isFinite(distanceM)) return 0
   return Math.max(0, Math.round(distanceM / WALK_METERS_PER_MIN))
+}
+
+export function routeHasUniqueConsumerHeroes(items = [], catalogById = {}) {
+  const seen = new Set()
+  for (const item of items) {
+    const content = catalogById[item.contentId] || { id: item.contentId }
+    const key = experienceKey(content)
+    if (seen.has(key)) return false
+    seen.add(key)
+  }
+  return true
 }

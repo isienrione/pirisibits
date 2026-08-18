@@ -90,9 +90,10 @@ describe('Rome product skeleton T04', () => {
   it('falls back safely when Discovery media is missing', () => {
     const discovery = registry.byId.d_rome_21
     const media = resolveContentMedia(discovery)
-    expect(media.url).toBeTruthy()
-    expect(media.status).toBe('placeholder')
-    expect(discovery.photo).toBeTruthy()
+    expect(media.source).toBe('placeholder')
+    expect(media.path).toBeNull()
+    expect(String(media.url || '')).not.toMatch(/pantheon/i)
+    expect(discovery.photo).toBeFalsy()
   })
 
   it('marks Discovery coordinates as NEEDS_QA', () => {

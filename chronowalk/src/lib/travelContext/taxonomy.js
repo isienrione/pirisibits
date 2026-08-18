@@ -120,7 +120,13 @@ export const RESIDENCY = Object.freeze(['local', 'visitor'])
 export const AVAILABLE_TIME_NOW = Object.freeze(['30min', '1h', '2h', 'halfday', 'allday', 'exploring'])
 export const TIME_OF_DAY = Object.freeze(['morning', 'afternoon', 'evening', 'night'])
 export const MEAL_INTENTS = Object.freeze(['lunch', 'dinner', 'aperitivo', 'none'])
-export const LOCATION_STATUSES = Object.freeze(['granted', 'denied', 'timeout', 'unavailable'])
+export const LOCATION_STATUSES = Object.freeze([
+  'granted',
+  'denied',
+  'timeout',
+  'unavailable',
+  'skipped',
+])
 
 export const HISTORY_EVENT_TYPES = Object.freeze(['completed', 'saved', 'dismissed', 'liked'])
 

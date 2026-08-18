@@ -4,6 +4,7 @@ import { loadRomeManifest } from '../manifest.js'
 import { getRomeHeroCatalog } from './heroCatalog.js'
 import { ROME_DISCOVERIES } from './discoveries.js'
 import { ROME_SCOPE_IDS } from './coverage.js'
+import { collapseRankableHeroes, consumerExperienceIdFor, playerSequenceFor } from './consumerHeroes.js'
 
 const HERO_CLUSTER = Object.freeze({
   w01: ROME_CLUSTERS.FORUM,
@@ -33,7 +34,7 @@ function attachMedia(item) {
   const resolved = resolveContentMedia(item)
   return {
     ...item,
-    photo: resolved.url,
+    photo: resolved.source === 'content' ? resolved.url : null,
     mediaResolved: resolved,
   }
 }
@@ -47,7 +48,11 @@ export function heroToRegistryItem(hero) {
     id: hero.heroId,
     heroId: hero.heroId,
     experienceId: hero.experienceId,
+    consumerExperienceId: hero.experienceId,
     placeId: hero.placeId,
+    placeFamily: hero.placeId,
+    waypointIds: hero.waypointIds || [hero.heroId],
+    playerSequence: hero.waypointIds || [hero.heroId],
     cityId: 'rome',
     contentType: CONTENT_TYPES.HERO,
     title: hero.title,
@@ -143,8 +148,19 @@ export function getRomeRegistry(manifest) {
 
 export function getRomeRankableCatalog(manifest = loadRomeManifest()) {
   const registry = getRomeRegistry(manifest)
-  return [...registry.heroes, ...registry.discoveries]
+  return [
+    ...collapseRankableHeroes(registry.heroes),
+    ...registry.discoveries.map((item) => ({
+      ...item,
+      consumerExperienceId: item.experienceId || item.id,
+      placeFamily: item.placeId || item.id,
+      waypointIds: [item.id],
+      playerSequence: [item.id],
+    })),
+  ]
 }
+
+export { consumerExperienceIdFor, playerSequenceFor, collapseRankableHeroes }
 
 export function getRegistryItem(id, manifest = loadRomeManifest()) {
   if (!id) return null

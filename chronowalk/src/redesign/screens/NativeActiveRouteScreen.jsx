@@ -12,7 +12,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
-import RouteTimeline from '../ui/RouteTimeline.jsx'
+import RoutePreview from '../ui/RoutePreview.jsx'
 import RouteControlsSheet from '../ui/RouteControlsSheet.jsx'
 import { R, RouteSurface, routeCard, routeGhost, routeHeadline, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
@@ -29,7 +29,9 @@ export default function NativeActiveRouteScreen() {
     return (
       <RouteSurface testId="native-active-route">
         <h1 style={routeHeadline}>{t('native.route.active.empty')}</h1>
-        <PrimaryButton color={T.gold} onClick={() => navigate('/plan')} style={routePrimary}>{t('native.route.seePlan')}</PrimaryButton>
+        <PrimaryButton color={T.gold} onClick={() => navigate('/plan')} style={routePrimary}>
+          {t('native.route.seePlan')}
+        </PrimaryButton>
       </RouteSurface>
     )
   }
@@ -40,17 +42,15 @@ export default function NativeActiveRouteScreen() {
   return (
     <RouteSurface testId="native-active-route">
       <div data-testid="route-summary">
-        <p style={routeType}>{t('native.route.yourAfternoon')}</p>
-        <h1 style={routeHeadline}>
+        <p style={routeType}>{active.title || t('native.route.yourAfternoon')}</p>
+        <h1 style={{ ...routeHeadline, fontSize: 26 }}>
           {formatDurationLabel(totals.estimatedDurationMin)} {t('native.route.remaining')}
         </h1>
-        <p style={{ margin: '0 0 16px', color: R.muted }}>
+        <p style={{ margin: '0 0 16px', color: R.muted, fontFamily: F.body }}>
           {totals.completedCount} {t('native.route.of')} {totals.totalCount} {t('native.route.completed')}
         </p>
       </div>
-      <div style={routeCard}>
-        <RouteTimeline items={liveItems(active)} catalogById={byId} currentId={active.currentRouteItemId} />
-      </div>
+      <RoutePreview items={liveItems(active)} catalogById={byId} currentId={active.currentRouteItemId} />
       {suggestion ? (
         <div
           data-testid="route-suggestion"
@@ -65,7 +65,12 @@ export default function NativeActiveRouteScreen() {
           <p style={{ margin: 0, fontFamily: F.body, color: R.ink }}>{suggestion.message}</p>
         </div>
       ) : null}
-      <PrimaryButton color={T.gold} data-testid="active-route-walk" onClick={() => navigate('/walk')} style={{ marginTop: 16, ...routePrimary }}>
+      <PrimaryButton
+        color={T.gold}
+        data-testid="active-route-walk"
+        onClick={() => navigate('/walk')}
+        style={{ marginTop: 16, ...routePrimary }}
+      >
         {t('native.route.continueWalk')}
       </PrimaryButton>
       <GhostButton data-testid="active-route-controls" onClick={() => setControls(true)} style={{ marginTop: 10, ...routeGhost }}>

@@ -5,7 +5,7 @@ import { composeProposedRoute } from './composer.js'
 import { explainProposedRoute, formatDurationLabel, formatKm, routeRationale, routeTags } from './why.js'
 import { getProposedRoute, saveProposedRoute } from './store.js'
 import { walkingMinutesFromM } from './model.js'
-import { getDistance } from '../../utils/distance.js'
+import { travelerFacingDistanceM } from '../geoSanity.js'
 
 export function annotateProposedRoute(proposed, { context, catalog, position } = {}) {
   if (!proposed) return null
@@ -13,7 +13,8 @@ export function annotateProposedRoute(proposed, { context, catalog, position } =
   const first = byId[proposed.items[0]?.contentId]
   let minutesAway = null
   if (position && first?.geo) {
-    minutesAway = walkingMinutesFromM(getDistance(position.lat, position.lng, first.geo.lat, first.geo.lng))
+    const dist = travelerFacingDistanceM(position, first.geo)
+    if (dist != null) minutesAway = walkingMinutesFromM(dist)
   }
   const explained = explainProposedRoute({ proposed, context, minutesAway })
   return {

@@ -16,6 +16,7 @@ export function getRomeHeroCatalog(manifest) {
       heroId,
       experienceId: meta?.experienceId ?? `rome:${heroId}`,
       placeId: meta?.placeId ?? heroId,
+      waypointIds: meta?.waypointIds ?? [heroId],
       title: meta?.title ?? waypoint?.title ?? waypoint?.name ?? heroId,
       interestTags: meta?.interestTags ?? [],
       timeCostMin: meta?.timeCostMin ?? 10,

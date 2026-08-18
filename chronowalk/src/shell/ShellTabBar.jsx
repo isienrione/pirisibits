@@ -4,16 +4,14 @@ import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
 import { isStandaloneMode } from '../utils/pwaInstall.js'
 import NativeRoutePill from '../redesign/ui/NativeRoutePill.jsx'
-import { getShellTabs, isCompanionShellPath, isShellTabActive, isWalkTabVisible } from './config.js'
+import { getShellTabs, isCompanionShellPath, isShellTabActive } from './config.js'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { isNativeIOS } from '../lib/platform.js'
-import { useV2Journey } from '../hooks/useV2Journey.js'
 
 export default function ShellTabBar() {
   const { chromeHidden } = useThresholdChrome()
   const location = useLocation()
   const { locale, t } = useI18n()
-  const { state } = useV2Journey()
   const native = isNativeIOS()
 
   const onCompanionRoute = isCompanionShellPath(location.pathname)
@@ -38,7 +36,7 @@ export default function ShellTabBar() {
   if (!visible) return null
 
   // locale in deps so tab labels re-resolve when language changes
-  const tabs = getShellTabs({ native, walkActive: native && isWalkTabVisible(state) })
+  const tabs = getShellTabs({ native })
   void locale
 
   return (

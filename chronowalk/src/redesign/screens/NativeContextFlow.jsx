@@ -26,6 +26,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import { R, routeGhost, routePrimary } from '../ui/RouteSurface.jsx'
 
 const MAX_INTERESTS = 4
 const REQUIRED_STEPS = ['interests', 'style', 'mobility', 'trip', 'time', 'location']
@@ -37,13 +38,13 @@ const chipBase = {
   borderRadius: 14,
   fontFamily: F.body,
   fontSize: 15,
-  color: T.bone,
+  color: R.ink,
 }
 
 function selectedStyle(on) {
   return {
-    border: on ? `1.5px solid ${T.gold}` : '1.5px solid rgba(250,246,239,0.16)',
-    background: on ? 'rgba(212,175,55,0.14)' : 'rgba(250,246,239,0.04)',
+    border: on ? `1.5px solid ${R.terracotta}` : `1.5px solid ${R.line}`,
+    background: on ? `color-mix(in srgb, ${R.terracotta} 14%, ${R.cardWarm})` : R.cardWarm,
   }
 }
 
@@ -74,7 +75,7 @@ function Progress({ step, t }) {
         fontSize: 12,
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
-        color: T.muted,
+        color: R.muted,
       }}
     >
       {label}
@@ -85,11 +86,11 @@ function Progress({ step, t }) {
 function Heading({ title, body }) {
   return (
     <>
-      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '14px 0 8px', lineHeight: 1.15 }}>
+      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '14px 0 8px', lineHeight: 1.15, color: R.ink }}>
         {title}
       </h1>
       {body ? (
-        <p style={{ margin: '0 0 18px', color: T.muted, lineHeight: 1.45 }}>{body}</p>
+        <p style={{ margin: '0 0 18px', color: R.muted, lineHeight: 1.45 }}>{body}</p>
       ) : null}
     </>
   )
@@ -223,8 +224,8 @@ export default function NativeContextFlow() {
       style={{
         minHeight: '100%',
         height: '100dvh',
-        background: T.obsidian,
-        color: T.bone,
+        background: R.bg,
+        color: R.ink,
         boxSizing: 'border-box',
         padding:
           'max(28px, calc(env(safe-area-inset-top) + 16px)) 24px max(24px, calc(env(safe-area-inset-bottom) + 12px))',
@@ -239,7 +240,7 @@ export default function NativeContextFlow() {
           fontSize: 12,
           letterSpacing: '0.22em',
           textTransform: 'uppercase',
-          color: T.muted,
+          color: R.muted,
         }}
       >
         ChronoWalk
@@ -327,7 +328,7 @@ export default function NativeContextFlow() {
               setAvoidSubInterestIds([])
               setStep('style')
             }}
-            style={{ marginTop: 10, minHeight: 48 }}
+            style={{ marginTop: 10, minHeight: 48, ...routeGhost }}
           >
             {t('native.context.skip')}
           </GhostButton>
@@ -419,7 +420,7 @@ export default function NativeContextFlow() {
               ))}
             </div>
             <p style={sectionLabel}>{t('native.context.urban.title')}</p>
-            <p style={{ margin: '-4px 0 0', color: T.muted, fontSize: 13, lineHeight: 1.4 }}>
+            <p style={{ margin: '-4px 0 0', color: R.muted, fontSize: 13, lineHeight: 1.4 }}>
               {t('native.context.urban.disclaimer')}
             </p>
             {URBAN_COMFORT.map((id) => (
@@ -487,15 +488,15 @@ export default function NativeContextFlow() {
                   style={{
                     minHeight: 48,
                     borderRadius: 12,
-                    border: '1.5px solid rgba(250,246,239,0.16)',
-                    background: 'rgba(250,246,239,0.06)',
-                    color: T.bone,
+                    border: `1.5px solid ${R.line}`,
+                    background: R.cardWarm,
+                    color: R.ink,
                     padding: '0 14px',
                     fontFamily: F.body,
                     fontSize: 15,
                   }}
                 />
-                <GhostButton data-testid="native-context-anchor-save" onClick={saveDraftAnchor} style={{ minHeight: 44 }}>
+                <GhostButton data-testid="native-context-anchor-save" onClick={saveDraftAnchor} style={{ minHeight: 44, ...routeGhost }}>
                   {t('native.context.plans.add')}
                 </GhostButton>
               </div>
@@ -503,7 +504,7 @@ export default function NativeContextFlow() {
               <GhostButton
                 data-testid="native-context-plans-add"
                 onClick={() => setShowAnchorForm(true)}
-                style={{ minHeight: 44 }}
+                style={{ minHeight: 44, ...routeGhost }}
               >
                 {t('native.context.plans.add')}
               </GhostButton>
@@ -574,8 +575,8 @@ export default function NativeContextFlow() {
           <GhostButton
             data-testid="native-context-location-skip"
             disabled={locationPhase === 'loading'}
-            onClick={() => persistAndFinish('denied', null)}
-            style={{ marginTop: 10, minHeight: 48 }}
+            onClick={() => persistAndFinish('skipped', null)}
+            style={{ marginTop: 10, minHeight: 48, ...routeGhost }}
           >
             {t('native.context.location.skip')}
           </GhostButton>
@@ -591,7 +592,7 @@ const sectionLabel = {
   fontSize: 12,
   letterSpacing: '0.16em',
   textTransform: 'uppercase',
-  color: T.muted,
+  color: R.muted,
 }
 
 function Segmented({ label, value, onChange, options, testPrefix }) {

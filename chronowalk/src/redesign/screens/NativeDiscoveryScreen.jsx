@@ -16,7 +16,9 @@ import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
 import { formatDuration } from '../ui/NativeContentCard.jsx'
+import { R, RouteSurface, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 export default function NativeDiscoveryScreen() {
   const t = useT()
@@ -27,7 +29,11 @@ export default function NativeDiscoveryScreen() {
   const [saved, setSaved] = useState(() => isExperienceSaved(discoveryId))
 
   if (!item) {
-    return <p style={{ color: T.bone, padding: 24 }}>Discovery unavailable.</p>
+    return (
+      <RouteSurface testId="native-discovery">
+        <p style={{ color: R.ink }}>Discovery unavailable.</p>
+      </RouteSurface>
+    )
   }
 
   const locked = !canAccessContentId(item.id)
@@ -55,62 +61,77 @@ export default function NativeDiscoveryScreen() {
   }
 
   return (
-    <div
-      data-testid="native-discovery"
-      data-discovery-id={item.id}
-      data-asset-source={import.meta.env.DEV ? item.mediaResolved?.source : undefined}
-      style={{ minHeight: '100%', background: T.obsidian, color: T.bone, paddingBottom: 'calc(var(--shell-tab-bar-height, 72px) + 12px)' }}
+    <RouteSurface
+      testId="native-discovery"
+      data-bright="true"
+      style={{ paddingLeft: 0, paddingRight: 0 }}
     >
       <div
-        style={{
-          height: 220,
-          backgroundImage: item.photo ? `url(${item.photo})` : 'none',
-          backgroundSize: item.mediaResolved?.source === 'brand' ? '36%' : 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          backgroundColor: '#1a1a1f',
-        }}
-      />
-      <div style={{ padding: '20px 20px 0' }}>
-        <p style={{ margin: 0, fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: T.muted }}>
-          {t('native.content.notice')} · {formatDuration(item.timeCostMin)}
-        </p>
-        <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '10px 0' }}>{item.title}</h1>
-        <p style={{ margin: '0 0 14px', lineHeight: 1.5, color: 'rgba(250,246,239,0.88)', fontSize: 17 }}>{item.whyWorthIt}</p>
-        {item.lookHere ? (
-          <p style={{ margin: '0 0 14px', lineHeight: 1.5, color: T.gold }}>
-            {item.lookHere}
+        data-discovery-id={item.id}
+        data-asset-source={import.meta.env.DEV ? item.mediaResolved?.source : undefined}
+        data-bright="true"
+        style={{ color: R.ink }}
+      >
+        <div style={{ padding: '0 20px' }}>
+          <PlaceMedia item={item} height={220} radius={20} />
+        </div>
+        <div style={{ padding: '18px 20px 0' }}>
+          <p style={routeType}>
+            {t('native.content.notice')} · {formatDuration(item.timeCostMin)}
           </p>
-        ) : null}
-        <p style={{ margin: '0 0 18px', lineHeight: 1.55, color: 'rgba(250,246,239,0.78)' }}>{item.body}</p>
-        {item.accessNotes ? (
-          <p style={{ margin: '0 0 18px', color: T.muted, fontSize: 13, lineHeight: 1.45 }}>{item.accessNotes}</p>
-        ) : null}
-        {playAudio ? (
-          <p data-testid="discovery-audio" style={{ color: T.gold }}>{t('native.discovery.audio')}</p>
-        ) : null}
-        {playVisual ? (
-          <p data-testid="discovery-visual" style={{ color: T.gold }}>{t('native.discovery.visual')}</p>
-        ) : null}
-        <PrimaryButton color={T.gold} data-testid="discovery-done" onClick={finish} style={{ minHeight: 48 }}>
-          {locked ? t('native.experience.unlock') : t('native.discovery.done')}
-        </PrimaryButton>
-        <GhostButton data-testid="discovery-save" onClick={toggleSave} style={{ marginTop: 10, minHeight: 48 }}>
-          {saved ? t('native.saved.remove') : t('native.saved.save')}
-        </GhostButton>
-        <GhostButton data-testid="discovery-keep" onClick={() => navigate('/home')} style={{ marginTop: 10, minHeight: 48 }}>
-          {t('native.discovery.keep')}
-        </GhostButton>
-        <GhostButton
-          data-testid="discovery-best-next"
-          onClick={() => navigate(`/next?exclude=${encodeURIComponent(item.id)}`)}
-          style={{ marginTop: 10, minHeight: 48 }}
-        >
-          {t('native.next.eyebrow')}
-        </GhostButton>
+          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 26, margin: '8px 0', color: R.ink, lineHeight: 1.2 }}>
+            {item.title}
+          </h1>
+          <p style={{ margin: '0 0 12px', lineHeight: 1.45, color: R.ink, fontSize: 16, fontFamily: F.body }}>
+            {item.whyWorthIt}
+          </p>
+          {item.lookHere ? (
+            <p
+              data-testid="discovery-look-here"
+              style={{
+                margin: '0 0 12px',
+                lineHeight: 1.45,
+                color: R.terracotta,
+                fontFamily: F.body,
+                fontWeight: 600,
+              }}
+            >
+              {t('native.discovery.lookHere')} {item.lookHere}
+            </p>
+          ) : null}
+          {item.body ? (
+            <p style={{ margin: '0 0 16px', lineHeight: 1.5, color: R.muted, fontSize: 14, fontFamily: F.body }}>
+              {item.body}
+            </p>
+          ) : null}
+          {playAudio ? (
+            <p data-testid="discovery-audio" style={{ color: R.gold, fontFamily: F.body }}>
+              {t('native.discovery.audio')}
+            </p>
+          ) : null}
+          {playVisual ? (
+            <p data-testid="discovery-visual" style={{ color: R.gold, fontFamily: F.body }}>
+              {t('native.discovery.visual')}
+            </p>
+          ) : null}
+          <GhostButton data-testid="discovery-save" onClick={toggleSave} style={{ marginTop: 8, ...routeGhost }}>
+            {saved ? t('native.saved.remove') : t('native.saved.save')}
+          </GhostButton>
+          <PrimaryButton
+            color={T.gold}
+            data-testid="discovery-done"
+            onClick={finish}
+            style={{ marginTop: 10, ...routePrimary }}
+          >
+            {locked ? t('native.experience.unlock') : t('native.discovery.done')}
+          </PrimaryButton>
+          <GhostButton data-testid="discovery-keep" onClick={() => navigate('/home')} style={{ marginTop: 10, ...routeGhost }}>
+            {t('native.discovery.keep')}
+          </GhostButton>
+        </div>
       </div>
       <NativeCoverageSheet open={lockOpen} item={item} onClose={() => setLockOpen(false)} />
-    </div>
+    </RouteSurface>
   )
 }
 

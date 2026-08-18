@@ -6,9 +6,11 @@ import { canAccessContentId } from '../../lib/contentAccess.js'
 import { readGuestContext } from '../../lib/guestSession.js'
 import { rankHeroes } from '../../lib/rankHeroes.js'
 import { getJourneySnapshot } from '../../state/journey.js'
-import { F, T } from '../tokens.js'
+import { F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import NativeContentCard from '../ui/NativeContentCard.jsx'
+import { isPlausibleRomePosition } from '../../lib/geoSanity.js'
+import { R, RouteSurface, routeType } from '../ui/RouteSurface.jsx'
 
 export default function NativeExploreScreen() {
   const t = useT()
@@ -24,7 +26,7 @@ export default function NativeExploreScreen() {
       rankHeroes({
         catalog,
         context: guest,
-        position: guest.lastPosition,
+        position: isPlausibleRomePosition(guest.lastPosition) ? guest.lastPosition : null,
         canAccess: (id) => canAccessContentId(id),
         completedIds,
       }),
@@ -35,7 +37,7 @@ export default function NativeExploreScreen() {
       buildExploreSections({
         catalog: ranked.ranked,
         ranked: ranked.ranked,
-        position: guest.lastPosition,
+        position: isPlausibleRomePosition(guest.lastPosition) ? guest.lastPosition : null,
         availableTimeNow: guest.session?.availableTimeNow || guest.timeBudgetId,
         completedIds,
       }),
@@ -43,23 +45,12 @@ export default function NativeExploreScreen() {
   )
 
   return (
-    <div
-      data-testid="native-explore"
-      style={{
-        minHeight: '100%',
-        background: T.obsidian,
-        color: T.bone,
-        padding:
-          'max(20px, calc(env(safe-area-inset-top) + 12px)) 20px calc(var(--shell-tab-bar-height, 72px) + 12px)',
-      }}
-    >
-      <p style={{ margin: 0, fontSize: 12, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted }}>
-        ChronoWalk · Rome
-      </p>
-      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '12px 0 8px' }}>
+    <RouteSurface testId="native-explore">
+      <p style={routeType}>ChronoWalk · Rome</p>
+      <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '12px 0 8px', color: R.ink }}>
         {t('native.explore.title')}
       </h1>
-      <p style={{ margin: '0 0 18px', color: T.muted, lineHeight: 1.45 }}>{t('native.explore.body')}</p>
+      <p style={{ margin: '0 0 18px', color: R.muted, lineHeight: 1.45, fontFamily: F.body }}>{t('native.explore.body')}</p>
       {sections.map((section) => (
         <section key={section.id} data-testid={`explore-section-${section.id}`} style={{ marginBottom: 28 }}>
           <h2
@@ -69,7 +60,7 @@ export default function NativeExploreScreen() {
               fontSize: 12,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: T.muted,
+              color: R.muted,
             }}
           >
             {section.title}
@@ -78,12 +69,13 @@ export default function NativeExploreScreen() {
             <NativeContentCard
               key={`${section.id}-${item.id}`}
               item={item}
+              compact
               testId={`explore-item-${item.id}`}
               onOpen={(next) => navigate(contentRoute(next))}
             />
           ))}
         </section>
       ))}
-    </div>
+    </RouteSurface>
   )
 }

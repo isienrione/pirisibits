@@ -19,7 +19,8 @@ describe('shell config', () => {
 
   it('exposes Walk only when a native walk is active', () => {
     const tabs = getShellTabs({ native: true, walkActive: true })
-    expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/journey', '/map', '/journal', '/settings'])
+    expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/map', '/journal', '/settings'])
+    expect(tabs.map((tab) => tab.label)).toEqual(['Discover', 'Map', 'Saved', 'Settings'])
   })
 
   it('highlights Home, Walk on /journey and Tour on legacy /stops', () => {

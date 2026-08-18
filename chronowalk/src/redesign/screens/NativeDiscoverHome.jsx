@@ -10,6 +10,7 @@ import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { getJourneySnapshot } from '../../state/journey.js'
 import { CONTENT_TYPES } from '../../content/registry/constants.js'
 import { COVERAGE_LABELS } from '../../content/rome/heroRecommendationMeta.js'
+import { isPlausibleRomePosition } from '../../lib/geoSanity.js'
 import {
   ensureProposedRoute,
   estimateRouteTotals,
@@ -26,8 +27,10 @@ import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import NativeContentCard from '../ui/NativeContentCard.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
-import RouteTimeline from '../ui/RouteTimeline.jsx'
-import { R, RouteSurface, routeCard, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
+import RoutePreview from '../ui/RoutePreview.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
+import { isMysteryHidden } from '../../lib/route/model.js'
+import { R, RouteSurface, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 function coverageLabelFor(item) {
   if (!item.locked) return null
@@ -51,6 +54,7 @@ export default function NativeDiscoverHome() {
     ...(guest.history?.completedExperienceIds ?? []),
   ]
 
+  const located = isPlausibleRomePosition(position)
   const plan = useMemo(() => {
     if (isRouteLive(active)) return active
     return (
@@ -58,28 +62,28 @@ export default function NativeDiscoverHome() {
       ensureProposedRoute({
         context: guest,
         catalog,
-        position,
+        position: located ? position : null,
         canAccess: canAccessContentId,
       })
     )
-  }, [active, proposed, catalog, guest, position])
+  }, [active, proposed, catalog, guest, located, position])
 
   const ranked = useMemo(
     () =>
       rankHeroes({
         catalog,
         context: guest,
-        position,
+        position: located ? position : null,
         canAccess: (id) => canAccessContentId(id),
         completedIds,
       }),
-    [catalog, completedIds, guest, position],
+    [catalog, completedIds, guest, located, position],
   )
 
   const onRoute = new Set(liveItems(plan).map((item) => item.contentId))
-  const nearby = (ranked.ranked || []).filter((item) => !onRoute.has(item.id)).slice(0, 3)
+  const nearby = (ranked.ranked || []).filter((item) => !onRoute.has(item.id)).slice(0, 4)
   const { primary, alternatives } = nearby.length
-    ? { primary: nearby[0], alternatives: nearby.slice(1, 3) }
+    ? { primary: nearby[0], alternatives: nearby.slice(1, 4) }
     : discoverCards(ranked)
 
   useEffect(() => {
@@ -132,35 +136,44 @@ export default function NativeDiscoverHome() {
   const totals = plan?.items ? estimateRouteTotals(plan.items) : null
   const durationLabel = formatDurationLabel(totals?.estimatedDurationMin || plan?.estimatedDurationMin)
   const homeHeadline = proposed?.homeHeadline || plan?.homeHeadline
+  const locationCopy = located
+    ? t('native.discover.status.located')
+    : guest.locationStatus === 'denied' || guest.locationStatus === 'skipped'
+      ? t('native.discover.status.browse')
+      : t('native.discover.status.turnOn')
+  const firstVisible = liveItems(plan)
+    .map((item) => (isMysteryHidden(item) ? null : byId[item.contentId]))
+    .find(Boolean)
 
   return (
     <RouteSurface testId="native-discover">
       <p style={routeType}>ChronoWalk · Rome</p>
-      <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 14, fontFamily: F.body }}>
-        {position ? t('native.discover.status.located') : t('native.discover.status.browse')}
-      </p>
+      <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 14, fontFamily: F.body }}>{locationCopy}</p>
 
       {plan?.items?.length ? (
         <div
           data-testid="discover-route-card"
           data-resume={paused ? 'true' : 'false'}
           style={{
-            ...routeCard,
-            margin: '18px 0 20px',
-            padding: 18,
+            margin: '16px 0 18px',
+            padding: 14,
             borderRadius: 22,
+            background: R.cardFill,
+            border: `1px solid ${R.line}`,
             borderLeft: `3px solid ${R.gold}`,
+            boxShadow: R.shadow,
           }}
         >
-          <p style={routeType}>
+          {firstVisible ? <PlaceMedia item={firstVisible} height={132} radius={16} /> : null}
+          <p style={{ ...routeType, marginTop: 12 }}>
             {paused ? t('native.route.pausedEyebrow') : t('native.route.based')}
           </p>
-          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0 10px', lineHeight: 1.15, color: R.ink }}>
+          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 24, margin: '8px 0 10px', lineHeight: 1.15, color: R.ink }}>
             {paused
               ? t('native.route.continueAfternoon')
               : homeHeadline || t('native.route.homeHeadline', { duration: durationLabel.replace(/^~/, '') })}
           </h1>
-          <RouteTimeline items={liveItems(plan)} catalogById={byId} compact currentId={active?.currentRouteItemId} />
+          <RoutePreview items={liveItems(plan)} catalogById={byId} compact currentId={active?.currentRouteItemId} />
           <PrimaryButton
             color={T.gold}
             data-testid={paused ? 'discover-resume' : 'discover-start-route'}
@@ -181,11 +194,7 @@ export default function NativeDiscoverHome() {
             >
               {t('native.discover.seeRoute')}
             </GhostButton>
-            <GhostButton
-              data-testid="discover-adjust"
-              onClick={() => navigate('/route/adjust')}
-              style={routeGhost}
-            >
+            <GhostButton data-testid="discover-adjust" onClick={() => navigate('/route/adjust')} style={routeGhost}>
               {t('native.route.adjust')}
             </GhostButton>
           </div>
@@ -202,38 +211,49 @@ export default function NativeDiscoverHome() {
       >
         {t('native.discover.orNearby')}
       </p>
-      {primary ? (
-        <>
+      <div
+        data-testid="discover-nearby-row"
+        style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 8, marginBottom: 12 }}
+      >
+        {primary ? (
           <NativeContentCard
             item={primary}
-            primary
-            tone="warm"
+            compact
+            horizontal
             testId="discover-primary-card"
             coverageLabel={coverageLabelFor(primary)}
+            onOpen={(item) => {
+              if (item.contentType === CONTENT_TYPES.HERO && !item.locked) startItem(item)
+              else openItem(item)
+            }}
+          />
+        ) : null}
+        {alternatives.map((item) => (
+          <NativeContentCard
+            key={item.id}
+            item={item}
+            compact
+            horizontal
+            testId={`discover-alt-card-${item.id}`}
+            coverageLabel={coverageLabelFor(item)}
             onOpen={openItem}
           />
-          <div style={{ padding: '0 0 16px', display: 'flex', flexDirection: 'column', gap: 8, marginTop: -8 }}>
-            <PrimaryButton color={T.gold} data-testid="discover-start" onClick={() => startItem(primary)} style={routePrimary}>
-              {primary.locked || primary.contentType === CONTENT_TYPES.DISCOVERY
-                ? t('native.discover.view')
-                : t('native.discover.start')}
-            </PrimaryButton>
-            <GhostButton data-testid="discover-view" onClick={() => openItem(primary)} style={routeGhost}>
-              {t('native.discover.view')}
-            </GhostButton>
-          </div>
-        </>
+        ))}
+      </div>
+      {primary && primary.contentType === CONTENT_TYPES.HERO && !primary.locked ? (
+        <PrimaryButton
+          color={T.actIV}
+          data-testid="discover-start"
+          onClick={() => startItem(primary)}
+          style={{ ...routePrimary, marginBottom: 10, background: T.actIV, color: T.bone }}
+        >
+          {t('native.discover.start')}
+        </PrimaryButton>
+      ) : primary ? (
+        <GhostButton data-testid="discover-start" onClick={() => openItem(primary)} style={{ ...routeGhost, marginBottom: 10 }}>
+          {t('native.discover.view')}
+        </GhostButton>
       ) : null}
-      {alternatives.map((item) => (
-        <NativeContentCard
-          key={item.id}
-          item={item}
-          tone="warm"
-          testId={`discover-alt-card-${item.id}`}
-          coverageLabel={coverageLabelFor(item)}
-          onOpen={openItem}
-        />
-      ))}
 
       <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
         <GhostButton data-testid="discover-see-all" onClick={() => navigate('/explore')} style={routeGhost}>

@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { grantTestAccess } from '../../test/grantTestAccess.js'
 import { RequireAccess, RequireAppShell } from '../requireAccess.jsx'
 import { clearLocalAccessState } from '../accessSession.js'
-import { clearGuestSession, completeNativeContext, startNativeGuestExploration } from '../guestSession.js'
+import { clearGuestSession, completeCurrentNativeOnboarding, startNativeGuestExploration } from '../guestSession.js'
 import {
   NativePublicLandingRoute,
   getNativeRootRedirect,
@@ -143,7 +143,7 @@ describe('native iOS product entry', () => {
   it('sends a returning native guest "/" to /home', () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
-    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '30min' })
+    completeCurrentNativeOnboarding()
 
     expect(getNativeRootRedirect()).toBe('/home')
     expect(resolveNativeRootEntry().reason).toBe('guest')
@@ -151,6 +151,19 @@ describe('native iOS product entry', () => {
 
     expect(screen.queryByText('MARKETING LANDING')).not.toBeInTheDocument()
     expect(screen.getByText('HOME')).toBeInTheDocument()
+  })
+
+  it('sends an old onboarded guest with incomplete current Context to /context', () => {
+    capacitor.platform = 'ios'
+    startNativeGuestExploration()
+    const raw = JSON.parse(localStorage.getItem('cw_guest_v1'))
+    raw.onboardingCompleted = true
+    raw.onboardingFlowVersion = 1
+    raw.context = { interestIds: ['architecture'], timeBudgetId: '30min' }
+    localStorage.setItem('cw_guest_v1', JSON.stringify(raw))
+
+    expect(getNativeRootRedirect()).toBe('/context')
+    expect(resolveNativeRootEntry().reason).toBe('context')
   })
 
   it('resumes incomplete native Context instead of Welcome', () => {
@@ -166,7 +179,7 @@ describe('native iOS product entry', () => {
   it('lets a native guest reach /home without a paid entitlement', async () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
-    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '1h' })
+    completeCurrentNativeOnboarding({ session: { availableTimeNow: '1h' } })
     renderNativeEntry('/home')
 
     expect(await screen.findByText('HOME')).toBeInTheDocument()
@@ -177,7 +190,7 @@ describe('native iOS product entry', () => {
   it('lets a native guest open Map and Settings', async () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
-    completeNativeContext({ interestIds: ['art'], timeBudgetId: '2h' })
+    completeCurrentNativeOnboarding({ traveler: { positiveInterestIds: ['art'] }, session: { availableTimeNow: '2h' } })
 
     renderNativeEntry('/map')
     expect(await screen.findByText('MAP')).toBeInTheDocument()
@@ -191,7 +204,7 @@ describe('native iOS product entry', () => {
   it('lets an onboarded native guest enter /journey without a paid credential', async () => {
     capacitor.platform = 'ios'
     startNativeGuestExploration()
-    completeNativeContext({ interestIds: ['architecture'], timeBudgetId: '30min' })
+    completeCurrentNativeOnboarding()
     renderNativeEntry('/journey')
 
     expect(await screen.findByText('JOURNEY')).toBeInTheDocument()

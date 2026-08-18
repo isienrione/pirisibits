@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRomeRankableCatalog, contentRoute } from '../../content/rome/registry.js'
 import { canAccessContentId } from '../../lib/contentAccess.js'
@@ -7,6 +7,9 @@ import { getLocationFix, LOCATION_STATUS } from '../../lib/locationAccess.js'
 import { rankHeroes } from '../../lib/rankHeroes.js'
 import { getJourneySnapshot } from '../../state/journey.js'
 import { CONTENT_TYPES } from '../../content/registry/constants.js'
+import { isPlausibleRomePosition } from '../../lib/geoSanity.js'
+import { loadMapboxRuntime } from '../../map/mapboxLoader.js'
+import { env } from '../../config/env.js'
 import {
   bifurcationOptions,
   isMysteryHidden,
@@ -20,15 +23,21 @@ import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
 import { formatDuration } from '../ui/NativeContentCard.jsx'
 import { R, routeCard, routeType } from '../ui/RouteSurface.jsx'
 
+const ROME_CENTER = { lat: 41.8986, lng: 12.4768 }
 const BOUNDS = { minLat: 41.878, maxLat: 41.907, minLng: 12.465, maxLng: 12.512 }
+const NATIVE_MAP_STYLE = 'mapbox://styles/mapbox/streets-v12'
 
-function project(lat, lng) {
+function projectCss(lat, lng) {
   const x = (lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)
-  const y = (BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat)
+  const y = (BOUNDS.maxLat - lat) / (BOUNDS.maxLat - minLatSafe(BOUNDS.maxLat, BOUNDS.minLat))
   return {
     left: `${Math.min(96, Math.max(4, x * 100))}%`,
     top: `${Math.min(96, Math.max(4, y * 100))}%`,
   }
+}
+
+function minLatSafe(max, min) {
+  return max - min || 1
 }
 
 export default function NativeMapScreen() {
@@ -40,9 +49,14 @@ export default function NativeMapScreen() {
   const [selected, setSelected] = useState(null)
   const [lockItem, setLockItem] = useState(null)
   const [showAlts, setShowAlts] = useState(false)
+  const [engine, setEngine] = useState('mapbox-pending')
+  const [pixelPos, setPixelPos] = useState(null)
+  const mapRef = useRef(null)
+  const mapboxRef = useRef(null)
   const { active } = useRouteState()
   const live = isRouteLive(active)
   const routeItems = live ? liveItems(active) : []
+  const located = isPlausibleRomePosition(position)
 
   const catalog = useMemo(() => getRomeRankableCatalog(), [])
   const completedIds = [
@@ -55,18 +69,20 @@ export default function NativeMapScreen() {
       rankHeroes({
         catalog,
         context: guest,
-        position,
+        position: located ? position : null,
         canAccess: (id) => canAccessContentId(id),
         completedIds,
       }),
-    [catalog, completedIds, guest, position],
+    [catalog, completedIds, guest, located, position],
   )
   const recommended = new Set((ranked.ranked || []).slice(0, 3).map((item) => item.id))
 
   useEffect(() => {
     let cancelled = false
     void getLocationFix({ timeoutMs: 8000 }).then((result) => {
-      if (!cancelled && result.status === LOCATION_STATUS.SUCCESS) setPosition(result.position)
+      if (!cancelled && result.status === LOCATION_STATUS.SUCCESS && isPlausibleRomePosition(result.position)) {
+        setPosition(result.position)
+      }
     })
     return () => {
       cancelled = true
@@ -85,9 +101,68 @@ export default function NativeMapScreen() {
         )
       : catalog
 
+  useEffect(() => {
+    let cancelled = false
+    let map
+    void loadMapboxRuntime()
+      .then((mapboxgl) => {
+        if (cancelled || !mapRef.current) return
+        if (!env.mapboxToken) {
+          setEngine('mapbox-unconfigured')
+          return
+        }
+        mapboxgl.accessToken = env.mapboxToken
+        const center = located ? [position.lng, position.lat] : [ROME_CENTER.lng, ROME_CENTER.lat]
+        map = new mapboxgl.Map({
+          container: mapRef.current,
+          style: NATIVE_MAP_STYLE,
+          center,
+          zoom: zoom === 'city' ? 13.2 : 15.4,
+          attributionControl: false,
+          cooperativeGestures: true,
+        })
+        mapboxRef.current = map
+        const syncPixels = () => {
+          const next = {}
+          const projectItem = (id, geo) => {
+            if (!geo || !Number.isFinite(geo.lat)) return
+            const p = map.project([geo.lng, geo.lat])
+            next[id] = { left: `${p.x}px`, top: `${p.y}px` }
+          }
+          for (const item of catalog) projectItem(item.id, item.geo)
+          if (located) projectItem('user', position)
+          setPixelPos(next)
+        }
+        map.on('load', () => {
+          if (cancelled) return
+          setEngine('mapbox')
+          syncPixels()
+        })
+        map.on('move', syncPixels)
+        map.on('error', () => {
+          if (!cancelled) setEngine((current) => (current === 'mapbox' ? current : 'fallback'))
+        })
+      })
+      .catch(() => {
+        if (!cancelled) setEngine('fallback')
+      })
+    return () => {
+      cancelled = true
+      map?.remove?.()
+      mapboxRef.current = null
+    }
+  }, [catalog, located, position?.lat, position?.lng, zoom])
+
+  const markerPos = (item) => {
+    if (pixelPos?.[item.id] && engine === 'mapbox') return pixelPos[item.id]
+    if (!item.geo || !Number.isFinite(item.geo.lat)) return null
+    return projectCss(item.geo.lat, item.geo.lng)
+  }
+
   return (
     <div
       data-testid="native-map"
+      data-map-engine={engine}
       style={{
         minHeight: '100%',
         background: R.bg,
@@ -116,22 +191,22 @@ export default function NativeMapScreen() {
               {showAlts ? t('native.map.hideAlts') : t('native.map.showAlts')}
             </button>
           ) : null}
-        <button
-          type="button"
-          data-testid="native-map-zoom"
-          onClick={() => setZoom((current) => (current === 'city' ? 'streets' : 'city'))}
-          style={{
-            minHeight: 44,
-            padding: '8px 12px',
-            borderRadius: 999,
-            border: `1px solid ${R.line}`,
-            background: R.cardWarm,
-            color: R.ink,
-            fontFamily: F.body,
-          }}
-        >
-          {zoom === 'city' ? t('native.map.streets') : t('native.map.city')}
-        </button>
+          <button
+            type="button"
+            data-testid="native-map-zoom"
+            onClick={() => setZoom((current) => (current === 'city' ? 'streets' : 'city'))}
+            style={{
+              minHeight: 44,
+              padding: '8px 12px',
+              borderRadius: 999,
+              border: `1px solid ${R.line}`,
+              background: R.cardWarm,
+              color: R.ink,
+              fontFamily: F.body,
+            }}
+          >
+            {zoom === 'city' ? t('native.map.streets') : t('native.map.city')}
+          </button>
         </div>
       </div>
       <div
@@ -141,12 +216,13 @@ export default function NativeMapScreen() {
           margin: '0 16px',
           height: '58dvh',
           borderRadius: 20,
-          background: `linear-gradient(180deg, color-mix(in srgb, ${R.teal} 10%, ${R.bg}) 0%, ${R.line} 100%)`,
           overflow: 'hidden',
           border: `1px solid ${R.line}`,
           boxShadow: R.shadow,
+          background: R.line,
         }}
       >
+        <div ref={mapRef} data-testid="native-mapbox" style={{ position: 'absolute', inset: 0 }} />
         {markers.map((item) => {
           if (!item.geo || !Number.isFinite(item.geo.lat)) return null
           if (routeItems.some((row) => row.contentId === item.id && isMysteryHidden(row))) return null
@@ -156,7 +232,8 @@ export default function NativeMapScreen() {
           const completed = completedIds.includes(item.id)
           const saved = savedIds.has(item.id)
           const rec = recommended.has(item.id)
-          const pos = project(item.geo.lat, item.geo.lng)
+          const pos = markerPos(item)
+          if (!pos) return null
           return (
             <button
               key={item.id}
@@ -186,32 +263,19 @@ export default function NativeMapScreen() {
                 opacity: locked ? 0.72 : 1,
                 boxShadow: rec ? '0 0 0 6px rgba(212,175,55,0.22)' : 'none',
                 padding: 0,
+                zIndex: 2,
               }}
               aria-label={item.title}
             />
           )
         })}
         {live && routeItems.length ? (
-          <div data-testid="map-active-route" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
-              <polyline
-                fill="none"
-                stroke={R.gold}
-                strokeWidth="1.2"
-                points={routeItems
-                  .map((item) => catalog.find((row) => row.id === item.contentId))
-                  .filter((rec) => rec?.geo)
-                  .map((rec) => {
-                    const pos = project(rec.geo.lat, rec.geo.lng)
-                    return `${parseFloat(pos.left)} ${parseFloat(pos.top)}`
-                  })
-                  .join(' ')}
-              />
-            </svg>
+          <div data-testid="map-active-route" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 3 }}>
             {routeItems.map((item, index) => {
               const rec = catalog.find((row) => row.id === item.contentId)
               if (!rec?.geo) return null
-              const pos = project(rec.geo.lat, rec.geo.lng)
+              const pos = markerPos(rec)
+              if (!pos) return null
               const mystery = isMysteryHidden(item)
               const current = item.routeItemId === active.currentRouteItemId
               const done = item.state === 'completed'
@@ -252,35 +316,39 @@ export default function NativeMapScreen() {
           </div>
         ) : null}
         {showAlts && live
-          ? (bifurcationOptions({ active, catalog, context: guest, position }).alternatives || []).map((option) => {
-              if (!option.item?.geo) return null
-              const pos = project(option.item.geo.lat, option.item.geo.lng)
-              return (
-                <span
-                  key={option.contentId}
-                  data-testid={`map-alt-marker-${option.contentId}`}
-                  style={{
-                    position: 'absolute',
-                    left: pos.left,
-                    top: pos.top,
-                    width: 10,
-                    height: 10,
-                    marginLeft: -5,
-                    marginTop: -5,
-                    borderRadius: '50%',
-                    border: `1.5px dashed ${R.gold}`,
-                    background: 'transparent',
-                  }}
-                />
-              )
-            })
+          ? (bifurcationOptions({ active, catalog, context: guest, position: located ? position : null }).alternatives || []).map(
+              (option) => {
+                if (!option.item?.geo) return null
+                const pos = markerPos(option.item)
+                if (!pos) return null
+                return (
+                  <span
+                    key={option.contentId}
+                    data-testid={`map-alt-marker-${option.contentId}`}
+                    style={{
+                      position: 'absolute',
+                      left: pos.left,
+                      top: pos.top,
+                      width: 10,
+                      height: 10,
+                      marginLeft: -5,
+                      marginTop: -5,
+                      borderRadius: '50%',
+                      border: `1.5px dashed ${R.gold}`,
+                      background: 'transparent',
+                      zIndex: 3,
+                    }}
+                  />
+                )
+              },
+            )
           : null}
-        {position ? (
+        {located ? (
           <span
             data-testid="map-user-location"
             style={{
               position: 'absolute',
-              ...project(position.lat, position.lng),
+              ...(pixelPos?.user && engine === 'mapbox' ? pixelPos.user : projectCss(position.lat, position.lng)),
               width: 14,
               height: 14,
               marginLeft: -7,
@@ -288,28 +356,32 @@ export default function NativeMapScreen() {
               borderRadius: '50%',
               background: R.blue,
               boxShadow: `0 0 0 8px color-mix(in srgb, ${R.blue} 22%, transparent)`,
+              zIndex: 4,
             }}
           />
         ) : null}
       </div>
       {selected ? (
-        <div
-          data-testid="native-map-preview"
-          style={{ ...routeCard, margin: '14px 16px 0', padding: 14, borderRadius: 16 }}
-        >
+        <div data-testid="native-map-preview" style={{ ...routeCard, margin: '14px 16px 0', padding: 14, borderRadius: 16 }}>
           {(() => {
             const mystery = routeItems.find((row) => row.contentId === selected.id && isMysteryHidden(row))
             const title = mystery ? t('native.route.mysteryTitle') : selected.title
             const body = mystery ? t('native.route.mysteryTeaser') : selected.whyWorthIt
             return (
               <>
-          <p style={routeType}>
-            {mystery ? t('native.route.mysteryTitle') : selected.contentType === CONTENT_TYPES.DISCOVERY ? t('native.content.notice') : t('native.content.experience')}
-            {!canAccessContentId(selected.id) ? ` · ${t('native.content.locked')}` : ''}
-          </p>
-          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 22, margin: '6px 0', color: R.ink }}>{title}</h2>
-          <p style={{ margin: 0, color: R.ink, lineHeight: 1.4, fontFamily: F.body }}>{body}</p>
-          <p style={{ margin: '8px 0 12px', color: R.muted, fontSize: 13, fontFamily: F.body }}>{formatDuration(selected.timeCostMin)}</p>
+                <p style={routeType}>
+                  {mystery
+                    ? t('native.route.mysteryTitle')
+                    : selected.contentType === CONTENT_TYPES.DISCOVERY
+                      ? t('native.content.notice')
+                      : t('native.content.experience')}
+                  {!canAccessContentId(selected.id) ? ` · ${t('native.content.locked')}` : ''}
+                </p>
+                <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 22, margin: '6px 0', color: R.ink }}>{title}</h2>
+                <p style={{ margin: 0, color: R.ink, lineHeight: 1.4, fontFamily: F.body }}>{body}</p>
+                <p style={{ margin: '8px 0 12px', color: R.muted, fontSize: 13, fontFamily: F.body }}>
+                  {formatDuration(selected.timeCostMin)}
+                </p>
               </>
             )
           })()}

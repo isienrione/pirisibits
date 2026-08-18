@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import {
   clearGuestSession,
   completeNativeContext,
+  completeCurrentNativeOnboarding,
   ensureGuestSession,
   GUEST_SESSION_KEY,
   hasCompletedGuestOnboarding,
@@ -47,16 +48,17 @@ describe('guestSession', () => {
   })
 
   it('markGuestOnboardingComplete is idempotent on the same id', () => {
-    const created = ensureGuestSession()
+    const created = completeCurrentNativeOnboarding()
     const done = markGuestOnboardingComplete()
     const again = markGuestOnboardingComplete()
 
     expect(done.id).toBe(created.id)
     expect(again.id).toBe(created.id)
     expect(again.onboardingCompleted).toBe(true)
+    expect(hasCompletedGuestOnboarding()).toBe(true)
   })
 
-  it('completeNativeContext persists interests and time and marks onboarding done', () => {
+  it('completeNativeContext persists interests and time without treating a partial profile as done', () => {
     ensureGuestSession()
     const next = completeNativeContext({
       interestIds: ['architecture', 'sacred'],
@@ -64,13 +66,13 @@ describe('guestSession', () => {
       locationStatus: 'denied',
     })
 
-    expect(next.onboardingCompleted).toBe(true)
+    expect(next.onboardingCompleted).toBe(false)
     expect(next.context.interestIds).toEqual(['architecture', 'sacred'])
     expect(next.context.timeBudgetId).toBe('30min')
     expect(next.context.locationStatus).toBe('denied')
     expect(next.context.traveler.positiveInterestIds).toEqual(['architecture', 'sacred'])
     expect(next.context.session.availableTimeNow).toBe('30min')
-    expect(hasCompletedGuestOnboarding()).toBe(true)
+    expect(hasCompletedGuestOnboarding()).toBe(false)
   })
 
   it('upgrades a stored v1 context blob on read', () => {
@@ -104,5 +106,33 @@ describe('guestSession', () => {
     expect(next.context.trip.tripHorizon).toBe('week-plus')
     expect(next.context.session.availableTimeNow).toBe('30min')
     expect(next.context.timeBudgetId).toBe('30min')
+  })
+
+  it('does not treat a pre-Travel-Context guest flag as current onboarding', () => {
+    ensureGuestSession()
+    const raw = JSON.parse(localStorage.getItem(GUEST_SESSION_KEY))
+    raw.onboardingCompleted = true
+    raw.onboardingFlowVersion = 1
+    raw.context = {
+      interestIds: ['art'],
+      timeBudgetId: '2h',
+      locationStatus: 'granted',
+      lastPosition: { lat: 41.9, lng: 12.48 },
+    }
+    localStorage.setItem(GUEST_SESSION_KEY, JSON.stringify(raw))
+
+    expect(hasGuestSession()).toBe(true)
+    expect(hasCompletedGuestOnboarding()).toBe(false)
+    expect(readGuestSession().onboardingCompleted).toBe(false)
+  })
+
+  it('marks current onboarding complete only with required Context fields', () => {
+    const next = completeCurrentNativeOnboarding({
+      traveler: { positiveInterestIds: ['architecture-design', 'art'] },
+      session: { availableTimeNow: '1h', locationStatus: 'skipped' },
+    })
+    expect(next.onboardingCompleted).toBe(true)
+    expect(next.onboardingFlowVersion).toBe(3)
+    expect(hasCompletedGuestOnboarding()).toBe(true)
   })
 })

@@ -52,7 +52,9 @@ export default function NativeWalkScreen() {
         <p style={routeType}>{t('native.route.walkingTo')}</p>
         <h1 style={{ ...routeHeadline, fontSize: 24, margin: '8px 0 8px' }}>{title}</h1>
         <p style={{ margin: '0 0 14px', color: R.muted, fontFamily: F.body }}>
-          {item.estimatedTransitMin} min · {Math.round(item.distanceFromPreviousM || 0)} m
+          {Number.isFinite(item.estimatedTransitMin) && item.estimatedTransitMin < 180
+            ? `${item.estimatedTransitMin} min`
+            : t('native.route.locationUnavailable')}
         </p>
         <PrimaryButton color={T.gold} data-testid="walk-arrive" onClick={() => navigate('/arrive')} style={routePrimary}>
           {t('native.route.iveArrived')}

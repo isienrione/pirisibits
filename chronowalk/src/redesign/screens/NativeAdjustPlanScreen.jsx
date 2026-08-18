@@ -7,6 +7,7 @@ import {
   addContentAnywhere,
   composeAndSave,
   hydrateRouteItem,
+  isMysteryHidden,
   isRouteLive,
   liveItems,
   recomposeActiveFromProposed,
@@ -18,15 +19,14 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
-import RouteTimeline from '../ui/RouteTimeline.jsx'
-import { R, RouteSurface, routeCard, routeGhost, routeHeadline, routePrimary } from '../ui/RouteSurface.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
+import { R, RouteSurface, routeGhost, routeHeadline, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 const TIME_ORDER = ['30min', '1h', '2h', 'halfday', 'allday']
 
 function shiftTime(current, direction) {
   const index = Math.max(0, TIME_ORDER.indexOf(current || '1h'))
-  const next = TIME_ORDER[Math.min(TIME_ORDER.length - 1, Math.max(0, index + direction))]
-  return next
+  return TIME_ORDER[Math.min(TIME_ORDER.length - 1, Math.max(0, index + direction))]
 }
 
 function applyTweak(tweak) {
@@ -50,6 +50,29 @@ function applyTweak(tweak) {
   completeNativeContext(patch)
 }
 
+function Chip({ id, label, testId, selected, onClick, accent }) {
+  return (
+    <button
+      type="button"
+      data-testid={testId}
+      onClick={onClick}
+      style={{
+        minHeight: 44,
+        padding: '10px 14px',
+        borderRadius: 999,
+        border: `1px solid ${selected ? accent : R.line}`,
+        background: selected ? `color-mix(in srgb, ${accent} 16%, ${R.cardWarm})` : R.cardWarm,
+        color: R.ink,
+        fontFamily: F.body,
+        fontSize: 14,
+        fontWeight: 600,
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
 export default function NativeAdjustPlanScreen() {
   const t = useT()
   const navigate = useNavigate()
@@ -65,82 +88,129 @@ export default function NativeAdjustPlanScreen() {
     .map((id) => getRegistryItem(id))
     .filter(Boolean)
     .filter((rec) => !items.some((item) => item.contentId === rec.id))
-
-  const tweaks = [
-    { id: 'hidden', label: t('native.route.tweakHidden') },
-    { id: 'iconic', label: t('native.route.tweakIconic') },
-    { id: 'art', label: t('native.route.tweakArt') },
-    { id: 'history', label: t('native.route.tweakHistory') },
-    { id: 'walk', label: t('native.route.tweakWalk') },
-    { id: 'short', label: t('native.route.tweakShort') },
-    { id: 'long', label: t('native.route.tweakLong') },
-  ]
+  const feel = guest.traveler?.iconicVsHidden
 
   const recompose = () => {
     const next = composeAndSave()
     if (live) recomposeActiveFromProposed(next)
   }
 
+  const feelChips = [
+    { id: 'hidden', label: t('native.route.tweakHidden'), accent: R.violet },
+    { id: 'iconic', label: t('native.route.tweakIconic'), accent: R.gold },
+    { id: 'art', label: t('native.route.tweakArt'), accent: T.actVI },
+    { id: 'history', label: t('native.route.tweakHistory'), accent: R.terracotta },
+  ]
+  const paceChips = [
+    { id: 'walk', label: t('native.route.tweakWalk'), accent: R.teal },
+    { id: 'short', label: t('native.route.tweakShort'), accent: R.teal },
+    { id: 'long', label: t('native.route.tweakLong'), accent: R.teal },
+  ]
+
   return (
     <RouteSurface testId="native-adjust">
-      <GhostButton
-        data-testid="adjust-back"
-        onClick={() => navigate(live ? '/route' : '/plan')}
-        style={routeGhost}
-      >
+      <GhostButton data-testid="adjust-back" onClick={() => navigate(live ? '/route' : '/plan')} style={routeGhost}>
         {t('native.route.back')}
       </GhostButton>
       <h1 style={routeHeadline}>{t('native.route.adjustTitle')}</h1>
       <p style={{ margin: '0 0 16px', color: R.muted, fontFamily: F.body }}>{t('native.route.adjustLead')}</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-        {tweaks.map((tw) => (
-          <GhostButton
-            key={tw.id}
-            data-testid={`adjust-${tw.id}`}
+
+      <p style={routeType}>{t('native.route.adjustFeel')}</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '10px 0 18px' }}>
+        {feelChips.map((chip) => (
+          <Chip
+            key={chip.id}
+            id={chip.id}
+            label={chip.label}
+            testId={`adjust-${chip.id}`}
+            accent={chip.accent}
+            selected={(chip.id === 'hidden' || chip.id === 'iconic') && feel === chip.id}
             onClick={() => {
-              applyTweak(tw.id)
+              applyTweak(chip.id)
               recompose()
             }}
-            style={{ width: 'auto', minHeight: 44, padding: '10px 14px', ...routeGhost }}
-          >
-            {tw.label}
-          </GhostButton>
+          />
         ))}
       </div>
-      <div style={routeCard}>
-        <RouteTimeline items={items} catalogById={byId} currentId={active?.currentRouteItemId} />
+
+      <p style={routeType}>{t('native.route.adjustPace')}</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: '10px 0 18px' }}>
+        {paceChips.map((chip) => (
+          <Chip
+            key={chip.id}
+            id={chip.id}
+            label={chip.label}
+            testId={`adjust-${chip.id}`}
+            accent={chip.accent}
+            onClick={() => {
+              applyTweak(chip.id)
+              recompose()
+            }}
+          />
+        ))}
       </div>
-      <div style={{ marginTop: 16, display: 'grid', gap: 8 }}>
-        {items.map((item, idx, arr) => (
-          <div key={item.routeItemId} style={{ display: 'flex', gap: 8 }}>
-            {idx > 0 ? (
-              <GhostButton
-                data-testid={`adjust-up-${item.contentId}`}
-                onClick={() => {
-                  const vis = arr.map((row) => row.routeItemId)
-                  const next = [...vis]
-                  const j = next.indexOf(item.routeItemId)
-                  ;[next[j - 1], next[j]] = [next[j], next[j - 1]]
-                  reorderRouteItems(next)
-                }}
-                style={{ minHeight: 44, flex: '0 0 48px', ...routeGhost }}
-              >
-                ↑
-              </GhostButton>
-            ) : null}
-            <GhostButton
-              data-testid={`adjust-remove-${item.contentId}`}
-              onClick={() => removeAnyRouteItem(item.routeItemId)}
-              style={{ minHeight: 44, ...routeGhost }}
+
+      <p style={{ ...routeType, marginBottom: 10 }}>{t('native.route.adjustYours')}</p>
+      <div style={{ display: 'grid', gap: 8 }}>
+        {items.map((item, idx, arr) => {
+          const mystery = isMysteryHidden(item)
+          const content = item.content || byId[item.contentId]
+          return (
+            <div
+              key={item.routeItemId}
+              data-testid={`adjust-row-${item.contentId}`}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '56px 1fr auto',
+                gap: 10,
+                alignItems: 'center',
+                padding: 8,
+                borderRadius: 16,
+                border: `1px solid ${R.line}`,
+                background: R.cardFill,
+              }}
             >
-              {t('native.route.removeStop')}
-            </GhostButton>
-          </div>
-        ))}
+              <PlaceMedia item={content} mystery={mystery} height={56} radius={10} />
+              <div>
+                <p style={{ margin: 0, fontFamily: F.display, fontSize: 16, color: R.ink }}>
+                  {mystery ? t('native.route.mysteryTitle') : content?.title || item.contentId}
+                </p>
+                <p style={{ margin: '2px 0 0', color: R.muted, fontSize: 12, fontFamily: F.body }}>
+                  {item.estimatedExperienceMin} min
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: 4 }}>
+                {idx > 0 ? (
+                  <GhostButton
+                    data-testid={`adjust-up-${item.contentId}`}
+                    onClick={() => {
+                      const vis = arr.map((row) => row.routeItemId)
+                      const next = [...vis]
+                      const j = next.indexOf(item.routeItemId)
+                      ;[next[j - 1], next[j]] = [next[j], next[j - 1]]
+                      reorderRouteItems(next)
+                    }}
+                    style={{ minHeight: 44, width: 44, padding: 0, ...routeGhost }}
+                  >
+                    ↑
+                  </GhostButton>
+                ) : null}
+                <GhostButton
+                  data-testid={`adjust-remove-${item.contentId}`}
+                  onClick={() => removeAnyRouteItem(item.routeItemId)}
+                  style={{ minHeight: 44, width: 'auto', padding: '0 12px', ...routeGhost }}
+                >
+                  {t('native.route.removeStop')}
+                </GhostButton>
+              </div>
+            </div>
+          )
+        })}
       </div>
+
       {savedRecords.length ? (
         <div style={{ marginTop: 20 }}>
-          <h2 style={{ fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: R.muted }}>
+          <h2 style={{ fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase', color: R.muted, fontFamily: F.body }}>
             {t('native.route.addSaved')}
           </h2>
           {savedRecords.map((rec) => (
@@ -155,14 +225,21 @@ export default function NativeAdjustPlanScreen() {
           ))}
         </div>
       ) : null}
+
+      <GhostButton data-testid="adjust-browse" onClick={() => navigate('/explore')} style={{ marginTop: 12, ...routeGhost }}>
+        {t('native.discover.seeAll')}
+      </GhostButton>
       <PrimaryButton
         color={T.gold}
         data-testid="adjust-done"
         onClick={() => navigate(live ? '/route' : '/plan')}
-        style={{ marginTop: 24, ...routePrimary }}
+        style={{ marginTop: 16, ...routePrimary }}
       >
-        {t('native.route.done')}
+        {t('native.route.update')}
       </PrimaryButton>
+      <GhostButton data-testid="adjust-cancel" onClick={() => navigate(live ? '/route' : '/plan')} style={{ marginTop: 10, ...routeGhost }}>
+        {t('native.route.cancel')}
+      </GhostButton>
     </RouteSurface>
   )
 }
