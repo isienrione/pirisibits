@@ -12,7 +12,7 @@ import { T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
-import { R, RouteSurface, routeHeadline, routeType } from '../ui/RouteSurface.jsx'
+import { R, RouteSurface, routeGhost, routeHeadline, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 export default function NativeArrivalScreen() {
   const t = useT()
@@ -50,15 +50,31 @@ export default function NativeArrivalScreen() {
 
   return (
     <RouteSurface testId="native-arrive">
+      {content.photo ? (
+        <div
+          aria-hidden="true"
+          style={{
+            height: 180,
+            borderRadius: 20,
+            marginBottom: 16,
+            backgroundImage: `url(${content.photo})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundColor: R.line,
+            border: `1px solid ${R.line}`,
+            boxShadow: R.shadow,
+          }}
+        />
+      ) : null}
       <p style={routeType}>{t('native.route.arrived')}</p>
       <h1 style={routeHeadline}>{content.title}</h1>
       <p data-testid="arrive-copy" style={{ margin: '0 0 20px', lineHeight: 1.5, color: R.ink }}>
         {t('native.route.arrive.body')}
       </p>
-      <PrimaryButton color={T.gold} data-testid="arrive-start" onClick={start} style={{ minHeight: 48 }}>
+      <PrimaryButton color={T.gold} data-testid="arrive-start" onClick={start} style={routePrimary}>
         {t('native.route.startExperience')}
       </PrimaryButton>
-      <GhostButton data-testid="arrive-route" onClick={() => navigate('/route')} style={{ marginTop: 10, minHeight: 48, color: R.ink, borderColor: R.line, background: 'transparent' }}>
+      <GhostButton data-testid="arrive-route" onClick={() => navigate('/route')} style={{ marginTop: 10, ...routeGhost }}>
         {t('native.route.viewRoute')}
       </GhostButton>
       <NativeCoverageSheet open={lock} item={content} onClose={() => setLock(false)} />

@@ -1,8 +1,7 @@
-import { F } from '../tokens.js'
+import { F, T } from '../tokens.js'
 import { PrimaryButton } from './PrimaryButton.jsx'
 import { GhostButton } from './GhostButton.jsx'
-import { R } from './RouteSurface.jsx'
-import { T } from '../tokens.js'
+import { R, routeCard, routeGhost, routePrimary, routeType } from './RouteSurface.jsx'
 
 export default function MysteryCard({
   item,
@@ -16,23 +15,33 @@ export default function MysteryCard({
 }) {
   return (
     <div data-testid="mystery-card" data-flipped={flipped ? 'true' : 'false'} style={{ perspective: 1200 }}>
+      <style>{`
+        @keyframes cwMysteryReveal {
+          from { transform: rotateY(-86deg); opacity: 0.55; }
+          to { transform: rotateY(0deg); opacity: 1; }
+        }
+      `}</style>
       {!flipped ? (
-        <div data-testid="mystery-card-front" style={card}>
-          <p style={eyebrow}>✦ Surprise Discovery</p>
-          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0' }}>Something almost everyone walks past</h2>
-          <p style={{ margin: 0, color: R.muted, lineHeight: 1.5 }}>
+        <div data-testid="mystery-card-front" style={frontCard}>
+          <p style={{ ...routeType, color: R.violet }}>✦ Surprise Discovery</p>
+          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0', color: R.ink }}>
+            Something almost everyone walks past
+          </h2>
+          <p style={{ margin: 0, color: R.muted, lineHeight: 1.5, fontFamily: F.body }}>
             {walkMin} min from your route · ~{experienceMin} min
           </p>
-          <p style={{ margin: '14px 0 0', lineHeight: 1.5 }}>There’s something on this street most people walk straight past.</p>
-          <PrimaryButton color={T.gold} data-testid="mystery-take" onClick={onTake} style={{ marginTop: 18, minHeight: 48 }}>
+          <p style={{ margin: '14px 0 0', lineHeight: 1.5, fontFamily: F.body, color: R.ink }}>
+            There’s something on this street most people walk straight past.
+          </p>
+          <PrimaryButton color={T.gold} data-testid="mystery-take" onClick={onTake} style={{ marginTop: 18, ...routePrimary }}>
             Take me there
           </PrimaryButton>
-          <GhostButton data-testid="mystery-reveal" onClick={onReveal} style={{ marginTop: 10, minHeight: 48, color: R.ink, borderColor: R.line, background: 'transparent' }}>
+          <GhostButton data-testid="mystery-reveal" onClick={onReveal} style={{ marginTop: 10, ...routeGhost }}>
             Reveal what it is
           </GhostButton>
         </div>
       ) : (
-        <div data-testid="mystery-card-back" style={card}>
+        <div data-testid="mystery-card-back" style={backCard}>
           <div
             style={{
               height: 160,
@@ -40,14 +49,16 @@ export default function MysteryCard({
               backgroundImage: content?.photo ? `url(${content.photo})` : 'none',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              backgroundColor: '#E9E2D5',
+              backgroundColor: R.line,
               marginBottom: 14,
             }}
           />
-          <p style={eyebrow}>Worth noticing</p>
-          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0' }}>{content?.title || item?.contentId}</h2>
-          <p style={{ margin: 0, lineHeight: 1.5 }}>{content?.whyWorthIt}</p>
-          <PrimaryButton color={T.gold} data-testid="mystery-start" onClick={onStart} style={{ marginTop: 18, minHeight: 48 }}>
+          <p style={routeType}>Worth noticing</p>
+          <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0', color: R.ink }}>
+            {content?.title || item?.contentId}
+          </h2>
+          <p style={{ margin: 0, lineHeight: 1.5, fontFamily: F.body, color: R.ink }}>{content?.whyWorthIt}</p>
+          <PrimaryButton color={T.gold} data-testid="mystery-start" onClick={onStart} style={{ marginTop: 18, ...routePrimary }}>
             Take me there
           </PrimaryButton>
         </div>
@@ -56,17 +67,16 @@ export default function MysteryCard({
   )
 }
 
-const card = {
-  background: R.card,
-  borderRadius: 20,
+const frontCard = {
+  ...routeCard,
   padding: 18,
-  boxShadow: '0 12px 40px rgba(26,26,31,0.08)',
+  background: `linear-gradient(165deg, color-mix(in srgb, ${R.sage} 18%, ${R.bg}) 0%, color-mix(in srgb, ${R.teal} 10%, ${R.cardWarm}) 52%, color-mix(in srgb, ${R.violet} 12%, ${R.bg}) 100%)`,
+  boxShadow: `${R.shadow}, inset 0 1px 0 rgba(255,255,255,0.65)`,
 }
 
-const eyebrow = {
-  margin: 0,
-  fontSize: 11,
-  letterSpacing: '0.16em',
-  textTransform: 'uppercase',
-  color: R.sage,
+const backCard = {
+  ...routeCard,
+  padding: 18,
+  transformOrigin: 'center',
+  animation: 'cwMysteryReveal 0.45s ease',
 }

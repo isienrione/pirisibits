@@ -4,6 +4,42 @@ import { isMysteryHidden } from '../../lib/route/model.js'
 import { canAccessContentId } from '../../lib/contentAccess.js'
 import { R, routeType } from './RouteSurface.jsx'
 
+function stopDot({ done, current, mystery, locked }) {
+  if (done) {
+    return {
+      background: R.teal,
+      border: `1.5px solid ${R.teal}`,
+      boxShadow: 'none',
+    }
+  }
+  if (current) {
+    return {
+      background: R.gold,
+      border: `1.5px solid ${R.gold}`,
+      boxShadow: '0 0 0 6px rgba(212,175,55,0.22)',
+    }
+  }
+  if (mystery) {
+    return {
+      background: R.violet,
+      border: `1.5px solid ${R.gold}`,
+      boxShadow: `0 0 0 4px color-mix(in srgb, ${R.violet} 22%, transparent)`,
+    }
+  }
+  if (locked) {
+    return {
+      background: R.cardWarm,
+      border: `1.5px solid ${R.olive}`,
+      boxShadow: 'none',
+    }
+  }
+  return {
+    background: R.cardWarm,
+    border: `1.5px solid ${R.line}`,
+    boxShadow: 'none',
+  }
+}
+
 export default function RouteTimeline({
   items = [],
   catalogById = {},
@@ -19,6 +55,7 @@ export default function RouteTimeline({
         const discovery = item.contentType === CONTENT_TYPES.DISCOVERY
         const current = item.routeItemId === currentId
         const done = item.state === 'completed'
+        const locked = Boolean(content && !canAccessContentId(item.contentId))
         return (
           <li
             key={item.routeItemId}
@@ -30,7 +67,7 @@ export default function RouteTimeline({
               gridTemplateColumns: '20px 1fr',
               gap: 12,
               marginBottom: compact ? 10 : 14,
-              opacity: item.state === 'removed' ? 0.4 : 1,
+              opacity: item.state === 'removed' ? 0.4 : locked && !current && !done ? 0.78 : 1,
             }}
           >
             <span
@@ -40,8 +77,8 @@ export default function RouteTimeline({
                 height: 12,
                 marginTop: 6,
                 borderRadius: '50%',
-                background: done ? R.teal : current ? R.gold : mystery ? R.sage : discovery ? R.ink : R.gold,
-                boxShadow: current ? `0 0 0 6px rgba(212,175,55,0.22)` : 'none',
+                boxSizing: 'border-box',
+                ...stopDot({ done, current, mystery, locked }),
               }}
             />
             <div>
@@ -49,12 +86,12 @@ export default function RouteTimeline({
                 {done ? 'Done' : current ? 'Now' : `${index + 1}`}
                 {' · '}
                 {mystery ? 'Surprise' : discovery ? 'Worth noticing' : 'Experience'}
-                {content && !canAccessContentId(item.contentId) ? ' · Locked' : ''}
+                {locked ? ' · Locked' : ''}
               </p>
-              <p style={{ margin: '4px 0 0', fontFamily: F.display, fontSize: compact ? 18 : 22, fontWeight: 400 }}>
+              <p style={{ margin: '4px 0 0', fontFamily: F.display, fontSize: compact ? 18 : 22, fontWeight: 400, color: R.ink }}>
                 {mystery ? '✦ Surprise Discovery' : title}
               </p>
-              <p style={{ margin: '4px 0 0', color: R.muted, fontSize: 13 }}>
+              <p style={{ margin: '4px 0 0', color: R.muted, fontSize: 13, fontFamily: F.body }}>
                 {item.estimatedTransitMin ? `${item.estimatedTransitMin} min walk · ` : ''}
                 {item.estimatedExperienceMin} min
               </p>

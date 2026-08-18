@@ -8,7 +8,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import MysteryCard from '../ui/MysteryCard.jsx'
-import { R, RouteSurface, routeHeadline } from '../ui/RouteSurface.jsx'
+import { R, RouteSurface, routeHeadline, routePrimary } from '../ui/RouteSurface.jsx'
 
 export default function NativeMysteryScreen() {
   const t = useT()
@@ -41,7 +41,7 @@ export default function NativeMysteryScreen() {
     return (
       <RouteSurface testId="native-mystery">
         <h1 style={routeHeadline}>{t('native.route.mysteryTitle')}</h1>
-        <PrimaryButton color={T.gold} onClick={() => navigate('/home')}>
+        <PrimaryButton color={T.gold} onClick={() => navigate('/home')} style={routePrimary}>
           {t('native.discover.seeAll')}
         </PrimaryButton>
       </RouteSurface>

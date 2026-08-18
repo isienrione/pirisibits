@@ -27,7 +27,7 @@ import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import NativeContentCard from '../ui/NativeContentCard.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
 import RouteTimeline from '../ui/RouteTimeline.jsx'
-import { R } from '../ui/RouteSurface.jsx'
+import { R, RouteSurface, routeCard, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 function coverageLabelFor(item) {
   if (!item.locked) return null
@@ -134,39 +134,28 @@ export default function NativeDiscoverHome() {
   const homeHeadline = proposed?.homeHeadline || plan?.homeHeadline
 
   return (
-    <div
-      data-testid="native-discover"
-      style={{
-        minHeight: '100%',
-        background: T.obsidian,
-        color: T.bone,
-        padding:
-          'max(20px, calc(env(safe-area-inset-top) + 12px)) 20px calc(var(--shell-tab-bar-height, 72px) + 12px)',
-        boxSizing: 'border-box',
-      }}
-    >
-      <p style={{ margin: 0, fontSize: 12, letterSpacing: '0.22em', textTransform: 'uppercase', color: T.muted }}>
-        ChronoWalk · Rome
-      </p>
-      <p style={{ margin: '8px 0 0', color: 'rgba(250,246,239,0.7)', fontSize: 14 }}>
+    <RouteSurface testId="native-discover">
+      <p style={routeType}>ChronoWalk · Rome</p>
+      <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 14, fontFamily: F.body }}>
         {position ? t('native.discover.status.located') : t('native.discover.status.browse')}
       </p>
 
       {plan?.items?.length ? (
         <div
           data-testid="discover-route-card"
+          data-resume={paused ? 'true' : 'false'}
           style={{
+            ...routeCard,
             margin: '18px 0 20px',
             padding: 18,
             borderRadius: 22,
-            background: R.bg,
-            color: R.ink,
+            borderLeft: `3px solid ${R.gold}`,
           }}
         >
-          <p style={{ margin: 0, fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: R.muted }}>
+          <p style={routeType}>
             {paused ? t('native.route.pausedEyebrow') : t('native.route.based')}
           </p>
-          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0 10px', lineHeight: 1.15 }}>
+          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0 10px', lineHeight: 1.15, color: R.ink }}>
             {paused
               ? t('native.route.continueAfternoon')
               : homeHeadline || t('native.route.homeHeadline', { duration: durationLabel.replace(/^~/, '') })}
@@ -180,7 +169,7 @@ export default function NativeDiscoverHome() {
               else if (!live) startRoute(plan)
               navigate('/route')
             }}
-            style={{ minHeight: 48, marginTop: 12 }}
+            style={{ marginTop: 12, ...routePrimary }}
           >
             {paused ? t('native.route.continueAfternoon') : t('native.discover.startExploring')}
           </PrimaryButton>
@@ -188,28 +177,28 @@ export default function NativeDiscoverHome() {
             <GhostButton
               data-testid="discover-see-route"
               onClick={() => navigate(live ? '/route' : '/plan')}
-              style={{ minHeight: 44, color: R.ink, borderColor: R.line, background: 'transparent' }}
+              style={routeGhost}
             >
               {t('native.discover.seeRoute')}
             </GhostButton>
             <GhostButton
               data-testid="discover-adjust"
               onClick={() => navigate('/route/adjust')}
-              style={{ minHeight: 44, color: R.ink, borderColor: R.line, background: 'transparent' }}
+              style={routeGhost}
             >
               {t('native.route.adjust')}
             </GhostButton>
           </div>
         </div>
       ) : (
-        <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '18px 0 18px', lineHeight: 1.15 }}>
+        <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 30, margin: '18px 0 18px', lineHeight: 1.15, color: R.ink }}>
           {t('native.discover.headline')}
         </h1>
       )}
 
       <p
         data-testid="discover-nearby-heading"
-        style={{ margin: '0 0 12px', fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase', color: T.muted }}
+        style={{ ...routeType, margin: '0 0 12px', fontSize: 12, letterSpacing: '0.18em' }}
       >
         {t('native.discover.orNearby')}
       </p>
@@ -218,17 +207,18 @@ export default function NativeDiscoverHome() {
           <NativeContentCard
             item={primary}
             primary
+            tone="warm"
             testId="discover-primary-card"
             coverageLabel={coverageLabelFor(primary)}
             onOpen={openItem}
           />
           <div style={{ padding: '0 0 16px', display: 'flex', flexDirection: 'column', gap: 8, marginTop: -8 }}>
-            <PrimaryButton color={T.gold} data-testid="discover-start" onClick={() => startItem(primary)} style={{ minHeight: 48 }}>
+            <PrimaryButton color={T.gold} data-testid="discover-start" onClick={() => startItem(primary)} style={routePrimary}>
               {primary.locked || primary.contentType === CONTENT_TYPES.DISCOVERY
                 ? t('native.discover.view')
                 : t('native.discover.start')}
             </PrimaryButton>
-            <GhostButton data-testid="discover-view" onClick={() => openItem(primary)} style={{ minHeight: 44 }}>
+            <GhostButton data-testid="discover-view" onClick={() => openItem(primary)} style={routeGhost}>
               {t('native.discover.view')}
             </GhostButton>
           </div>
@@ -238,6 +228,7 @@ export default function NativeDiscoverHome() {
         <NativeContentCard
           key={item.id}
           item={item}
+          tone="warm"
           testId={`discover-alt-card-${item.id}`}
           coverageLabel={coverageLabelFor(item)}
           onOpen={openItem}
@@ -245,15 +236,15 @@ export default function NativeDiscoverHome() {
       ))}
 
       <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-        <GhostButton data-testid="discover-see-all" onClick={() => navigate('/explore')} style={{ minHeight: 48 }}>
+        <GhostButton data-testid="discover-see-all" onClick={() => navigate('/explore')} style={routeGhost}>
           {t('native.discover.seeAll')}
         </GhostButton>
-        <GhostButton data-testid="discover-map" onClick={() => navigate('/map')} style={{ minHeight: 48 }}>
+        <GhostButton data-testid="discover-map" onClick={() => navigate('/map')} style={routeGhost}>
           {t('native.discover.map')}
         </GhostButton>
       </div>
 
       <NativeCoverageSheet open={Boolean(lockItem)} item={lockItem} onClose={() => setLockItem(null)} />
-    </div>
+    </RouteSurface>
   )
 }

@@ -19,7 +19,7 @@ import { F, T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import RouteTimeline from '../ui/RouteTimeline.jsx'
-import { R, RouteSurface, routeHeadline } from '../ui/RouteSurface.jsx'
+import { R, RouteSurface, routeCard, routeGhost, routeHeadline, routePrimary } from '../ui/RouteSurface.jsx'
 
 const TIME_ORDER = ['30min', '1h', '2h', 'halfday', 'allday']
 
@@ -86,7 +86,7 @@ export default function NativeAdjustPlanScreen() {
       <GhostButton
         data-testid="adjust-back"
         onClick={() => navigate(live ? '/route' : '/plan')}
-        style={{ minHeight: 44, color: R.ink, borderColor: R.line, background: 'transparent' }}
+        style={routeGhost}
       >
         {t('native.route.back')}
       </GhostButton>
@@ -101,13 +101,13 @@ export default function NativeAdjustPlanScreen() {
               applyTweak(tw.id)
               recompose()
             }}
-            style={{ color: R.ink, borderColor: R.line, background: 'transparent' }}
+            style={{ width: 'auto', minHeight: 44, padding: '10px 14px', ...routeGhost }}
           >
             {tw.label}
           </GhostButton>
         ))}
       </div>
-      <div style={{ background: R.card, borderRadius: 20, padding: 16 }}>
+      <div style={routeCard}>
         <RouteTimeline items={items} catalogById={byId} currentId={active?.currentRouteItemId} />
       </div>
       <div style={{ marginTop: 16, display: 'grid', gap: 8 }}>
@@ -123,7 +123,7 @@ export default function NativeAdjustPlanScreen() {
                   ;[next[j - 1], next[j]] = [next[j], next[j - 1]]
                   reorderRouteItems(next)
                 }}
-                style={{ color: R.ink, borderColor: R.line, background: 'transparent' }}
+                style={{ minHeight: 44, flex: '0 0 48px', ...routeGhost }}
               >
                 ↑
               </GhostButton>
@@ -131,7 +131,7 @@ export default function NativeAdjustPlanScreen() {
             <GhostButton
               data-testid={`adjust-remove-${item.contentId}`}
               onClick={() => removeAnyRouteItem(item.routeItemId)}
-              style={{ color: R.ink, borderColor: R.line, background: 'transparent' }}
+              style={{ minHeight: 44, ...routeGhost }}
             >
               {t('native.route.removeStop')}
             </GhostButton>
@@ -148,7 +148,7 @@ export default function NativeAdjustPlanScreen() {
               key={rec.id}
               data-testid={`adjust-add-saved-${rec.id}`}
               onClick={() => addContentAnywhere(rec)}
-              style={{ width: '100%', marginTop: 8, color: R.ink, borderColor: R.line, background: 'transparent' }}
+              style={{ width: '100%', marginTop: 8, ...routeGhost }}
             >
               {rec.title}
             </GhostButton>
@@ -159,7 +159,7 @@ export default function NativeAdjustPlanScreen() {
         color={T.gold}
         data-testid="adjust-done"
         onClick={() => navigate(live ? '/route' : '/plan')}
-        style={{ marginTop: 24, minHeight: 48 }}
+        style={{ marginTop: 24, ...routePrimary }}
       >
         {t('native.route.done')}
       </PrimaryButton>

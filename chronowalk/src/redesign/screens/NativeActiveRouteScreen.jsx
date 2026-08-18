@@ -14,7 +14,7 @@ import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import RouteTimeline from '../ui/RouteTimeline.jsx'
 import RouteControlsSheet from '../ui/RouteControlsSheet.jsx'
-import { R, RouteSurface, routeHeadline, routeType } from '../ui/RouteSurface.jsx'
+import { R, RouteSurface, routeCard, routeGhost, routeHeadline, routePrimary, routeType } from '../ui/RouteSurface.jsx'
 
 export default function NativeActiveRouteScreen() {
   const t = useT()
@@ -29,7 +29,7 @@ export default function NativeActiveRouteScreen() {
     return (
       <RouteSurface testId="native-active-route">
         <h1 style={routeHeadline}>{t('native.route.active.empty')}</h1>
-        <PrimaryButton color={T.gold} onClick={() => navigate('/plan')}>{t('native.route.seePlan')}</PrimaryButton>
+        <PrimaryButton color={T.gold} onClick={() => navigate('/plan')} style={routePrimary}>{t('native.route.seePlan')}</PrimaryButton>
       </RouteSurface>
     )
   }
@@ -48,18 +48,27 @@ export default function NativeActiveRouteScreen() {
           {totals.completedCount} {t('native.route.of')} {totals.totalCount} {t('native.route.completed')}
         </p>
       </div>
-      <div style={{ background: R.card, borderRadius: 20, padding: 16 }}>
+      <div style={routeCard}>
         <RouteTimeline items={liveItems(active)} catalogById={byId} currentId={active.currentRouteItemId} />
       </div>
       {suggestion ? (
-        <div data-testid="route-suggestion" style={{ marginTop: 16, padding: 14, borderRadius: 16, background: R.card }}>
-          <p style={{ margin: 0, fontFamily: F.body }}>{suggestion.message}</p>
+        <div
+          data-testid="route-suggestion"
+          style={{
+            ...routeCard,
+            marginTop: 16,
+            padding: 14,
+            borderRadius: 16,
+            borderLeft: `3px solid ${R.gold}`,
+          }}
+        >
+          <p style={{ margin: 0, fontFamily: F.body, color: R.ink }}>{suggestion.message}</p>
         </div>
       ) : null}
-      <PrimaryButton color={T.gold} data-testid="active-route-walk" onClick={() => navigate('/walk')} style={{ marginTop: 16, minHeight: 48 }}>
+      <PrimaryButton color={T.gold} data-testid="active-route-walk" onClick={() => navigate('/walk')} style={{ marginTop: 16, ...routePrimary }}>
         {t('native.route.continueWalk')}
       </PrimaryButton>
-      <GhostButton data-testid="active-route-controls" onClick={() => setControls(true)} style={{ marginTop: 10, minHeight: 48, color: R.ink, borderColor: R.line, background: 'transparent' }}>
+      <GhostButton data-testid="active-route-controls" onClick={() => setControls(true)} style={{ marginTop: 10, ...routeGhost }}>
         {t('native.route.changeIt')}
       </GhostButton>
       <RouteControlsSheet
