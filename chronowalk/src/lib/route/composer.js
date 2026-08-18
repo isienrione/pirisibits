@@ -110,6 +110,13 @@ export function composeProposedRoute({
       .map((item) => {
         const dist = distanceBetween(last, item)
         if (dist == null) return null
+        if (chosen.length >= 1 && dist < 140) {
+          const fartherExists = candidates.some((other) => {
+            const d = distanceBetween(last, other)
+            return d != null && d >= 140 && d <= limits.maxLegM && !used.has(other.id)
+          })
+          if (fartherExists) return null
+        }
         if (dist > limits.maxLegM && candidates.some((other) => (distanceBetween(last, other) || 99999) <= limits.maxLegM)) {
           return null
         }

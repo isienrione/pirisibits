@@ -12,6 +12,7 @@ import { CONTENT_TYPES } from '../../content/registry/constants.js'
 import { COVERAGE_LABELS } from '../../content/rome/heroRecommendationMeta.js'
 import {
   ensureProposedRoute,
+  estimateRouteTotals,
   formatDurationLabel,
   isRouteLive,
   liveItems,
@@ -128,7 +129,9 @@ export default function NativeDiscoverHome() {
 
   const paused = active?.status === 'paused'
   const live = isRouteLive(active)
-  const durationLabel = formatDurationLabel(plan?.estimatedDurationMin)
+  const totals = plan?.items ? estimateRouteTotals(plan.items) : null
+  const durationLabel = formatDurationLabel(totals?.estimatedDurationMin || plan?.estimatedDurationMin)
+  const homeHeadline = proposed?.homeHeadline || plan?.homeHeadline
 
   return (
     <div
@@ -166,7 +169,7 @@ export default function NativeDiscoverHome() {
           <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0 10px', lineHeight: 1.15 }}>
             {paused
               ? t('native.route.continueAfternoon')
-              : plan.homeHeadline || t('native.route.homeHeadline', { duration: durationLabel.replace(/^~/, '') })}
+              : homeHeadline || t('native.route.homeHeadline', { duration: durationLabel.replace(/^~/, '') })}
           </h1>
           <RouteTimeline items={liveItems(plan)} catalogById={byId} compact currentId={active?.currentRouteItemId} />
           <PrimaryButton
