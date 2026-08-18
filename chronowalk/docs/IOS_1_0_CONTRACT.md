@@ -5,6 +5,8 @@
 **App root:** `chronowalk/`  
 **This document overrides** informal audit scope cuts that reduced iOS 1.0 to “the existing linear Rome tour.”
 
+**Amendment 2026-08-18:** iOS is a **free-entry** app. Native first-run is `/welcome`, not `/access`. Rome iOS commerce is **geographic coverage** (Ancient Rome / Historic Center / All Central Rome), mapped to existing canonical entitlements. Details: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md).
+
 Do not treat this file as a wishlist. If a later task conflicts with this contract, the contract wins unless a later written amendment is committed to this path.
 
 ---
@@ -84,7 +86,7 @@ Source of truth in code today:
 - Hero ID list: `src/i18n/audio/heroStopAudioMap.js` (`HERO_STOP_IDS`)
 - Product counts: `src/content/tourProductTruth.js`
 
-The existing commercial unlock scopes remain the entitlement model (`commerce/launchCatalog.json`).
+Canonical paid unlock scopes remain the existing `contentProductId`s (`rome-essential`, `rome-central`, `rome-complete` in `commerce/launchCatalog.json`). Native iOS **must not** present those as Roma Historica / Antica / Eterna to customers. Native display names are geographic (see commerce model). Web Paddle catalog names may remain until a separate web amendment.
 
 Existing EN/ES content and audio remain.
 
@@ -119,15 +121,35 @@ P1 may never delay these items.
 
 ### P0.3 — iOS app entry
 
+ChronoWalk iOS is **free-to-enter**. Purchase, email, transaction id, and access code are **not** required to enter.
+
 The native binary must **not** open on:
 
-- marketing landing page (`/`)
+- marketing landing page (`/`) as used on the website
 - Add to Home Screen flow
 - website-oriented installation flow
+- `/access` as the primary first-run front door
 
-Entitled users reach ChronoWalk **product entry** (Context if unset, otherwise Discover).
+Native root behavior:
 
-Unentitled users reach an **Apple-compliant** access / purchase experience.
+```
+IF an existing valid entitlement/session exists
+  → /home
+ELSE IF the traveler has completed native onboarding previously
+  → /home in FREE mode
+ELSE
+  → /welcome
+```
+
+`/home` is Discover / Near Me for **both** free and entitled travelers (Context first if Context is unset).
+
+**Welcome (native-only first-run):** premium travel-app opening, not a login form. Primary CTA **Start exploring — free** → Context. Secondary CTA **I already have access** → existing `/access`. Reuse existing cinematic assets (see commerce model); do not invent a new logo.
+
+`/access` remains the **secondary** recovery path for web / Viator / Paddle purchases.
+
+Web `/` remains the marketing landing.
+
+**Supersedes** the earlier assumption “native unentitled → `/access`.”
 
 ### P0.4 — Context V0
 
@@ -176,7 +198,7 @@ The manifest / structured content layer is sufficient for iOS 1.0.
 
 ### P0.6 — Discover / Near Me V0
 
-The product Home for an entitled traveler must become a simple recommendation surface.
+The product Home for **every** iOS traveler (free or entitled) must become a simple recommendation surface.
 
 It must answer: **“What's worth experiencing from here?”**
 
@@ -193,7 +215,7 @@ Ranking inputs stay transparent and simple:
 - interest match
 - time fit
 - already completed
-- entitlement
+- entitlement / lock state (locked Heroes stay visible; do not present them as immediately playable)
 - basic intrinsic quality / priority
 
 No ML.  
@@ -226,7 +248,11 @@ Add an Apple Review-safe reviewer path so a reviewer outside Rome can test the e
 
 ### P0.9 — Experience
 
-All 21 Hero experiences remain reachable / playable.
+All 21 Hero experiences remain reachable in Discover / Map.
+
+**Playable without purchase:** Pantheon `w17` + `w23` (full existing experience).  
+**Playable with the matching unlock scope:** remaining Heroes.  
+Locked premium content stays visible; **starting** it shows a contextual paywall (commerce model), not a blank or fake experience.
 
 Reuse current:
 
@@ -261,7 +287,7 @@ Run the **same** deterministic recommendation engine again using updated context
 - remaining time where available
 - interests
 - completed experiences
-- entitlement
+- entitlement / lock state
 - distance
 
 Display:
@@ -281,23 +307,33 @@ Paddle remains **WEB ONLY**.
 
 The iOS binary must not expose Paddle or Lemon Squeezy checkout for digital content.
 
-Implement Apple-compliant one-time In-App Purchases for the required Rome unlocks.
+Do **not** put a purchase wall before the traveler sees the product.
 
-At minimum determine whether iOS launch requires:
+Native iOS Rome offerings are **geographic coverage** (not customer-facing Historica / Antica / Eterna):
 
-- Rome Historica (`rome-central`)
-- Rome Antica (`rome-essential`)
-- Rome Eterna (`rome-complete`)
+| iOS name | Target EUR | Apple product ID | Canonical `contentProductId` |
+|---|---|---|---|
+| Ancient Rome | 6.99 | `com.chronowalk.rome.ancient` | `rome-essential` |
+| Historic Center | 4.99 | `com.chronowalk.rome.historiccenter` | `rome-central` |
+| All Central Rome | 9.99 | `com.chronowalk.rome.complete` | `rome-complete` |
 
-Do not implement Couple / Family IAP until explicitly validated against the current product model; they may be P1 if necessary.
+Treat as **non-consumable** one-time unlocks, subject to App Store Connect.
 
-Apple transactions must map into the **existing** entitlement / access model rather than creating a separate product-truth system.
+Exact Hero membership, overlaps, and flags: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md). Do not guess waypoint lists in UI copy.
+
+Architecture must be **city → offerings → unlock scopes → content membership**. Do not hardcode three zones as a global rule (a later city may be one pass).
+
+Apple transactions and web Paddle SKUs must map into the **same** canonical entitlements. No parallel iOS-only content truth.
+
+Contextual paywall when the traveler **starts** locked premium content: relevant zone + Complete, StoreKit localized prices, Restore. No hardcoded currency strings.
+
+Do not implement Couple / Family IAP in 1.0 (P1). Upgrade/crossgrade rules are **unresolved** (commerce model §13) and must be decided before StoreKit implementation.
 
 ### P0.13 — Restore Purchases
 
 Native Restore Purchases must exist and restore Apple transactions.
 
-Email / code restoration can remain for web-originated purchases, but it is **not** a substitute for Apple restore.
+Email / code restoration via `/access` remains for web-originated purchases. It is **not** the iOS first-run door and is **not** a substitute for Apple restore.
 
 ### P0.14 — Reviewer Mode
 
@@ -445,7 +481,7 @@ Submission is allowed only when:
 
 - [ ] release build launches reliably
 - [ ] no critical crashes
-- [ ] all 21 Heroes remain reachable
+- [ ] all 21 Heroes remain reachable (Pantheon fully playable without purchase; others visible when locked)
 - [ ] Context works
 - [ ] Discover ranks valid available Heroes
 - [ ] recommendation acceptance enters Walk
@@ -454,6 +490,8 @@ Submission is allowed only when:
 - [ ] at least flagship Reveal path works
 - [ ] completion triggers Best Next
 - [ ] Best Next can start another experience
+- [ ] first-run `/welcome` → free Context/Discover works without purchase
+- [ ] contextual paywall appears only when starting locked content
 - [ ] purchases work
 - [ ] Restore Purchases works
 - [ ] web Paddle behavior remains intact
@@ -491,5 +529,22 @@ At Release Candidate freeze, only fix:
 
 - Practical pass/fail list: [`IOS_SUBMISSION_CHECKLIST.md`](./IOS_SUBMISSION_CHECKLIST.md)
 - Day-by-day plan: [`IOS_SPRINT_PLAN_2026-08-29.md`](./IOS_SPRINT_PLAN_2026-08-29.md)
+- Commerce / free mode / zone membership: [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)
 
-Runtime implementation starts **after** these planning files are committed. Do not begin Capacitor / T01 in the same commit as this contract.
+Capacitor T01 is already on this branch. This amendment is **docs only** — do not implement Welcome, StoreKit, or zone gating in the same commit.
+
+---
+
+## Amendments
+
+### 2026-08-18 — Free-entry geographic unlocks
+
+**Replaces:** native unentitled → `/access`.
+
+**Now:** native first-run → `/welcome`; native free returning user → `/home`; native entitled returning user → `/home`; `/access` is secondary restore / existing-purchase path.
+
+**Replaces:** iOS customer-facing packaging as Roma Historica / Antica / Eterna.
+
+**Now:** Ancient Rome / Historic Center / All Central Rome, mapped to existing `rome-essential` / `rome-central` / `rome-complete` entitlements. Proposed Apple IDs and Hero membership live in [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md).
+
+**Does not change:** Golden Loop, 21 Hero inventory, Paddle-web-only, Capacitor local bundle, Reviewer Mode, P1/P2 lists.

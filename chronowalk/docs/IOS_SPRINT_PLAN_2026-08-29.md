@@ -2,8 +2,11 @@
 
 **Contract:** [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md)  
 **Checklist:** [`IOS_SUBMISSION_CHECKLIST.md`](./IOS_SUBMISSION_CHECKLIST.md)  
+**Commerce:** [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)  
 **Branch:** `cursor/ios-appstore-2026-08-29` from `figma`  
 **Calendar:** 17 Aug (planning) → 29 Aug (Submit for Review)
+
+**Amendment 2026-08-18:** free-entry Welcome; `/access` is secondary; Rome IAPs are geographic coverage mapped to existing entitlements.
 
 This plan calendarizes **P0 only**. P1 ships solely if it is already stable before RC freeze on 28 Aug. P1 must never slip 29 Aug.
 
@@ -17,9 +20,9 @@ No Capacitor / runtime work is included in the contract-commit. Implementation s
 |---|---|---|
 | Mon 17 | Contract frozen; Apple admin started | Sprint has no written P0; do not code |
 | Tue 18 | Physical-device Capacitor build of current SPA | No iOS binary; everything else is theoretical |
-| Wed 19 | Native shell, no PWA/marketing root, permissions + audio groundwork | Wrapper-looking binary; Review 4.2 risk |
+| Wed 19 | Native shell, Welcome / free Home (not `/access` front door), permissions + audio groundwork | Wrapper-looking binary; Review 4.2 risk; paywall-before-product |
 | Thu 20 | Context V0 + 21 Hero metadata | Discover cannot rank honestly |
-| Fri 21 | Discover / Near Me V0 on entitled Home | Product still a linear tour |
+| Fri 21 | Discover / Near Me V0 as Home (free + entitled) | Product still a linear tour |
 | Sat 22 | Walk / Arrival reliable on device | Loop breaks after recommendation |
 | Sun 23 | Experience + offline + 3 flagship Reveals | Reviewer cannot complete a Hero |
 | Mon 24 | Best Next V0 closes the loop | No permanent product primitive |
@@ -38,7 +41,7 @@ These are serial. Parallel work is allowed **beside** them, never **instead** of
 ```
 Apple admin + bundle ID (17)
     → Capacitor local shell on a physical iPhone (18)
-        → iOS entry (no landing/A2HS) + When-In-Use GPS + background audio (19)
+        → iOS entry: /welcome · free Home · GPS · background audio (19)
             → Hero metadata (20) ──┬── Context UI (20)
                                    └── Discover ranking (21)
                                         → Walk/Arrival on device (22)
@@ -66,7 +69,7 @@ Apple admin + bundle ID (17)
 
 - Create / confirm Apple Developer + App Store Connect app record
 - Reserve bundle ID; enable IAP + audio background; **do not** enable Always location
-- Decide iOS SKU set: Historica / Antica / Eterna (Couple/Family default **out**)
+- Decide iOS IAP set: Ancient Rome / Historic Center / All Central Rome (Apple IDs in commerce model). Couple/Family default **out**. Record upgrade/crossgrade as open until 25 Aug.
 - Create sandbox testers
 - Start Paid Apps agreement / tax / bank if not already Active
 - Pick 3 flagship Reveals (recommendation from current repo: `w01` Colosseum loop, plus the two Heroes with distinct then stills `w10` Rostra and `w11_12` Arch of Severus — confirm visually on device 23 Aug)
@@ -89,16 +92,20 @@ Apple admin + bundle ID (17)
 
 **Exit:** `npx cap run ios` shows the current app from a local bundle. FAIL if WKWebView loads `https://chronowalk.com` as the document URL.
 
-**Parallel (non-blocking):** icon/splash asset collection; IAP product ID naming.
+**Parallel (non-blocking):** icon/splash asset collection; App Store Connect IAP records using `com.chronowalk.rome.*` IDs (do not implement StoreKit yet).
 
 ---
 
-## August 19 — Native shell, PWA stripping, permissions, audio groundwork
+## August 19 — Native shell, Welcome / free Home, permissions, audio groundwork
 
 **Build:** P0.2, P0.3, start P0.15/P0.16 constraints
 
 - iOS root ≠ marketing `/` and ≠ A2HS / Prepare-as-install
-- Entitled → product entry; unentitled → Apple-compliant access/purchase shell (purchase can still be a stub until 25 Aug, but **must not** open Paddle)
+- **First run → `/welcome`** (new native first-run screen; do not reuse web post-purchase `WelcomeFlow` as the front door)
+- Primary CTA starts free exploration → Context; secondary CTA → existing `/access`
+- Returning free user → `/home` (Discover); entitled → `/home`
+- **Do not** send unentitled first-run users to `/access` or a purchase wall
+- Purchase UI may still be a stub until 25 Aug, but **must not** open Paddle
 - When-In-Use Info.plist strings
 - Capacitor Geolocation wired to existing `watchPosition` path
 - Native haptics plugin on existing `src/utils/haptics.js` stub
@@ -107,7 +114,7 @@ Apple admin + bundle ID (17)
 - Do **not** re-enable the service worker
 - Hide debug / Santiago / `debugGeo` in Release
 
-**Exit:** Cold launch looks like an app. Location deny does not freeze. Narration continues when the phone locks (or a tracked gap is filed as P0 bug, not ignored).
+**Exit:** Cold launch looks like an app. New traveler reaches Welcome then free Home without buying. Location deny does not freeze. Narration continues when the phone locks (or a tracked gap is filed as P0 bug, not ignored).
 
 ---
 
@@ -131,9 +138,10 @@ Apple admin + bundle ID (17)
 
 **Build:** P0.6, P0.17 events `recommendation_*`
 
-- Entitled Home = Discover
+- Entitled **and free** Home = Discover
 - 1 primary + up to 2 alternatives
-- Transparent scoring: distance, interest, time fit, completed, entitlement, intrinsicPriority
+- Transparent scoring: distance, interest, time fit, completed, entitlement/lock, intrinsicPriority
+- Locked Heroes remain visible; starting them is paywall (stub OK until 25 Aug) — not a dead end to `/access`
 - “Why this?” only from those inputs
 - Accept → Walk (may still be the existing journey jump)
 - No ML, no Discoveries, no generative itinerary
@@ -194,14 +202,18 @@ Apple admin + bundle ID (17)
 
 **Build:** P0.12
 
-- Non-consumable IAPs for the chosen Rome SKUs
+- Non-consumable IAPs: `com.chronowalk.rome.ancient` / `.historiccenter` / `.complete`
+- Map Apple product IDs → existing `rome-essential` / `rome-central` / `rome-complete`
+- Native UI names: Ancient Rome / Historic Center / All Central Rome (not Historica / Antica / Eterna)
+- Contextual paywall on **start locked content** (StoreKit localized prices; Restore)
 - iOS compile-time/runtime gate: **no** Paddle/Lemon checkout
-- Map Apple product IDs → existing `productId` / `contentProductId`
+- Free Pantheon (`w17`/`w23`) remains playable without IAP
 - Sandbox buy on device
 - Web Paddle regression on desktop
 - Couple/Family IAP **not** in 1.0 unless already validated
+- Decide and document upgrade/crossgrade (commerce model §13)
 
-**Exit:** Sandbox purchase unlocks the same Heroes web Paddle would for that SKU. Website checkout still Paddle.
+**Exit:** Sandbox purchase unlocks the same Heroes web Paddle would for that `contentProductId`. Website checkout still Paddle. New traveler can finish Pantheon without paying.
 
 **This is the highest-risk engineering day.** If it slips, 26–29 compress Restore + Reviewer Mode. Do not steal time from 25 Aug to polish Journal.
 
@@ -212,7 +224,7 @@ Apple admin + bundle ID (17)
 **Build:** P0.13, P0.14, P0.15, finish P0.17
 
 - Native Restore Purchases
-- Email restore remains for web purchases only, labeled
+- Email restore remains for web purchases only, labeled, reached from Welcome secondary CTA / Settings — **not** first-run
 - Reviewer Mode: not a debug panel, not production `debugGeo` URL
 - Reviewer can finish one full loop outside Rome without paying
 - PostHog replay **off** on iOS; no Google Ads in native binary
@@ -300,7 +312,8 @@ Do not schedule:
 |---|---|---|
 | No iOS project exists | Audit 2026-08-17 | 18 Aug is 100% Capacitor; no product UI that day |
 | 3.1.1 Paddle | Only digital checkout is Paddle | Platform gate + StoreKit 25 Aug; cannot slip past 26 |
-| Home is a tour hub | `RedesignHomeScreen.jsx` | Replace entitled Home on 21 Aug, not a visual tweak on 28 Aug |
+| Paywall-before-product | Prior contract sent unentitled users to `/access` | 19 Aug Welcome + free Home; paywall only on start-locked |
+| Home is a tour hub | `RedesignHomeScreen.jsx` | Replace Home on 21 Aug for **all** iOS users, not a visual tweak on 28 Aug |
 | No Hero ranking fields | Manifest has geo, not interest/timeCost | 20 Aug metadata is mandatory |
 | Reviewer not in Rome | Geofence + production debug placement gated | Reviewer Mode 26 Aug is P0, not a notes footnote |
 | Thin wrapper | PWA/A2HS/landing | 19 Aug entry rewrite |
@@ -322,4 +335,4 @@ They join on **24 Aug** for loop integration and **25–26 Aug** for commerce + 
 
 ## Amendment rule
 
-If reality forces a contract change (e.g. only Eterna IAP ships), amend [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md) in a dated section **Amendments** and never silently shrink Discover / Best Next back into a linear tour.
+If reality forces a contract change (e.g. only Complete IAP ships), amend [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md) in a dated section **Amendments** and never silently shrink Discover / Best Next back into a linear tour. Never restore “unentitled → `/access`” as the iOS front door without a written amendment.

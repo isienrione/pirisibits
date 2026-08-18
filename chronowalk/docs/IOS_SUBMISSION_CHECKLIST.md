@@ -3,8 +3,11 @@
 **Status:** Working checklist for the August 29, 2026 submission  
 **Contract:** [`IOS_1_0_CONTRACT.md`](./IOS_1_0_CONTRACT.md)  
 **Plan:** [`IOS_SPRINT_PLAN_2026-08-29.md`](./IOS_SPRINT_PLAN_2026-08-29.md)  
+**Commerce:** [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md)  
 **Branch:** `cursor/ios-appstore-2026-08-29`  
 **Base:** `figma`
+
+**Amendment 2026-08-18:** free-entry iOS; `/welcome` first-run; geographic IAPs. `/access` is secondary restore only.
 
 Mark each item `[x]` only when objectively true. If an item cannot be verified, it is **FAIL**.
 
@@ -21,7 +24,7 @@ Owner initials and date may be added after the checkbox, e.g. `[x] 2026-08-28 AL
 - [ ] SKU / Apple ID for the app record is recorded in this sprint’s notes (not committed secrets).
 - [ ] Primary category decided (likely **Travel** or **Education**) and set.
 - [ ] Age rating questionnaire completed; result matches actual content (no user-generated chat, no gambling).
-- [ ] Pricing tier for the **app binary** is Free (IAPs sell content) **or** explicitly documented otherwise.
+- [ ] Pricing tier for the **app binary** is Free (IAPs sell coverage unlocks). Travelers can enter without purchasing.
 - [ ] Availability / countries list is set (at minimum markets we already sell Rome in).
 - [ ] Agreements, Tax, and Banking are **Active** (Paid Apps agreement).
 - [ ] Paid Applications contract is not blocked on missing bank / tax forms.
@@ -76,8 +79,8 @@ Owner initials and date may be added after the checkbox, e.g. `[x] 2026-08-28 AL
 - [ ] `NSLocationAlwaysAndWhenInUseUsageDescription` is **absent**.
 - [ ] `NSLocationAlwaysUsageDescription` is **absent**.
 - [ ] `UIBackgroundModes` contains `audio` if background narration is shipped; does **not** contain `location`.
-- [ ] Location prompt appears only after Context / Discover needs it (not on first paint of a marketing page).
-- [ ] Denying location still allows: Context (minus live Near Me), “I'm here”, reviewer path, and access/purchase.
+- [ ] Location prompt appears only after Context / Discover needs it (not on first paint of Welcome as a hard gate).
+- [ ] Denying location still allows: Context (minus live Near Me), “I'm here”, reviewer path, free Pantheon, and later access/purchase.
 - [ ] Motion / orientation permission is requested only if DeviceOrientation is actually used; otherwise omitted.
 - [ ] Microphone permission is **absent** unless a shipped feature records audio (it must not for 1.0).
 - [ ] Photo library / camera permissions are **absent** unless a shipped feature uses them (camera overlay is not P0).
@@ -94,12 +97,13 @@ Contract loop: Context → Discover → Walk → Arrive → Experience → Revea
 - [ ] **Context V0** collects interests (closed set), time budget, and location permission + fix (or explicit skip).
 - [ ] Context selections persist across kill / relaunch (`localStorage` or equivalent Capacitor storage).
 - [ ] Context is not a long survey (one short screen, not a multi-page quiz).
-- [ ] Entitled Home is **Discover / Near Me**, not a linear “stop 4 of 21” tour dashboard as the primary story.
+- [ ] Product Home is **Discover / Near Me** for free **and** entitled travelers, not a linear “stop 4 of 21” tour dashboard as the primary story.
 - [ ] Discover shows **1 primary** + **up to 2 alternatives**.
-- [ ] Each card has a “Why this?” line derived only from ranking inputs (distance, interest, time, entitlement, not completed).
+- [ ] Each card has a “Why this?” line derived only from ranking inputs (distance, interest, time, entitlement/lock, not completed).
 - [ ] Ranking uses only the 21 Heroes; no ML; no LLM; no Discoveries required.
 - [ ] Completed Heroes are excluded or ranked last according to the documented rule (document the rule in code comments + this box: `________________`).
-- [ ] Unearned Heroes (wrong SKU) are not recommended as playable.
+- [ ] Locked premium Heroes remain **visible** but are not recommended as immediately playable when a playable option exists.
+- [ ] Starting a locked Hero shows the **contextual paywall** (zone + Complete, StoreKit prices) — not `/access` as the only path.
 - [ ] Accepting primary or an alternative enters **Walk** for that Hero.
 - [ ] Walk shows distance / directions using existing Mapbox / geofence stack.
 - [ ] Approaching and Arrival still function (dwell + accuracy and/or “I'm here”).
@@ -110,7 +114,7 @@ Contract loop: Context → Discover → Walk → Arrive → Experience → Revea
 - [ ] Accepting Best Next returns to Walk for that Hero (loop closes).
 - [ ] Path A/B linear sequence is not the Home; it may still exist as fallback / compatibility.
 
-**Pass/fail:** E is FAIL if any loop step is skipped, mocked with lorem, or still “next stop on the fixed tour” as the only post-experience action.
+**Pass/fail:** E is FAIL if any loop step is skipped, mocked with lorem, still “next stop on the fixed tour” as the only post-experience action, or a new traveler cannot enter the loop without purchasing.
 
 ---
 
@@ -153,24 +157,26 @@ Metadata (P0.5) present for all 21:
 - [ ] `unlockScopes`
 - [ ] reveal availability flag (do not mark “yes” if `now === then` still and loop is missing/broken)
 
-**Pass/fail:** F is FAIL if any of the 21 cannot be opened by an Eterna-entitled tester, or metadata is missing for ranking.
+**Pass/fail:** F is FAIL if any of the 21 cannot be opened by a Complete-entitled tester, Pantheon cannot be fully played in free mode, or metadata is missing for ranking.
 
 ---
 
 ## G. IAP products
 
-- [ ] Decision recorded: iOS launch SKUs are exactly: `________________` (contract minimum: consider Historica / Antica / Eterna).
+- [ ] Decision recorded: iOS launch IAPs are geographic non-consumables: Ancient Rome / Historic Center / All Central Rome (not customer-facing Historica / Antica / Eterna).
 - [ ] Couple / Family IAP is **out** of 1.0 unless explicitly validated (default: P1, not in binary).
 - [ ] Each shipping IAP exists in App Store Connect as **Non-Consumable**.
 - [ ] Product IDs are stable and mapped in code (record table):
 
-| App Store product ID | ChronoWalk `productId` | Content unlocked |
-|---|---|---|
-| `________________` | `rome-central` or n/a | |
-| `________________` | `rome-essential` or n/a | |
-| `________________` | `rome-complete` or n/a | |
+| App Store product ID | Canonical `contentProductId` | iOS display name | Heroes (see commerce model) |
+|---|---|---|---|
+| `com.chronowalk.rome.ancient` | `rome-essential` | Ancient Rome | Colosseum–Forum–Palatine–Circus cluster (+ Capitoline; 11 Hero IDs) |
+| `com.chronowalk.rome.historiccenter` | `rome-central` | Historic Center | Trajan–centro–Castel (+ Spanish Steps, Pantheon pair; 9 Hero IDs) |
+| `com.chronowalk.rome.complete` | `rome-complete` | All Central Rome | All 21 `HERO_STOP_IDS` including Appia encore |
 
-- [ ] Prices match intended EUR/USD strategy (need not match Paddle cents exactly, but must be intentional).
+- [ ] Target list prices recorded: Ancient EUR 6.99, Historic Center EUR 4.99, Complete EUR 9.99 (StoreKit localized; no hardcoded currency in UI).
+- [ ] Membership table in [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md) is the source of truth — not landing `stopCount` 8/12 marketing numbers.
+- [ ] Upgrade/crossgrade rule decided and written (commerce model §13) before StoreKit ships.
 - [ ] Localization of IAP display names / descriptions is filled for EN (and ES if we ship ES storefront copy).
 - [ ] Clear In-App Purchase description: one-time unlock of Rome walking experiences, not a subscription, unless we actually ship a subscription (we must not for 1.0).
 - [ ] Sandbox purchase of each SKU succeeds on a physical device.
@@ -188,7 +194,7 @@ Metadata (P0.5) present for all 21:
 - [ ] Control calls StoreKit restore / current entitlements API, not only `/access` email.
 - [ ] Restoring on a second device with the same Apple ID grants the same ChronoWalk unlock scopes.
 - [ ] Restore with no purchases shows a clear empty state (not a crash, not a silent no-op).
-- [ ] Email / code restore remains available for **web-originated** purchases and is labeled as such.
+- [ ] Email / code restore remains available for **web-originated** purchases and is labeled as such (`/access` is secondary, not the first-run door).
 - [ ] Email restore is not the only restore path in the iOS binary.
 - [ ] Restore does not wipe tour progress unless the user confirms a separate “Start over” action.
 
@@ -199,14 +205,15 @@ Metadata (P0.5) present for all 21:
 ## I. Entitlement mapping
 
 - [ ] Apple transaction → existing access model (`purchasedProductId` / `contentProductId` / device credential) — no second parallel “iOS-only inventory.”
-- [ ] `rome-complete` (Eterna) unlocks all 21 Heroes.
-- [ ] If Historica / Antica ship: unlock sets match current web SKU stop lists (`src/data/tourTiers.js` / catalog), documented in a table in code or this file.
+- [ ] `rome-complete` unlocks all 21 Heroes (iOS name: All Central Rome).
+- [ ] `rome-essential` (Ancient Rome) and `rome-central` (Historic Center) unlock sets match [`IOS_COMMERCE_MODEL.md`](./IOS_COMMERCE_MODEL.md) Hero tables (not landing `stopCount` 8/12).
 - [ ] Server or on-device mapping is idempotent (replayed webhook / restore does not duplicate-corrupt seats).
-- [ ] Unentitled user cannot play paid Hero audio beyond any existing free preview rules (Pantheon preview if still offered).
+- [ ] Free mode: traveler can complete Pantheon `w17`+`w23` with no paid entitlement.
+- [ ] Unentitled user cannot **start** other paid Hero audio (cards remain visible; start → contextual paywall).
 - [ ] Reviewer credentials do not grant production customers extra access and cannot be guessed from the UI.
-- [ ] Web Paddle entitlements still redeem via `/access` on the website.
+- [ ] Web Paddle entitlements still redeem via `/access` on the website **and** as a secondary iOS path.
 
-**Pass/fail:** I is FAIL if IAP unlocks a different 21-stop truth than web, or paid audio plays without entitlement.
+**Pass/fail:** I is FAIL if IAP unlocks a different 21-stop truth than web, paid audio plays without entitlement, or Pantheon requires purchase on iOS.
 
 ---
 
@@ -307,10 +314,12 @@ P0.17 events observed in a debug build log or PostHog project (iOS source):
 - [ ] Portrait only **or** landscape explicitly tested; contract default is portrait.
 - [ ] No “Add to Home Screen”, “Open in Safari”, “Refresh the app shell”, or PWA update toast in the native binary.
 - [ ] No marketing landing (`ChronoWalkLanding`) as the iOS root.
+- [ ] Cold install without entitlement opens **Welcome** (`/welcome`), not `/access` and not the website landing.
+- [ ] Welcome primary CTA starts free exploration (Context); secondary CTA is “I already have access.”
 - [ ] Dark/light: shipping look matches design (obsidian/bone) without iOS inverted colors glitch.
 - [ ] Dynamic Type: primary CTAs remain tappable at Larger Text (spot check).
 
-**Pass/fail:** N is FAIL if iOS root is the website landing, A2HS appears, or safe-area CTAs are unusable on a notched device.
+**Pass/fail:** N is FAIL if iOS root is the website landing, first-run is `/access`, A2HS appears, or safe-area CTAs are unusable on a notched device.
 
 ---
 
@@ -353,6 +362,7 @@ Required iPhone 6.9" and 6.7"/6.5" sizes per current App Store Connect (verify i
 - [ ] Subtitle ≤ 30: `________________`
 - [ ] Promotional text (optional) does not promise Discoveries / Grounded Ask / other cities.
 - [ ] Description describes **city exploration + nearby worth-doing**, not “21-stop audio tour” as the identity (inventory may be mentioned factually).
+- [ ] Description states travelers can start free (Pantheon) and unlock geographic coverage in-app.
 - [ ] Keywords do not mention competitors deceptively.
 - [ ] Support URL live.
 - [ ] Marketing URL optional; if set, must not be the only way to buy (IAP is in-app).
