@@ -161,6 +161,10 @@ function checkSeoStaticFiles() {
   if (!/\/sitemap\.xml[\s\S]*?Content-Type:\s*application\/xml/.test(headers)) {
     fail('public/_headers missing sitemap.xml application/xml Content-Type')
   } else ok('public/_headers: sitemap.xml → application/xml')
+
+  if (!/Access-Control-Allow-Origin:\s*\*/.test(headers)) {
+    fail('public/_headers missing Access-Control-Allow-Origin * (PostHog replay CORS)')
+  } else ok('public/_headers: Access-Control-Allow-Origin *')
 }
 
 async function probeLive() {

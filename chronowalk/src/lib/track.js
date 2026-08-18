@@ -143,6 +143,12 @@ export function initAnalytics() {
         maskAllInputs: false,
         maskTextSelector: '[data-ph-mask]',
         recordCrossOriginIframes: false,
+        // Inline CSS + fonts at capture time so replay does not depend on
+        // hashed /assets/* still existing, or on eu.posthog.com being allowed
+        // to fetch Google Fonts. Without this, ChronoWalk replays render as
+        // unstyled Times text inside a letterboxed phone frame.
+        inlineStylesheet: true,
+        collectFonts: true,
       },
       persistence: 'localStorage+cookie',
       loaded: (ph) => {

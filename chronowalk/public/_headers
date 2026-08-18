@@ -1,3 +1,10 @@
+# PostHog session replay reconstructs the page from eu.posthog.com. When CSS
+# or fonts are not fully inlined, the player fetches them from this origin and
+# needs CORS. Same header is required once stylesheet <link> tags use
+# crossorigin="anonymous" (otherwise Chrome refuses to apply the CSS).
+/*
+  Access-Control-Allow-Origin: *
+
 # The service worker and app shell must never be held in the HTTP cache,
 # otherwise browsers keep running an old service worker and never pick up
 # new deploys. Content-hashed assets under /assets/ stay long-cached.

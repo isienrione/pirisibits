@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import { mapManifestToCloudflareCanonical } from './src/pwa/cloudflarePrecacheUrls.js'
+import { ensureStylesheetCrossorigin } from './src/pwa/stylesheetCrossorigin.js'
 
 function resolveBuildId() {
   if (process.env.VITE_BUILD_ID) return process.env.VITE_BUILD_ID
@@ -42,6 +43,19 @@ const appVersion = (() => {
   }
 })()
 
+function stylesheetCrossoriginPlugin() {
+  return {
+    name: 'stylesheet-crossorigin',
+    transformIndexHtml: {
+      // After Vite injects hashed /assets/*.css links.
+      order: 'post',
+      handler(html) {
+        return ensureStylesheetCrossorigin(html)
+      },
+    },
+  }
+}
+
 function walkingUiRevisionPlugin() {
   return {
     name: 'walking-ui-revision',
@@ -68,6 +82,7 @@ const pwaRegisterMock = fileURLToPath(new URL('./src/test/mocks/pwa-register.js'
 export default defineConfig({
   plugins: [
     react(),
+    stylesheetCrossoriginPlugin(),
     walkingUiRevisionPlugin(),
     VitePWA({
       // Custom SW (injectManifest):
