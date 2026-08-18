@@ -24,6 +24,17 @@ describe('AppRouter apex home', () => {
     expect(routerSource).not.toMatch(/hasAccess\(\)[\s\S]*Navigate to=.*\/setup/)
   })
 
+  it('keeps paid journey gated while home is an app-shell route', () => {
+    expect(routerSource).toContain(
+      '<Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />',
+    )
+    expect(routerSource).toContain(
+      '<Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />',
+    )
+    expect(routerSource).toContain('<Route path="/access" element={<LazyAccessPage />} />')
+    expect(routerSource).toContain('<Route path="/welcome" element={<LazyWelcomePage />} />')
+  })
+
   it('CDN-redirects legacy /landing permanently to /', () => {
     expect(redirectsSource).toMatch(/^\/landing\s+\/\s+301$/m)
     expect(redirectsSource).not.toMatch(/^\/\s+\/landing\s+302$/m)

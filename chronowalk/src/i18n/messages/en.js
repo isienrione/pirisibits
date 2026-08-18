@@ -527,6 +527,10 @@ export const enMessages = Object.freeze({
   'onboarding.welcome.continue': 'TAP TO CONTINUE',
   'onboarding.welcome.rome': 'ROME',
   'onboarding.welcome.skip': 'tap to skip',
+  'native.welcome.brand': 'ChronoWalk',
+  'native.welcome.proposition': 'Walk Rome with a private audio guide.',
+  'native.welcome.cta.start': 'Start exploring — free',
+  'native.welcome.cta.access': 'I already have access',
   'onboarding.permissions.eyebrow': 'Before you walk',
   'onboarding.permissions.title': 'Enable location for GPS guidance',
   'onboarding.permissions.body':

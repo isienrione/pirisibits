@@ -8,6 +8,7 @@ import {
   shouldShowPaceModePicker,
 } from '../lib/pendingPurchase.js'
 import { isAppEntryComplete } from '../lib/appEntry.js'
+import { mayStartPaidRomeJourney, resolveUnlockedJourneyPath } from '../lib/contentAccess.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { startFromNearestTourStop } from '../lib/startFromNearestStop.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
@@ -143,6 +144,11 @@ export default function RedesignBeginFlow() {
   }
 
   const startJourney = () => {
+    if (!mayStartPaidRomeJourney()) {
+      navigate(resolveUnlockedJourneyPath(), { replace: true })
+      return
+    }
+
     const tourIds = manifest ? getTourWaypointIds(manifest, previewContext) : []
     const firstId = tourIds[0]
     const sequenceIndex =

@@ -1,6 +1,6 @@
 import { T, F } from '../tokens.js'
 
-export function PrimaryButton({ children, onClick, color = T.terracotta, textColor, style, disabled = false }) {
+export function PrimaryButton({ children, onClick, color = T.terracotta, textColor, style, disabled = false, ...rest }) {
   const fg =
     textColor ??
     (color === T.gold || color === T.ember || color === T.terracotta || color === T.actI
@@ -11,6 +11,7 @@ export function PrimaryButton({ children, onClick, color = T.terracotta, textCol
       type="button"
       onClick={onClick}
       disabled={disabled}
+      {...rest}
       style={{
         width: '100%',
         padding: '15px',

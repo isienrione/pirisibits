@@ -25,7 +25,7 @@ import {
 } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import { NativePublicLandingRoute } from '../lib/nativeAppEntry.jsx'
-import { RequireAccess } from '../lib/requireAccess.jsx'
+import { RequireAccess, RequireAppShell } from '../lib/requireAccess.jsx'
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
@@ -65,6 +65,11 @@ function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
 }
 
+/** Home / Context: paid travelers or native guests. Not a Rome content unlock. */
+function AppShell({ children, requireOnboardedGuest = false }) {
+  return <RequireAppShell requireOnboardedGuest={requireOnboardedGuest}>{children}</RequireAppShell>
+}
+
 let LazyUxRegressionTester = null
 
 if (import.meta.env.DEV) {
@@ -78,7 +83,7 @@ if (import.meta.env.DEV) {
 // Purchasers reach setup only via /access and post-purchase routes - not a
 // silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
 // Native iOS never mounts the landing: `/` redirects at render time to
-// `/home` or `/access` from the existing local entitlement session.
+// `/home` (entitled or returning guest) or `/welcome` (first run).
 function PublicLandingRoute() {
   return (
     <NativePublicLandingRoute>
@@ -148,14 +153,14 @@ function AppRoutes() {
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
-        <Route path="/setup" element={<Paid><LazySetupPage /></Paid>} />
+        <Route path="/setup" element={<AppShell><LazySetupPage /></AppShell>} />
         <Route path="/access/confirmed" element={<Paid><LazyAccessConfirmedPage /></Paid>} />
         <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
         <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
-        <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
-        <Route path="/home" element={<Paid><LazyHomePage /></Paid>} />
+        <Route path="/begin" element={<AppShell><LazyBeginPage /></AppShell>} />
+        <Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
         <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />

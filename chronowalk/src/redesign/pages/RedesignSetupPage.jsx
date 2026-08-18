@@ -9,6 +9,7 @@ import {
   packBlurbForPurchasedTier,
   packTitleForPurchasedTier,
 } from '../../lib/appEntry.js'
+import { markGuestOnboardingComplete } from '../../lib/guestSession.js'
 import { shouldSkipNativeA2hs } from '../../lib/nativeAppEntry.jsx'
 import { readPurchasedTier } from '../../lib/pendingPurchase.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
@@ -41,6 +42,7 @@ export default function RedesignSetupPage() {
     if (finishedEntryRef.current) return
     finishedEntryRef.current = true
     markAppEntryComplete()
+    markGuestOnboardingComplete()
     navigate('/begin', { replace: true })
   }, [navigate])
 

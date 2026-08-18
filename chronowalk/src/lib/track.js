@@ -68,6 +68,9 @@ export const TRACK_EVENTS = {
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
   PAGE_UNLOAD: 'page_unload',
   PAGE_RELOAD_DETECTED: 'page_reload_detected',
+  NATIVE_WELCOME_VIEWED: 'native_welcome_viewed',
+  NATIVE_GUEST_STARTED: 'native_guest_started',
+  NATIVE_GUEST_RETURNED: 'native_guest_returned',
 }
 
 function notifyConsentListeners(value) {

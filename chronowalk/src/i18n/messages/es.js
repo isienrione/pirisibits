@@ -531,6 +531,10 @@ export const esMessages = Object.freeze({
   'onboarding.welcome.continue': 'TOCA PARA CONTINUAR',
   'onboarding.welcome.rome': 'ROMA',
   'onboarding.welcome.skip': 'toca para omitir',
+  'native.welcome.brand': 'ChronoWalk',
+  'native.welcome.proposition': 'Camina Roma con una guía de audio privada.',
+  'native.welcome.cta.start': 'Empezar a explorar — gratis',
+  'native.welcome.cta.access': 'Ya tengo acceso',
   'onboarding.permissions.eyebrow': 'Antes de caminar',
   'onboarding.permissions.title': 'Activa la ubicación para usar la guía GPS',
   'onboarding.permissions.body':

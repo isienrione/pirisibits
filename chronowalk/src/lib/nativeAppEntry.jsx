@@ -1,6 +1,9 @@
+import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { hasValidLocalAccess } from './accessSession.js'
+import { hasCompletedGuestOnboarding, hasGuestSession } from './guestSession.js'
 import { isNativeIOS } from './platform.js'
+import { track, TRACK_EVENTS } from './track.js'
 
 /**
  * Native iOS boot destination for the root path only.
@@ -8,10 +11,24 @@ import { isNativeIOS } from './platform.js'
  *
  * Entitlement uses the same local session RequireAccess uses
  * (`hasValidLocalAccess`) — never a hard-coded grant.
+ * Guest onboarding is local `cw_guest_v1`, not a paid credential.
  */
+export function resolveNativeRootEntry() {
+  if (!isNativeIOS()) return { path: null, reason: 'web' }
+  if (hasValidLocalAccess()) return { path: '/home', reason: 'entitled' }
+  if (hasCompletedGuestOnboarding()) return { path: '/home', reason: 'guest' }
+  return { path: '/welcome', reason: 'first-run' }
+}
+
 export function getNativeRootRedirect() {
-  if (!isNativeIOS()) return null
-  return hasValidLocalAccess() ? '/home' : '/access'
+  return resolveNativeRootEntry().path
+}
+
+/** Native guest may enter app-shell routes without a paid credential. */
+export function canEnterNativeGuestShell({ onboarded = false } = {}) {
+  if (!isNativeIOS()) return false
+  if (onboarded) return hasCompletedGuestOnboarding()
+  return hasGuestSession()
 }
 
 /** Native iOS binaries are already installed; skip A2HS / Safari install UI. */
@@ -24,9 +41,19 @@ export function shouldSkipNativeA2hs() {
  * so there is no one-frame flash before redirect.
  */
 export function NativePublicLandingRoute({ children }) {
-  const redirectTo = getNativeRootRedirect()
-  if (redirectTo) {
-    return <Navigate to={redirectTo} replace />
+  const entry = resolveNativeRootEntry()
+  const tracked = useRef(false)
+
+  useEffect(() => {
+    if (tracked.current) return
+    if (entry.reason === 'guest') {
+      tracked.current = true
+      track(TRACK_EVENTS.NATIVE_GUEST_RETURNED)
+    }
+  }, [entry.reason])
+
+  if (entry.path) {
+    return <Navigate to={entry.path} replace />
   }
   return children
 }

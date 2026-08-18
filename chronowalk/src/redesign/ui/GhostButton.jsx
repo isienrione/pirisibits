@@ -1,10 +1,11 @@
 import { T, F } from '../tokens.js'
 
-export function GhostButton({ children, onClick, style }) {
+export function GhostButton({ children, onClick, style, ...rest }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      {...rest}
       style={{
         width: '100%',
         padding: '14px 20px',

@@ -5,6 +5,8 @@ import { validateDeviceAccess, readDeviceCredential } from './access.js'
 import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
 import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
 import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
+import { hasCompletedGuestOnboarding, hasGuestSession } from './guestSession.js'
+import { isNativeIOS } from './platform.js'
 
 /**
  * Gate paid tour surfaces.
@@ -100,14 +102,42 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
     if (hasAccess() || readDeviceCredential() || hasValidLocalAccess()) {
       return children
     }
+    // Native guests must not sit on a blank gate, and must not be sent to
+    // the access-code screen when they tap a paid surface.
+    if (isNativeIOS() && hasCompletedGuestOnboarding()) {
+      return <Navigate to="/home" replace />
+    }
     // Wait for invite auto-redeem / revalidation before bouncing to /access
     // (avoids Home Screen → paste-code flash).
     return null
   }
 
   if (!allowed) {
+    if (isNativeIOS() && hasCompletedGuestOnboarding()) {
+      return <Navigate to="/home" replace />
+    }
     return <Navigate to={redirectTo} replace />
   }
 
   return children
+}
+
+/**
+ * App-shell gate: paid travelers OR native guests.
+ * Web without a credential still goes to /access (marketing/PWA unchanged).
+ *
+ * @param {{ children: import('react').ReactNode, requireOnboardedGuest?: boolean }} props
+ */
+export function RequireAppShell({ children, requireOnboardedGuest = false }) {
+  if (hasValidLocalAccess() || readDeviceCredential()) {
+    return <RequireAccess>{children}</RequireAccess>
+  }
+
+  if (isNativeIOS()) {
+    const guestOk = requireOnboardedGuest ? hasCompletedGuestOnboarding() : hasGuestSession()
+    if (guestOk) return children
+    return <Navigate to="/welcome" replace />
+  }
+
+  return <Navigate to="/access" replace />
 }
