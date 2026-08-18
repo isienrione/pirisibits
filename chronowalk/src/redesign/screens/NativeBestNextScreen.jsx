@@ -21,6 +21,7 @@ import NativeContentCard from '../ui/NativeContentCard.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import MysteryCard from '../ui/MysteryCard.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
 import {
   R,
   RouteSurface,
@@ -37,7 +38,6 @@ function OptionRow({ option, testId, onChoose, variant = 'alt' }) {
   if (!option) return null
   const mystery = option.isMystery
   const recommended = variant === 'recommended'
-  const photo = !mystery && option.item?.photo
   return (
     <button
       type="button"
@@ -48,7 +48,7 @@ function OptionRow({ option, testId, onChoose, variant = 'alt' }) {
         width: '100%',
         textAlign: 'left',
         ...routeCard,
-        padding: recommended ? 16 : 14,
+        padding: recommended ? 16 : 12,
         marginBottom: 10,
         borderRadius: recommended ? 20 : 16,
         border: `1px solid ${R.line}`,
@@ -62,31 +62,20 @@ function OptionRow({ option, testId, onChoose, variant = 'alt' }) {
         color: R.ink,
       }}
     >
-      {photo ? (
-        <div
-          aria-hidden="true"
-          style={{
-            height: recommended ? 120 : 72,
-            borderRadius: 14,
-            marginBottom: 12,
-            backgroundImage: `url(${photo})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundColor: R.line,
-          }}
-        />
-      ) : null}
-      <p style={{ ...routeType, color: mystery ? R.violet : R.muted }}>
+      <PlaceMedia item={option.item} mystery={mystery} height={recommended ? 120 : 64} radius={14} />
+      <p style={{ ...routeType, color: mystery ? R.violet : R.muted, marginTop: 10 }}>
         {mystery ? 'Surprise Discovery' : option.item?.contentType === 'discovery' ? 'Worth noticing' : 'Experience'}
       </p>
-      <p style={{ fontFamily: F.display, fontSize: recommended ? 22 : 18, margin: '6px 0 4px', color: R.ink }}>
+      <p style={{ fontFamily: F.display, fontSize: recommended ? 22 : 16, margin: '6px 0 4px', color: R.ink }}>
         {mystery ? '✦ Surprise Discovery' : option.item?.title}
       </p>
       <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 13, fontFamily: F.body }}>
         {option.walkMin != null ? `${option.walkMin} min walk · ` : ''}
         {option.experienceMin} min
       </p>
-      <p style={{ margin: '8px 0 0', lineHeight: 1.4, fontFamily: F.body, color: R.ink }}>{option.reason}</p>
+      {recommended ? (
+        <p style={{ margin: '8px 0 0', lineHeight: 1.4, fontFamily: F.body, color: R.ink }}>{option.reason}</p>
+      ) : null}
     </button>
   )
 }
@@ -252,10 +241,11 @@ export default function NativeBestNextScreen() {
           onOpen={(item) => navigate(contentRoute(item))}
         />
       ) : null}
-      {alternatives.map((item) => (
+      {alternatives.slice(0, 2).map((item) => (
         <NativeContentCard
           key={item.id}
           item={item}
+          compact
           tone="warm"
           testId={`best-next-alt-${item.id}`}
           onOpen={(next) => navigate(contentRoute(next))}

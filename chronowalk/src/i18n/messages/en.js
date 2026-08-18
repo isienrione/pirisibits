@@ -666,7 +666,7 @@ export const enMessages = Object.freeze({
   'native.route.start': 'Start this route',
   'native.route.adjust': 'Adjust plan',
   'native.route.why': 'Why this?',
-  'native.route.homeHeadline': 'I have a great {duration} from here.',
+  'native.route.homeHeadline': 'A great {duration} from here',
   'native.route.yourAfternoon': 'Your afternoon',
   'native.route.remaining': 'remaining',
   'native.route.of': 'of',

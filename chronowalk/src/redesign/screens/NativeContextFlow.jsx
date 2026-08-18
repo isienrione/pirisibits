@@ -555,7 +555,7 @@ export default function NativeContextFlow() {
       {step === 'location' ? (
         <>
           <Heading title={t('native.context.location.title')} body={t('native.context.location.body')} />
-          <p style={{ margin: '0 0 auto', color: 'rgba(250,246,239,0.7)', lineHeight: 1.5 }}>
+          <p style={{ margin: '0 0 auto', color: R.muted, lineHeight: 1.5 }}>
             {t('native.context.location.note')}
           </p>
           {locationPhase === 'loading' ? (

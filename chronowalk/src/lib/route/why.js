@@ -68,15 +68,25 @@ export function explainProposedRoute({ proposed, context, minutesAway = null } =
   }
 
   const moment = momentPhrase(context?.session?.timeOfDay)
-  const durationLabel = formatDurationLabel(proposed?.estimatedDurationMin)
+  const spoken = spokenDuration(proposed?.estimatedDurationMin)
 
   return {
     moment,
-    headline: `Here's a great plan for your ${moment}.`,
-    homeHeadline: `I have a great ${String(durationLabel).replace(/^~/, '')} from here.`,
+    headline: moment === 'morning' ? 'Your Roman morning' : `A beautiful ${moment} in Rome`,
+    homeHeadline: `A great ${spoken} from here`,
     body: sentence,
     contextLine: `Based on your ${moment}`,
   }
+}
+
+export function spokenDuration(minutes) {
+  const value = Math.max(0, Math.round(Number(minutes) || 0))
+  if (value < 60) return `${value} minutes`
+  const hours = Math.floor(value / 60)
+  const rest = value % 60
+  if (!rest) return hours === 1 ? '1 hour' : `${hours} hours`
+  if (hours === 1) return `1 hour ${rest} minutes`
+  return `${hours} hours ${rest} minutes`
 }
 
 export function formatDurationLabel(minutes) {
@@ -107,9 +117,18 @@ export function routeTags({ context, items, catalogById }) {
 }
 
 export function routeRationale({ items, catalogById }) {
-  const titles = (items || []).map((item) => catalogById[item.contentId]?.shortTitle || catalogById[item.contentId]?.title).filter(Boolean)
+  const titles = (items || [])
+    .map((item) => {
+      if (item.isMysteryDiscovery) return 'a hidden detail'
+      return catalogById[item.contentId]?.shortTitle || catalogById[item.contentId]?.title
+    })
+    .filter(Boolean)
   if (titles.length < 2) return ['A short, geographically close set of things worth doing now.']
+  const hasMystery = (items || []).some((item) => item.isMysteryDiscovery)
+  if (hasMystery) {
+    return ['Ancient engineering, a hidden detail, and nearby Rome without backtracking.']
+  }
   return [
-    `Starts with ${titles[0]}, moves through nearby Rome, and finishes at ${titles[titles.length - 1]}.`,
+    `${titles[0]}, then ${titles.slice(1).join(', ')} — a compact walk without backtracking.`,
   ]
 }

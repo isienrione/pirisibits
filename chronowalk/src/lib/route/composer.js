@@ -140,7 +140,9 @@ export function composeProposedRoute({
       .map((item) => {
         const dist = distanceBetween(last, item)
         if (dist == null) return null
-        if (chosen.length >= 1 && dist < 140) {
+        // Nearby Discoveries in the same cluster are the product, not “micro-sequences”.
+        // Only skip sub-140m when both nodes are Heroes (prevents monument stacking).
+        if (chosen.length >= 1 && dist < 140 && item.contentType === CONTENT_TYPES.HERO && lastType === CONTENT_TYPES.HERO) {
           const fartherExists = candidates.some((other) => {
             const d = distanceBetween(last, other)
             return (
@@ -169,6 +171,7 @@ export function composeProposedRoute({
         if (lastType === CONTENT_TYPES.HERO && item.contentType === CONTENT_TYPES.DISCOVERY) score += 10
         if (lastType === CONTENT_TYPES.DISCOVERY && item.contentType === CONTENT_TYPES.HERO) score += 6
         if (item.mysteryEligible && chosen.length >= 1) score += 4
+        if (item.mysteryEligible && chosen.length === 1) score += 16
         if (typesSeen.has(item.contentType) && item.contentType === CONTENT_TYPES.HERO && typesSeen.has(CONTENT_TYPES.DISCOVERY)) {
           score -= 4
         }
@@ -189,14 +192,25 @@ export function composeProposedRoute({
     if (chosen.length >= targetCount) break
   }
 
-  if (chosen.length === 1) {
-    const extra = pool.find(
-      (item) =>
-        !alreadyUsed(used, item) && item.contentType === CONTENT_TYPES.DISCOVERY && canAccess(item.id),
-    )
-    if (extra) {
+  if (chosen.length < Math.min(3, targetCount)) {
+    const fillers = pool
+      .filter(
+        (item) =>
+          !alreadyUsed(used, item) &&
+          canAccess(item.id) &&
+          item.contentType === CONTENT_TYPES.DISCOVERY,
+      )
+      .sort((a, b) => {
+        const mysteryBoost = (item) => (item.mysteryEligible && !chosen.some((row) => row.mysteryEligible) ? 1000 : 0)
+        const da = distanceBetween(last, a) ?? 99999
+        const db = distanceBetween(last, b) ?? 99999
+        return mysteryBoost(b) - mysteryBoost(a) || da - db
+      })
+    for (const extra of fillers) {
+      if (chosen.length >= Math.min(3, Math.max(MIN_ROUTE_ITEMS, targetCount))) break
       chosen.push(extra)
       markUsed(used, extra)
+      last = extra
     }
   }
 

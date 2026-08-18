@@ -56,6 +56,7 @@ export default function NativeMapScreen() {
   const { active } = useRouteState()
   const live = isRouteLive(active)
   const routeItems = live ? liveItems(active) : []
+  const routeKey = routeItems.map((item) => item.contentId).join('|')
   const located = isPlausibleRomePosition(position)
 
   const catalog = useMemo(() => getRomeRankableCatalog(), [])
@@ -137,6 +138,26 @@ export default function NativeMapScreen() {
           if (cancelled) return
           setEngine('mapbox')
           syncPixels()
+          const coords = routeItems
+            .map((item) => catalog.find((row) => row.id === item.contentId)?.geo)
+            .filter((geo) => geo && Number.isFinite(geo.lat) && Number.isFinite(geo.lng))
+            .map((geo) => [geo.lng, geo.lat])
+          if (coords.length >= 2 && !map.getSource('cw-active-route')) {
+            map.addSource('cw-active-route', {
+              type: 'geojson',
+              data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } },
+            })
+            map.addLayer({
+              id: 'cw-active-route-line',
+              type: 'line',
+              source: 'cw-active-route',
+              paint: {
+                'line-color': '#2A6F6A',
+                'line-width': 4,
+                'line-opacity': 0.88,
+              },
+            })
+          }
         })
         map.on('move', syncPixels)
         map.on('error', () => {
@@ -151,7 +172,7 @@ export default function NativeMapScreen() {
       map?.remove?.()
       mapboxRef.current = null
     }
-  }, [catalog, located, position?.lat, position?.lng, zoom])
+  }, [catalog, located, position?.lat, position?.lng, zoom, routeKey])
 
   const markerPos = (item) => {
     if (pixelPos?.[item.id] && engine === 'mapbox') return pixelPos[item.id]

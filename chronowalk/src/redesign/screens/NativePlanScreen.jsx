@@ -53,7 +53,7 @@ export default function NativePlanScreen() {
     <RouteSurface testId="native-plan">
       <PlaceMedia item={heroItem} height={188} radius={20} testId="plan-hero-media" />
       <p style={{ ...routeType, marginTop: 16 }}>{proposed.contextLine || t('native.route.based')}</p>
-      <h1 style={{ ...routeHeadline, fontSize: 28 }}>{proposed.title || t('native.route.plan.headline')}</h1>
+      <h1 data-testid="plan-title" style={{ ...routeHeadline, fontSize: 28 }}>{proposed.title || t('native.route.plan.headline')}</h1>
       <p data-testid="native-plan-stats" style={{ margin: '0 0 12px', color: R.muted, fontFamily: F.body, fontSize: 14 }}>
         {formatDurationLabel(proposed.estimatedDurationMin)} · {formatKm(proposed.estimatedWalkingDistanceM)}
       </p>

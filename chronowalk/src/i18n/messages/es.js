@@ -670,7 +670,7 @@ export const esMessages = Object.freeze({
   'native.route.start': 'Empezar esta ruta',
   'native.route.adjust': 'Ajustar el plan',
   'native.route.why': '¿Por qué este?',
-  'native.route.homeHeadline': 'Tengo un gran {duration} desde aquí.',
+  'native.route.homeHeadline': 'Unos {duration} estupendos desde aquí',
   'native.route.yourAfternoon': 'Tu tarde',
   'native.route.remaining': 'restante',
   'native.route.of': 'de',

@@ -88,6 +88,9 @@ describe('T05.2 product fidelity after physical QA', () => {
     expect(ids).not.toContain('w23')
     const byId = Object.fromEntries(catalog.map((item) => [item.id, item]))
     expect(routeHasUniqueConsumerHeroes(proposed.items, byId)).toBe(true)
+    expect(proposed.items.length).toBeGreaterThanOrEqual(3)
+    expect(proposed.items.filter((item) => item.contentType === 'discovery').length).toBeGreaterThanOrEqual(1)
+    expect(proposed.items.some((item) => item.isMysteryDiscovery)).toBe(true)
   })
 
   it('does not display distance for invalid, zero, or malformed coordinates', () => {

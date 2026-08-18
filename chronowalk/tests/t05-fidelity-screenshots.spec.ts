@@ -2,7 +2,7 @@
  * Physical-like native fidelity screenshots at iPhone viewports.
  * Uses DEV nativePreview so the browser renders native routes.
  */
-import { test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -12,72 +12,35 @@ const VIEWPORTS = [
   { name: '430x932', width: 430, height: 932 },
 ]
 
-function guestBlob() {
-  return {
-    version: 2,
-    id: 'cw_guest_fidelity_qa',
-    createdAt: '2026-08-18T00:00:00.000Z',
-    onboardingCompleted: true,
-    onboardingCompletedAt: '2026-08-18T00:00:00.000Z',
-    onboardingFlowVersion: 3,
-    contextSchemaVersion: 2,
-    context: {
-      version: 2,
-      traveler: {
-        positiveInterestIds: ['architecture-design', 'art'],
-        surpriseMe: false,
-        avoidInterestIds: [],
-        avoidSubInterestIds: [],
-        explorationStyle: 'mix',
-        iconicVsHidden: 'hidden',
-        depthVsBreadth: 'mix',
-        crowdTolerance: null,
-        indoorOutdoor: null,
-        urbanComfort: 'lively',
-        eveningComfort: null,
-        walkingTolerance: 'moderate',
-        transportModes: ['walk'],
-      },
-      trip: {
-        cityId: 'rome',
-        residency: 'visitor',
-        tripHorizon: 'today',
-        dates: null,
-        accommodationArea: null,
-        anchors: [],
-      },
-      session: {
-        location: { lat: 41.89885, lng: 12.47687, accuracy: 12, timestamp: Date.now() },
-        locationStatus: 'granted',
-        availableTimeNow: '1h',
-        timeOfDay: 'morning',
-        desiredEndTime: null,
-        desiredEndArea: null,
-        mealIntent: null,
-        transportPreferenceNow: null,
-      },
-      history: {
-        completedExperienceIds: [],
-        savedExperienceIds: ['w17'],
-        dismissedExperienceIds: [],
-        likedExperienceIds: [],
-        events: [],
-      },
-      interestIds: ['architecture-design', 'art'],
-      surpriseMe: false,
-      timeBudgetId: '1h',
-      locationStatus: 'granted',
-      lastPosition: { lat: 41.89885, lng: 12.47687, accuracy: 12, timestamp: Date.now() },
-      completedAt: '2026-08-18T00:00:00.000Z',
-    },
+async function dismissCookies(page: Page) {
+  const banner = page.getByTestId('analytics-consent-banner')
+  try {
+    await banner.waitFor({ state: 'visible', timeout: 2500 })
+    await page.getByTestId('analytics-consent-accept').click()
+    await expect(banner).toHaveCount(0, { timeout: 4000 })
+  } catch {
+    /* already dismissed */
+  }
+}
+
+async function shot(page: Page, dirs: string[], name: string) {
+  await dismissCookies(page)
+  await page.waitForTimeout(280)
+  for (const dir of dirs) {
+    await page.screenshot({ path: resolve(dir, `${name}.png`), fullPage: false })
   }
 }
 
 test.describe('T05.2 native fidelity screenshots', () => {
   test.describe.configure({ mode: 'serial' })
+  test.use({
+    geolocation: { latitude: 41.89885, longitude: 12.47687 },
+    permissions: ['geolocation'],
+  })
 
   for (const vp of VIEWPORTS) {
     test(`capture ${vp.name}`, async ({ page }) => {
+      test.setTimeout(180_000)
       const dirs = [
         resolve('/opt/cursor/artifacts/screenshots', `t05-fidelity-${vp.name}`),
         resolve(process.cwd(), 'artifacts/t05-fidelity', vp.name),
@@ -85,66 +48,101 @@ test.describe('T05.2 native fidelity screenshots', () => {
       for (const dir of dirs) mkdirSync(dir, { recursive: true })
 
       await page.setViewportSize({ width: vp.width, height: vp.height })
-      await page.addInitScript((guest) => {
+      await page.addInitScript(() => {
         localStorage.setItem('cw_dev_native_preview', '1')
-        localStorage.setItem('cw_guest_v1', JSON.stringify(guest))
-      }, guestBlob())
-
-      const shot = async (name) => {
-        await page.waitForTimeout(350)
-        for (const dir of dirs) {
-          await page.screenshot({ path: resolve(dir, `${name}.png`), fullPage: true })
-        }
-      }
+        localStorage.setItem('cw_marketing_consent', 'declined')
+        localStorage.setItem('cw_analytics_consent', 'declined')
+        localStorage.removeItem('cw_guest_v1')
+        localStorage.removeItem('cw_route_v1')
+      })
 
       await page.goto('/welcome?nativePreview=1')
-      await page.evaluate(() => localStorage.removeItem('cw_guest_v1'))
-      await page.reload()
-      await shot('01-welcome')
+      await dismissCookies(page)
+      await expect(page.getByTestId('native-welcome')).toBeVisible({ timeout: 20_000 })
+      await shot(page, dirs, '01-welcome')
 
-      await page.goto('/context?nativePreview=1')
-      await shot('02-context-interests')
+      await page.getByTestId('native-welcome-start').click()
+      await expect(page.getByTestId('native-context')).toBeVisible({ timeout: 15_000 })
+      await shot(page, dirs, '02-context-interests')
 
-      await page.evaluate((guest) => {
-        localStorage.setItem('cw_dev_native_preview', '1')
-        localStorage.setItem('cw_guest_v1', JSON.stringify(guest))
-      }, guestBlob())
+      await page.getByTestId('native-context-interest-architecture-design').click()
+      await page.getByTestId('native-context-interests-continue').click()
 
-      await page.goto('/plan?nativePreview=1')
-      await shot('03-plan')
+      const refineSkip = page.getByTestId('native-context-refine-skip')
+      if (await refineSkip.isVisible().catch(() => false)) {
+        await shot(page, dirs, '02-context-refine')
+        await refineSkip.click()
+      }
+
+      await expect(page.getByTestId('native-context-style-continue')).toBeVisible()
+      await page.getByTestId('native-context-style-iconic-hidden').click()
+      await shot(page, dirs, '02-context-style')
+      await page.getByTestId('native-context-style-continue').click()
+
+      await expect(page.getByTestId('native-context-mobility-continue')).toBeVisible()
+      await shot(page, dirs, '02-context-mobility')
+      await page.getByTestId('native-context-mobility-continue').click()
+
+      await page.getByTestId('native-context-trip-horizon-today').click()
+      await shot(page, dirs, '02-context-trip')
+      await page.getByTestId('native-context-trip-continue').click()
+
+      await page.getByTestId('native-context-time-1h').click()
+      await shot(page, dirs, '02-context-time')
+      await page.getByTestId('native-context-time-continue').click()
+
+      await expect(page.getByTestId('native-context-location-skip')).toBeVisible()
+      await shot(page, dirs, '02-context-location')
+      await page.getByTestId('native-context-location-skip').click()
+
+      await page.waitForURL(/\/plan/)
+      await expect(page.getByTestId('plan-title').or(page.getByTestId('native-plan'))).toBeVisible({ timeout: 20_000 })
+      await shot(page, dirs, '03-plan')
 
       await page.goto('/home?nativePreview=1')
-      await shot('04-discover-home')
+      await expect(page.getByTestId('native-discover')).toBeVisible({ timeout: 12_000 })
+      await shot(page, dirs, '04-discover-home')
 
       await page.goto('/route/adjust?nativePreview=1')
-      await shot('05-adjust')
+      await expect(page.getByTestId('native-adjust')).toBeVisible({ timeout: 12_000 })
+      await shot(page, dirs, '05-adjust')
 
       await page.goto('/plan?nativePreview=1')
-      const start = page.getByTestId('plan-start')
-      if (await start.count()) await start.click()
-      await shot('06-active-route')
+      await expect(page.getByTestId('plan-start')).toBeVisible({ timeout: 12_000 })
+      await page.getByTestId('plan-start').click()
+      await expect(page.getByTestId('native-active-route')).toBeVisible({ timeout: 12_000 })
+      await expect(page.getByTestId('route-pill')).toBeVisible({ timeout: 8_000 })
+      await shot(page, dirs, '06-active-route')
 
       await page.goto('/discovery/d_rome_22?nativePreview=1')
-      await shot('07-discovery-detail')
+      await expect(page.getByTestId('native-discovery')).toBeVisible({ timeout: 12_000 })
+      await shot(page, dirs, '07-discovery-detail')
 
       await page.goto('/next?nativePreview=1')
-      await shot('08-bifurcation')
-      await shot('10-best-next')
+      await expect(page.getByTestId('native-best-next')).toBeVisible({ timeout: 12_000 })
+      await shot(page, dirs, '08-bifurcation')
+      await shot(page, dirs, '10-best-next')
 
       await page.goto('/mystery?nativePreview=1')
-      await shot('09-mystery')
+      await expect(page.getByTestId('native-mystery')).toBeVisible({ timeout: 12_000 })
+      await shot(page, dirs, '09-mystery')
 
       await page.goto('/map?nativePreview=1')
-      await page.waitForTimeout(800)
-      await shot('11-map')
+      await expect(page.getByTestId('native-map')).toBeVisible({ timeout: 12_000 })
+      await page.waitForTimeout(2000)
+      await shot(page, dirs, '11-map')
 
       await page.goto('/journal?nativePreview=1')
-      await shot('12-saved')
+      await expect(page.getByTestId('native-saved').or(page.getByTestId('saved-empty')).or(page.locator('[data-testid="native-saved"]'))).toBeVisible({
+        timeout: 12_000,
+      })
+      await shot(page, dirs, '12-saved')
 
       await page.goto('/route?nativePreview=1')
       const controls = page.getByTestId('active-route-controls')
-      if (await controls.count()) await controls.click()
-      await shot('13-route-controls')
+      await expect(controls).toBeVisible({ timeout: 12_000 })
+      await controls.click()
+      await shot(page, dirs, '13-route-controls')
     })
   }
 })

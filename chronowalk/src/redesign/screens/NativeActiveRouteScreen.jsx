@@ -43,7 +43,7 @@ export default function NativeActiveRouteScreen() {
     <RouteSurface testId="native-active-route">
       <div data-testid="route-summary">
         <p style={routeType}>{active.title || t('native.route.yourAfternoon')}</p>
-        <h1 style={{ ...routeHeadline, fontSize: 26 }}>
+        <h1 data-testid="active-route-title" style={{ ...routeHeadline, fontSize: 26 }}>
           {formatDurationLabel(totals.estimatedDurationMin)} {t('native.route.remaining')}
         </h1>
         <p style={{ margin: '0 0 16px', color: R.muted, fontFamily: F.body }}>

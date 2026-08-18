@@ -240,20 +240,6 @@ export default function NativeDiscoverHome() {
           />
         ))}
       </div>
-      {primary && primary.contentType === CONTENT_TYPES.HERO && !primary.locked ? (
-        <PrimaryButton
-          color={T.actIV}
-          data-testid="discover-start"
-          onClick={() => startItem(primary)}
-          style={{ ...routePrimary, marginBottom: 10, background: T.actIV, color: T.bone }}
-        >
-          {t('native.discover.start')}
-        </PrimaryButton>
-      ) : primary ? (
-        <GhostButton data-testid="discover-start" onClick={() => openItem(primary)} style={{ ...routeGhost, marginBottom: 10 }}>
-          {t('native.discover.view')}
-        </GhostButton>
-      ) : null}
 
       <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
         <GhostButton data-testid="discover-see-all" onClick={() => navigate('/explore')} style={routeGhost}>
