@@ -7,7 +7,7 @@ export default function MysteryCard({
   item,
   content,
   flipped = false,
-  walkMin = 2,
+  walkMin = 0,
   experienceMin = 3,
   onTake,
   onReveal,

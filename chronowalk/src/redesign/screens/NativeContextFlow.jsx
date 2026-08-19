@@ -27,6 +27,7 @@ import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import NativePageHeader from '../ui/NativePageHeader.jsx'
+import PlaceMedia from '../ui/PlaceMedia.jsx'
 import { R, routeGhost, routePrimary } from '../ui/RouteSurface.jsx'
 
 const MAX_INTERESTS = 4
@@ -500,13 +501,14 @@ export default function NativeContextFlow() {
       {step === 'trip' ? (
         <>
           <Heading title={t('native.context.trip.title')} body={t('native.context.trip.body')} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflowY: 'auto' }}>
             {TRIP_HORIZONS.map((id) => (
               <Choice
                 key={id}
                 testId={`native-context-trip-horizon-${id}`}
                 selected={tripHorizon === id}
                 onClick={() => setTripHorizon(id)}
+                style={{ minHeight: 44, padding: '10px 14px' }}
               >
                 {t(`native.context.horizon.${id}`)}
               </Choice>
@@ -607,7 +609,8 @@ export default function NativeContextFlow() {
       {step === 'location' ? (
         <>
           <Heading title={t('native.context.location.title')} body={t('native.context.location.body')} />
-          <p style={{ margin: '0 0 16px', color: R.muted, lineHeight: 1.5, fontSize: 14 }}>
+          <PlaceMedia height={128} radius={18} testId="native-context-location-visual" />
+          <p style={{ margin: '12px 0 16px', color: R.muted, lineHeight: 1.5, fontSize: 14 }}>
             {t('native.context.location.note')}
           </p>
           {locationPhase === 'loading' ? (
@@ -620,7 +623,7 @@ export default function NativeContextFlow() {
             data-testid="native-context-location-continue"
             disabled={locationPhase === 'loading'}
             onClick={() => void requestLocation()}
-            style={{ marginTop: 8, minHeight: 48 }}
+            style={{ minHeight: 48 }}
           >
             {t('native.context.location.cta')}
           </PrimaryButton>

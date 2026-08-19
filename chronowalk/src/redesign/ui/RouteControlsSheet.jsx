@@ -19,7 +19,7 @@ export default function RouteControlsSheet({ open, route, onClose, onAction }) {
     { id: paused ? 'resume' : 'pause', label: paused ? 'Resume' : 'Pause', testId: 'route-controls-pause' },
     { id: 'end', label: 'End route', testId: 'route-controls-end' },
   ]
-  const visible = actions.filter((action) => !action.placeholder || import.meta.env.DEV)
+  const visible = actions.filter((action) => !action.placeholder)
   return (
     <div data-testid="route-controls-sheet" role="dialog" aria-modal="true" style={routeOverlay}>
       <button type="button" aria-label="Close" onClick={onClose} style={{ position: 'absolute', inset: 0, border: 'none', background: 'transparent' }} />

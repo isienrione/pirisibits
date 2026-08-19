@@ -23,6 +23,26 @@ async function dismissCookies(page: Page) {
   }
 }
 
+async function bootNativeWelcome(page: Page) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    await page.goto('/welcome?nativePreview=1', { waitUntil: 'domcontentloaded' })
+    await dismissCookies(page)
+    const shellError = page.getByText("Couldn't load ChronoWalk")
+    if (await shellError.isVisible({ timeout: 1200 }).catch(() => false)) {
+      await page.getByRole('button', { name: /try again/i }).click().catch(() => {})
+      await page.waitForTimeout(900)
+      continue
+    }
+    try {
+      await page.getByTestId('native-welcome').waitFor({ state: 'visible', timeout: 12_000 })
+      return
+    } catch {
+      await page.waitForTimeout(700)
+    }
+  }
+  await expect(page.getByTestId('native-welcome')).toBeVisible({ timeout: 8_000 })
+}
+
 async function shot(page: Page, dirs: string[], name: string) {
   await dismissCookies(page)
   await page.waitForTimeout(220)
@@ -73,9 +93,7 @@ test.describe('T05.3 native screen-contract screenshots', () => {
         }
       })
 
-      await page.goto('/welcome?nativePreview=1')
-      await dismissCookies(page)
-      await expect(page.getByTestId('native-welcome')).toBeVisible({ timeout: 20_000 })
+      await bootNativeWelcome(page)
       await shot(page, dirs, '01-welcome')
 
       await page.getByTestId('native-welcome-start').click()
@@ -99,6 +117,7 @@ test.describe('T05.3 native screen-contract screenshots', () => {
       await shot(page, dirs, '05-mobility')
       await page.getByTestId('native-context-mobility-continue').click()
 
+      await page.getByTestId('native-context-trip-horizon-4-7d').scrollIntoViewIfNeeded()
       await page.getByTestId('native-context-trip-horizon-4-7d').click()
       await shot(page, dirs, '06-trip-horizon')
       await page.getByTestId('native-context-trip-continue').click()
@@ -110,9 +129,9 @@ test.describe('T05.3 native screen-contract screenshots', () => {
       await expect(page.getByTestId('native-context-location-skip')).toBeVisible()
       await shot(page, dirs, '08-location')
       await page.getByTestId('native-context-location-skip').click()
-
-      await page.waitForURL(/\/plan/)
-      await expect(page.getByTestId('plan-start')).toBeVisible({ timeout: 20_000 })
+      await page.getByTestId('native-plan').waitFor({ timeout: 20_000 })
+      await expect(page.getByTestId('native-plan')).toContainText(/Planning Rome from afar/i)
+      await expect(page.getByTestId('native-plan')).not.toContainText(/\d+ min walk/i)
       await shot(page, dirs, '09-proposed-plan')
       await page.getByTestId('plan-why').click()
       await expect(page.getByTestId('why-this-sheet')).toBeVisible()
@@ -151,7 +170,8 @@ test.describe('T05.3 native screen-contract screenshots', () => {
       await expect(page.getByTestId('native-experience')).toBeVisible({ timeout: 12_000 })
       await shot(page, dirs, '15-hero-preview')
       await page.getByTestId('experience-start').click()
-      await page.waitForTimeout(900)
+      await page.waitForURL(/\/journey/, { timeout: 15_000 }).catch(() => {})
+      await page.waitForTimeout(1100)
       await shot(page, dirs, '18-hero-player-shell')
       await shot(page, dirs, '19-reveal-shell')
 

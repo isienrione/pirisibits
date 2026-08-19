@@ -293,6 +293,12 @@ describe('T05.3 product screen contract', () => {
     expect(source).toContain('plan-start')
   })
 
+  it('hides unfinished Route Controls from consumer UI', () => {
+    const source = readFileSync(resolve(here, '../../redesign/ui/RouteControlsSheet.jsx'), 'utf8')
+    expect(source).toContain("actions.filter((action) => !action.placeholder)")
+    expect(source).not.toMatch(/placeholder \|\| import\.meta\.env\.DEV/)
+  })
+
   it('keeps native tabs Discover / Map / Saved / Settings', () => {
     const tabs = getShellTabs({ native: true, walkActive: false })
     expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/map', '/journal', '/settings'])
