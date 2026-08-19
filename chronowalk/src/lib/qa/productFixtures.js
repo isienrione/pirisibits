@@ -1,8 +1,7 @@
 import { completeCurrentNativeOnboarding, clearGuestSession } from '../guestSession.js'
 import { canAccessContentId } from '../contentAccess.js'
 import { composeAndSave, startRoute, clearRouteState, revealMystery, completeCurrentItem } from '../route/index.js'
-import { grantTestAccess } from '../../test/grantTestAccess.js'
-import { clearLocalAccessState } from '../accessSession.js'
+import { writeAccessEntitlement, writeDeviceCredential, clearLocalAccessState } from '../accessSession.js'
 
 export const PANTHEON = { lat: 41.89885, lng: 12.47687 }
 export const NYC = { lat: 40.758, lng: -73.985 }
@@ -77,7 +76,21 @@ export function applyProductFixture(id) {
     }
   }
   const spec = FIXTURES[id] || FIXTURES.inRomeFreeGuest
-  if (spec.entitle) grantTestAccess({ contentProductId: 'rome-complete', purchasedProductId: 'rome-complete' })
+  if (spec.entitle) {
+    writeDeviceCredential('test-device-credential-000000000000000000000000')
+    writeAccessEntitlement({
+      purchasedProductId: 'rome-complete',
+      contentProductId: 'rome-complete',
+      seatLimit: 1,
+      role: 'solo',
+      bundleStatus: null,
+    })
+    try {
+      window.localStorage.setItem('cw_purchased_tier_v1', 'rome-complete')
+    } catch {
+      /* ignore */
+    }
+  }
   const guest = completeCurrentNativeOnboarding({
     lastPosition: spec.lastPosition,
     traveler: spec.traveler,
