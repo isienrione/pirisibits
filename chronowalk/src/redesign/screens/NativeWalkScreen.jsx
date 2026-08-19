@@ -6,6 +6,7 @@ import { currentRouteItem, isMysteryHidden } from '../../lib/route/model.js'
 import { endRoute, pauseRoute } from '../../lib/route/store.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import RouteControlsSheet from '../ui/RouteControlsSheet.jsx'
@@ -22,17 +23,28 @@ export default function NativeWalkScreen() {
 
   if (!item) {
     return (
-      <RouteSurface testId="native-walk">
+      <RouteSurface testId="native-walk" header={<NativePageHeader backTo="/route" />}>
         <h1 style={routeHeadline}>{t('native.route.walk.empty')}</h1>
         <PrimaryButton color={T.gold} onClick={() => navigate('/home')} style={routePrimary}>{t('native.discover.seeAll')}</PrimaryButton>
       </RouteSurface>
     )
   }
 
-  const title = mystery ? t('native.route.mystery.title') : content?.title || item.contentId
+  const title = mystery ? t('native.route.mysteryFront') : content?.title || item.contentId
+  const showWalk =
+    item.legKind !== 'traveler' || Number.isFinite(item.estimatedTransitMin)
+      ? item.legKind === 'route'
+        ? Number(item.estimatedTransitMin) > 0
+        : item.legKind === 'traveler' && Number(item.estimatedTransitMin) > 0 && Number(item.estimatedTransitMin) < 180
+      : false
+  const walkLabel = showWalk
+    ? item.legKind === 'route'
+      ? t('native.route.betweenStops', { minutes: item.estimatedTransitMin })
+      : `${item.estimatedTransitMin} min${item.distanceFromPreviousM ? ` · ${Math.round(item.distanceFromPreviousM)}m` : ''}`
+    : null
 
   return (
-    <RouteSurface testId="native-walk">
+    <RouteSurface testId="native-walk" header={<NativePageHeader backTo="/route" />}>
       <div
         data-testid="walk-map"
         style={{
@@ -51,11 +63,15 @@ export default function NativeWalkScreen() {
       <div style={{ ...routeCard, marginBottom: 12 }}>
         <p style={routeType}>{t('native.route.walkingTo')}</p>
         <h1 style={{ ...routeHeadline, fontSize: 24, margin: '8px 0 8px' }}>{title}</h1>
-        <p style={{ margin: '0 0 14px', color: R.muted, fontFamily: F.body }}>
-          {Number.isFinite(item.estimatedTransitMin) && item.estimatedTransitMin < 180
-            ? `${item.estimatedTransitMin} min`
-            : t('native.route.locationUnavailable')}
-        </p>
+        {walkLabel ? (
+          <p data-testid="walk-eta" style={{ margin: '0 0 14px', color: R.muted, fontFamily: F.body }}>
+            {walkLabel}
+          </p>
+        ) : (
+          <p data-testid="walk-eta" style={{ margin: '0 0 14px', color: R.muted, fontFamily: F.body }}>
+            {t('native.discover.status.browse')}
+          </p>
+        )}
         <PrimaryButton color={T.gold} data-testid="walk-arrive" onClick={() => navigate('/arrive')} style={routePrimary}>
           {t('native.route.iveArrived')}
         </PrimaryButton>
@@ -63,7 +79,7 @@ export default function NativeWalkScreen() {
           {t('native.route.viewRoute')}
         </GhostButton>
         <GhostButton data-testid="walk-controls" onClick={() => setControls(true)} style={{ marginTop: 10, ...routeGhost }}>
-          {t('native.route.pauseEnd')}
+          {t('native.route.pause')}
         </GhostButton>
       </div>
       <RouteControlsSheet
@@ -80,7 +96,6 @@ export default function NativeWalkScreen() {
           setControls(false)
         }}
       />
-      <p style={{ margin: '16px 0 0', color: R.muted, fontFamily: F.body, fontSize: 13 }}>{t('native.route.walkHint')}</p>
     </RouteSurface>
   )
 }

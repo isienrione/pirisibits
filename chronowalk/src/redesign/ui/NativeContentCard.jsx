@@ -41,38 +41,45 @@ export default function NativeContentCard({
   const warm = tone !== 'dark'
   const distance = formatDistance(item.distanceM)
   const meta = [distance, formatDuration(item.timeCostMin)].filter(Boolean).join(' · ')
-  const chipBg = item.locked
-    ? R.cardWarm
-    : discovery
-      ? `color-mix(in srgb, ${R.teal} 18%, ${R.cardWarm})`
-      : item.mysteryEligible
-        ? `color-mix(in srgb, ${R.violet} 16%, ${R.cardWarm})`
-        : `color-mix(in srgb, ${R.gold} 22%, ${R.cardWarm})`
-  const photoH = compact || horizontal ? 88 : primary ? 168 : discovery ? 110 : 128
-  const titleSize = compact || horizontal ? 16 : primary ? 22 : discovery ? 17 : 20
+          const chipBg = item.locked
+            ? R.cardWarm
+            : discovery
+              ? `color-mix(in srgb, ${R.teal} 18%, ${R.cardWarm})`
+              : item.mysteryEligible
+                ? `color-mix(in srgb, ${R.violet} 16%, ${R.cardWarm})`
+                : `color-mix(in srgb, ${R.gold} 22%, ${R.cardWarm})`
+          const photoH = compact || horizontal ? 88 : primary ? 168 : discovery ? 110 : 128
+          const titleSize = compact || horizontal ? 16 : primary ? 22 : discovery ? 17 : 20
+          const kind = item.locked
+            ? coverageLabel || t('native.content.locked')
+            : discovery
+              ? t('native.content.eyebrow.notice')
+              : t('native.content.eyebrow.experience')
 
   const body = (
     <>
       <PlaceMedia item={item} height={photoH} radius={0} />
       <div style={{ padding: compact || horizontal ? '10px 12px 12px' : primary ? '14px 14px 12px' : '12px 14px 12px' }}>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
-          <span
-            style={{
-              padding: '4px 8px',
-              borderRadius: 999,
-              background: chipBg,
-              color: R.ink,
-              fontFamily: F.body,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              border: `1px solid ${R.line}`,
-            }}
-          >
-            {item.locked ? coverageLabel || t('native.content.locked') : contentKindLabel(item, t)}
-          </span>
-        </div>
+        {(compact || horizontal) && !item.locked ? null : (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
+            <span
+              style={{
+                padding: '3px 7px',
+                borderRadius: 999,
+                background: chipBg,
+                color: R.ink,
+                fontFamily: F.body,
+                fontSize: 9,
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                border: `1px solid ${R.line}`,
+              }}
+            >
+              {kind}
+            </span>
+          </div>
+        )}
         <h2
           style={{
             margin: 0,

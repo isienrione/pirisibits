@@ -89,20 +89,25 @@ export const routeSheet = {
   color: R.ink,
 }
 
-export function RouteSurface({ testId, children, style, ...rest }) {
+export function RouteSurface({ testId, children, style, header, ...rest }) {
   return (
     <div
       data-testid={testId}
+      data-bright="true"
+      className="native-route-surface"
       {...rest}
       style={{
         minHeight: '100%',
         background: R.bg,
         color: R.ink,
-        padding: 'max(20px, calc(env(safe-area-inset-top) + 12px)) 20px calc(var(--shell-tab-bar-height, 72px) + 16px)',
+        padding: header
+          ? '0 20px calc(var(--shell-tab-bar-height, 72px) + 16px)'
+          : 'max(20px, calc(env(safe-area-inset-top) + 12px)) 20px calc(var(--shell-tab-bar-height, 72px) + 16px)',
         boxSizing: 'border-box',
         ...style,
       }}
     >
+      {header}
       {children}
     </div>
   )

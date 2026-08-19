@@ -13,7 +13,15 @@ export default function NativeSavedScreen() {
   const navigate = useNavigate()
   const registry = useMemo(() => getRomeRegistry(), [])
   const [savedIds, setSavedIds] = useState(() => readGuestContext()?.history?.savedExperienceIds ?? [])
-  const items = savedIds.map((id) => registry.byId[id]).filter(Boolean)
+  const [filter, setFilter] = useState('all')
+  const items = savedIds
+    .map((id) => registry.byId[id])
+    .filter(Boolean)
+    .filter((item) => {
+      if (filter === 'experiences') return item.contentType !== 'discovery'
+      if (filter === 'discoveries') return item.contentType === 'discovery'
+      return true
+    })
 
   const remove = (id) => {
     removeSavedExperience(id)
@@ -23,6 +31,22 @@ export default function NativeSavedScreen() {
   return (
     <RouteSurface testId="native-saved">
       <h1 style={routeHeadline}>{t('native.saved.title')}</h1>
+      <div style={{ display: 'flex', gap: 8, margin: '0 0 16px', flexWrap: 'wrap' }}>
+        {[
+          ['all', 'native.saved.filter.all'],
+          ['experiences', 'native.saved.filter.experiences'],
+          ['discoveries', 'native.saved.filter.discoveries'],
+        ].map(([id, key]) => (
+          <GhostButton
+            key={id}
+            data-testid={`saved-filter-${id}`}
+            onClick={() => setFilter(id)}
+            style={{ minHeight: 40, ...routeGhost, borderColor: filter === id ? R.ink : R.line }}
+          >
+            {t(key)}
+          </GhostButton>
+        ))}
+      </div>
       {items.length === 0 ? (
         <p data-testid="native-saved-empty" style={{ color: R.muted, lineHeight: 1.5, fontFamily: F.body }}>
           {t('native.saved.empty')}

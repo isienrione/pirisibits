@@ -17,6 +17,7 @@ import {
 import { useRouteState } from '../../lib/route/useRouteState.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import NativeContentCard from '../ui/NativeContentCard.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
@@ -64,10 +65,10 @@ function OptionRow({ option, testId, onChoose, variant = 'alt' }) {
     >
       <PlaceMedia item={option.item} mystery={mystery} height={recommended ? 120 : 64} radius={14} />
       <p style={{ ...routeType, color: mystery ? R.violet : R.muted, marginTop: 10 }}>
-        {mystery ? 'Surprise Discovery' : option.item?.contentType === 'discovery' ? 'Worth noticing' : 'Experience'}
+        {mystery ? '✦' : recommended ? 'Recommended' : ''}
       </p>
       <p style={{ fontFamily: F.display, fontSize: recommended ? 22 : 16, margin: '6px 0 4px', color: R.ink }}>
-        {mystery ? '✦ Surprise Discovery' : option.item?.title}
+        {mystery ? '✦ A hidden detail' : option.item?.title}
       </p>
       <p style={{ margin: '8px 0 0', color: R.muted, fontSize: 13, fontFamily: F.body }}>
         {option.walkMin != null ? `${option.walkMin} min walk · ` : ''}
@@ -150,7 +151,7 @@ export default function NativeBestNextScreen() {
   if (live && options) {
     const compareList = [options.recommended, ...(options.alternatives || [])].filter(Boolean).slice(0, 3)
     return (
-      <RouteSurface testId="native-best-next">
+      <RouteSurface testId="native-best-next" header={<NativePageHeader backTo="/route" />}>
         <div data-testid="native-bifurcation">
           <p style={routeType}>{t('native.next.where')}</p>
           <h1 style={routeHeadline}>{t('native.next.whereTitle')}</h1>
@@ -225,12 +226,12 @@ export default function NativeBestNextScreen() {
   }
 
   return (
-    <RouteSurface testId="native-best-next">
+    <RouteSurface testId="native-best-next" header={<NativePageHeader backTo="/home" />}>
       <p style={routeType}>
-        {t('native.next.eyebrow')}
+        {t('native.next.whats')}
       </p>
       <h1 style={routeHeadline}>
-        {t('native.next.title')}
+        {t('native.next.best')}
       </h1>
       {primary ? (
         <NativeContentCard
@@ -251,8 +252,8 @@ export default function NativeBestNextScreen() {
           onOpen={(next) => navigate(contentRoute(next))}
         />
       ))}
-      <GhostButton data-testid="best-next-home" onClick={() => navigate('/home')} style={{ ...routeGhost, marginTop: 8 }}>
-        {t('native.discover.seeAll')}
+      <GhostButton data-testid="best-next-home" onClick={() => navigate('/route')} style={{ ...routeGhost, marginTop: 8 }}>
+        {t('native.next.seeRoute')}
       </GhostButton>
     </RouteSurface>
   )

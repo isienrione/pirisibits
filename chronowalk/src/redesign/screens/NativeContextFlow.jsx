@@ -26,6 +26,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import { R, routeGhost, routePrimary } from '../ui/RouteSurface.jsx'
 
 const MAX_INTERESTS = 4
@@ -69,8 +70,9 @@ function Progress({ step, t }) {
   return (
     <p
       data-testid="native-context-progress"
+      data-progress-kind={index === -1 ? 'optional' : 'required'}
       style={{
-        margin: '10px 0 0',
+        margin: '4px 0 0',
         fontFamily: F.body,
         fontSize: 12,
         letterSpacing: '0.18em',
@@ -103,12 +105,12 @@ export default function NativeContextFlow() {
   const [interestIds, setInterestIds] = useState([])
   const [surpriseMe, setSurpriseMe] = useState(false)
   const [avoidSubInterestIds, setAvoidSubInterestIds] = useState([])
-  const [explorationStyle, setExplorationStyle] = useState('mix')
-  const [iconicVsHidden, setIconicVsHidden] = useState('mix')
-  const [depthVsBreadth, setDepthVsBreadth] = useState('mix')
+  const [explorationStyle, setExplorationStyle] = useState(null)
+  const [iconicVsHidden, setIconicVsHidden] = useState(null)
+  const [depthVsBreadth, setDepthVsBreadth] = useState(null)
   const [walkingTolerance, setWalkingTolerance] = useState('moderate')
-  const [transportModes, setTransportModes] = useState(['walk', 'transit'])
-  const [urbanComfort, setUrbanComfort] = useState('lively')
+  const [transportModes, setTransportModes] = useState(['walk'])
+  const [urbanComfort, setUrbanComfort] = useState(null)
   const [tripHorizon, setTripHorizon] = useState(null)
   const [showAnchorForm, setShowAnchorForm] = useState(false)
   const [anchorType, setAnchorType] = useState('ticket')
@@ -116,6 +118,7 @@ export default function NativeContextFlow() {
   const [anchor, setAnchor] = useState(null)
   const [availableTimeNow, setAvailableTimeNow] = useState(null)
   const [locationPhase, setLocationPhase] = useState('primer')
+  const [sawRefine, setSawRefine] = useState(false)
 
   const refineOptions = useMemo(
     () => (surpriseMe ? [] : subInterestsForParents(interestIds)),
@@ -149,7 +152,40 @@ export default function NativeContextFlow() {
 
   const goAfterInterests = () => {
     const options = surpriseMe ? [] : subInterestsForParents(interestIds)
-    setStep(options.length > 0 ? 'refine' : 'style')
+    if (options.length > 0) {
+      setSawRefine(true)
+      setStep('refine')
+      return
+    }
+    setStep('style')
+  }
+
+  const goBack = () => {
+    if (step === 'interests') {
+      navigate('/welcome')
+      return
+    }
+    if (step === 'refine') {
+      setStep('interests')
+      return
+    }
+    if (step === 'style') {
+      setStep(sawRefine ? 'refine' : 'interests')
+      return
+    }
+    if (step === 'mobility') {
+      setStep('style')
+      return
+    }
+    if (step === 'trip') {
+      setStep('mobility')
+      return
+    }
+    if (step === 'time') {
+      setStep('trip')
+      return
+    }
+    setStep('time')
   }
 
   const persistAndFinish = (locationStatus, lastPosition) => {
@@ -217,6 +253,9 @@ export default function NativeContextFlow() {
     setShowAnchorForm(false)
   }
 
+  const styleReady = explorationStyle && iconicVsHidden && depthVsBreadth
+  const mobilityReady = walkingTolerance && urbanComfort && transportModes.length > 0
+
   return (
     <div
       data-testid="native-context"
@@ -227,25 +266,12 @@ export default function NativeContextFlow() {
         background: R.bg,
         color: R.ink,
         boxSizing: 'border-box',
-        padding:
-          'max(28px, calc(env(safe-area-inset-top) + 16px)) 24px max(24px, calc(env(safe-area-inset-bottom) + 12px))',
+        padding: '0 24px max(24px, calc(env(safe-area-inset-bottom) + 12px))',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <p
-        style={{
-          margin: 0,
-          fontFamily: F.body,
-          fontSize: 12,
-          letterSpacing: '0.22em',
-          textTransform: 'uppercase',
-          color: R.muted,
-        }}
-      >
-        ChronoWalk
-      </p>
-      <Progress step={step} t={t} />
+      <NativePageHeader onBack={goBack} progress={<Progress step={step} t={t} />} />
 
       {step === 'interests' ? (
         <>
@@ -298,8 +324,24 @@ export default function NativeContextFlow() {
 
       {step === 'refine' ? (
         <>
-          <Heading title={t('native.context.refine.title')} body={t('native.context.refine.body')} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flex: 1, overflowY: 'auto' }}>
+          <Heading
+            title={
+              interestIds.length === 1 && interestIds[0] === 'history'
+                ? t('native.context.refine.history.title')
+                : t('native.context.refine.title')
+            }
+            body={t('native.context.refine.body')}
+          />
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 8,
+              flex: 1,
+              alignContent: 'flex-start',
+              overflowY: 'auto',
+            }}
+          >
             {refineOptions.map((option) => {
               const selected = avoidSubInterestIds.includes(option.id)
               return (
@@ -308,17 +350,28 @@ export default function NativeContextFlow() {
                   testId={`native-context-refine-${option.id}`}
                   selected={selected}
                   onClick={() => toggleAvoidSub(option.id)}
+                  style={{ minHeight: 40, padding: '8px 12px', fontSize: 14 }}
                 >
-                  {t('native.context.refine.less', { label: t(`native.context.sub.${option.id}`) })}
+                  {t(`native.context.sub.${option.id}`)}
                 </Choice>
               )
             })}
           </div>
+          <GhostButton
+            data-testid="native-context-refine-none"
+            onClick={() => {
+              setAvoidSubInterestIds([])
+              setStep('style')
+            }}
+            style={{ marginTop: 12, minHeight: 44, ...routeGhost }}
+          >
+            {t('native.context.refine.none')}
+          </GhostButton>
           <PrimaryButton
             color={T.gold}
             data-testid="native-context-refine-continue"
             onClick={() => setStep('style')}
-            style={{ marginTop: 16, minHeight: 48 }}
+            style={{ marginTop: 10, minHeight: 48 }}
           >
             {t('native.context.continue')}
           </PrimaryButton>
@@ -376,6 +429,7 @@ export default function NativeContextFlow() {
           <PrimaryButton
             color={T.gold}
             data-testid="native-context-style-continue"
+            disabled={!styleReady}
             onClick={() => setStep('mobility')}
             style={{ marginTop: 16, minHeight: 48 }}
           >
@@ -420,9 +474,6 @@ export default function NativeContextFlow() {
               ))}
             </div>
             <p style={sectionLabel}>{t('native.context.urban.title')}</p>
-            <p style={{ margin: '-4px 0 0', color: R.muted, fontSize: 13, lineHeight: 1.4 }}>
-              {t('native.context.urban.disclaimer')}
-            </p>
             {URBAN_COMFORT.map((id) => (
               <Choice
                 key={id}
@@ -437,6 +488,7 @@ export default function NativeContextFlow() {
           <PrimaryButton
             color={T.gold}
             data-testid="native-context-mobility-continue"
+            disabled={!mobilityReady}
             onClick={() => setStep('trip')}
             style={{ marginTop: 16, minHeight: 48 }}
           >
@@ -555,7 +607,7 @@ export default function NativeContextFlow() {
       {step === 'location' ? (
         <>
           <Heading title={t('native.context.location.title')} body={t('native.context.location.body')} />
-          <p style={{ margin: '0 0 auto', color: R.muted, lineHeight: 1.5 }}>
+          <p style={{ margin: '0 0 16px', color: R.muted, lineHeight: 1.5, fontSize: 14 }}>
             {t('native.context.location.note')}
           </p>
           {locationPhase === 'loading' ? (
@@ -568,7 +620,7 @@ export default function NativeContextFlow() {
             data-testid="native-context-location-continue"
             disabled={locationPhase === 'loading'}
             onClick={() => void requestLocation()}
-            style={{ marginTop: 16, minHeight: 48 }}
+            style={{ marginTop: 8, minHeight: 48 }}
           >
             {t('native.context.location.cta')}
           </PrimaryButton>
@@ -598,15 +650,17 @@ const sectionLabel = {
 function Segmented({ label, value, onChange, options, testPrefix }) {
   return (
     <div>
-      <p style={{ ...sectionLabel, marginBottom: 8 }}>{label}</p>
-      <div style={{ display: 'flex', gap: 8 }}>
+      <p style={{ ...sectionLabel, marginBottom: 8, letterSpacing: '0.04em', textTransform: 'none', fontSize: 13 }}>
+        {label}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {options.map((option) => (
           <Choice
             key={option.id}
             testId={`${testPrefix}-${option.id}`}
             selected={value === option.id}
             onClick={() => onChange(option.id)}
-            style={{ flex: 1, textAlign: 'center', minHeight: 44, padding: '10px 6px', fontSize: 13 }}
+            style={{ textAlign: 'left', minHeight: 44, padding: '10px 12px', fontSize: 15 }}
           >
             {option.label}
           </Choice>

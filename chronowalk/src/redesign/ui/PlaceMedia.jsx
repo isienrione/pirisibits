@@ -1,6 +1,4 @@
-import { BRAND_PLACEHOLDER_IMAGE } from '../../content/registry/constants.js'
 import { DEFAULT_PLACEHOLDER_TONE, isHonestContentPhoto } from '../../content/registry/media.js'
-import { mediaUrl } from '../../lib/mediaUrl.js'
 import { R } from './RouteSurface.jsx'
 
 function toneOf(item) {
@@ -9,7 +7,7 @@ function toneOf(item) {
 
 /**
  * Honest place photography. Never paints a different monument as a fallback.
- * Missing media → warm cluster texture + ChronoWalk mark.
+ * Missing media → travertine / map-fragment texture, never a ChronoWalk logo square.
  */
 export default function PlaceMedia({
   item,
@@ -20,7 +18,6 @@ export default function PlaceMedia({
 }) {
   const honest = !mystery && isHonestContentPhoto(item) && item?.photo
   const tone = toneOf(item)
-  const emblem = mediaUrl(BRAND_PLACEHOLDER_IMAGE) || BRAND_PLACEHOLDER_IMAGE
 
   if (mystery) {
     return (
@@ -72,8 +69,6 @@ export default function PlaceMedia({
         height,
         borderRadius: radius,
         background: `linear-gradient(165deg, ${tone.from} 0%, ${tone.to} 100%)`,
-        display: 'grid',
-        placeItems: 'center',
         border: `1px solid ${R.line}`,
         position: 'relative',
         overflow: 'hidden',
@@ -84,17 +79,20 @@ export default function PlaceMedia({
           position: 'absolute',
           inset: 0,
           background:
-            'radial-gradient(circle at 30% 20%, rgba(250,246,239,0.35), transparent 55%), radial-gradient(circle at 80% 80%, rgba(26,26,31,0.12), transparent 50%)',
+            'repeating-linear-gradient(115deg, rgba(250,246,239,0.08) 0 10px, transparent 10px 22px), radial-gradient(circle at 28% 18%, rgba(250,246,239,0.28), transparent 52%)',
         }}
       />
-      <img
-        src={emblem}
-        alt=""
+      <span
         style={{
-          width: Math.min(48, height * 0.32),
-          height: Math.min(48, height * 0.32),
-          opacity: 0.72,
-          position: 'relative',
+          position: 'absolute',
+          right: '12%',
+          top: '18%',
+          width: '42%',
+          height: '64%',
+          border: `1px solid color-mix(in srgb, ${R.ink} 12%, transparent)`,
+          borderRadius: 4,
+          opacity: 0.45,
+          background: 'linear-gradient(180deg, rgba(26,26,31,0.04), transparent)',
         }}
       />
     </div>

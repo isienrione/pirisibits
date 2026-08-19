@@ -8,6 +8,24 @@ import { T } from '../tokens.js'
 /** Primary shell tabs already have bottom nav + their own headers. */
 const SHELL_TAB_ROOTS = new Set(['/home', '/tour', '/map', '/journal', '/settings', '/explore'])
 
+/** Native-owned flows use NativePageHeader instead of the floating grey chip. */
+const NATIVE_HEADER_PREFIXES = [
+  '/welcome',
+  '/context',
+  '/plan',
+  '/route',
+  '/walk',
+  '/arrive',
+  '/mystery',
+  '/next',
+  '/experience',
+  '/discovery',
+]
+
+function usesNativePageHeader(pathname) {
+  return NATIVE_HEADER_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+}
+
 function homePath() {
   return hasAccess() ? '/home' : '/'
 }
@@ -26,7 +44,7 @@ export default function FlowEscapeButton() {
 
   // Tab roots: the floating chip overlaps Tour/Map/Journal headers (brand + titles)
   // and "back" falling through to /tour feels like a no-op.
-  if (SHELL_TAB_ROOTS.has(location.pathname)) {
+  if (SHELL_TAB_ROOTS.has(location.pathname) || usesNativePageHeader(location.pathname)) {
     return null
   }
 

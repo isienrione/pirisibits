@@ -1,15 +1,34 @@
-import { INTEREST_REASON_LABEL, TIME_BUDGETS } from '../travelContext/taxonomy.js'
+import { INTEREST_REASON_LABEL } from '../travelContext/taxonomy.js'
 import { toRankerSignals } from '../travelContext/compat.js'
 
-function timePhrase(timeBudgetId) {
-  const budget = TIME_BUDGETS.find((item) => item.id === timeBudgetId)
-  if (!budget) return 'some time'
+function collapseAnds(text) {
+  return String(text || '')
+    .replace(/\s+/g, ' ')
+    .replace(/\band\s+and\b/gi, 'and')
+    .replace(/,\s*,/g, ',')
+    .trim()
+}
+
+function joinList(items = []) {
+  const labels = [...new Set(items.map((item) => String(item || '').trim()).filter(Boolean))]
+  if (!labels.length) return ''
+  if (labels.length === 1) return labels[0]
+  if (labels.length === 2) return `${labels[0]} and ${labels[1]}`
+  return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1]}`
+}
+
+function timePhrase(timeBudgetId, { inventoryLimited = false } = {}) {
+  if (inventoryLimited) {
+    if (timeBudgetId === '30min') return 'a little time'
+    if (timeBudgetId === '1h') return 'about an hour'
+    return 'a few hours'
+  }
   if (timeBudgetId === '30min') return 'about 30 minutes'
   if (timeBudgetId === '1h') return 'about an hour'
-  if (timeBudgetId === '2h') return 'about 2 hours'
-  if (timeBudgetId === 'halfday') return 'half a day'
-  if (timeBudgetId === 'allday') return 'the whole day'
-  return 'time to explore'
+  if (timeBudgetId === '2h') return 'a couple of hours'
+  if (timeBudgetId === 'halfday') return 'a few hours'
+  if (timeBudgetId === 'allday') return 'the day'
+  return 'some time'
 }
 
 function momentPhrase(timeOfDay) {
@@ -20,62 +39,85 @@ function momentPhrase(timeOfDay) {
 
 function interestPhrase(interestIds = []) {
   const labels = interestIds
-    .map((id) => INTEREST_REASON_LABEL[id])
+    .map((id) => {
+      if (id === 'politics-power') return 'power'
+      if (id === 'hidden-places' || id === 'hidden') return 'hidden details'
+      if (id === 'iconic-sights') return 'iconic places'
+      return INTEREST_REASON_LABEL[id]
+    })
     .filter(Boolean)
-  if (!labels.length) return null
-  if (labels.length === 1) return labels[0]
-  if (labels.length === 2) return `${labels[0]} and ${labels[1]}`
-  return `${labels.slice(0, -1).join(', ')}, and ${labels[labels.length - 1]}`
+  return joinList(labels)
 }
 
-function walkingPhrase(modes = [], walkingTolerance) {
+function walkingLine(modes = [], walkingTolerance) {
   if ((modes || []).includes('walk') || !modes?.length) {
-    if (walkingTolerance === 'short') return 'prefer shorter walks'
-    if (walkingTolerance === 'long') return 'are happy walking farther'
-    return 'prefer walking'
+    if (walkingTolerance === 'short') return 'This route keeps the walking compact'
+    if (walkingTolerance === 'long') return 'This route is happy to wander a little farther'
+    return 'This route keeps the walking compact'
   }
-  return 'are moving around the city'
+  return 'This route stays easy to move through'
 }
 
-function mixPhrase(iconicVsHidden) {
-  if (iconicVsHidden === 'hidden') return 'like hidden details'
-  if (iconicVsHidden === 'iconic') return 'like iconic places'
-  return 'like a mix of iconic places and hidden details'
+function mixLine(iconicVsHidden, items = []) {
+  const hasMystery = items.some((item) => item.isMysteryDiscovery)
+  if (iconicVsHidden === 'hidden' || hasMystery) {
+    return 'and mixes one major Roman experience with smaller things most people pass by'
+  }
+  if (iconicVsHidden === 'iconic') {
+    return 'and stays close to the places you said you wanted to see'
+  }
+  return 'and mixes one major Roman experience with smaller things most people pass by'
 }
 
 /**
  * Transparent explanation. Only real Context + route estimates.
+ * Never concatenates raw arrays or duplicated conjunctions.
  */
-export function explainProposedRoute({ proposed, context, minutesAway = null } = {}) {
+export function explainProposedRoute({
+  proposed,
+  context,
+  minutesAway = null,
+  inventoryLimited = false,
+  planningRemote = false,
+} = {}) {
   const signals = toRankerSignals(context)
   const traveler = context?.traveler || {}
-  const time = timePhrase(signals.timeBudgetId)
+  const limited = inventoryLimited || proposed?.inventoryLimited
+  const remote = planningRemote || proposed?.planningRemote
+  const time = timePhrase(signals.timeBudgetId, { inventoryLimited: limited })
   const interests = interestPhrase(signals.interestIds)
-  const walking = walkingPhrase(traveler.transportModes, traveler.walkingTolerance)
-  const mix = mixPhrase(traveler.iconicVsHidden)
-  const parts = [`You said you have ${time}`]
-  if (interests) parts.push(`enjoy ${interests}`)
-  parts.push(walking)
-  parts.push(`and ${mix}`)
-  let sentence = `${parts[0]}`
-  if (parts.length === 2) sentence = `${parts[0]} and ${parts[1]}.`
-  else sentence = `${parts[0]}, ${parts.slice(1, -1).join(', ')}, and ${parts[parts.length - 1]}.`
-
-  if (Number.isFinite(minutesAway) && minutesAway > 0 && minutesAway < 40) {
-    sentence += ` This route starts ${minutesAway} minute${minutesAway === 1 ? '' : 's'} from you and fits that profile.`
-  } else {
-    sentence += ' This route fits that profile.'
+  const opening = interests
+    ? `You have ${time} and said you're drawn to ${interests}.`
+    : `You have ${time} to explore Rome.`
+  const walking = walkingLine(traveler.transportModes, traveler.walkingTolerance)
+  const mix = mixLine(traveler.iconicVsHidden, proposed?.items || [])
+  let second = `${walking} ${mix}.`
+  if (Number.isFinite(minutesAway) && minutesAway > 0 && minutesAway < 40 && !remote) {
+    second = `${walking} ${mix}, starting about ${minutesAway} minute${minutesAway === 1 ? '' : 's'} from you.`
   }
+  const honest = limited
+    ? "Here's a great first hour. Unlock more of Rome to extend the afternoon."
+    : collapseAnds(second)
+
+  const sentences = [collapseAnds(opening), honest].filter(Boolean)
+  if (remote) sentences.push('Planning Rome from afar — walking times below are between stops, not from where you are now.')
+  const body = collapseAnds(sentences.slice(0, 3).join(' '))
 
   const moment = momentPhrase(context?.session?.timeOfDay)
   const spoken = spokenDuration(proposed?.estimatedDurationMin)
+  const homeHeadline = remote
+    ? `A great ${spoken} in Rome`
+    : limited
+      ? 'A great first hour from here'
+      : `A great ${spoken} from here`
 
   return {
     moment,
     headline: moment === 'morning' ? 'Your Roman morning' : `A beautiful ${moment} in Rome`,
-    homeHeadline: `A great ${spoken} from here`,
-    body: sentence,
-    contextLine: `Based on your ${moment}`,
+    homeHeadline,
+    greeting: moment === 'morning' ? 'Good morning.' : moment === 'evening' ? 'Good evening.' : 'Good afternoon.',
+    body,
+    contextLine: remote ? 'Planning Rome from afar' : `Based on your ${moment}`,
   }
 }
 
@@ -117,18 +159,24 @@ export function routeTags({ context, items, catalogById }) {
 }
 
 export function routeRationale({ items, catalogById }) {
-  const titles = (items || [])
-    .map((item) => {
-      if (item.isMysteryDiscovery) return 'a hidden detail'
-      return catalogById[item.contentId]?.shortTitle || catalogById[item.contentId]?.title
-    })
-    .filter(Boolean)
-  if (titles.length < 2) return ['A short, geographically close set of things worth doing now.']
+  const visible = (items || []).filter((item) => !item.isMysteryDiscovery)
+  const first = catalogById[visible[0]?.contentId]
+  const last = catalogById[visible[visible.length - 1]?.contentId]
+  const start = first?.shortTitle || first?.title
+  const end = last?.shortTitle || last?.title
   const hasMystery = (items || []).some((item) => item.isMysteryDiscovery)
-  if (hasMystery) {
-    return ['Ancient engineering, a hidden detail, and nearby Rome without backtracking.']
+  if (start && end && start !== end) {
+    if (hasMystery) {
+      return [
+        `Start at ${start}, drift past a hidden detail, and finish at ${end}.`,
+      ]
+    }
+    return [`Start at ${start} and finish at ${end} — a compact walk without backtracking.`]
   }
-  return [
-    `${titles[0]}, then ${titles.slice(1).join(', ')} — a compact walk without backtracking.`,
-  ]
+  if (hasMystery) return ['Ancient space, a hidden detail, and nearby Rome without backtracking.']
+  return ['A short, geographically close set of things worth doing now.']
+}
+
+export function hasDuplicatedConjunction(text) {
+  return /\band\s+and\b/i.test(String(text || ''))
 }

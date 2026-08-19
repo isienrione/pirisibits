@@ -49,6 +49,7 @@ export function createRouteItem({
   tripDay = null,
   scheduledDate = null,
   anchorId = null,
+  legKind = null,
 } = {}) {
   return {
     routeItemId: uid('ri'),
@@ -65,6 +66,8 @@ export function createRouteItem({
     tripDay,
     scheduledDate,
     anchorId,
+    /** `traveler` = traveler→first stop; `route` = Rome item→item geometry. */
+    legKind: legKind === 'traveler' || legKind === 'route' ? legKind : null,
   }
 }
 
@@ -92,6 +95,9 @@ export function createProposedRoute({
   tripDay = null,
   scheduledDate = null,
   anchorId = null,
+  inventoryLimited = false,
+  timeBudgetId = null,
+  planningRemote = false,
 } = {}) {
   return {
     id: uid('pr'),
@@ -109,6 +115,9 @@ export function createProposedRoute({
     tripDay,
     scheduledDate,
     anchorId,
+    inventoryLimited: Boolean(inventoryLimited),
+    timeBudgetId: timeBudgetId || null,
+    planningRemote: Boolean(planningRemote),
   }
 }
 

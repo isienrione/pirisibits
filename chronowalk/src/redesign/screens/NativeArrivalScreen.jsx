@@ -9,6 +9,7 @@ import { currentRouteItem, isMysteryHidden } from '../../lib/route/model.js'
 import { revealMystery } from '../../lib/route/store.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { T } from '../tokens.js'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
@@ -30,7 +31,7 @@ export default function NativeArrivalScreen() {
   const content = item ? getRegistryItem(item.contentId) : null
   if (!item || !content) {
     return (
-      <RouteSurface testId="native-arrive">
+      <RouteSurface testId="native-arrive" header={<NativePageHeader backTo="/walk" />}>
         <h1 style={routeHeadline}>{t('native.route.arrive.empty')}</h1>
       </RouteSurface>
     )
@@ -49,7 +50,7 @@ export default function NativeArrivalScreen() {
   }
 
   return (
-    <RouteSurface testId="native-arrive">
+    <RouteSurface testId="native-arrive" header={<NativePageHeader backTo="/walk" />}>
       {content.photo ? (
         <div
           aria-hidden="true"

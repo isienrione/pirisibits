@@ -251,6 +251,9 @@ function AppRouter() {
     // the homepage mounts then throws again (lazyWithRecovery clears it on success).
     clearBootPending()
     clearSkipSwOnce()
+    if (import.meta.env.DEV) {
+      void import('../lib/qa/productFixtures.js').then((mod) => mod.installProductFixtureApi())
+    }
     // Drop one-shot cache-bust param from stale-shell recovery navigations.
     try {
       const url = new URL(window.location.href)

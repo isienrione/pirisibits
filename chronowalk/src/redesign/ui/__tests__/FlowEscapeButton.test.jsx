@@ -35,6 +35,14 @@ describe('FlowEscapeButton', () => {
     transitionJourney(JOURNEY_STATES.IDLE)
   })
 
+  it('hides on native-owned product flows that use NativePageHeader', () => {
+    for (const path of ['/welcome', '/context', '/plan', '/route', '/walk', '/arrive', '/next']) {
+      const { unmount } = renderOn(path)
+      expect(screen.queryByTestId('flow-escape-back')).not.toBeInTheDocument()
+      unmount()
+    }
+  })
+
   it('hides on Home / Tour / Map / Journal tab roots so it cannot cover those headers', () => {
     for (const path of ['/home', '/tour', '/map', '/journal']) {
       const { unmount } = renderOn(path)

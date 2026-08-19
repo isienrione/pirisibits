@@ -14,6 +14,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
 import PlaceMedia from '../ui/PlaceMedia.jsx'
 import { R, RouteSurface, routeGhost, routePrimary, routeType } from '../ui/RouteSurface.jsx'
@@ -29,16 +30,18 @@ export default function NativeExperienceScreen() {
 
   if (!hero) {
     return (
-      <RouteSurface testId="native-experience">
+      <RouteSurface testId="native-experience" header={<NativePageHeader backTo="/home" />}>
         <p style={{ color: R.ink }}>Experience unavailable.</p>
       </RouteSurface>
     )
   }
 
   const locked = !canAccessContentId(hero.id)
-  const label = locked
-    ? COVERAGE_LABELS[(hero.unlockScopes || []).find((scope) => scope !== 'rome-free')] || 'Locked'
-    : COVERAGE_LABELS['rome-free']
+  const coverage = locked
+    ? COVERAGE_LABELS[(hero.unlockScopes || []).find((scope) => scope !== 'rome-free')] || t('native.content.locked')
+    : t('native.experience.free')
+  const duration =
+    hero.id === 'w17' || hero.heroId === 'rome:pantheon' ? '10–18 min' : `${hero.timeCostMin} min`
 
   const handleStart = () => {
     if (locked) {
@@ -56,14 +59,22 @@ export default function NativeExperienceScreen() {
   }
 
   return (
-    <RouteSurface testId="native-experience" style={{ paddingLeft: 0, paddingRight: 0 }}>
+    <RouteSurface
+      testId="native-experience"
+      header={
+        <div style={{ padding: '0 20px' }}>
+          <NativePageHeader backTo="/home" />
+        </div>
+      }
+      style={{ paddingLeft: 0, paddingRight: 0 }}
+    >
       <div data-hero-id={hero.id} style={{ color: R.ink }}>
         <div style={{ padding: '0 20px' }}>
           <PlaceMedia item={hero} height={220} radius={20} />
         </div>
         <div style={{ padding: '18px 20px 0' }}>
           <p style={routeType}>
-            {t('native.content.experience')} · {label} · {hero.timeCostMin} min
+            {coverage} · {duration}
           </p>
           <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0', color: R.ink }}>
             {hero.title}
@@ -73,10 +84,7 @@ export default function NativeExperienceScreen() {
             {locked ? t('native.experience.unlock') : t('native.experience.start')}
           </PrimaryButton>
           <GhostButton data-testid="experience-save" onClick={toggleSave} style={{ marginTop: 10, ...routeGhost }}>
-            {saved ? t('native.saved.remove') : t('native.saved.save')}
-          </GhostButton>
-          <GhostButton data-testid="experience-back" onClick={() => navigate('/home')} style={{ marginTop: 10, ...routeGhost }}>
-            {t('native.experience.back')}
+            {saved ? t('native.saved.remove') : t('native.saved.saveLater')}
           </GhostButton>
         </div>
       </div>

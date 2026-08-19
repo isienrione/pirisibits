@@ -47,6 +47,20 @@ export const MIN_ROUTE_ITEMS = 2
 export const MAX_ROUTE_ITEMS = 5
 export const TIME_FIT_TOLERANCE = 1.2
 
+/**
+ * Target utilization bands for availableTimeNow.
+ * Composer treats `max` as the hard cap and flags `inventoryLimited`
+ * when startable content cannot reach `min`.
+ */
+export const TIME_UTILIZATION = Object.freeze({
+  '30min': Object.freeze({ min: 20, max: 35, target: 28 }),
+  '1h': Object.freeze({ min: 45, max: 70, target: 58 }),
+  '2h': Object.freeze({ min: 90, max: 135, target: 110 }),
+  halfday: Object.freeze({ min: 150, max: 240, target: 180 }),
+  allday: Object.freeze({ min: 300, max: 480, target: 360 }),
+  exploring: Object.freeze({ min: 45, max: 135, target: 90 }),
+})
+
 /** Evaluator exists; UI stays off unless remaining-time overrun is unambiguous. */
 export const ROUTE_PROACTIVE_SUGGESTIONS = false
 

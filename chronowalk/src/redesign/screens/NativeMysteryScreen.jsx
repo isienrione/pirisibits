@@ -7,6 +7,7 @@ import { useRouteState } from '../../lib/route/useRouteState.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import MysteryCard from '../ui/MysteryCard.jsx'
 import { R, RouteSurface, routeHeadline, routePrimary } from '../ui/RouteSurface.jsx'
 
@@ -39,8 +40,8 @@ export default function NativeMysteryScreen() {
 
   if (!item) {
     return (
-      <RouteSurface testId="native-mystery">
-        <h1 style={routeHeadline}>{t('native.route.mysteryTitle')}</h1>
+      <RouteSurface testId="native-mystery" header={<NativePageHeader backTo="/route" />}>
+        <h1 style={routeHeadline}>{t('native.route.mysteryFront')}</h1>
         <PrimaryButton color={T.gold} onClick={() => navigate('/home')} style={routePrimary}>
           {t('native.discover.seeAll')}
         </PrimaryButton>
@@ -49,13 +50,13 @@ export default function NativeMysteryScreen() {
   }
 
   return (
-    <RouteSurface testId="native-mystery">
-      <h1 style={{ ...routeHeadline, marginBottom: 16 }}>{t('native.route.mysteryTitle')}</h1>
+    <RouteSurface testId="native-mystery" header={<NativePageHeader backTo="/route" />}>
+      <h1 style={{ ...routeHeadline, marginBottom: 16 }}>{t('native.route.mysteryFront')}</h1>
       <MysteryCard
         item={item}
         content={flipped ? content : null}
         flipped={flipped}
-        walkMin={item.estimatedTransitMin || 2}
+        walkMin={item.legKind === 'route' ? item.estimatedTransitMin : 0}
         experienceMin={item.estimatedExperienceMin || 3}
         onTake={() => {
           acceptMystery(item.routeItemId)

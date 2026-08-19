@@ -14,7 +14,12 @@ export default function MysteryCard({
   onStart,
 }) {
   return (
-    <div data-testid="mystery-card" data-flipped={flipped ? 'true' : 'false'} style={{ perspective: 1200 }}>
+    <div
+      data-testid="mystery-card"
+      data-flipped={flipped ? 'true' : 'false'}
+      aria-label={flipped ? content?.title : 'A hidden detail'}
+      style={{ perspective: 1200 }}
+    >
       <style>{`
         @keyframes cwMysteryReveal {
           from { transform: rotateY(-86deg); opacity: 0.55; }
@@ -23,12 +28,12 @@ export default function MysteryCard({
       `}</style>
       {!flipped ? (
         <div data-testid="mystery-card-front" style={frontCard}>
-          <p style={{ ...routeType, color: R.violet }}>✦ Surprise Discovery</p>
+          <p style={{ ...routeType, color: R.violet }}>✦ A hidden detail</p>
           <h2 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 28, margin: '8px 0', color: R.ink }}>
-            Something almost everyone walks past
+            A hidden detail
           </h2>
           <p style={{ margin: 0, color: R.muted, lineHeight: 1.5, fontFamily: F.body }}>
-            {walkMin} min from your route · ~{experienceMin} min
+            {Number(walkMin) > 0 ? `${walkMin} min from your route · ~${experienceMin} min` : `~${experienceMin} min`}
           </p>
           <p style={{ margin: '14px 0 0', lineHeight: 1.5, fontFamily: F.body, color: R.ink }}>
             There’s something on this street most people walk straight past.

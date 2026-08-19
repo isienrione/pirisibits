@@ -46,6 +46,7 @@ export default function NativeMapScreen() {
   const guest = readGuestContext()
   const [position, setPosition] = useState(guest.lastPosition)
   const [zoom, setZoom] = useState('city')
+  const [filter, setFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [lockItem, setLockItem] = useState(null)
   const [showAlts, setShowAlts] = useState(false)
@@ -230,6 +231,33 @@ export default function NativeMapScreen() {
           </button>
         </div>
       </div>
+      <div style={{ padding: '0 20px 12px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        {[
+          ['all', 'native.map.filter.all'],
+          ['experiences', 'native.map.filter.experiences'],
+          ['discoveries', 'native.map.filter.discoveries'],
+          ...(live ? [['route', 'native.map.filter.route']] : []),
+        ].map(([id, key]) => (
+          <button
+            key={id}
+            type="button"
+            data-testid={`map-filter-${id}`}
+            onClick={() => setFilter(id)}
+            style={{
+              minHeight: 36,
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: `1px solid ${filter === id ? R.ink : R.line}`,
+              background: filter === id ? R.cardFill : R.cardWarm,
+              color: R.ink,
+              fontFamily: F.body,
+              fontSize: 13,
+            }}
+          >
+            {t(key)}
+          </button>
+        ))}
+      </div>
       <div
         data-testid="native-map-canvas"
         style={{
@@ -247,6 +275,9 @@ export default function NativeMapScreen() {
         {markers.map((item) => {
           if (!item.geo || !Number.isFinite(item.geo.lat)) return null
           if (routeItems.some((row) => row.contentId === item.id && isMysteryHidden(row))) return null
+          if (filter === 'experiences' && (item.clusterCount || item.contentType === CONTENT_TYPES.DISCOVERY)) return null
+          if (filter === 'discoveries' && item.contentType !== CONTENT_TYPES.DISCOVERY) return null
+          if (filter === 'route' && !routeItems.some((row) => row.contentId === item.id)) return null
           const clustered = Boolean(item.clusterCount)
           const discovery = !clustered && item.contentType === CONTENT_TYPES.DISCOVERY
           const locked = item.clusterCount ? false : !canAccessContentId(item.id)

@@ -27,6 +27,11 @@ import { isRouteLive } from '../route/model.js'
 import { startRoute, clearRouteState } from '../route/store.js'
 import NativeDiscoveryScreen from '../../redesign/screens/NativeDiscoveryScreen.jsx'
 import NativeMapScreen from '../../redesign/screens/NativeMapScreen.jsx'
+import { applyProductFixture, NYC } from '../qa/productFixtures.js'
+import { TIME_UTILIZATION } from '../route/constants.js'
+import { hasDuplicatedConjunction } from '../route/why.js'
+import { enMessages } from '../../i18n/messages/en.js'
+import NativeMysteryScreen from '../../redesign/screens/NativeMysteryScreen.jsx'
 import NativeRoutePill from '../../redesign/ui/NativeRoutePill.jsx'
 import { resetJourney } from '../../state/journey.js'
 
@@ -195,5 +200,124 @@ describe('T05.2 product fidelity after physical QA', () => {
 
   it('leaves web shell tabs unchanged', () => {
     expect(getShellTabs().map((tab) => tab.to)).toEqual(['/home', '/journey', '/tour', '/map', '/journal'])
+  })
+})
+
+describe('T05.3 product screen contract', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    clearGuestSession()
+    clearRouteState()
+    resetJourney()
+  })
+
+  it('has no city-agnostic, ranker, registry, or Hero jargon in native consumer strings', () => {
+    const text = Object.entries(enMessages)
+      .filter(([key]) => key.startsWith('native.'))
+      .map(([, value]) => value)
+      .join('\n')
+    expect(text).not.toMatch(/city-agnostic/i)
+    expect(text).not.toMatch(/ranker/i)
+    expect(text).not.toMatch(/\bschema\b/i)
+    expect(text).not.toMatch(/registry/i)
+    expect(text).not.toMatch(/unlock scope/i)
+    expect(text).not.toMatch(/route mutation/i)
+    expect(text).not.toMatch(/consumer experience grouping/i)
+    expect(text).not.toMatch(/comfort preference, never a safety guarantee/i)
+    expect(text).not.toMatch(/location optional/i)
+    expect(text).not.toMatch(/\bHeroes\b/)
+    expect(text).not.toMatch(/we'll rank/i)
+  })
+
+  it('does not number optional refinement as a required step', () => {
+    const source = readFileSync(resolve(here, '../../redesign/screens/NativeContextFlow.jsx'), 'utf8')
+    expect(source).toContain("data-progress-kind={index === -1 ? 'optional' : 'required'}")
+    expect(source).toContain("REQUIRED_STEPS = ['interests', 'style', 'mobility', 'trip', 'time', 'location']")
+    expect(source).toContain("t('native.context.progress.optional')")
+  })
+
+  it('keeps NativePageHeader on a safe-area layout class', () => {
+    const css = readFileSync(resolve(here, '../../redesign/redesign.css'), 'utf8')
+    expect(css).toContain('.native-page-header')
+    expect(css).toContain('env(safe-area-inset-top')
+    const header = readFileSync(resolve(here, '../../redesign/ui/NativePageHeader.jsx'), 'utf8')
+    expect(header).toContain('className="native-page-header"')
+    expect(header).not.toContain('borderRadius: 999')
+  })
+
+  it('remote planner never shows traveler-to-Rome walking minutes', () => {
+    const { proposed } = applyProductFixture('remotePlanner')
+    expect(isPlausibleRomePosition(NYC)).toBe(false)
+    expect(proposed.planningRemote).toBe(true)
+    expect(proposed.minutesAway).toBeNull()
+    expect(proposed.summary).toMatch(/Planning Rome from afar/i)
+    expect(proposed.summary).not.toMatch(/\d+ minutes? from you/)
+    expect(proposed.items[0].legKind).not.toBe('traveler')
+    expect(proposed.items[0].estimatedTransitMin).toBe(0)
+    expect(String(proposed.title + proposed.summary + proposed.homeHeadline)).not.toMatch(/\b3 min walk\b/)
+  })
+
+  it('half-day plans meet utilization or admit they are a shorter first segment', () => {
+    const { proposed } = applyProductFixture('remotePlanner')
+    const band = TIME_UTILIZATION.halfday
+    const duration = proposed.estimatedDurationMin
+    if (duration < band.min) {
+      expect(proposed.inventoryLimited).toBe(true)
+      expect(proposed.summary).toMatch(/first hour/i)
+      expect(proposed.summary).not.toMatch(/half a day/i)
+      expect(proposed.summary).not.toMatch(/half-day/i)
+    } else {
+      expect(duration).toBeGreaterThanOrEqual(band.min)
+      expect(duration).toBeLessThanOrEqual(band.max)
+    }
+  })
+
+  it('Why This has no duplicated conjunctions', () => {
+    const { proposed } = applyProductFixture('inRomeFreeGuest')
+    expect(hasDuplicatedConjunction(proposed.summary)).toBe(false)
+    expect(proposed.summary).not.toMatch(/and and/i)
+  })
+
+  it('placeholder media cannot use another content item photo or a logo square', () => {
+    const place = readFileSync(resolve(here, '../../redesign/ui/PlaceMedia.jsx'), 'utf8')
+    expect(place).not.toMatch(/BRAND_PLACEHOLDER_IMAGE/)
+    expect(place).not.toMatch(/emblem/)
+    const ignazio = getRegistryItem('d_rome_21')
+    expect(ignazio.mediaResolved.source).toBe('placeholder')
+    expect(String(ignazio.photo || '')).not.toMatch(/pantheon|navona|trevi/i)
+  })
+
+  it('Proposed Plan keeps a sticky primary CTA', () => {
+    const source = readFileSync(resolve(here, '../../redesign/screens/NativePlanScreen.jsx'), 'utf8')
+    expect(source).toContain('plan-sticky-cta')
+    expect(source).toContain('plan-start')
+  })
+
+  it('keeps native tabs Discover / Map / Saved / Settings', () => {
+    const tabs = getShellTabs({ native: true, walkActive: false })
+    expect(tabs.map((tab) => tab.to)).toEqual(['/home', '/map', '/journal', '/settings'])
+  })
+
+  it('mystery spoiler does not leak through title, image, or accessibility', () => {
+    const { proposed } = applyProductFixture('mysteryUnrevealed')
+    const mystery = proposed.items.find((item) => item.isMysteryDiscovery)
+    expect(mystery).toBeTruthy()
+    const hidden = getRegistryItem(mystery.contentId)
+    startRoute(proposed)
+    render(
+      <MemoryRouter initialEntries={[`/mystery/${mystery.routeItemId}`]}>
+        <I18nProvider>
+          <Routes>
+            <Route path="/mystery/:routeItemId" element={<NativeMysteryScreen />} />
+          </Routes>
+        </I18nProvider>
+      </MemoryRouter>,
+    )
+    const front = screen.getByTestId('mystery-card-front')
+    expect(front).toBeInTheDocument()
+    expect(front.textContent).not.toMatch(new RegExp(hidden.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
+    expect(front.querySelector('img')).toBeNull()
+    expect(screen.getByTestId('mystery-card')).toHaveAttribute('aria-label', 'A hidden detail')
+    expect(screen.queryByRole('img', { name: hidden.title })).not.toBeInTheDocument()
   })
 })

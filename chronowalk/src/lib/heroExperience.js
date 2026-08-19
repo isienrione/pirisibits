@@ -26,7 +26,7 @@ export function coverageIncludesForHero(heroId) {
     return 'Colosseum, Forum, Palatine, and Circus Maximus View.'
   }
   if (label === COVERAGE_LABELS['rome-complete']) {
-    return 'All 21 Heroes across central Rome, including Via Appia.'
+    return 'Experiences across central Rome, including Via Appia.'
   }
   return 'Historic Center: Trevi, Spanish Steps, piazzas, and the living city.'
 }

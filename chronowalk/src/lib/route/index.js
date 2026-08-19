@@ -5,18 +5,25 @@ import { composeProposedRoute } from './composer.js'
 import { explainProposedRoute, formatDurationLabel, formatKm, routeRationale, routeTags } from './why.js'
 import { getProposedRoute, saveProposedRoute } from './store.js'
 import { walkingMinutesFromM } from './model.js'
-import { travelerFacingDistanceM } from '../geoSanity.js'
+import { isPlausibleRomePosition, travelerFacingDistanceM } from '../geoSanity.js'
 
 export function annotateProposedRoute(proposed, { context, catalog, position } = {}) {
   if (!proposed) return null
   const byId = Object.fromEntries((catalog || []).map((item) => [item.id, item]))
   const first = byId[proposed.items[0]?.contentId]
+  const remote = Boolean(proposed.planningRemote) || !isPlausibleRomePosition(position)
   let minutesAway = null
-  if (position && first?.geo) {
+  if (!remote && position && first?.geo) {
     const dist = travelerFacingDistanceM(position, first.geo)
     if (dist != null) minutesAway = walkingMinutesFromM(dist)
   }
-  const explained = explainProposedRoute({ proposed, context, minutesAway })
+  const explained = explainProposedRoute({
+    proposed,
+    context,
+    minutesAway,
+    inventoryLimited: proposed.inventoryLimited,
+    planningRemote: remote,
+  })
   return {
     ...proposed,
     title: explained.headline,
@@ -25,7 +32,9 @@ export function annotateProposedRoute(proposed, { context, catalog, position } =
     rationale: routeRationale({ items: proposed.items, catalogById: byId }),
     homeHeadline: explained.homeHeadline,
     contextLine: explained.contextLine,
-    minutesAway,
+    greeting: explained.greeting,
+    minutesAway: remote ? null : minutesAway,
+    planningRemote: remote,
   }
 }
 

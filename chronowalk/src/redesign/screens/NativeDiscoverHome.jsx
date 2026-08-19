@@ -81,10 +81,10 @@ export default function NativeDiscoverHome() {
   )
 
   const onRoute = new Set(liveItems(plan).map((item) => item.contentId))
-  const nearby = (ranked.ranked || []).filter((item) => !onRoute.has(item.id)).slice(0, 4)
+  const nearby = (ranked.ranked || []).filter((item) => !onRoute.has(item.id)).slice(0, 3)
   const { primary, alternatives } = nearby.length
-    ? { primary: nearby[0], alternatives: nearby.slice(1, 4) }
-    : discoverCards(ranked)
+    ? { primary: nearby[0], alternatives: nearby.slice(1, 3) }
+    : { ...discoverCards(ranked), alternatives: (discoverCards(ranked).alternatives || []).slice(0, 2) }
 
   useEffect(() => {
     track(TRACK_EVENTS.DISCOVER_VIEWED, { city: 'rome' })
@@ -141,6 +141,16 @@ export default function NativeDiscoverHome() {
     : guest.locationStatus === 'denied' || guest.locationStatus === 'skipped'
       ? t('native.discover.status.browse')
       : t('native.discover.status.turnOn')
+  const durationPlain = durationLabel.replace(/^~/, '')
+  const greeting =
+    guest.session?.timeOfDay === 'morning'
+      ? t('native.discover.greeting.morning')
+      : guest.session?.timeOfDay === 'evening' || guest.session?.timeOfDay === 'night'
+        ? t('native.discover.greeting.evening')
+        : t('native.discover.greeting.afternoon')
+  const routeLine = located
+    ? t('native.discover.haveRoute', { duration: durationPlain })
+    : t('native.discover.haveRouteRemote', { duration: durationPlain })
   const firstVisible = liveItems(plan)
     .map((item) => (isMysteryHidden(item) ? null : byId[item.contentId]))
     .find(Boolean)
@@ -165,13 +175,12 @@ export default function NativeDiscoverHome() {
           }}
         >
           {firstVisible ? <PlaceMedia item={firstVisible} height={132} radius={16} /> : null}
-          <p style={{ ...routeType, marginTop: 12 }}>
-            {paused ? t('native.route.pausedEyebrow') : t('native.route.based')}
-          </p>
-          <h1 style={{ fontFamily: F.display, fontWeight: 400, fontSize: 24, margin: '8px 0 10px', lineHeight: 1.15, color: R.ink }}>
-            {paused
-              ? t('native.route.continueAfternoon')
-              : homeHeadline || t('native.route.homeHeadline', { duration: durationLabel.replace(/^~/, '') })}
+          <p style={{ margin: '8px 0 0', fontFamily: F.display, fontSize: 22, color: R.ink }}>{greeting}</p>
+          <h1
+            data-testid="discover-route-line"
+            style={{ fontFamily: F.display, fontWeight: 400, fontSize: 24, margin: '8px 0 10px', lineHeight: 1.15, color: R.ink }}
+          >
+            {paused ? t('native.route.continueAfternoon') : homeHeadline || routeLine}
           </h1>
           <RoutePreview items={liveItems(plan)} catalogById={byId} compact currentId={active?.currentRouteItemId} />
           <PrimaryButton

@@ -10,6 +10,7 @@ import { ROUTE_PROACTIVE_SUGGESTIONS } from '../../lib/route/constants.js'
 import { readGuestContext } from '../../lib/guestSession.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import RoutePreview from '../ui/RoutePreview.jsx'
@@ -27,7 +28,7 @@ export default function NativeActiveRouteScreen() {
 
   if (!active || (active.status !== 'active' && active.status !== 'paused')) {
     return (
-      <RouteSurface testId="native-active-route">
+      <RouteSurface testId="native-active-route" header={<NativePageHeader backTo="/home" />}>
         <h1 style={routeHeadline}>{t('native.route.active.empty')}</h1>
         <PrimaryButton color={T.gold} onClick={() => navigate('/plan')} style={routePrimary}>
           {t('native.route.seePlan')}
@@ -40,15 +41,12 @@ export default function NativeActiveRouteScreen() {
   const suggestion = evaluateRouteSuggestion({ active, context: guest, enabled: ROUTE_PROACTIVE_SUGGESTIONS })
 
   return (
-    <RouteSurface testId="native-active-route">
+    <RouteSurface testId="native-active-route" header={<NativePageHeader backTo="/home" />}>
       <div data-testid="route-summary">
         <p style={routeType}>{active.title || t('native.route.yourAfternoon')}</p>
         <h1 data-testid="active-route-title" style={{ ...routeHeadline, fontSize: 26 }}>
           {formatDurationLabel(totals.estimatedDurationMin)} {t('native.route.remaining')}
         </h1>
-        <p style={{ margin: '0 0 16px', color: R.muted, fontFamily: F.body }}>
-          {totals.completedCount} {t('native.route.of')} {totals.totalCount} {t('native.route.completed')}
-        </p>
       </div>
       <RoutePreview items={liveItems(active)} catalogById={byId} currentId={active.currentRouteItemId} />
       {suggestion ? (
@@ -73,6 +71,9 @@ export default function NativeActiveRouteScreen() {
       >
         {t('native.route.continueWalk')}
       </PrimaryButton>
+      <GhostButton data-testid="active-route-view" onClick={() => navigate('/map')} style={{ marginTop: 10, ...routeGhost }}>
+        {t('native.route.viewRoute')}
+      </GhostButton>
       <GhostButton data-testid="active-route-controls" onClick={() => setControls(true)} style={{ marginTop: 10, ...routeGhost }}>
         {t('native.route.changeIt')}
       </GhostButton>

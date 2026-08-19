@@ -17,6 +17,7 @@ import {
 import { useRouteState } from '../../lib/route/useRouteState.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import PlaceMedia from '../ui/PlaceMedia.jsx'
@@ -108,10 +109,7 @@ export default function NativeAdjustPlanScreen() {
   ]
 
   return (
-    <RouteSurface testId="native-adjust">
-      <GhostButton data-testid="adjust-back" onClick={() => navigate(live ? '/route' : '/plan')} style={routeGhost}>
-        {t('native.route.back')}
-      </GhostButton>
+    <RouteSurface testId="native-adjust" header={<NativePageHeader backTo={live ? '/route' : '/plan'} />}>
       <h1 style={routeHeadline}>{t('native.route.adjustTitle')}</h1>
       <p style={{ margin: '0 0 16px', color: R.muted, fontFamily: F.body }}>{t('native.route.adjustLead')}</p>
 

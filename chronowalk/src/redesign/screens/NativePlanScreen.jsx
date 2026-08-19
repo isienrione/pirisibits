@@ -12,6 +12,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import RoutePreview from '../ui/RoutePreview.jsx'
 import PlaceMedia from '../ui/PlaceMedia.jsx'
 import WhyThisSheet from '../ui/WhyThisSheet.jsx'
@@ -35,7 +36,7 @@ export default function NativePlanScreen() {
 
   if (!proposed) {
     return (
-      <RouteSurface testId="native-plan">
+      <RouteSurface testId="native-plan" header={<NativePageHeader backTo="/home" />}>
         <h1 style={routeHeadline}>{t('native.route.plan.empty')}</h1>
         <PrimaryButton color={T.gold} onClick={() => navigate('/home')} style={routePrimary}>
           {t('native.discover.seeAll')}
@@ -48,16 +49,19 @@ export default function NativePlanScreen() {
   const tags = proposed.tags || []
   const firstVisible = items.map((item) => (isMysteryHidden(item) ? null : byId[item.contentId])).find(Boolean)
   const heroItem = isHonestContentPhoto(firstVisible) ? firstVisible : firstVisible
+  const limited = Boolean(proposed.inventoryLimited)
 
   return (
-    <RouteSurface testId="native-plan">
+    <RouteSurface testId="native-plan" header={<NativePageHeader backTo="/home" />}>
       <PlaceMedia item={heroItem} height={188} radius={20} testId="plan-hero-media" />
       <p style={{ ...routeType, marginTop: 16 }}>{proposed.contextLine || t('native.route.based')}</p>
-      <h1 data-testid="plan-title" style={{ ...routeHeadline, fontSize: 28 }}>{proposed.title || t('native.route.plan.headline')}</h1>
+      <h1 data-testid="plan-title" style={{ ...routeHeadline, fontSize: 28 }}>
+        {proposed.title || t('native.route.plan.headline')}
+      </h1>
       <p data-testid="native-plan-stats" style={{ margin: '0 0 12px', color: R.muted, fontFamily: F.body, fontSize: 14 }}>
         {formatDurationLabel(proposed.estimatedDurationMin)} · {formatKm(proposed.estimatedWalkingDistanceM)}
       </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
         {tags.map((tag) => (
           <span
             key={tag}
@@ -76,29 +80,36 @@ export default function NativePlanScreen() {
           </span>
         ))}
       </div>
-      <RoutePreview items={items} catalogById={byId} />
       {(proposed.rationale || []).slice(0, 1).map((line) => (
-        <p key={line} style={{ margin: '14px 0 18px', lineHeight: 1.5, fontFamily: F.body, color: R.ink, fontSize: 15 }}>
+        <p key={line} style={{ margin: '0 0 12px', lineHeight: 1.5, fontFamily: F.body, color: R.ink, fontSize: 15 }}>
           {line}
         </p>
       ))}
-      <PrimaryButton
-        color={T.gold}
-        data-testid="plan-start"
-        onClick={() => {
-          startRoute(proposed)
-          navigate('/route')
-        }}
-        style={routePrimary}
-      >
-        {t('native.route.start')}
-      </PrimaryButton>
-      <GhostButton data-testid="plan-adjust" onClick={() => navigate('/route/adjust')} style={{ marginTop: 10, ...routeGhost }}>
-        {t('native.route.adjust')}
-      </GhostButton>
-      <GhostButton data-testid="plan-why" onClick={() => setWhy(true)} style={{ marginTop: 10, ...routeGhost }}>
-        {t('native.route.why')}
-      </GhostButton>
+      {limited ? (
+        <p data-testid="plan-inventory-limited" style={{ margin: '0 0 12px', lineHeight: 1.5, fontFamily: F.body, color: R.ink }}>
+          {t('native.route.inventoryLimited')}
+        </p>
+      ) : null}
+      <div className="native-plan-sticky-cta" data-testid="plan-sticky-cta">
+        <PrimaryButton
+          color={T.gold}
+          data-testid="plan-start"
+          onClick={() => {
+            startRoute(proposed)
+            navigate('/route')
+          }}
+          style={routePrimary}
+        >
+          {t('native.route.start')}
+        </PrimaryButton>
+        <GhostButton data-testid="plan-adjust" onClick={() => navigate('/route/adjust')} style={{ marginTop: 10, ...routeGhost }}>
+          {t('native.route.adjust')}
+        </GhostButton>
+        <GhostButton data-testid="plan-why" onClick={() => setWhy(true)} style={{ marginTop: 10, ...routeGhost }}>
+          {t('native.route.why')}
+        </GhostButton>
+      </div>
+      <RoutePreview items={items} catalogById={byId} />
       <WhyThisSheet open={why} title={t('native.route.why')} body={proposed.summary} onClose={() => setWhy(false)} />
     </RouteSurface>
   )

@@ -1,6 +1,5 @@
 import { CONTENT_TYPES } from '../../content/registry/constants.js'
 import { rankHeroes } from '../rankHeroes.js'
-import { TIME_BUDGETS } from '../travelContext/taxonomy.js'
 import { toRankerSignals } from '../travelContext/compat.js'
 import { consumerExperienceIdFor, placeFamilyFor } from '../../content/rome/consumerHeroes.js'
 import { isPlausibleRomePosition, travelerFacingDistanceM } from '../geoSanity.js'
@@ -8,14 +7,14 @@ import { getDistance } from '../../utils/distance.js'
 import {
   MAX_ROUTE_ITEMS,
   MIN_ROUTE_ITEMS,
-  TIME_FIT_TOLERANCE,
+  TIME_UTILIZATION,
   WALKING_LIMITS,
   WALK_METERS_PER_MIN,
 } from './constants.js'
 import { createProposedRoute, createRouteItem, walkingMinutesFromM } from './model.js'
 
-function budgetMinutes(timeBudgetId) {
-  return TIME_BUDGETS.find((item) => item.id === timeBudgetId)?.minutes ?? 90
+function utilizationFor(timeBudgetId) {
+  return TIME_UTILIZATION[timeBudgetId] || TIME_UTILIZATION['1h']
 }
 
 function limitsFor(walkingTolerance) {
@@ -84,8 +83,8 @@ export function composeProposedRoute({
     dismissedIds,
   })
   const budgetId = signals.timeBudgetId || '1h'
-  let budget = budgetMinutes(budgetId)
-  if (budget >= 999) budget = 120
+  const band = utilizationFor(budgetId)
+  const budget = band.max
   const walkingTolerance = context?.traveler?.walkingTolerance || 'moderate'
   const limits = limitsFor(walkingTolerance)
   const ranked = rankHeroes({
@@ -160,7 +159,7 @@ export function composeProposedRoute({
         }
         const walkMin = walkingMinutesFromM(dist)
         const exp = Number(item.timeCostMin) || 6
-        if (elapsed + walkMin + exp > budget * TIME_FIT_TOLERANCE) return null
+        if (elapsed + walkMin + exp > budget) return null
         if (walked + dist > limits.maxTotalM) return null
         const locked = !canAccess(item.id)
         if (locked && chosen.length < 2) return null
@@ -251,24 +250,29 @@ export function composeProposedRoute({
       estimatedTransitMin: walkingMinutesFromM(dist),
       distanceFromPreviousM: dist,
       isMysteryDiscovery: mystery,
+      legKind: index === 0 ? (validPosition ? 'traveler' : null) : 'route',
     })
   })
 
   const walkingM = items.reduce((sum, item) => sum + item.distanceFromPreviousM, 0)
   const walkingMin = items.reduce((sum, item) => sum + item.estimatedTransitMin, 0)
   const experienceMin = items.reduce((sum, item) => sum + item.estimatedExperienceMin, 0)
+  const duration = walkingMin + experienceMin
 
   return createProposedRoute({
     cityId: 'rome',
     contextSnapshot: context,
     title: '',
     summary: '',
-    estimatedDurationMin: walkingMin + experienceMin,
+    estimatedDurationMin: duration,
     estimatedWalkingMin: walkingMin,
     estimatedWalkingDistanceM: walkingM,
     tags: [],
     items,
     rationale: [],
+    inventoryLimited: duration < band.min,
+    timeBudgetId: budgetId,
+    planningRemote: !validPosition,
   })
 }
 

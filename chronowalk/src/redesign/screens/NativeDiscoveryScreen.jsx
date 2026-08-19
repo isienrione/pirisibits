@@ -15,6 +15,7 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { F, T } from '../tokens.js'
 import { GhostButton } from '../ui/GhostButton.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import NativePageHeader from '../ui/NativePageHeader.jsx'
 import NativeCoverageSheet from '../ui/NativeCoverageSheet.jsx'
 import PlaceMedia from '../ui/PlaceMedia.jsx'
 import { formatDuration } from '../ui/NativeContentCard.jsx'
@@ -30,7 +31,7 @@ export default function NativeDiscoveryScreen() {
 
   if (!item) {
     return (
-      <RouteSurface testId="native-discovery">
+      <RouteSurface testId="native-discovery" header={<NativePageHeader backTo="/home" />}>
         <p style={{ color: R.ink }}>Discovery unavailable.</p>
       </RouteSurface>
     )
@@ -64,6 +65,11 @@ export default function NativeDiscoveryScreen() {
     <RouteSurface
       testId="native-discovery"
       data-bright="true"
+      header={
+        <div style={{ padding: '0 20px' }}>
+          <NativePageHeader backTo="/home" />
+        </div>
+      }
       style={{ paddingLeft: 0, paddingRight: 0 }}
     >
       <div

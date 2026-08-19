@@ -342,8 +342,8 @@ export const ROME_DISCOVERIES = Object.freeze([
     intrinsicPriority: 76,
   }),
   d(19, {
-    title: 'San Luigi dei Francesi — Caravaggios',
-    shortTitle: 'San Luigi Caravaggios',
+    title: 'Caravaggio at San Luigi dei Francesi',
+    shortTitle: 'Caravaggio at San Luigi dei Francesi',
     clusterId: ROME_CLUSTERS.PANTHEON,
     geo: geo(41.89955, 12.47455, 'San Luigi dei Francesi'),
     interestTags: ['art', 'religion-belief', 'iconic-sights'],
@@ -400,7 +400,7 @@ export const ROME_DISCOVERIES = Object.freeze([
   }),
   d(22, {
     title: "Bernini's Elephant",
-    shortTitle: 'Minerva elephant',
+    shortTitle: "Bernini's Elephant",
     clusterId: ROME_CLUSTERS.PANTHEON,
     geo: geo(41.89792, 12.47735, 'Piazza della Minerva'),
     interestTags: ['art', 'iconic-sights', 'hidden-places'],
