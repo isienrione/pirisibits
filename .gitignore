@@ -1,3 +1,9 @@
 # macOS Finder metadata — never commit anywhere in the repo
 .DS_Store
 **/.DS_Store
+
+# Traveler Expo workspace (repo root)
+node_modules/
+.expo/
+apps/traveler/.expo/
+*.tsbuildinfo

@@ -1,0 +1,30 @@
+---
+description: Contratos de producto, arquitectura y calidad para ChronoWalk Traveler
+globs:
+  - "apps/traveler/**/*"
+  - "packages/domain/**/*"
+  - "packages/engine/**/*"
+  - "packages/city-data/**/*"
+alwaysApply: true
+---
+
+# ChronoWalk Traveler — reglas obligatorias
+
+Lee antes de implementar UI: `CLAUDE.md`, `docs/canonical/01_MASTER_PRODUCT_MANUAL.md`, `02_PRODUCT_ARCHITECTURE.md`, `03_EXPERIENCE_DESIGN_SYSTEM.md`, `07_SCREEN_INVENTORY.md` y `08_VISUAL_INTERACTION_SYSTEM.md`.
+
+- Traveler es React Native + Expo development builds. No PWA ni Capacitor.
+- La dirección es `city data → domain contracts → City Engine → Traveler`. Las pantallas no deciden scoring ni importan JSON de Santiago directamente.
+- Para el demo, usa un adapter `Demo*` reemplazable que produzca view models desde un fixture generado. Nunca contamines los contratos de producción con Santiago.
+- Nunca inventes coordenadas, standing points, look-at targets, horarios, accesos, seguridad o hechos históricos. Faltantes se muestran como `NEEDS_FIELD_QA`, `NEEDS_RESEARCH` o “Pendiente de curaduría”.
+- No presentes mocks como decisiones reales del algoritmo. En código y herramientas de desarrollo deben estar marcados `DEMO_ONLY`.
+- El producto no es catálogo, feed, dashboard, chatbot ni mapa con IA. Home hace una recomendación dominante.
+- La llegada nunca inicia narración automáticamente. Ubicación foreground se solicita sólo cuando compra valor concreto.
+- Mystery no filtra identidad en copy, imágenes, etiquetas accesibles, mapa ni analytics.
+- Densidades: D0 instrumento, D1 funcional, D2 editorial, D3 espectáculo. D0 nunca renderiza primitivas de collage.
+- Visual: papel brillante, tipografía fuerte, composición editorial asimétrica. Evita dashboards SaaS, tarjetas redondeadas uniformes, gradientes morados, beige patrimonial y pills excesivas.
+- El contenido decide el tratamiento. Hero, Discovery, Mystery y RouteItem no son una Card genérica con texto distinto.
+- Toda ruta muestra tiempos honestos y razones estructuradas. La adaptación muestra el delta que produjo.
+- Conserva `Diagnostics` como herramienta de desarrollo; no debe ser la entrada del producto.
+- No refactorices Engine o Domain salvo lo mínimo requerido por un contrato faltante y con prueba.
+- Después de cada tarea ejecuta typecheck y las pruebas relevantes. Reporta archivos, pruebas, fallos, conflictos canónicos y siguiente bloqueo.
+

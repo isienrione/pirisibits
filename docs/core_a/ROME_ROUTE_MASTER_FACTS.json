@@ -1,0 +1,44 @@
+{
+  "sourceId": "Chronowalk Rome Route Master.md.rtf",
+  "note": "Place-name mapping from Route Master v3 titles onto current manifest waypoint ids. Walk minutes apply to the documented place pair, including reverse of the same streets. Ranges stay as published; the demo uses the low end and never invents a midpoint.",
+  "visitMinutes": {
+    "w01": { "low": 15, "high": 20, "rtfLabel": "COLOSSEUM EXTERIOR" },
+    "w02": { "low": 60, "high": 90, "rtfLabel": "COLOSSEUM INTERIOR" },
+    "w04": { "low": 45, "high": 60, "rtfLabel": "PALATINE HILL" },
+    "enc_circus": { "low": 15, "high": 20, "rtfLabel": "CIRCUS MAXIMUS" },
+    "w03": { "low": 10, "high": 15, "rtfLabel": "ARCH OF TITUS" },
+    "w06": { "low": 15, "high": 20, "rtfLabel": "BASILICA OF MAXENTIUS" },
+    "w07": { "low": 10, "high": 10, "rtfLabel": "VIA SACRA" },
+    "w08": { "low": 15, "high": 20, "rtfLabel": "TEMPLE OF VESTA" },
+    "w10": { "low": 10, "high": 15, "rtfLabel": "THE ROSTRA" },
+    "w11_12": { "low": 15, "high": 20, "rtfLabel": "CURIA JULIA — THE SENATE BUILDING" },
+    "w13": { "low": 30, "high": 45, "rtfLabel": "CAPITOLINE HILL" },
+    "w14": { "low": 30, "high": 45, "rtfLabel": "TRAJAN'S MARKET" },
+    "w20": { "low": 15, "high": 20, "rtfLabel": "LARGO DI TORRE ARGENTINA" },
+    "w19": { "low": 15, "high": 25, "rtfLabel": "CAMPO DI FIORI" },
+    "w18": { "low": 20, "high": 30, "rtfLabel": "PIAZZA NAVONA" },
+    "w17": { "low": 30, "high": 45, "rtfLabel": "PANTHEON" },
+    "w16": { "low": 20, "high": 30, "rtfLabel": "FONTANA DI TREVI" },
+    "w15": { "low": 20, "high": 30, "rtfLabel": "SPANISH STEPS" },
+    "w21": { "low": 45, "high": 60, "rtfLabel": "CASTEL SANT'ANGELO" },
+    "w22": { "low": 30, "high": 60, "rtfLabel": "APPIAN WAY" }
+  },
+  "walkMinutesByPlacePair": [
+    { "from": "w01", "to": "w02", "minutes": 5 },
+    { "from": "w03", "to": "w06", "minutes": 3 },
+    { "from": "w06", "to": "w07", "minutes": 2 },
+    { "from": "w07", "to": "w08", "minutes": 3 },
+    { "from": "w10", "to": "w11_12", "minutes": 1 },
+    { "from": "w13", "to": "w14", "minutes": 10 },
+    { "from": "w14", "to": "w20", "minutes": 15 },
+    { "from": "w20", "to": "w19", "minutes": 5 },
+    { "from": "w19", "to": "w18", "minutes": 7 },
+    { "from": "w18", "to": "w17", "minutes": 5 }
+  ],
+  "losingAlternative": {
+    "id": "roma-historica",
+    "title": "Roma Historica",
+    "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS",
+    "description": "Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you."
+  }
+}

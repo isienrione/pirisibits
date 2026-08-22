@@ -1,0 +1,2150 @@
+{
+  "demoOnly": true,
+  "generatedAt": "2026-08-22T02:46:03.885Z",
+  "cityId": "rome",
+  "sourceId": "chronowalk/src/content/rome/manifest.json",
+  "secondarySourceId": "Chronowalk Rome Route Master.md.rtf",
+  "cityName": "Rome",
+  "mysterySpoilerSafeTitle": "A room the Forum does not contain",
+  "mysteryTrueTitle": "Largo di Torre Argentina",
+  "mysteryHint": "A different room, in a different part of the city... and that room still exists.",
+  "mysteryRevealId": "w20",
+  "bifurcation": {
+    "dominant": {
+      "id": "continue-forum",
+      "title": "Stay in the valley",
+      "impact": "Keeps the remaining Forum stops from the 120-minute draft."
+    },
+    "alternatives": [
+      {
+        "id": "skip-to-largo",
+        "title": "Take the later room now",
+        "impact": "Removes remaining Forum micros and makes the mystery the next experience."
+      },
+      {
+        "id": "close-day",
+        "title": "End after this stop",
+        "impact": "Drops everything after the current cursor. No penalty language."
+      }
+    ],
+    "stay": {
+      "id": "stay",
+      "title": "Follow the plan"
+    }
+  },
+  "routes": {
+    "60": {
+      "id": "demo-rome-60",
+      "demoOnly": true,
+      "title": "Forum threshold",
+      "honestyLine": "Borrador para tus 60 minutos — DEMO_ONLY, not a City Engine decision.",
+      "items": [
+        {
+          "id": "w03",
+          "kind": "experience",
+          "treatment": "discovery",
+          "title": "Arch of Titus",
+          "spoilerSafeTitle": "Arch of Titus",
+          "lookCue": "Stand where triumph entered the city.",
+          "arrivalLine": "Stand where triumph entered the city.",
+          "approachLine": "The Forum opens - Titus' arch marks the threshold.",
+          "firstSpokenLine": "Most people walk straight through this arch without a second glance. A photo, a look up, and on. For one community in this city, that simple act - walking through - has never been simple at all. For a very long time, by tradition... the Jews of Rome have gone around this arch rat",
+          "coordinate": {
+            "lat": 41.8905,
+            "lng": 12.48835,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w03.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 10,
+          "experienceMinRange": {
+            "low": 10,
+            "high": 15,
+            "rtfLabel": "ARCH OF TITUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Evidence-based reconstruction · relief details simplified for clarity"
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w03"
+        },
+        {
+          "id": "walk:w03:w06",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "Arch of Titus → Basilica of Maxentius",
+          "spoilerSafeTitle": "Arch of Titus → Basilica of Maxentius",
+          "lookCue": "Vaulted halls loom through the columns ahead.",
+          "arrivalLine": null,
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 3,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w03-w06"
+        },
+        {
+          "id": "w06",
+          "kind": "experience",
+          "treatment": "micro",
+          "title": "Basilica of Maxentius",
+          "spoilerSafeTitle": "Basilica of Maxentius",
+          "lookCue": "Imagine the roof still whole above you.",
+          "arrivalLine": "Imagine the roof still whole above you.",
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": "The man who started this building... drowned in the Tiber in 312 AD. The man who drowned him walked in, finished it, and put his own face in the apse. Eight vaults originally covered this space. Five fell. Three held. Look up at them - not at the shape, but at the surface. Follow",
+          "coordinate": {
+            "lat": 41.89175,
+            "lng": 12.488,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w06.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "BASILICA OF MAXENTIUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w06"
+        }
+      ],
+      "time": {
+        "targetBudgetMin": 60,
+        "experienceMin": 25,
+        "walkingMin": 3,
+        "bufferMin": 10,
+        "totalEstimatedMin": 38,
+        "budgetDeltaMin": -22,
+        "timeFit": "under",
+        "walkingMinComplete": true,
+        "notes": [
+          "Visit minutes use the low end of Route Master typical ranges.",
+          "Buffer is a demo constant (10 min), not a City Engine output."
+        ]
+      },
+      "why": [
+        {
+          "id": "time-budget",
+          "kind": "time",
+          "statement": "Drafted against your 60 minutes using published visit lows and documented walks only.",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf"
+        },
+        {
+          "id": "sequence",
+          "kind": "sequence",
+          "statement": "Stops stay on the existing Rome walking sequence from the production manifest.",
+          "sourceId": "manifest.journey.sequences.a"
+        },
+        {
+          "id": "alt-historica",
+          "kind": "alternative-lost",
+          "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+          "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+        }
+      ],
+      "losingAlternative": {
+        "id": "alt-historica",
+        "kind": "alternative-lost",
+        "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+        "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+      }
+    },
+    "120": {
+      "id": "demo-rome-120",
+      "demoOnly": true,
+      "title": "Afternoon in the valley",
+      "honestyLine": "Borrador para tus 120 minutos — DEMO_ONLY, not a City Engine decision.",
+      "items": [
+        {
+          "id": "w01",
+          "kind": "experience",
+          "treatment": "hero",
+          "title": "The Colosseum",
+          "spoilerSafeTitle": "The Colosseum",
+          "lookCue": "Take a second. / Look up.",
+          "arrivalLine": "Take a second. / Look up.",
+          "approachLine": "The amphitheatre rises ahead - slow your pace and look up.",
+          "firstSpokenLine": "The ground here used to be underwater. Not a river. Not a flood. A lake - built on purpose, dug and filled because one man wanted a lake and the centre of Rome happened to be where he wanted it. His name was Nero. After the fire of 64 AD cleared much of the city, he took this val",
+          "coordinate": {
+            "lat": 41.8902,
+            "lng": 12.4922,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w01.geofence"
+          },
+          "arrivalRadiusM": 45,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "COLOSSEUM EXTERIOR"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act1",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w01"
+        },
+        {
+          "id": "walk:w01:w03",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "The Colosseum → Arch of Titus",
+          "spoilerSafeTitle": "The Colosseum → Arch of Titus",
+          "lookCue": "The Forum opens - Titus' arch marks the threshold.",
+          "arrivalLine": null,
+          "approachLine": "The Forum opens - Titus' arch marks the threshold.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": null,
+          "walkingProvenance": "NEEDS_FIELD_QA",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "NEEDS_FIELD_QA",
+          "sourceId": "undocumented-walk:w01:w03"
+        },
+        {
+          "id": "w03",
+          "kind": "experience",
+          "treatment": "discovery",
+          "title": "Arch of Titus",
+          "spoilerSafeTitle": "Arch of Titus",
+          "lookCue": "Stand where triumph entered the city.",
+          "arrivalLine": "Stand where triumph entered the city.",
+          "approachLine": "The Forum opens - Titus' arch marks the threshold.",
+          "firstSpokenLine": "Most people walk straight through this arch without a second glance. A photo, a look up, and on. For one community in this city, that simple act - walking through - has never been simple at all. For a very long time, by tradition... the Jews of Rome have gone around this arch rat",
+          "coordinate": {
+            "lat": 41.8905,
+            "lng": 12.48835,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w03.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 10,
+          "experienceMinRange": {
+            "low": 10,
+            "high": 15,
+            "rtfLabel": "ARCH OF TITUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Evidence-based reconstruction · relief details simplified for clarity"
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w03"
+        },
+        {
+          "id": "walk:w03:w06",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "Arch of Titus → Basilica of Maxentius",
+          "spoilerSafeTitle": "Arch of Titus → Basilica of Maxentius",
+          "lookCue": "Vaulted halls loom through the columns ahead.",
+          "arrivalLine": null,
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 3,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w03-w06"
+        },
+        {
+          "id": "w06",
+          "kind": "experience",
+          "treatment": "micro",
+          "title": "Basilica of Maxentius",
+          "spoilerSafeTitle": "Basilica of Maxentius",
+          "lookCue": "Imagine the roof still whole above you.",
+          "arrivalLine": "Imagine the roof still whole above you.",
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": "The man who started this building... drowned in the Tiber in 312 AD. The man who drowned him walked in, finished it, and put his own face in the apse. Eight vaults originally covered this space. Five fell. Three held. Look up at them - not at the shape, but at the surface. Follow",
+          "coordinate": {
+            "lat": 41.89175,
+            "lng": 12.488,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w06.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "BASILICA OF MAXENTIUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w06"
+        },
+        {
+          "id": "walk:w06:w07",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "Basilica of Maxentius → Via Sacra",
+          "spoilerSafeTitle": "Basilica of Maxentius → Via Sacra",
+          "lookCue": "You are walking the Sacred Way - keep to the stones.",
+          "arrivalLine": null,
+          "approachLine": "You are walking the Sacred Way - keep to the stones.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 2,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w06-w07"
+        },
+        {
+          "id": "w07",
+          "kind": "experience",
+          "treatment": "micro",
+          "title": "Via Sacra",
+          "spoilerSafeTitle": "Via Sacra",
+          "lookCue": "Processions passed here for a thousand years.",
+          "arrivalLine": "Processions passed here for a thousand years.",
+          "approachLine": "You are walking the Sacred Way - keep to the stones.",
+          "firstSpokenLine": "The paving under your feet was laid by Nero. Not paving that survived from his era - paving he ordered, after the fire of 64 AD... the one history blames on him and historians mostly don't. Stop walking for a moment and look straight down. See how regular the cuts are, how precis",
+          "coordinate": {
+            "lat": 41.89255,
+            "lng": 12.48535,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w07.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 10,
+          "experienceMinRange": {
+            "low": 10,
+            "high": 10,
+            "rtfLabel": "VIA SACRA"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w07"
+        },
+        {
+          "id": "walk:w07:w08",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "Via Sacra → Temple of Vesta",
+          "spoilerSafeTitle": "Via Sacra → Temple of Vesta",
+          "lookCue": "The round temple is just ahead.",
+          "arrivalLine": null,
+          "approachLine": "The round temple is just ahead.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 3,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w07-w08"
+        },
+        {
+          "id": "w08",
+          "kind": "experience",
+          "treatment": "reveal",
+          "title": "Temple of Vesta",
+          "spoilerSafeTitle": "Temple of Vesta",
+          "lookCue": "The flame that guarded Rome burned here.",
+          "arrivalLine": "The flame that guarded Rome burned here.",
+          "approachLine": "The round temple is just ahead.",
+          "firstSpokenLine": "Look at it. It is the smallest building in the Forum. Not modestly small... genuinely small. Everything else you've seen today was built to register at a distance. This one registers up close - and this is where Rome kept the thing it considered most essential to its survival. Si",
+          "coordinate": {
+            "lat": 41.89182,
+            "lng": 12.48715,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w08.geofence"
+          },
+          "arrivalRadiusM": 35,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "TEMPLE OF VESTA"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w08"
+        },
+        {
+          "id": "w20",
+          "kind": "experience",
+          "treatment": "mystery",
+          "title": "Largo di Torre Argentina",
+          "spoilerSafeTitle": "A room the Forum does not contain",
+          "lookCue": "A different room, in a different part of the city... and that room still exists.",
+          "arrivalLine": "This is where Caesar died.",
+          "approachLine": "Sacred ruins below street level - cats and columns.",
+          "firstSpokenLine": "This is where Caesar died. Look down into the excavation. The ancient floor is several meters below the street you're standing on - that gap is two thousand years of city piling up above the original level. Four Republican temple platforms. Column bases. Cats moving through the r",
+          "coordinate": {
+            "lat": 41.89528,
+            "lng": 12.47694,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w20.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "LARGO DI TORRE ARGENTINA"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/largo-argentina/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/largo-argentina/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": true,
+            "hint": "A different room, in a different part of the city... and that room still exists.",
+            "detourCostMin": 15
+          },
+          "zone": "centro",
+          "act": "act5",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w20"
+        }
+      ],
+      "time": {
+        "targetBudgetMin": 120,
+        "experienceMin": 80,
+        "walkingMin": 8,
+        "bufferMin": 10,
+        "totalEstimatedMin": 98,
+        "budgetDeltaMin": -22,
+        "timeFit": "unknown",
+        "walkingMinComplete": false,
+        "notes": [
+          "Some walking minutes are unpublished in Route Master / manifest; they are omitted, not estimated.",
+          "Visit minutes use the low end of Route Master typical ranges.",
+          "Buffer is a demo constant (10 min), not a City Engine output."
+        ]
+      },
+      "why": [
+        {
+          "id": "time-budget",
+          "kind": "time",
+          "statement": "Drafted against your 120 minutes using published visit lows and documented walks only.",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf"
+        },
+        {
+          "id": "sequence",
+          "kind": "sequence",
+          "statement": "Stops stay on the existing Rome walking sequence from the production manifest.",
+          "sourceId": "manifest.journey.sequences.a"
+        },
+        {
+          "id": "alt-historica",
+          "kind": "alternative-lost",
+          "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+          "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+        }
+      ],
+      "losingAlternative": {
+        "id": "alt-historica",
+        "kind": "alternative-lost",
+        "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+        "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+      }
+    },
+    "180": {
+      "id": "demo-rome-180",
+      "demoOnly": true,
+      "title": "Arena to hill",
+      "honestyLine": "Borrador para tus 180 minutos — DEMO_ONLY, not a City Engine decision.",
+      "items": [
+        {
+          "id": "w01",
+          "kind": "experience",
+          "treatment": "hero",
+          "title": "The Colosseum",
+          "spoilerSafeTitle": "The Colosseum",
+          "lookCue": "Take a second. / Look up.",
+          "arrivalLine": "Take a second. / Look up.",
+          "approachLine": "The amphitheatre rises ahead - slow your pace and look up.",
+          "firstSpokenLine": "The ground here used to be underwater. Not a river. Not a flood. A lake - built on purpose, dug and filled because one man wanted a lake and the centre of Rome happened to be where he wanted it. His name was Nero. After the fire of 64 AD cleared much of the city, he took this val",
+          "coordinate": {
+            "lat": 41.8902,
+            "lng": 12.4922,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w01.geofence"
+          },
+          "arrivalRadiusM": 45,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "COLOSSEUM EXTERIOR"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act1",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w01"
+        },
+        {
+          "id": "walk:w01:w02",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "The Colosseum → Colosseum interior",
+          "spoilerSafeTitle": "The Colosseum → Colosseum interior",
+          "lookCue": "Step inside - the floor you expect is not the floor that was.",
+          "arrivalLine": null,
+          "approachLine": "Step inside - the floor you expect is not the floor that was.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 5,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w01-w02"
+        },
+        {
+          "id": "w02",
+          "kind": "experience",
+          "treatment": "discovery",
+          "title": "Colosseum interior",
+          "spoilerSafeTitle": "Colosseum interior",
+          "lookCue": "You are standing where the crowd never stood.",
+          "arrivalLine": "You are standing where the crowd never stood.",
+          "approachLine": "Step inside - the floor you expect is not the floor that was.",
+          "firstSpokenLine": "Something is missing... and it takes the eye a second to find it. Every film you've seen lays a smooth oval of pale sand across the centre of this space. Instead you're looking down into what seems like the cellar of a wrecked building - a tangle of brick walls, narrow channels, ",
+          "coordinate": {
+            "lat": 41.8904,
+            "lng": 12.4924,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w02.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 60,
+          "experienceMinRange": {
+            "low": 60,
+            "high": 90,
+            "rtfLabel": "COLOSSEUM INTERIOR"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/colosseum/interior/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/colosseum/interior/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act1",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w02"
+        },
+        {
+          "id": "w04",
+          "kind": "experience",
+          "treatment": "hero",
+          "title": "The Palatine",
+          "spoilerSafeTitle": "The Palatine",
+          "lookCue": "The word palace was born on this slope.",
+          "arrivalLine": "The word palace was born on this slope.",
+          "approachLine": "The emperors' hill climbs above the Forum.",
+          "firstSpokenLine": "Every time anyone says the word... \"palace\" - in English, Italian, French, Spanish, or a dozen other languages - they are reaching for this hill. The Latin name is Palatinus. The emperors chose to live here, and when their empire collapsed, the concept of where power lives travel",
+          "coordinate": {
+            "lat": 41.8886,
+            "lng": 12.4872,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w04.geofence"
+          },
+          "arrivalRadiusM": 50,
+          "experienceMin": 45,
+          "experienceMinRange": {
+            "low": 45,
+            "high": 60,
+            "rtfLabel": "PALATINE HILL"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act2",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w04"
+        },
+        {
+          "id": "walk:w03:w06",
+          "kind": "walk",
+          "treatment": "walk",
+          "title": "Arch of Titus → Basilica of Maxentius",
+          "spoilerSafeTitle": "Arch of Titus → Basilica of Maxentius",
+          "lookCue": "Vaulted halls loom through the columns ahead.",
+          "arrivalLine": null,
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": null,
+          "coordinate": null,
+          "arrivalRadiusM": null,
+          "experienceMin": null,
+          "experienceMinRange": null,
+          "walkingMin": 3,
+          "walkingProvenance": "sourced",
+          "archive": {
+            "now": null,
+            "then": null,
+            "caption": null
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": null,
+          "act": null,
+          "provenance": "sourced",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf#w03-w06"
+        },
+        {
+          "id": "w03",
+          "kind": "experience",
+          "treatment": "discovery",
+          "title": "Arch of Titus",
+          "spoilerSafeTitle": "Arch of Titus",
+          "lookCue": "Stand where triumph entered the city.",
+          "arrivalLine": "Stand where triumph entered the city.",
+          "approachLine": "The Forum opens - Titus' arch marks the threshold.",
+          "firstSpokenLine": "Most people walk straight through this arch without a second glance. A photo, a look up, and on. For one community in this city, that simple act - walking through - has never been simple at all. For a very long time, by tradition... the Jews of Rome have gone around this arch rat",
+          "coordinate": {
+            "lat": 41.8905,
+            "lng": 12.48835,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w03.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 10,
+          "experienceMinRange": {
+            "low": 10,
+            "high": 15,
+            "rtfLabel": "ARCH OF TITUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+              "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Evidence-based reconstruction · relief details simplified for clarity"
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w03"
+        },
+        {
+          "id": "w06",
+          "kind": "experience",
+          "treatment": "micro",
+          "title": "Basilica of Maxentius",
+          "spoilerSafeTitle": "Basilica of Maxentius",
+          "lookCue": "Imagine the roof still whole above you.",
+          "arrivalLine": "Imagine the roof still whole above you.",
+          "approachLine": "Vaulted halls loom through the columns ahead.",
+          "firstSpokenLine": "The man who started this building... drowned in the Tiber in 312 AD. The man who drowned him walked in, finished it, and put his own face in the apse. Eight vaults originally covered this space. Five fell. Three held. Look up at them - not at the shape, but at the surface. Follow",
+          "coordinate": {
+            "lat": 41.89175,
+            "lng": 12.488,
+            "precision": "geofence-center",
+            "sourceId": "manifest.waypoints.w06.geofence"
+          },
+          "arrivalRadiusM": 40,
+          "experienceMin": 15,
+          "experienceMinRange": {
+            "low": 15,
+            "high": 20,
+            "rtfLabel": "BASILICA OF MAXENTIUS"
+          },
+          "walkingMin": null,
+          "archive": {
+            "now": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "then": {
+              "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+              "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+              "credit": "ChronoWalk production photography",
+              "license": null,
+              "source": "commissioned",
+              "provenance": "sourced"
+            },
+            "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+          },
+          "mystery": {
+            "isMystery": false,
+            "hint": null,
+            "detourCostMin": null
+          },
+          "zone": "antiquity",
+          "act": "act3",
+          "provenance": "sourced",
+          "sourceId": "manifest.waypoints.w06"
+        }
+      ],
+      "time": {
+        "targetBudgetMin": 180,
+        "experienceMin": 145,
+        "walkingMin": 8,
+        "bufferMin": 10,
+        "totalEstimatedMin": 163,
+        "budgetDeltaMin": -17,
+        "timeFit": "under",
+        "walkingMinComplete": true,
+        "notes": [
+          "Visit minutes use the low end of Route Master typical ranges.",
+          "Buffer is a demo constant (10 min), not a City Engine output."
+        ]
+      },
+      "why": [
+        {
+          "id": "time-budget",
+          "kind": "time",
+          "statement": "Drafted against your 180 minutes using published visit lows and documented walks only.",
+          "sourceId": "Chronowalk Rome Route Master.md.rtf"
+        },
+        {
+          "id": "sequence",
+          "kind": "sequence",
+          "statement": "Stops stay on the existing Rome walking sequence from the production manifest.",
+          "sourceId": "manifest.journey.sequences.a"
+        },
+        {
+          "id": "alt-historica",
+          "kind": "alternative-lost",
+          "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+          "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+        }
+      ],
+      "losingAlternative": {
+        "id": "alt-historica",
+        "kind": "alternative-lost",
+        "statement": "Roma Historica was not chosen: Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+        "sourceId": "chronowalk/src/data/romePacing.js#PACE_OPTIONS"
+      }
+    }
+  },
+  "units": {
+    "w01": {
+      "id": "w01",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "The Colosseum",
+      "spoilerSafeTitle": "The Colosseum",
+      "lookCue": "Take a second. / Look up.",
+      "arrivalLine": "Take a second. / Look up.",
+      "approachLine": "The amphitheatre rises ahead - slow your pace and look up.",
+      "firstSpokenLine": "The ground here used to be underwater. Not a river. Not a flood. A lake - built on purpose, dug and filled because one man wanted a lake and the centre of Rome happened to be where he wanted it. His name was Nero. After the fire of 64 AD cleared much of the city, he took this val",
+      "coordinate": {
+        "lat": 41.8902,
+        "lng": 12.4922,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w01.geofence"
+      },
+      "arrivalRadiusM": 45,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "COLOSSEUM EXTERIOR"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/colosseum/exterior/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · awning colours are informed conjecture",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act1",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w01"
+    },
+    "w02": {
+      "id": "w02",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Colosseum interior",
+      "spoilerSafeTitle": "Colosseum interior",
+      "lookCue": "You are standing where the crowd never stood.",
+      "arrivalLine": "You are standing where the crowd never stood.",
+      "approachLine": "Step inside - the floor you expect is not the floor that was.",
+      "firstSpokenLine": "Something is missing... and it takes the eye a second to find it. Every film you've seen lays a smooth oval of pale sand across the centre of this space. Instead you're looking down into what seems like the cellar of a wrecked building - a tangle of brick walls, narrow channels, ",
+      "coordinate": {
+        "lat": 41.8904,
+        "lng": 12.4924,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w02.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 60,
+      "experienceMinRange": {
+        "low": 60,
+        "high": 90,
+        "rtfLabel": "COLOSSEUM INTERIOR"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/colosseum/interior/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/colosseum/interior/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act1",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w02"
+    },
+    "w03": {
+      "id": "w03",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Arch of Titus",
+      "spoilerSafeTitle": "Arch of Titus",
+      "lookCue": "Stand where triumph entered the city.",
+      "arrivalLine": "Stand where triumph entered the city.",
+      "approachLine": "The Forum opens - Titus' arch marks the threshold.",
+      "firstSpokenLine": "Most people walk straight through this arch without a second glance. A photo, a look up, and on. For one community in this city, that simple act - walking through - has never been simple at all. For a very long time, by tradition... the Jews of Rome have gone around this arch rat",
+      "coordinate": {
+        "lat": 41.8905,
+        "lng": 12.48835,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w03.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 10,
+      "experienceMinRange": {
+        "low": 10,
+        "high": 15,
+        "rtfLabel": "ARCH OF TITUS"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · relief details simplified for clarity",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Evidence-based reconstruction · relief details simplified for clarity"
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w03"
+    },
+    "w04": {
+      "id": "w04",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "The Palatine",
+      "spoilerSafeTitle": "The Palatine",
+      "lookCue": "The word palace was born on this slope.",
+      "arrivalLine": "The word palace was born on this slope.",
+      "approachLine": "The emperors' hill climbs above the Forum.",
+      "firstSpokenLine": "Every time anyone says the word... \"palace\" - in English, Italian, French, Spanish, or a dozen other languages - they are reaching for this hill. The Latin name is Palatinus. The emperors chose to live here, and when their empire collapsed, the concept of where power lives travel",
+      "coordinate": {
+        "lat": 41.8886,
+        "lng": 12.4872,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w04.geofence"
+      },
+      "arrivalRadiusM": 50,
+      "experienceMin": 45,
+      "experienceMinRange": {
+        "low": 45,
+        "high": 60,
+        "rtfLabel": "PALATINE HILL"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act2",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w04"
+    },
+    "w06": {
+      "id": "w06",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Basilica of Maxentius",
+      "spoilerSafeTitle": "Basilica of Maxentius",
+      "lookCue": "Imagine the roof still whole above you.",
+      "arrivalLine": "Imagine the roof still whole above you.",
+      "approachLine": "Vaulted halls loom through the columns ahead.",
+      "firstSpokenLine": "The man who started this building... drowned in the Tiber in 312 AD. The man who drowned him walked in, finished it, and put his own face in the apse. Eight vaults originally covered this space. Five fell. Three held. Look up at them - not at the shape, but at the surface. Follow",
+      "coordinate": {
+        "lat": 41.89175,
+        "lng": 12.488,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w06.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "BASILICA OF MAXENTIUS"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w06"
+    },
+    "w07": {
+      "id": "w07",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Via Sacra",
+      "spoilerSafeTitle": "Via Sacra",
+      "lookCue": "Processions passed here for a thousand years.",
+      "arrivalLine": "Processions passed here for a thousand years.",
+      "approachLine": "You are walking the Sacred Way - keep to the stones.",
+      "firstSpokenLine": "The paving under your feet was laid by Nero. Not paving that survived from his era - paving he ordered, after the fire of 64 AD... the one history blames on him and historians mostly don't. Stop walking for a moment and look straight down. See how regular the cuts are, how precis",
+      "coordinate": {
+        "lat": 41.89255,
+        "lng": 12.48535,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w07.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 10,
+      "experienceMinRange": {
+        "low": 10,
+        "high": 10,
+        "rtfLabel": "VIA SACRA"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w07"
+    },
+    "w08": {
+      "id": "w08",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Temple of Vesta",
+      "spoilerSafeTitle": "Temple of Vesta",
+      "lookCue": "The flame that guarded Rome burned here.",
+      "arrivalLine": "The flame that guarded Rome burned here.",
+      "approachLine": "The round temple is just ahead.",
+      "firstSpokenLine": "Look at it. It is the smallest building in the Forum. Not modestly small... genuinely small. Everything else you've seen today was built to register at a distance. This one registers up close - and this is where Rome kept the thing it considered most essential to its survival. Si",
+      "coordinate": {
+        "lat": 41.89182,
+        "lng": 12.48715,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w08.geofence"
+      },
+      "arrivalRadiusM": 35,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "TEMPLE OF VESTA"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w08"
+    },
+    "w10": {
+      "id": "w10",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "The Rostra",
+      "spoilerSafeTitle": "The Rostra",
+      "lookCue": "Orators once held Rome from this spot.",
+      "arrivalLine": "Orators once held Rome from this spot.",
+      "approachLine": "The speakers' platform is near - listen for echoes.",
+      "firstSpokenLine": "Look at the front face of the platform - those curved protrusions along the stone. Not decoration. That's where the hardware hung. The word \"rostrum\" means a beak - the bronze ram of a warship, built to pierce hulls at the waterline. When Rome smashed the Latin fleet in 338 BC, t",
+      "coordinate": {
+        "lat": 41.89282,
+        "lng": 12.48518,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w10.geofence"
+      },
+      "arrivalRadiusM": 35,
+      "experienceMin": 10,
+      "experienceMinRange": {
+        "low": 10,
+        "high": 15,
+        "rtfLabel": "THE ROSTRA"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-rostra/ancient-reconstruction.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w10"
+    },
+    "w11_12": {
+      "id": "w11_12",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Arch of Septimius Severus",
+      "spoilerSafeTitle": "Arch of Septimius Severus",
+      "lookCue": "Two stories, one square of stone.",
+      "arrivalLine": "Two stories, one square of stone.",
+      "approachLine": "The arch and the Senate house share one standpoint.",
+      "firstSpokenLine": "His name was Geta. He was twenty-two years old. His father built this arch and put both sons' names on it - Caracalla, and Geta. Then the father died... and within a year, Caracalla murdered his brother and ordered his name removed from every monument in Rome. The craftsmen worke",
+      "coordinate": {
+        "lat": 41.89301,
+        "lng": 12.48442,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w11_12.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "CURIA JULIA — THE SENATE BUILDING"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/forum-cluster/forum-arch-severus/ancient-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w11_12"
+    },
+    "w13": {
+      "id": "w13",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Capitoline Hill",
+      "spoilerSafeTitle": "Capitoline Hill",
+      "lookCue": "The Capitoline - heart of public faith.",
+      "arrivalLine": "The Capitoline - heart of public faith.",
+      "approachLine": "Climb toward the hill where Rome's gods watched over the city.",
+      "firstSpokenLine": "The dogs slept. The geese did not. Around 390 BC, a Celtic tribe had already sacked Rome. A small garrison held this hill - the last position worth holding - and the attackers came at night, scaling the cliff silently enough that the dogs didn't wake. But the Capitoline kept sacr",
+      "coordinate": {
+        "lat": 41.89324,
+        "lng": 12.48275,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w13.geofence"
+      },
+      "arrivalRadiusM": 45,
+      "experienceMin": 30,
+      "experienceMinRange": {
+        "low": 30,
+        "high": 45,
+        "rtfLabel": "CAPITOLINE HILL"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/capitoline-hill/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/capitoline-hill/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act3",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w13"
+    },
+    "w14": {
+      "id": "w14",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Trajan's Market",
+      "spoilerSafeTitle": "Trajan's Market",
+      "lookCue": "Shops and offices once hummed in these halls.",
+      "arrivalLine": "Shops and offices once hummed in these halls.",
+      "approachLine": "Brick arcades stack ahead - Rome's great market hall.",
+      "firstSpokenLine": "A slave arrived here in the early morning with money and a list. Someone in a wealthy household needed pepper - a specific quantity, sealed and weighed - and he knew exactly which doorway in the curved brick facade to look for, which vendor stood on which level, and exactly what ",
+      "coordinate": {
+        "lat": 41.8956,
+        "lng": 12.48595,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w14.geofence"
+      },
+      "arrivalRadiusM": 45,
+      "experienceMin": 30,
+      "experienceMinRange": {
+        "low": 30,
+        "high": 45,
+        "rtfLabel": "TRAJAN'S MARKET"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/trajan-market/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/trajan-market/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act4",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w14"
+    },
+    "w15": {
+      "id": "w15",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Spanish Steps",
+      "spoilerSafeTitle": "Spanish Steps",
+      "lookCue": "A staircase built for seeing and being seen.",
+      "arrivalLine": "A staircase built for seeing and being seen.",
+      "approachLine": "The steps rise ahead - take them slowly.",
+      "firstSpokenLine": "The fountain at the bottom of these steps is sinking. It is not collapsing - it was built this way. A stone boat, half-submerged in a shallow oval basin, with water flowing over its prow and sides rather than upward from a jet. It sits below the level of the piazza. You have to l",
+      "coordinate": {
+        "lat": 41.90597,
+        "lng": 12.48259,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w15.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 20,
+      "experienceMinRange": {
+        "low": 20,
+        "high": 30,
+        "rtfLabel": "SPANISH STEPS"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/spanish-steps/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/spanish-steps/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w15"
+    },
+    "w16": {
+      "id": "w16",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Fontana di Trevi",
+      "spoilerSafeTitle": "Fontana di Trevi",
+      "lookCue": "Throw a coin if you wish - the water doesn't mind.",
+      "arrivalLine": "Throw a coin if you wish - the water doesn't mind.",
+      "approachLine": "You'll hear the fountain before you see it.",
+      "firstSpokenLine": "Look at the coins on the floor of the basin. Each one is a person who stood where you're standing, took a coin, threw it over their left shoulder with their right hand, and trusted that doing so would bring them back to Rome. Thousands do it every day. The basin floor is covered.",
+      "coordinate": {
+        "lat": 41.90094,
+        "lng": 12.48331,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w16.geofence"
+      },
+      "arrivalRadiusM": 35,
+      "experienceMin": 20,
+      "experienceMinRange": {
+        "low": 20,
+        "high": 30,
+        "rtfLabel": "FONTANA DI TREVI"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w16"
+    },
+    "w17": {
+      "id": "w17",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "The Pantheon",
+      "spoilerSafeTitle": "The Pantheon",
+      "lookCue": "The portico columns wait - step through when you are ready.",
+      "arrivalLine": "The portico columns wait - step through when you are ready.",
+      "approachLine": "The rotunda appears through the streets.",
+      "firstSpokenLine": "Stand here in the piazza for a moment... right beside the fountain. That obelisk at its centre is far older than everything around it, older than the fountain, older than the popes, older than Rome's entire imperial history. It was carved for a pharaoh nearly three thousand years",
+      "coordinate": {
+        "lat": 41.89885,
+        "lng": 12.47687,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w17.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 30,
+      "experienceMinRange": {
+        "low": 30,
+        "high": 45,
+        "rtfLabel": "PANTHEON"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/pantheon/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/pantheon/modern-poster.jpg",
+          "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w17"
+    },
+    "w18": {
+      "id": "w18",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Piazza Navona",
+      "spoilerSafeTitle": "Piazza Navona",
+      "lookCue": "A racetrack turned piazza - Rome's living room.",
+      "arrivalLine": "A racetrack turned piazza - Rome's living room.",
+      "approachLine": "Bernini's fountain plays ahead - the stadium shape beneath your feet.",
+      "firstSpokenLine": "Look south - the far end of the piazza, where the buildings curve to close the oval. That curve is not a Baroque flourish. It is the sphendone - the rounded end of a Roman stadium, where the runners turned. Domitian built it here around 86 AD, and the buildings around you are bui",
+      "coordinate": {
+        "lat": 41.89918,
+        "lng": 12.47306,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w18.geofence"
+      },
+      "arrivalRadiusM": 45,
+      "experienceMin": 20,
+      "experienceMinRange": {
+        "low": 20,
+        "high": 30,
+        "rtfLabel": "PIAZZA NAVONA"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/piazza-navona/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/piazza-navona/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w18"
+    },
+    "w19": {
+      "id": "w19",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Campo de' Fiori",
+      "spoilerSafeTitle": "Campo de' Fiori",
+      "lookCue": "Flowers, fruit, and four centuries of chatter.",
+      "arrivalLine": "Flowers, fruit, and four centuries of chatter.",
+      "approachLine": "The market square opens - morning or evening, always alive.",
+      "firstSpokenLine": "Campo de' Fiori means \"Field of Flowers.\" Rome has a habit of giving beautiful names to complicated places. Look around first - because in the morning this is the happiest square in Rome. Tomatoes, flowers, someone shouting prices, café chairs in the sun. It's the only great piaz",
+      "coordinate": {
+        "lat": 41.89559,
+        "lng": 12.47223,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w19.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 25,
+        "rtfLabel": "CAMPO DI FIORI"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/campo-de-fiori/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/campo-de-fiori/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w19"
+    },
+    "w20": {
+      "id": "w20",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Largo di Torre Argentina",
+      "spoilerSafeTitle": "Largo di Torre Argentina",
+      "lookCue": "This is where Caesar died.",
+      "arrivalLine": "This is where Caesar died.",
+      "approachLine": "Sacred ruins below street level - cats and columns.",
+      "firstSpokenLine": "This is where Caesar died. Look down into the excavation. The ancient floor is several meters below the street you're standing on - that gap is two thousand years of city piling up above the original level. Four Republican temple platforms. Column bases. Cats moving through the r",
+      "coordinate": {
+        "lat": 41.89528,
+        "lng": 12.47694,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w20.geofence"
+      },
+      "arrivalRadiusM": 40,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "LARGO DI TORRE ARGENTINA"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/largo-argentina/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/largo-argentina/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "centro",
+      "act": "act5",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w20"
+    },
+    "w21": {
+      "id": "w21",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Castel Sant'Angelo",
+      "spoilerSafeTitle": "Castel Sant'Angelo",
+      "lookCue": "Emperor, fortress, refuge - one stone silhouette.",
+      "arrivalLine": "Emperor, fortress, refuge - one stone silhouette.",
+      "approachLine": "Hadrian's tomb rises beside the river.",
+      "firstSpokenLine": "He moved through the corridor at speed. Eight hundred meters of covered passageway running above the city wall, the Vatican behind him, the Castel ahead - and below, through the stone, the sound of Rome coming apart. The man running was Pope Clement the Seventh. The date was May ",
+      "coordinate": {
+        "lat": 41.90306,
+        "lng": 12.46627,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w21.geofence"
+      },
+      "arrivalRadiusM": 45,
+      "experienceMin": 45,
+      "experienceMinRange": {
+        "low": 45,
+        "high": 60,
+        "rtfLabel": "CASTEL SANT'ANGELO"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "river",
+      "act": "act6",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w21"
+    },
+    "w22": {
+      "id": "w22",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Optional Encore › Via Appia Antica",
+      "spoilerSafeTitle": "Optional Encore › Via Appia Antica",
+      "lookCue": "Walk where legions and merchants left Rome.",
+      "arrivalLine": "Walk where legions and merchants left Rome.",
+      "approachLine": "The basalt stones stretch south - the queen of roads.",
+      "firstSpokenLine": "Walk twenty steps on the ancient surface before I say anything else. Feel where the stones dip - those are ruts. Everything that ever left Rome for the south rolled through the grooves under your feet. The stones aren't even. You'll have noticed that already-the way the basalt bl",
+      "coordinate": {
+        "lat": 41.8635,
+        "lng": 12.5148,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.w22.geofence"
+      },
+      "arrivalRadiusM": 60,
+      "experienceMin": 30,
+      "experienceMinRange": {
+        "low": 30,
+        "high": 60,
+        "rtfLabel": "APPIAN WAY"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/via-appia/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/via-appia/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "encore",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.w22"
+    },
+    "enc_circus": {
+      "id": "enc_circus",
+      "kind": "experience",
+      "treatment": "discovery",
+      "title": "Circus Maximus View",
+      "spoilerSafeTitle": "Circus Maximus View",
+      "lookCue": "Look across the valley - this is the Circus Maximus.",
+      "arrivalLine": "Look across the valley - this is the Circus Maximus.",
+      "approachLine": "The long green oval opens below the Palatine.",
+      "firstSpokenLine": null,
+      "coordinate": {
+        "lat": 41.8859,
+        "lng": 12.4857,
+        "precision": "geofence-center",
+        "sourceId": "manifest.waypoints.enc_circus.geofence"
+      },
+      "arrivalRadiusM": 55,
+      "experienceMin": 15,
+      "experienceMinRange": {
+        "low": 15,
+        "high": 20,
+        "rtfLabel": "CIRCUS MAXIMUS"
+      },
+      "walkingMin": null,
+      "archive": {
+        "now": {
+          "uri": "/waypoints/circus-maximus/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "then": {
+          "uri": "/waypoints/circus-maximus/modern-poster.jpg",
+          "caption": "Interpretive reconstruction informed by archaeology and scholarship.",
+          "credit": "ChronoWalk production photography",
+          "license": null,
+          "source": "commissioned",
+          "provenance": "sourced"
+        },
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      },
+      "mystery": {
+        "isMystery": false,
+        "hint": null,
+        "detourCostMin": null
+      },
+      "zone": "antiquity",
+      "act": "act2",
+      "provenance": "sourced",
+      "sourceId": "manifest.waypoints.enc_circus"
+    }
+  }
+}

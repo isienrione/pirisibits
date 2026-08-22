@@ -1,0 +1,13 @@
+{
+  "name": "chronowalk-traveler-workspace",
+  "private": true,
+  "scripts": {
+    "generate:fixture": "node scripts/generate-demo-fixture.mjs",
+    "typecheck": "pnpm --filter @chronowalk/domain typecheck && pnpm --filter @chronowalk/traveler typecheck",
+    "test": "pnpm --filter @chronowalk/domain test && pnpm --filter @chronowalk/traveler test"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
