@@ -195,6 +195,11 @@ export const en = {
     kicker: 'A turn',
     recommended: 'Recommended',
     stay: 'Stay in the valley',
+    stayImpact: 'Keep the remaining Forum stops. The later room stays sealed until you ask for it.',
+    later: 'Take the later room now',
+    laterImpact: 'Set the Forum remainder aside. The sealed room becomes what you walk toward next.',
+    close: 'End after this stop',
+    closeImpact: 'Close the afternoon here. Nothing after this place is kept.',
     follow: 'Follow the plan',
   },
   recompose: {
@@ -225,8 +230,8 @@ export const en = {
   map: {
     kicker: 'Rome',
     title: 'The afternoon, as a line.',
-    sketch: 'A sketch of the sequence — not turn-by-turn.',
-    noToken: 'Live map needs a token. The places are still here.',
+    sketch: 'Published places, drawn as a line.',
+    noToken: 'Street map is off in this draft. The sequence is still marked.',
     planning: 'You are planning. Distance from you is not shown.',
     empty: 'Not enough published places to draw a line.',
     save: 'Save',

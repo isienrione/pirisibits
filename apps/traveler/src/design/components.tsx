@@ -36,7 +36,7 @@ export function ImmersiveCover({
   const insets = useSafeAreaInsets()
   return (
     <View style={styles.flex}>
-      <Image source={image} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+      <Image source={image} style={styles.coverImage} resizeMode="cover" />
       <LinearGradient
         colors={[`rgba(22,19,15,${dim})`, 'rgba(22,19,15,0.18)', 'rgba(22,19,15,0.88)']}
         locations={[0, 0.38, 1]}
@@ -418,7 +418,7 @@ export function ThenNowHold({
         onPressOut={() => setHolding(false)}
         style={styles.flex}
       >
-        <Image source={showThen && then ? then : now} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+        <Image source={showThen && then ? then : now} style={styles.thenCover} resizeMode="cover" />
         <LinearGradient
           colors={['rgba(22,19,15,0.2)', 'rgba(22,19,15,0.78)']}
           style={StyleSheet.absoluteFillObject}
@@ -543,6 +543,22 @@ export function PagePad({ children, style }: { children: ReactNode; style?: Styl
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: color.obsidian },
+  coverImage: {
+    position: 'absolute',
+    top: '-12%',
+    left: 0,
+    right: 0,
+    height: '128%',
+    width: '100%',
+  },
+  thenCover: {
+    position: 'absolute',
+    top: '-28%',
+    left: 0,
+    right: 0,
+    height: '155%',
+    width: '100%',
+  },
   flexPad: { flex: 1, paddingHorizontal: space.edge, paddingBottom: space.l, gap: space.m, backgroundColor: color.bone },
   coverInner: { flex: 1, paddingHorizontal: space.edge, justifyContent: 'space-between' },
   coverCopy: { gap: 10, maxWidth: 340 },
@@ -599,7 +615,7 @@ const styles = StyleSheet.create({
   walkStep: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6, paddingLeft: 8 },
   spine: { width: 1, height: 18, backgroundColor: color.ember },
   walkText: { fontFamily: type.condensedMedium, letterSpacing: 1.2, textTransform: 'uppercase', fontSize: 12, color: color.ink800 },
-  heroStep: { height: 210, overflow: 'hidden', marginVertical: 8 },
+  heroStep: { height: 168, overflow: 'hidden', marginVertical: 8 },
   heroImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   heroGrad: { ...StyleSheet.absoluteFillObject },
   heroCopy: { flex: 1, justifyContent: 'flex-end', padding: space.m, gap: 4 },
@@ -657,7 +673,7 @@ const styles = StyleSheet.create({
   chip: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, backgroundColor: color.warmWhite },
   chipInverted: { backgroundColor: 'rgba(245,239,227,0.12)' },
   chipText: { fontFamily: type.condensed, letterSpacing: 1.2, textTransform: 'uppercase', fontSize: 11, color: color.ink800 },
-  homeHero: { height: 430 },
+  homeHero: { height: 380 },
   homeGrad: { flex: 1, justifyContent: 'flex-end', padding: space.edge, gap: 8, paddingBottom: 22 },
   homeTime: { fontFamily: type.condensed, letterSpacing: 1.4, textTransform: 'uppercase', color: color.ember, fontSize: 13 },
   homeBody: { flex: 1, padding: space.edge, gap: 14, backgroundColor: color.bone },

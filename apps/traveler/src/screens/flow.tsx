@@ -331,8 +331,8 @@ export function RouteScoreScreen() {
     <Screen>
       <ScrollView contentContainerStyle={{ paddingBottom: space.xl, gap: space.s }} showsVerticalScrollIndicator={false}>
         <EditorialHeader kicker={copy.score.kicker} title={route.title} />
-        <RouteScore route={route} mysteryRevealed={state.experience.mysteryRevealed} />
         <PrimaryAction label={copy.score.start} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+        <RouteScore route={route} mysteryRevealed={state.experience.mysteryRevealed} />
         <QuietAction label={copy.score.back} onPress={() => dispatch({ type: 'setScreen', screen: 'B01' })} />
       </ScrollView>
     </Screen>
@@ -647,21 +647,23 @@ export function ForkScreen() {
   }
   return (
     <Screen>
-      <EditorialHeader kicker={copy.fork.kicker} title={fixture.bifurcation.dominant.title} />
+      <EditorialHeader kicker={copy.fork.kicker} title={copy.fork.stay} />
       <RouteForkCard
         recommended
         title={copy.fork.stay}
-        impact={fixture.bifurcation.dominant.impact.replace(/draft/gi, 'afternoon')}
+        impact={copy.fork.stayImpact}
         onPress={() => choose('continue-forum')}
       />
-      {fixture.bifurcation.alternatives.map((alt) => (
-        <RouteForkCard
-          key={alt.id}
-          title={alt.title === 'Take the later room now' ? 'Take the later room now' : alt.title}
-          impact={alt.impact.replace(/No penalty language\.?/i, '').replace(/draft/gi, 'afternoon')}
-          onPress={() => choose(alt.id)}
-        />
-      ))}
+      <RouteForkCard
+        title={copy.fork.later}
+        impact={copy.fork.laterImpact}
+        onPress={() => choose('skip-to-largo')}
+      />
+      <RouteForkCard
+        title={copy.fork.close}
+        impact={copy.fork.closeImpact}
+        onPress={() => choose('close-day')}
+      />
       <QuietAction label={copy.fork.follow} onPress={() => choose('stay')} />
     </Screen>
   )

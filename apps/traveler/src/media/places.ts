@@ -48,10 +48,8 @@ export function thenImageForItem(item: { id: string } | null | undefined): Image
 }
 
 export function walkingImage(next: RouteItemView | null | undefined): ImageSourcePropType {
-  if (!next) return places.street
-  if (next.id === 'w01') return places.colosseumNow
-  if (next.id === 'w03') return places.titusNow
-  if (next.id === 'w20') return places.street
+  if (next?.id === 'w03') return places.titusNow
+  if (next?.id === 'w20') return places.street
   return places.street
 }
 

@@ -43,7 +43,7 @@ export function MapSurface({
     <View style={styles.panel}>
       <Text style={styles.body}>{tokenPresent ? copy.map.sketch : copy.map.noToken}</Text>
       {planning ? <Text style={styles.meta}>{copy.map.planning}</Text> : null}
-      <ImageBackground source={places.map} style={styles.plot} imageStyle={styles.plotImage} accessibilityLabel={copy.map.title}>
+      <ImageBackground source={places.forum} style={styles.plot} imageStyle={styles.plotImage} accessibilityLabel={copy.map.title}>
         <View style={styles.plotDim} />
         {points.map((item) => {
           const x = maxLng === minLng ? 50 : ((item.coordinate!.lng - minLng) / (maxLng - minLng)) * 100

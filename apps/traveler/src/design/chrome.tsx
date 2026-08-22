@@ -39,15 +39,13 @@ export function AppShell({
         <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 8) }]}>
           <Tab
             label={copy.nav.home}
-            mark="I"
             on={active === 'home'}
             onPress={() => onTab(screen === 'B03' ? 'B03' : 'B01')}
           />
-          <Tab label={copy.nav.map} mark="II" on={active === 'map'} onPress={() => onTab('F01')} />
-          <Tab label={copy.nav.saved} mark="III" on={active === 'saved'} onPress={() => onTab('G01')} />
+          <Tab label={copy.nav.map} on={active === 'map'} onPress={() => onTab('F01')} />
+          <Tab label={copy.nav.saved} on={active === 'saved'} onPress={() => onTab('G01')} />
           <Tab
             label={copy.nav.settings}
-            mark="IV"
             on={active === 'settings'}
             onPress={() => onTab('I01')}
           />
@@ -59,18 +57,16 @@ export function AppShell({
 
 function Tab({
   label,
-  mark,
   on,
   onPress,
 }: {
   label: string
-  mark: string
   on: boolean
   onPress: () => void
 }) {
   return (
     <Pressable accessibilityRole="tab" accessibilityState={{ selected: on }} onPress={onPress} style={styles.tab}>
-      <Text style={[styles.mark, on && styles.markOn]}>{mark}</Text>
+      <View style={[styles.tick, on && styles.tickOn]} />
       <Text style={[styles.tabLabel, on && styles.tabLabelOn]}>{label}</Text>
     </Pressable>
   )
@@ -88,17 +84,12 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: space.s,
   },
-  tab: { flex: 1, alignItems: 'center', gap: 2 },
-  mark: {
-    fontFamily: type.condensed,
-    fontSize: 11,
-    letterSpacing: 1.4,
-    color: color.muted,
-  },
-  markOn: { color: color.emberDeep },
+  tab: { flex: 1, alignItems: 'center', gap: 6, paddingTop: 4 },
+  tick: { width: 16, height: 2, backgroundColor: 'transparent' },
+  tickOn: { backgroundColor: color.ember },
   tabLabel: {
     fontFamily: type.uiMedium,
-    fontSize: 11,
+    fontSize: 12,
     color: color.ink800,
   },
   tabLabelOn: { color: color.ink900 },
