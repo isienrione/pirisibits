@@ -16,7 +16,7 @@ export function DiagnosticsScreen() {
   }, [])
 
   return (
-    <Screen density={1}>
+    <Screen>
       <EditorialLabel>DEV · Diagnostics</EditorialLabel>
       <Title>Probe, not product.</Title>
       <Body>Lifecycle: {String(lifecycle)}</Body>
@@ -38,5 +38,5 @@ export function DiagnosticsScreen() {
 }
 
 const styles = StyleSheet.create({
-  mono: { fontFamily: type.uiFallback, fontSize: 14 },
+  mono: { fontFamily: type.ui, fontSize: 14 },
 })

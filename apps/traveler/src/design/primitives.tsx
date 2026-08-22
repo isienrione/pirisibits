@@ -10,35 +10,36 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useDensity } from './DensityProvider'
+import { useChrome } from './chrome'
 import { color, space, type } from './tokens'
 
 export function Screen({
   children,
   tone = 'daylight',
-  density,
+  flush = false,
 }: {
   children: ReactNode
   tone?: 'daylight' | 'immersion'
-  density?: 0 | 1 | 2 | 3
+  flush?: boolean
 }) {
   const insets = useSafeAreaInsets()
+  const chrome = useChrome()
   const bg = tone === 'immersion' ? color.obsidian : color.bone
+  const top = flush ? 0 : Math.max(insets.top, 12)
+  const bottom = flush ? 0 : Math.max(insets.bottom, chrome.shell ? 8 : 16)
   return (
     <View
       style={[
         styles.screen,
         {
           backgroundColor: bg,
-          paddingTop: Math.max(insets.top, space.l),
-          paddingBottom: Math.max(insets.bottom, space.l),
+          paddingTop: top,
+          paddingBottom: bottom,
+          paddingHorizontal: flush ? 0 : space.edge,
+          gap: flush ? 0 : space.m,
         },
       ]}
     >
-      {density != null ? (
-        <Text style={[styles.meta, { color: tone === 'immersion' ? color.muted : color.ink800 }]}>
-          D{density}
-        </Text>
-      ) : null}
       {children}
     </View>
   )
@@ -61,12 +62,16 @@ export function PrimaryAction({
   onPress,
   quiet = false,
   disabled = false,
+  inverted = false,
 }: {
   label: string
   onPress: () => void
   quiet?: boolean
   disabled?: boolean
+  inverted?: boolean
 }) {
+  const quietStyle = inverted ? styles.quietInverted : styles.quiet
+  const quietText = inverted ? styles.quietInvertedText : styles.quietText
   return (
     <Pressable
       accessibilityRole="button"
@@ -74,37 +79,45 @@ export function PrimaryAction({
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
-        quiet ? styles.quiet : styles.primary,
-        pressed && { opacity: 0.86 },
-        disabled && { opacity: 0.4 },
+        quiet ? quietStyle : styles.primary,
+        pressed && { opacity: 0.88 },
+        disabled && { opacity: 0.38 },
       ]}
     >
-      <Text style={quiet ? styles.quietText : styles.primaryText}>{label}</Text>
+      <Text style={quiet ? quietText : styles.primaryText}>{label}</Text>
     </Pressable>
   )
 }
 
-export function PaperRule() {
-  const density = useDensity()
-  if (density === 0) return null
-  return <View style={styles.rule} />
-}
-
-export function RouteLine({
-  tall = false,
-}: {
-  tall?: boolean
-}) {
-  const density = useDensity()
-  if (density === 0) return null
-  return <View style={[styles.routeLine, tall && { height: 72 }]} />
-}
-
-export function PhotoPlaceholder({
+export function QuietAction({
   label,
+  onPress,
+  inverted = false,
 }: {
   label: string
+  onPress: () => void
+  inverted?: boolean
 }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.link}>
+      <Text style={[styles.linkText, inverted && { color: color.warmWhite }]}>{label}</Text>
+    </Pressable>
+  )
+}
+
+export function PaperRule({ inverted = false }: { inverted?: boolean }) {
+  const density = useDensity()
+  if (density === 0) return null
+  return <View style={[styles.rule, inverted && { backgroundColor: color.hairlineOnDark }]} />
+}
+
+export function RouteLine({ tall = false }: { tall?: boolean }) {
+  const density = useDensity()
+  if (density === 0) return null
+  return <View style={[styles.routeLine, tall && { height: 56 }]} />
+}
+
+export function PhotoPlaceholder({ label }: { label: string }) {
   const density = useDensity()
   if (density === 0) return null
   return (
@@ -145,11 +158,7 @@ export function Title({
 }) {
   return (
     <Text
-      style={[
-        styles.title,
-        { color: inverted ? color.warmWhite : color.ink900 },
-        style,
-      ]}
+      style={[styles.title, { color: inverted ? color.warmWhite : color.ink900 }, style]}
     >
       {children}
     </Text>
@@ -159,12 +168,14 @@ export function Title({
 export function Body({
   children,
   inverted = false,
+  style,
 }: {
   children: ReactNode
   inverted?: boolean
+  style?: StyleProp<TextStyle>
 }) {
   return (
-    <Text style={[styles.body, { color: inverted ? color.warmWhite : color.ink900 }]}>
+    <Text style={[styles.body, { color: inverted ? color.warmWhite : color.ink800 }, style]}>
       {children}
     </Text>
   )
@@ -195,29 +206,29 @@ export function Cluster({
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingHorizontal: space.edge,
     gap: space.m,
   },
   label: {
-    fontFamily: type.condensedFallback,
+    fontFamily: type.condensed,
     fontSize: 13,
-    letterSpacing: 2,
+    letterSpacing: 2.2,
     textTransform: 'uppercase',
   },
   title: {
-    fontFamily: type.displayFallback,
-    fontSize: 34,
+    fontFamily: type.display,
+    fontSize: 32,
     lineHeight: 38,
   },
   body: {
-    fontFamily: type.uiFallback,
-    fontSize: 17,
+    fontFamily: type.ui,
+    fontSize: 16,
     lineHeight: 24,
   },
   meta: {
-    fontFamily: type.uiFallback,
+    fontFamily: type.ui,
     fontSize: 13,
-    letterSpacing: 0.4,
+    letterSpacing: 0.2,
+    lineHeight: 18,
   },
   primary: {
     minHeight: 52,
@@ -225,35 +236,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.l,
+    borderRadius: 2,
   },
   primaryText: {
     color: color.inkOnFill,
-    fontFamily: type.uiFallback,
+    fontFamily: type.uiSemi,
     fontSize: 16,
-    fontWeight: '600',
   },
   quiet: {
-    minHeight: 52,
-    borderWidth: 1,
-    borderColor: color.ink800,
+    minHeight: 48,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: space.l,
   },
   quietText: {
     color: color.ink900,
-    fontFamily: type.uiFallback,
+    fontFamily: type.uiMedium,
     fontSize: 16,
+  },
+  quietInverted: {
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.l,
+  },
+  quietInvertedText: {
+    color: color.warmWhite,
+    fontFamily: type.uiMedium,
+    fontSize: 16,
+  },
+  link: {
+    paddingVertical: 8,
+  },
+  linkText: {
+    fontFamily: type.ui,
+    fontSize: 15,
+    color: color.emberDeep,
   },
   rule: {
     height: 1,
-    backgroundColor: color.ink800,
-    opacity: 0.35,
-    marginVertical: space.s,
+    backgroundColor: color.hairline,
+    marginVertical: 4,
   },
   routeLine: {
-    width: 2,
-    height: 28,
+    width: 1.5,
+    height: 22,
     backgroundColor: color.ember,
     marginLeft: 7,
   },
@@ -265,7 +292,7 @@ const styles = StyleSheet.create({
   },
   photoText: {
     color: color.bone,
-    fontFamily: type.uiFallback,
+    fontFamily: type.ui,
     fontSize: 13,
   },
   metric: {
@@ -273,19 +300,21 @@ const styles = StyleSheet.create({
   },
   metricKicker: {
     color: color.muted,
-    fontFamily: type.condensedFallback,
-    letterSpacing: 1.6,
+    fontFamily: type.condensed,
+    letterSpacing: 1.8,
     textTransform: 'uppercase',
     fontSize: 12,
   },
   metricValue: {
     color: color.warmWhite,
-    fontFamily: type.displayFallback,
-    fontSize: 40,
+    fontFamily: type.display,
+    fontSize: 36,
+    lineHeight: 40,
   },
   metricUnit: {
     fontSize: 16,
     color: color.muted,
+    fontFamily: type.ui,
   },
   cluster: {
     gap: space.m,

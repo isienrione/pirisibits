@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react'
+import { StatusBar } from 'expo-status-bar'
+import { AppShell } from '../design/chrome'
 import { DensityProvider } from '../design/DensityProvider'
 import { DiagnosticsScreen } from '../dev/DiagnosticsScreen'
 import { DevScreenGallery } from '../registry/DevScreenGallery'
@@ -90,13 +92,23 @@ const FUNCTIONAL: Partial<Record<ScreenId, ComponentType>> = {
   Gallery: DevScreenGallery,
 }
 
+const SHELL_SCREENS = new Set<ScreenId>(['B01', 'B03', 'B04', 'B05', 'B06', 'F01', 'F03', 'G01', 'I01'])
+const IMMERSION_SCREENS = new Set<ScreenId>(['A01', 'K01', 'C01', 'C06', 'D01', 'D02', 'D07', 'D09', 'J03', 'K05'])
+
 export function RootNavigator() {
-  const { state } = useTraveler()
+  const { state, dispatch } = useTraveler()
   const entry = SCREEN_REGISTRY.find((item) => item.id === state.screen)
   const ScreenImpl = FUNCTIONAL[state.screen] ?? (() => <ContractScreen id={state.screen} />)
-  return (
+  const framed = (
     <DensityProvider value={entry?.density ?? 2}>
+      <StatusBar style={IMMERSION_SCREENS.has(state.screen) ? 'light' : 'dark'} />
       <ScreenImpl />
     </DensityProvider>
+  )
+  if (!SHELL_SCREENS.has(state.screen)) return framed
+  return (
+    <AppShell screen={state.screen} onTab={(screen) => dispatch({ type: 'setScreen', screen })}>
+      {framed}
+    </AppShell>
   )
 }

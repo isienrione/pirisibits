@@ -9,5 +9,11 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ]
-config.resolver.disableHierarchicalLookup = true
+config.resolver.extraNodeModules = {
+  '@babel/runtime': path.resolve(projectRoot, 'node_modules/@babel/runtime'),
+  'react': path.resolve(workspaceRoot, 'node_modules/react'),
+  'react-native': path.resolve(projectRoot, 'node_modules/react-native'),
+  'react-native-web': path.resolve(projectRoot, 'node_modules/react-native-web'),
+  'react-dom': path.resolve(projectRoot, 'node_modules/react-dom'),
+}
 module.exports = config

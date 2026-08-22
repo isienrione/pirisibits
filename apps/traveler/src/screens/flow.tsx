@@ -6,15 +6,32 @@ import {
   EditorialLabel,
   InstrumentMetric,
   Meta,
-  PaperRule,
-  PhotoPlaceholder,
   PrimaryAction,
-  RouteLine,
+  QuietAction,
   Screen,
   Title,
 } from '../design/primitives'
+import {
+  ArrivalConfirm,
+  AudioRuntime,
+  ChoiceRow,
+  CompactDiscovery,
+  EditorialHeader,
+  HomeProposal,
+  ImmersiveCover,
+  RevealedMystery,
+  RouteForkCard,
+  RouteScore,
+  SealedMystery,
+  StatusChip,
+  StepProgress,
+  ThenNowHold,
+  WalkingInstrument,
+} from '../design/components'
 import { DensityProvider } from '../design/DensityProvider'
 import { color, space, type } from '../design/tokens'
+import { copy } from '../copy'
+import { displayTitle, spokenLine, travelerDelta, travelerWhy } from '../copy/present'
 import { MapSurface } from '../map/MapSurface'
 import { SCREEN_REGISTRY } from '../registry/screenInventory'
 import { useActiveItem, useTraveler } from '../state/TravelerContext'
@@ -22,34 +39,7 @@ import type { ScreenId } from '../state/types'
 import fixture from '../demo/generated/mobileFixture.json'
 import { screenForTreatment } from '../experience/resolvers'
 import { distanceMeters, shouldOfferArrival } from '../location/foregroundLocation'
-
-function progress(step: number) {
-  return `0${step} / 05`
-}
-
-function Choice({
-  label,
-  selected,
-  onPress,
-}: {
-  label: string
-  selected?: boolean
-  onPress: () => void
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      style={[styles.choice, selected && styles.choiceOn]}
-    >
-      <Text style={styles.choiceText}>{label}</Text>
-    </Pressable>
-  )
-}
-
-function DemoMark() {
-  return <Meta>DEMO_ONLY · not a City Engine decision</Meta>
-}
+import { imageForItem, places, thenImageForItem, walkingImage } from '../media/places'
 
 function profileFromDraft(onboarding: ReturnType<typeof useTraveler>['state']['onboarding']): TravelerProfile | null {
   if (!onboarding.interests?.length || !onboarding.explorationStyle || !onboarding.mobility || !onboarding.timeBudgetMin) {
@@ -70,15 +60,15 @@ function tokenFromEnv() {
 export function WelcomeScreen() {
   const { dispatch } = useTraveler()
   return (
-    <Screen tone="immersion" density={3}>
-      <Cluster>
-        <EditorialLabel inverted>ChronoWalk</EditorialLabel>
-        <Title inverted>A city, composed for the hours you actually have.</Title>
-        <Body inverted>
-          Rome, from published stops. This draft does not claim a finished algorithm.
-        </Body>
-      </Cluster>
-      <PrimaryAction label="Begin" onPress={() => dispatch({ type: 'setScreen', screen: 'A03' })} />
+    <Screen tone="immersion" flush>
+      <ImmersiveCover
+        image={places.welcome}
+        footer={<PrimaryAction label={copy.welcome.begin} onPress={() => dispatch({ type: 'setScreen', screen: 'A03' })} />}
+      >
+        <EditorialLabel inverted>{copy.brand.name}</EditorialLabel>
+        <Title inverted>{copy.welcome.title}</Title>
+        <Body inverted>{copy.welcome.body}</Body>
+      </ImmersiveCover>
     </Screen>
   )
 }
@@ -92,26 +82,30 @@ export function InterestsScreen() {
     dispatch({ type: 'patchOnboarding', patch: { interests: [...current] } })
   }
   return (
-    <Screen density={2}>
-      <EditorialLabel>{progress(1)}</EditorialLabel>
-      <Title>What should the afternoon lean toward?</Title>
-      <Choice
-        label="Antiquity — stone, sequence, Forum"
+    <Screen>
+      <StepProgress step={1} total={5} />
+      <EditorialHeader kicker={copy.onboarding.interests.kicker} title={copy.onboarding.interests.title} />
+      <ChoiceRow
+        title={copy.onboarding.interests.antiquity}
+        hint={copy.onboarding.interests.antiquityHint}
         selected={state.onboarding.interests?.includes('antiquity')}
         onPress={() => toggle('antiquity')}
       />
-      <Choice
-        label="Living city — piazzas and water"
+      <ChoiceRow
+        title={copy.onboarding.interests.livingCity}
+        hint={copy.onboarding.interests.livingCityHint}
         selected={state.onboarding.interests?.includes('living-city')}
         onPress={() => toggle('living-city')}
       />
-      <Choice
-        label="The river"
+      <ChoiceRow
+        title={copy.onboarding.interests.river}
+        hint={copy.onboarding.interests.riverHint}
         selected={state.onboarding.interests?.includes('river')}
         onPress={() => toggle('river')}
       />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Continue"
+        label={copy.onboarding.continue}
         disabled={!state.onboarding.interests?.length}
         onPress={() => dispatch({ type: 'setScreen', screen: 'A05' })}
       />
@@ -122,26 +116,30 @@ export function InterestsScreen() {
 export function StyleScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={2}>
-      <EditorialLabel>{progress(2)}</EditorialLabel>
-      <Title>How do you like to move through a place?</Title>
-      <Choice
-        label="Linger"
+    <Screen>
+      <StepProgress step={2} total={5} />
+      <EditorialHeader kicker={copy.onboarding.style.kicker} title={copy.onboarding.style.title} />
+      <ChoiceRow
+        title={copy.onboarding.style.linger}
+        hint={copy.onboarding.style.lingerHint}
         selected={state.onboarding.explorationStyle === 'linger'}
         onPress={() => dispatch({ type: 'patchOnboarding', patch: { explorationStyle: 'linger' } })}
       />
-      <Choice
-        label="Cover ground"
+      <ChoiceRow
+        title={copy.onboarding.style.cover}
+        hint={copy.onboarding.style.coverHint}
         selected={state.onboarding.explorationStyle === 'cover-ground'}
         onPress={() => dispatch({ type: 'patchOnboarding', patch: { explorationStyle: 'cover-ground' } })}
       />
-      <Choice
-        label="Mixed"
+      <ChoiceRow
+        title={copy.onboarding.style.mixed}
+        hint={copy.onboarding.style.mixedHint}
         selected={state.onboarding.explorationStyle === 'mixed'}
         onPress={() => dispatch({ type: 'patchOnboarding', patch: { explorationStyle: 'mixed' } })}
       />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Continue"
+        label={copy.onboarding.continue}
         disabled={!state.onboarding.explorationStyle}
         onPress={() => dispatch({ type: 'setScreen', screen: 'A06' })}
       />
@@ -152,22 +150,26 @@ export function StyleScreen() {
 export function MobilityScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>{progress(3)}</EditorialLabel>
-      <Title>Stairs, or not.</Title>
-      <Body>The Capitoline climb is documented as stairs in the Rome transit copy.</Body>
-      <Choice
-        label="Walking is fine, including stairs"
+    <Screen>
+      <StepProgress step={3} total={5} />
+      <EditorialHeader
+        kicker={copy.onboarding.mobility.kicker}
+        title={copy.onboarding.mobility.title}
+        body={copy.onboarding.mobility.body}
+      />
+      <ChoiceRow
+        title={copy.onboarding.mobility.walking}
         selected={state.onboarding.mobility === 'walking'}
         onPress={() => dispatch({ type: 'patchOnboarding', patch: { mobility: 'walking' } })}
       />
-      <Choice
-        label="Keep stairs limited"
+      <ChoiceRow
+        title={copy.onboarding.mobility.limited}
         selected={state.onboarding.mobility === 'limited-stairs'}
         onPress={() => dispatch({ type: 'patchOnboarding', patch: { mobility: 'limited-stairs' } })}
       />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Continue"
+        label={copy.onboarding.continue}
         disabled={!state.onboarding.mobility}
         onPress={() => dispatch({ type: 'setScreen', screen: 'A07' })}
       />
@@ -177,20 +179,23 @@ export function MobilityScreen() {
 
 export function TimeScreen() {
   const { state, dispatch } = useTraveler()
+  const hints = { 60: copy.onboarding.time.hint60, 120: copy.onboarding.time.hint120, 180: copy.onboarding.time.hint180 }
   return (
-    <Screen density={2}>
-      <EditorialLabel>{progress(4)}</EditorialLabel>
-      <Title>How many minutes do you actually have?</Title>
+    <Screen>
+      <StepProgress step={4} total={5} />
+      <EditorialHeader kicker={copy.onboarding.time.kicker} title={copy.onboarding.time.title} />
       {([60, 120, 180] as const).map((budget) => (
-        <Choice
+        <ChoiceRow
           key={budget}
-          label={`${budget} minutes`}
+          title={copy.onboarding.time.minutes(budget)}
+          hint={hints[budget]}
           selected={state.onboarding.timeBudgetMin === budget}
           onPress={() => dispatch({ type: 'patchOnboarding', patch: { timeBudgetMin: budget } })}
         />
       ))}
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Continue"
+        label={copy.onboarding.continue}
         disabled={!state.onboarding.timeBudgetMin}
         onPress={() => dispatch({ type: 'setScreen', screen: 'A08' })}
       />
@@ -201,14 +206,16 @@ export function TimeScreen() {
 export function LocationPermissionScreen() {
   const { dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>{progress(5)}</EditorialLabel>
-      <Title>Location, only when you walk.</Title>
-      <Body>
-        ChronoWalk uses foreground location to notice arrival. You can plan the draft without it. Always / background is never requested.
-      </Body>
+    <Screen>
+      <StepProgress step={5} total={5} />
+      <EditorialHeader
+        kicker={copy.onboarding.location.kicker}
+        title={copy.onboarding.location.title}
+        body={copy.onboarding.location.body}
+      />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Allow while walking"
+        label={copy.onboarding.location.allow}
         onPress={() => {
           dispatch({ type: 'patchOnboarding', patch: { locationChoice: 'granted' } })
           dispatch({ type: 'setScreen', screen: 'A10' })
@@ -216,7 +223,7 @@ export function LocationPermissionScreen() {
       />
       <PrimaryAction
         quiet
-        label="Plan without location"
+        label={copy.onboarding.location.skip}
         onPress={() => {
           dispatch({ type: 'patchOnboarding', patch: { locationChoice: 'skipped' } })
           dispatch({ type: 'setScreen', screen: 'A10' })
@@ -229,18 +236,20 @@ export function LocationPermissionScreen() {
 export function ReadyScreen() {
   const { dispatch } = useTraveler()
   return (
-    <Screen density={2}>
-      <EditorialLabel>Ready</EditorialLabel>
-      <Title>We’ll assemble a published draft for those minutes.</Title>
-      <DemoMark />
-      <PrimaryAction label="Compose the afternoon" onPress={() => dispatch({ type: 'setScreen', screen: 'K01' })} />
+    <Screen>
+      <EditorialHeader
+        kicker={copy.onboarding.ready.kicker}
+        title={copy.onboarding.ready.title}
+        body={copy.onboarding.ready.body}
+      />
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.onboarding.ready.compose} onPress={() => dispatch({ type: 'setScreen', screen: 'K01' })} />
     </Screen>
   )
 }
 
 export function ComposingScreen() {
   const { state, dispatch, service } = useTraveler()
-  const fragments = ['Arena', 'Arch', 'Vault', 'Way']
   const go = () => {
     const profile = profileFromDraft(state.onboarding)
     if (!profile) return
@@ -256,24 +265,22 @@ export function ComposingScreen() {
     dispatch({ type: 'setScreen', screen: 'B01' })
   }
   return (
-    <Screen density={2}>
-      <EditorialLabel>Assembling</EditorialLabel>
-      <Title>Fragments of a documented sequence.</Title>
-      <View style={styles.fragments}>
-        {fragments.map((fragment, index) => (
-          <Text
-            key={fragment}
-            style={[
-              styles.fragment,
-              state.reduceMotion ? null : { opacity: 1, transform: [{ translateY: index * 2 }] },
-            ]}
-          >
-            {fragment}
-          </Text>
-        ))}
-      </View>
-      <DemoMark />
-      <PrimaryAction label="See the draft" onPress={go} />
+    <Screen tone="immersion" flush>
+      <ImmersiveCover
+        image={places.forum}
+        dim={0.5}
+        footer={<PrimaryAction label={copy.composing.seeDraft} onPress={go} />}
+      >
+        <EditorialLabel inverted>{copy.composing.kicker}</EditorialLabel>
+        <Title inverted>{copy.composing.title}</Title>
+        <View style={styles.fragments}>
+          {copy.composing.fragments.map((fragment) => (
+            <Text key={fragment} style={styles.fragment}>
+              {fragment}
+            </Text>
+          ))}
+        </View>
+      </ImmersiveCover>
     </Screen>
   )
 }
@@ -281,22 +288,22 @@ export function ComposingScreen() {
 export function HomeProposalScreen() {
   const { state, dispatch } = useTraveler()
   const route = state.route
-  if (!route) return <Screen><Body>No draft yet.</Body></Screen>
-  const hero = route.items.find((item) => item.treatment === 'hero') ?? route.items.find((item) => item.kind === 'experience')
+  if (!route) {
+    return (
+      <Screen>
+        <Body>Compose an afternoon first.</Body>
+      </Screen>
+    )
+  }
   return (
-    <Screen density={2}>
-      <EditorialLabel>Today</EditorialLabel>
-      <Title>{route.honestyLine}</Title>
-      <PaperRule />
-      <Body>{hero?.title}</Body>
-      <Meta>
-        {route.time.totalEstimatedMin} min estimated · {route.time.timeFit}
-      </Meta>
-      <DemoMark />
-      <PrimaryAction label="Open the score" onPress={() => dispatch({ type: 'setScreen', screen: 'B04' })} />
-      <PrimaryAction quiet label="Settings" onPress={() => dispatch({ type: 'setScreen', screen: 'I01' })} />
-      <PrimaryAction quiet label="Why this" onPress={() => dispatch({ type: 'setScreen', screen: 'B05' })} />
-      <PrimaryAction quiet label="Adjust" onPress={() => dispatch({ type: 'setScreen', screen: 'B06' })} />
+    <Screen flush>
+      <HomeProposal
+        route={route}
+        onStart={() => dispatch({ type: 'setScreen', screen: 'C01' })}
+        onScore={() => dispatch({ type: 'setScreen', screen: 'B04' })}
+        onWhy={() => dispatch({ type: 'setScreen', screen: 'B05' })}
+        onAdjust={() => dispatch({ type: 'setScreen', screen: 'B06' })}
+      />
     </Screen>
   )
 }
@@ -304,11 +311,14 @@ export function HomeProposalScreen() {
 export function HomeActiveScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Active</EditorialLabel>
-      <Title>{state.route?.title ?? 'No route'}</Title>
-      <Body>A draft is in progress. Resume does not restart onboarding.</Body>
-      <PrimaryAction label="Resume walking" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+    <Screen>
+      <EditorialHeader
+        kicker={copy.home.activeKicker}
+        title={state.route?.title ?? copy.brand.city}
+        body={copy.home.activeBody}
+      />
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.home.resume} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
     </Screen>
   )
 }
@@ -318,61 +328,12 @@ export function RouteScoreScreen() {
   const route = state.route
   if (!route) return null
   return (
-    <Screen density={2}>
-      <ScrollView contentContainerStyle={{ gap: space.s, paddingBottom: space.xl }}>
-        <EditorialLabel>Score</EditorialLabel>
-        <Title>{route.title}</Title>
-        <Meta>
-          target {route.time.targetBudgetMin} · experience {route.time.experienceMin} · walking{' '}
-          {route.time.walkingMinComplete ? route.time.walkingMin : 'partial'} · buffer {route.time.bufferMin} · total{' '}
-          {route.time.totalEstimatedMin} · Δ {route.time.budgetDeltaMin} · {route.time.timeFit}
-        </Meta>
-        {route.items.map((item) => {
-          if (item.kind === 'walk') {
-            return (
-              <View key={item.id} style={styles.walkRow}>
-                <RouteLine />
-                <Meta>
-                  Walk{item.walkingMin != null ? ` · ${item.walkingMin} min` : ' · minutes unpublished'}
-                </Meta>
-              </View>
-            )
-          }
-          if (item.treatment === 'hero') {
-            return (
-              <View key={item.id} style={styles.heroBlock}>
-                <EditorialLabel>Hero</EditorialLabel>
-                <Title>{item.title}</Title>
-                <Body>{item.lookCue}</Body>
-              </View>
-            )
-          }
-          if (item.treatment === 'mystery') {
-            return (
-              <View key={item.id} style={styles.lateral}>
-                <EditorialLabel>Lateral</EditorialLabel>
-                <Title>{item.spoilerSafeTitle}</Title>
-                <Meta>Sealed until reveal</Meta>
-              </View>
-            )
-          }
-          if (item.treatment === 'micro') {
-            return (
-              <Text key={item.id} style={styles.micro}>
-                {item.title}
-                {item.experienceMin ? ` · ${item.experienceMin}m` : ''}
-              </Text>
-            )
-          }
-          return (
-            <View key={item.id} style={styles.discovery}>
-              <EditorialLabel>{item.treatment}</EditorialLabel>
-              <Body>{item.title}</Body>
-            </View>
-          )
-        })}
-        <PrimaryAction label="Walk this draft" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
-        <PrimaryAction quiet label="Back" onPress={() => dispatch({ type: 'setScreen', screen: 'B01' })} />
+    <Screen>
+      <ScrollView contentContainerStyle={{ paddingBottom: space.xl, gap: space.s }} showsVerticalScrollIndicator={false}>
+        <EditorialHeader kicker={copy.score.kicker} title={route.title} />
+        <RouteScore route={route} mysteryRevealed={state.experience.mysteryRevealed} />
+        <PrimaryAction label={copy.score.start} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+        <QuietAction label={copy.score.back} onPress={() => dispatch({ type: 'setScreen', screen: 'B01' })} />
       </ScrollView>
     </Screen>
   )
@@ -381,17 +342,17 @@ export function RouteScoreScreen() {
 export function WhyThisScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={2}>
-      <EditorialLabel>Why this</EditorialLabel>
-      <Title>Reasons that exist in the sources.</Title>
-      {(state.route?.why ?? []).map((reason) => (
-        <View key={reason.id} style={styles.why}>
-          <RouteLine />
-          <Body>{reason.statement}</Body>
-          <Meta>{reason.sourceId}</Meta>
-        </View>
-      ))}
-      <PrimaryAction label="Back" onPress={() => dispatch({ type: 'setScreen', screen: 'B04' })} />
+    <Screen>
+      <ScrollView contentContainerStyle={{ gap: space.m, paddingBottom: space.xl }}>
+        <EditorialHeader kicker={copy.why.kicker} title={copy.why.title} />
+        {(state.route?.why ?? []).map((reason) => (
+          <View key={reason.id} style={styles.why}>
+            <View style={styles.whyRule} />
+            <Body>{travelerWhy(reason, state.route?.time.targetBudgetMin)}</Body>
+          </View>
+        ))}
+        <PrimaryAction label={copy.why.back} onPress={() => dispatch({ type: 'setScreen', screen: 'B04' })} />
+      </ScrollView>
     </Screen>
   )
 }
@@ -406,20 +367,17 @@ export function AdjustPlanScreen() {
     dispatch({ type: 'setScreen', screen: 'B04' })
   }
   return (
-    <Screen density={1}>
-      <EditorialLabel>Adjust</EditorialLabel>
-      <Title>Change the minutes. The service answers.</Title>
-      <Body>60, 120, and 180 are three published drafts. The screen does not mutate arrays itself.</Body>
-      <PrimaryAction label="60 minutes" onPress={() => apply(60)} />
-      <PrimaryAction label="120 minutes" onPress={() => apply(120)} />
-      <PrimaryAction label="180 minutes" onPress={() => apply(180)} />
+    <Screen>
+      <EditorialHeader kicker={copy.adjust.kicker} title={copy.adjust.title} body={copy.adjust.body} />
+      <PrimaryAction label={copy.adjust.m60} onPress={() => apply(60)} />
+      <PrimaryAction label={copy.adjust.m120} onPress={() => apply(120)} />
+      <PrimaryAction label={copy.adjust.m180} onPress={() => apply(180)} />
     </Screen>
   )
 }
 
 export function WalkInstrumentScreen() {
   const { state, dispatch } = useTraveler()
-  const item = useActiveItem()
   const nextExperience = state.route?.items.slice(state.cursor).find((entry) => entry.kind === 'experience')
   const target = nextExperience?.coordinate
     ? { lat: nextExperience.coordinate.lat, lng: nextExperience.coordinate.lng, radiusM: nextExperience.arrivalRadiusM ?? 40 }
@@ -429,33 +387,30 @@ export function WalkInstrumentScreen() {
     state.session.locationMode === 'planning' || state.location.status !== 'ok' || !target
       ? null
       : distanceMeters(state.location, target)
+  const status =
+    state.location.status === 'ok'
+      ? copy.walk.gpsOk
+      : state.location.status === 'weak'
+        ? copy.walk.gpsWeak
+        : state.location.status === 'denied'
+          ? copy.walk.gpsDenied
+          : copy.walk.planning
   return (
     <DensityProvider value={0}>
-      <Screen tone="immersion" density={0}>
-        <EditorialLabel inverted>Walking</EditorialLabel>
-        <InstrumentMetric kicker="Next" value={nextExperience?.spoilerSafeTitle ?? 'End of draft'} />
-        {distance != null ? <InstrumentMetric kicker="Distance" value={String(distance)} unit="m" /> : null}
-        <Meta inverted>
-          {state.location.status === 'ok'
-            ? 'Fix ok — not turn-by-turn'
-            : state.location.status === 'weak'
-              ? 'GPS weak'
-              : state.location.status === 'denied'
-                ? 'Location denied — continue from the list'
-                : 'Planning / no live distance'}
-        </Meta>
-        {offer ? (
-          <PrimaryAction label="You may have arrived" onPress={() => dispatch({ type: 'setScreen', screen: 'C03' })} />
-        ) : (
-          <PrimaryAction
-            label="I’m here"
-            onPress={() => {
-              if (nextExperience) dispatch({ type: 'arrive', itemId: nextExperience.id })
-              dispatch({ type: 'setScreen', screen: 'C03' })
-            }}
-          />
-        )}
-        <PrimaryAction quiet label="Route control" onPress={() => dispatch({ type: 'setScreen', screen: 'C04' })} />
+      <Screen tone="immersion" flush>
+        <WalkingInstrument
+          image={walkingImage(nextExperience)}
+          nextTitle={displayTitle(nextExperience ?? null, state.experience.mysteryRevealed)}
+          status={status}
+          distance={distance != null ? `${Math.round(distance)} m` : copy.walk.noDistance}
+          primaryLabel={offer ? copy.walk.arrivedOffer : copy.walk.here}
+          onPrimary={() => {
+            if (!offer && nextExperience) dispatch({ type: 'arrive', itemId: nextExperience.id })
+            dispatch({ type: 'setScreen', screen: 'C03' })
+          }}
+          onMap={() => dispatch({ type: 'setScreen', screen: 'C06' })}
+          onList={() => dispatch({ type: 'setScreen', screen: 'C05' })}
+        />
       </Screen>
     </DensityProvider>
   )
@@ -464,29 +419,24 @@ export function WalkInstrumentScreen() {
 export function ArrivalScreen() {
   const { dispatch, state } = useTraveler()
   const item = useActiveItem()
-  const experience = item?.kind === 'experience' ? item : item
+  const experience = item
   return (
-    <Screen density={1}>
-      <EditorialLabel>Arrival</EditorialLabel>
-      <Title>{experience?.spoilerSafeTitle ?? 'This place'}</Title>
-      <Body>{experience?.arrivalLine ?? experience?.approachLine ?? 'Confirm before anything is told.'}</Body>
-      <PrimaryAction
-        label="Confirm I’m here"
-        onPress={() => {
+    <Screen flush>
+      <ArrivalConfirm
+        image={imageForItem(experience)}
+        title={displayTitle(experience, state.experience.mysteryRevealed)}
+        line={experience?.arrivalLine ?? experience?.approachLine ?? copy.arrival.beginHint}
+        confirmed={state.experience.confirmedArrival}
+        onConfirm={() => {
           if (experience) dispatch({ type: 'arrive', itemId: experience.id })
           dispatch({ type: 'confirmArrival' })
         }}
-      />
-      <PrimaryAction
-        label="Begin the experience"
-        disabled={!state.experience.confirmedArrival}
-        onPress={() => {
+        onBegin={() => {
           dispatch({ type: 'beginExperience' })
-          const screen = screenForTreatment(experience?.treatment ?? 'discovery', false)
+          const screen = screenForTreatment(experience?.treatment ?? 'discovery', state.experience.mysteryRevealed)
           dispatch({ type: 'setScreen', screen })
         }}
       />
-      <Meta>Arrival and beginning are separate actions.</Meta>
     </Screen>
   )
 }
@@ -494,14 +444,12 @@ export function ArrivalScreen() {
 export function RouteControlScreen() {
   const { dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Control</EditorialLabel>
-      <Title>The instrument, not the catalog.</Title>
-      <PrimaryAction label="List" onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
-      <PrimaryAction label="Map" onPress={() => dispatch({ type: 'setScreen', screen: 'C06' })} />
-      <PrimaryAction label="Skip a stop" onPress={() => dispatch({ type: 'setScreen', screen: 'E04' })} />
-      <PrimaryAction quiet label="Back to walking" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
-      <PrimaryAction quiet label="Settings" onPress={() => dispatch({ type: 'setScreen', screen: 'I01' })} />
+    <Screen>
+      <EditorialHeader kicker={copy.control.kicker} title={copy.control.title} />
+      <PrimaryAction label={copy.control.list} onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
+      <PrimaryAction label={copy.control.map} onPress={() => dispatch({ type: 'setScreen', screen: 'C06' })} />
+      <PrimaryAction quiet label={copy.control.skip} onPress={() => dispatch({ type: 'setScreen', screen: 'E04' })} />
+      <QuietAction label={copy.control.back} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
     </Screen>
   )
 }
@@ -509,9 +457,9 @@ export function RouteControlScreen() {
 export function ActiveListScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
+    <Screen>
+      <EditorialLabel>{copy.list.kicker}</EditorialLabel>
       <ScrollView>
-        <EditorialLabel>Remainder</EditorialLabel>
         {(state.route?.items ?? []).map((item, index) => (
           <Pressable
             key={item.id}
@@ -519,10 +467,12 @@ export function ActiveListScreen() {
               dispatch({ type: 'setCursor', cursor: index })
               dispatch({ type: 'setScreen', screen: item.kind === 'walk' ? 'C01' : 'C03' })
             }}
+            style={styles.listRow}
           >
             <Text style={index === state.cursor ? styles.now : styles.micro}>
-              {item.mystery.isMystery ? item.spoilerSafeTitle : item.title}
+              {item.mystery.isMystery && !state.experience.mysteryRevealed ? item.spoilerSafeTitle : item.title}
             </Text>
+            {index === state.cursor ? <Text style={styles.nowMark}>{copy.list.now}</Text> : null}
           </Pressable>
         ))}
       </ScrollView>
@@ -534,8 +484,8 @@ export function ActiveMapScreen() {
   const { state, dispatch } = useTraveler()
   return (
     <DensityProvider value={0}>
-      <Screen density={0}>
-        <EditorialLabel>Map</EditorialLabel>
+        <Screen>
+        <EditorialHeader kicker={copy.map.kicker} title={copy.map.title} />
         <MapSurface
           items={state.route?.items ?? []}
           token={tokenFromEnv()}
@@ -549,7 +499,7 @@ export function ActiveMapScreen() {
             dispatch({ type: 'setCursor', cursor: Math.max(0, index) })
           }}
         />
-        <PrimaryAction quiet label="List" onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
+        <QuietAction label={copy.walk.list} onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
       </Screen>
     </DensityProvider>
   )
@@ -558,12 +508,15 @@ export function ActiveMapScreen() {
 export function ResumeScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Resume</EditorialLabel>
-      <Title>{state.route?.items[state.cursor]?.spoilerSafeTitle ?? 'No active draft'}</Title>
-      <Body>Same item, same cursor. Onboarding is not replayed.</Body>
-      <PrimaryAction label="Continue" onPress={() => dispatch({ type: 'setScreen', screen: state.route ? 'C01' : 'A01' })} />
-      <PrimaryAction quiet label="Close the afternoon" onPress={() => dispatch({ type: 'setScreen', screen: 'B01' })} />
+    <Screen>
+      <EditorialHeader
+        kicker={copy.resume.kicker}
+        title={displayTitle(state.route?.items[state.cursor], state.experience.mysteryRevealed)}
+        body={copy.resume.body}
+      />
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.resume.continue} onPress={() => dispatch({ type: 'setScreen', screen: state.route ? 'C01' : 'A01' })} />
+      <QuietAction label={copy.resume.close} onPress={() => dispatch({ type: 'setScreen', screen: 'B01' })} />
     </Screen>
   )
 }
@@ -572,12 +525,15 @@ export function HeroCoverScreen() {
   const { dispatch } = useTraveler()
   const item = useActiveItem()
   return (
-    <Screen tone="immersion" density={3}>
-      <EditorialLabel inverted>Hero</EditorialLabel>
-      <Title inverted>{item?.title}</Title>
-      <Body inverted>{item?.lookCue}</Body>
-      <PhotoPlaceholder label={item?.archive.caption ?? 'Sourced still — or pending'} />
-      <PrimaryAction label="Enter" onPress={() => dispatch({ type: 'setScreen', screen: 'D02' })} />
+    <Screen tone="immersion" flush>
+      <ImmersiveCover
+        image={imageForItem(item)}
+        footer={<PrimaryAction label={copy.hero.enter} onPress={() => dispatch({ type: 'setScreen', screen: 'D02' })} />}
+      >
+        <EditorialLabel inverted>{copy.brand.name}</EditorialLabel>
+        <Title inverted>{item?.title}</Title>
+        <Body inverted>{item?.lookCue}</Body>
+      </ImmersiveCover>
     </Screen>
   )
 }
@@ -586,11 +542,13 @@ export function HeroRuntimeScreen() {
   const { dispatch } = useTraveler()
   const item = useActiveItem()
   return (
-    <Screen tone="immersion" density={2}>
-      <EditorialLabel inverted>Look</EditorialLabel>
-      <Body inverted>{item?.lookCue}</Body>
-      <Body inverted>{(item as { firstSpokenLine?: string } | null)?.firstSpokenLine ?? item?.arrivalLine}</Body>
-      <PrimaryAction label="Complete" onPress={() => dispatch({ type: 'setScreen', screen: 'D12' })} />
+    <Screen tone="immersion" flush>
+      <AudioRuntime
+        image={places.colosseumInteriorNow}
+        lookCue={item?.lookCue ?? copy.arrival.look}
+        spoken={spokenLine(item)}
+        onComplete={() => dispatch({ type: 'setScreen', screen: 'D12' })}
+      />
     </Screen>
   )
 }
@@ -599,38 +557,34 @@ export function DiscoveryScreen() {
   const { dispatch } = useTraveler()
   const item = useActiveItem()
   return (
-    <Screen density={2}>
-      <EditorialLabel>Discovery</EditorialLabel>
-      <Title>{item?.title}</Title>
-      <Body>{item?.approachLine ?? item?.arrivalLine}</Body>
-      <PrimaryAction label="Complete" onPress={() => dispatch({ type: 'setScreen', screen: 'D12' })} />
+    <Screen flush>
+      <CompactDiscovery
+        image={imageForItem(item)}
+        title={item?.title ?? ''}
+        body={item?.approachLine ?? item?.arrivalLine ?? ''}
+        onComplete={() => dispatch({ type: 'setScreen', screen: 'D12' })}
+      />
     </Screen>
   )
 }
 
 export function MysterySealedScreen() {
-  const { dispatch, state } = useTraveler()
+  const { dispatch } = useTraveler()
   const item = useActiveItem()
+  const detour =
+    item?.mystery.detourCostMin != null ? copy.mystery.detour(item.mystery.detourCostMin) : copy.mystery.detourUnknown
   return (
-    <Screen density={2}>
-      <EditorialLabel>Sealed</EditorialLabel>
-      <Title>{item?.spoilerSafeTitle ?? fixture.mysterySpoilerSafeTitle}</Title>
-      <Body>{item?.mystery.hint ?? fixture.mysteryHint}</Body>
-      <Meta>
-        Detour {item?.mystery.detourCostMin != null ? `${item.mystery.detourCostMin} min` : 'unpublished'}
-      </Meta>
-      <PrimaryAction
-        label="Take me"
-        onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })}
-      />
-      <PrimaryAction
-        label="Reveal now"
-        onPress={() => {
+    <Screen tone="immersion" flush>
+      <SealedMystery
+        title={item?.spoilerSafeTitle ?? fixture.mysterySpoilerSafeTitle}
+        hint={item?.mystery.hint ?? fixture.mysteryHint}
+        detour={detour}
+        onTake={() => dispatch({ type: 'setScreen', screen: 'C01' })}
+        onReveal={() => {
           dispatch({ type: 'revealMystery' })
           dispatch({ type: 'setScreen', screen: 'D08' })
         }}
       />
-      <Meta>Reveal is a decision, not a game.</Meta>
     </Screen>
   )
 }
@@ -638,12 +592,15 @@ export function MysterySealedScreen() {
 export function MysteryRevealedScreen() {
   const { dispatch, state } = useTraveler()
   const item = useActiveItem()
+  const title = state.experience.mysteryRevealed ? fixture.mysteryTrueTitle : item?.spoilerSafeTitle
   return (
-    <Screen density={2}>
-      <EditorialLabel>Revealed</EditorialLabel>
-      <Title>{state.experience.mysteryRevealed ? fixture.mysteryTrueTitle : item?.spoilerSafeTitle}</Title>
-      <Body>{item?.arrivalLine}</Body>
-      <PrimaryAction label="Then / Now" onPress={() => dispatch({ type: 'setScreen', screen: 'D09' })} />
+    <Screen>
+      <RevealedMystery
+        image={places.largoNow}
+        title={title ?? ''}
+        body={item?.arrivalLine ?? ''}
+        onThenNow={() => dispatch({ type: 'setScreen', screen: 'D09' })}
+      />
     </Screen>
   )
 }
@@ -651,35 +608,25 @@ export function MysteryRevealedScreen() {
 export function RevealScreen() {
   const { dispatch } = useTraveler()
   const item = useActiveItem()
-  const hasArchive = Boolean(item?.archive.then?.uri && item.archive.now?.uri)
+  const now = thenImageForItem(item) ? imageForItem(item) : places.colosseumNow
+  const then = thenImageForItem(item) ?? places.colosseumThen
+  const title = thenImageForItem(item) ? item?.title ?? copy.thenNow.kicker : 'The Colosseum'
   return (
-    <Screen tone="immersion" density={3}>
-      <EditorialLabel inverted>Then / Now</EditorialLabel>
-      <Title inverted>{item?.title}</Title>
-      {hasArchive ? (
-        <>
-          <PhotoPlaceholder label={`Now · ${item?.archive.now?.credit ?? 'sourced'}`} />
-          <PhotoPlaceholder label={`Then · ${item?.archive.caption ?? 'sourced'}`} />
-        </>
-      ) : (
-        <Body inverted>Archivo pendiente — interacción de diseño. No fake photograph is shown.</Body>
-      )}
-      <Meta inverted>{item?.archive.caption}</Meta>
-      <PrimaryAction label="Complete" onPress={() => dispatch({ type: 'setScreen', screen: 'D12' })} />
+    <Screen tone="immersion" flush>
+      <ThenNowHold now={now} then={then} title={title} onComplete={() => dispatch({ type: 'setScreen', screen: 'D12' })} />
     </Screen>
   )
 }
 
 export function ExperienceCompleteScreen() {
-  const { state, dispatch } = useTraveler()
+  const { dispatch } = useTraveler()
   const item = useActiveItem()
   return (
-    <Screen density={2}>
-      <EditorialLabel>Held</EditorialLabel>
-      <Title>{item?.spoilerSafeTitle}</Title>
-      <Body>No points. The rest of the afternoon can still change.</Body>
+    <Screen>
+      <EditorialHeader kicker={copy.complete.kicker} title={item?.spoilerSafeTitle ?? ''} body={copy.complete.body} />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="What next"
+        label={copy.complete.next}
         onPress={() => {
           if (item) dispatch({ type: 'completeExperience', itemId: item.id })
           dispatch({ type: 'setScreen', screen: 'E01' })
@@ -699,15 +646,23 @@ export function ForkScreen() {
     dispatch({ type: 'setDelta', delta: result.delta })
   }
   return (
-    <Screen density={2}>
-      <EditorialLabel>Fork</EditorialLabel>
-      <Title>{fixture.bifurcation.dominant.title}</Title>
-      <Body>{fixture.bifurcation.dominant.impact}</Body>
-      <PrimaryAction label="Stay in the valley" onPress={() => choose('continue-forum')} />
+    <Screen>
+      <EditorialHeader kicker={copy.fork.kicker} title={fixture.bifurcation.dominant.title} />
+      <RouteForkCard
+        recommended
+        title={copy.fork.stay}
+        impact={fixture.bifurcation.dominant.impact.replace(/draft/gi, 'afternoon')}
+        onPress={() => choose('continue-forum')}
+      />
       {fixture.bifurcation.alternatives.map((alt) => (
-        <PrimaryAction key={alt.id} quiet label={alt.title} onPress={() => choose(alt.id)} />
+        <RouteForkCard
+          key={alt.id}
+          title={alt.title === 'Take the later room now' ? 'Take the later room now' : alt.title}
+          impact={alt.impact.replace(/No penalty language\.?/i, '').replace(/draft/gi, 'afternoon')}
+          onPress={() => choose(alt.id)}
+        />
       ))}
-      <PrimaryAction quiet label="Follow the plan" onPress={() => choose('stay')} />
+      <QuietAction label={copy.fork.follow} onPress={() => choose('stay')} />
     </Screen>
   )
 }
@@ -715,26 +670,27 @@ export function ForkScreen() {
 export function RecomposingScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={2}>
-      <EditorialLabel>Recomposing</EditorialLabel>
-      <Title>{state.reduceMotion ? 'The remainder, rewritten.' : 'Lines sliding into a new order.'}</Title>
-      <PrimaryAction label="See the delta" onPress={() => dispatch({ type: 'setScreen', screen: 'E03' })} />
+    <Screen>
+      <EditorialHeader
+        kicker={copy.recompose.kicker}
+        title={state.reduceMotion ? copy.recompose.reduce : copy.recompose.title}
+      />
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.recompose.see} onPress={() => dispatch({ type: 'setScreen', screen: 'E03' })} />
     </Screen>
   )
 }
 
 export function RecomposedScreen() {
   const { state, dispatch } = useTraveler()
-  const delta = state.lastDelta
+  const presented = travelerDelta(state.lastDelta)
   return (
-    <Screen density={2}>
-      <EditorialLabel>Changed</EditorialLabel>
-      <Title>What actually moved.</Title>
-      {delta?.timeDeltaMin != null ? <Body>Time Δ {delta.timeDeltaMin} min</Body> : <Meta>Time delta omitted — unpublished walking minutes.</Meta>}
-      {delta?.walkingDeltaMin != null ? <Body>Walking Δ {delta.walkingDeltaMin} min</Body> : null}
-      <Body>Removed: {delta?.removedIds.join(', ') || 'none'}</Body>
-      <PrimaryAction label="Continue" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
-      <PrimaryAction quiet label="Active home" onPress={() => dispatch({ type: 'setScreen', screen: 'B03' })} />
+    <Screen>
+      <EditorialHeader kicker={copy.recomposed.kicker} title={copy.recomposed.title} body={presented.headline} />
+      <Body>{presented.time}</Body>
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.recomposed.continue} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+      <QuietAction label={copy.recomposed.home} onPress={() => dispatch({ type: 'setScreen', screen: 'B03' })} />
     </Screen>
   )
 }
@@ -743,12 +699,15 @@ export function SkipScreen() {
   const { state, dispatch, service } = useTraveler()
   const item = useActiveItem()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Skip</EditorialLabel>
-      <Title>Remove this stop. No penalty.</Title>
-      <Body>{item?.spoilerSafeTitle}</Body>
+    <Screen>
+      <EditorialHeader
+        kicker={copy.skip.kicker}
+        title={copy.skip.title}
+        body={displayTitle(item, state.experience.mysteryRevealed)}
+      />
+      <View style={{ flex: 1 }} />
       <PrimaryAction
-        label="Remove it"
+        label={copy.skip.remove}
         onPress={() => {
           if (!state.route || !item) return
           const result = service.adaptRoute(state.route, { type: 'skip', itemId: item.id }, state.cursor)
@@ -764,8 +723,8 @@ export function SkipScreen() {
 export function CityMapScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>City</EditorialLabel>
+    <Screen>
+      <EditorialHeader kicker={copy.map.kicker} title={copy.map.title} />
       <MapSurface
         items={state.route?.items ?? []}
         token={tokenFromEnv()}
@@ -781,31 +740,34 @@ export function CityMapScreen() {
 export function MapDetailSheetScreen() {
   const { dispatch, state } = useTraveler()
   const item = useActiveItem()
+  const saved = item ? state.savedIds.includes(item.id) : false
   return (
-    <Screen density={1}>
-      <EditorialLabel>{item?.treatment}</EditorialLabel>
-      <Title>{item?.mystery.isMystery && !state.experience.mysteryRevealed ? item.spoilerSafeTitle : item?.title}</Title>
-      <Meta>Provenance {item?.provenance}</Meta>
-      <Meta>{item?.experienceMin ? `${item.experienceMin} min visit (low)` : 'Visit minutes unpublished'}</Meta>
+    <Screen>
+      <EditorialHeader
+        kicker={item?.treatment === 'hero' ? copy.score.hero : copy.map.kicker}
+        title={displayTitle(item, state.experience.mysteryRevealed)}
+        body={item?.experienceMin ? copy.map.aboutVisit(item.experienceMin) : copy.map.visitUnknown}
+      />
       <PrimaryAction
-        label="Save"
+        label={saved ? copy.map.saved : copy.map.save}
         onPress={() => {
           if (item) dispatch({ type: 'save', itemId: item.id })
         }}
       />
-      <PrimaryAction quiet label="Close" onPress={() => dispatch({ type: 'setScreen', screen: 'F01' })} />
+      <QuietAction label={copy.map.close} onPress={() => dispatch({ type: 'setScreen', screen: 'F01' })} />
     </Screen>
   )
 }
 
 export function SavedScreen() {
   const { state, dispatch } = useTraveler()
+  const titles = state.savedIds.map((id) => state.route?.items.find((item) => item.id === id)?.title ?? id)
   return (
-    <Screen density={1}>
-      <EditorialLabel>Saved locally</EditorialLabel>
-      <Title>No account.</Title>
-      {state.savedIds.length ? state.savedIds.map((id) => <Body key={id}>{id}</Body>) : <Body>Nothing saved yet.</Body>}
-      <PrimaryAction quiet label="Back" onPress={() => dispatch({ type: 'setScreen', screen: 'I01' })} />
+    <Screen>
+      <EditorialHeader kicker={copy.saved.kicker} title={copy.saved.title} body={copy.saved.body} />
+      {titles.length ? titles.map((title) => <Body key={title}>{title}</Body>) : <Body>{copy.saved.empty}</Body>}
+      <View style={{ flex: 1 }} />
+      <QuietAction label={copy.saved.back} onPress={() => dispatch({ type: 'setScreen', screen: 'I01' })} />
     </Screen>
   )
 }
@@ -813,25 +775,37 @@ export function SavedScreen() {
 export function SettingsScreen() {
   const { state, dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Settings</EditorialLabel>
-      <Title>Traveler</Title>
-      <Body>Reduce motion is {state.reduceMotion ? 'on' : 'off'}.</Body>
-      <PrimaryAction
-        quiet
-        label="Toggle reduce motion"
-        onPress={() => dispatch({ type: 'setReduceMotion', value: !state.reduceMotion })}
-      />
-      {typeof __DEV__ !== 'undefined' && __DEV__ ? (
-        <>
-          <EditorialLabel>DEV</EditorialLabel>
-          <PrimaryAction label="Screen gallery" onPress={() => dispatch({ type: 'setScreen', screen: 'Gallery' })} />
-          <PrimaryAction label="Diagnostics" onPress={() => dispatch({ type: 'setScreen', screen: 'Diagnostics' })} />
-          {(['off', 'gps-weak', 'permission-denied', 'no-token', 'planning', 'offline'] as const).map((sim) => (
-            <PrimaryAction key={sim} quiet label={`Sim: ${sim}`} onPress={() => dispatch({ type: 'setSim', sim })} />
-          ))}
-        </>
-      ) : null}
+    <Screen>
+      <ScrollView contentContainerStyle={{ gap: space.m, paddingBottom: space.xl }}>
+        <EditorialHeader kicker={copy.settings.kicker} title={copy.settings.title} />
+        <View style={styles.settingRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.settingLabel}>{copy.settings.motion}</Text>
+            <Meta>{copy.settings.motionHint}</Meta>
+          </View>
+          <StatusChip label={state.reduceMotion ? copy.settings.motionOn : copy.settings.motionOff} />
+        </View>
+        <PrimaryAction
+          quiet
+          label={copy.settings.motion}
+          onPress={() => dispatch({ type: 'setReduceMotion', value: !state.reduceMotion })}
+        />
+        {typeof __DEV__ !== 'undefined' && __DEV__ ? (
+          <View style={styles.devBlock}>
+            <EditorialLabel>{copy.settings.developer}</EditorialLabel>
+            <Body>{copy.settings.developerBody}</Body>
+            <PrimaryAction label={copy.settings.gallery} onPress={() => dispatch({ type: 'setScreen', screen: 'Gallery' })} />
+            <PrimaryAction quiet label={copy.settings.diagnostics} onPress={() => dispatch({ type: 'setScreen', screen: 'Diagnostics' })} />
+            {(['off', 'gps-weak', 'permission-denied', 'no-token', 'planning', 'offline'] as const).map((sim) => (
+              <QuietAction
+                key={sim}
+                label={`${copy.settings.simulate}: ${sim}`}
+                onPress={() => dispatch({ type: 'setSim', sim })}
+              />
+            ))}
+          </View>
+        ) : null}
+      </ScrollView>
     </Screen>
   )
 }
@@ -839,11 +813,10 @@ export function SettingsScreen() {
 export function OfflineScreen() {
   const { dispatch } = useTraveler()
   return (
-    <Screen density={1}>
-      <EditorialLabel>Offline</EditorialLabel>
-      <Title>The active draft is still here.</Title>
-      <Body>No pretend media download. Metadata already on device is enough to continue walking.</Body>
-      <PrimaryAction label="Continue the route" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+    <Screen>
+      <EditorialHeader kicker={copy.offline.kicker} title={copy.offline.title} body={copy.offline.body} />
+      <View style={{ flex: 1 }} />
+      <PrimaryAction label={copy.offline.continue} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
     </Screen>
   )
 }
@@ -852,23 +825,26 @@ export function GpsWeakScreen() {
   const { dispatch } = useTraveler()
   return (
     <DensityProvider value={0}>
-      <Screen tone="immersion" density={0}>
-        <EditorialLabel inverted>GPS weak</EditorialLabel>
-        <Body inverted>Accuracy is too coarse to claim a distance. Use the list, or wait.</Body>
-        <PrimaryAction label="Use the list" onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
-        <PrimaryAction quiet label="Keep waiting" onPress={() => dispatch({ type: 'setScreen', screen: 'K05' })} />
+      <Screen tone="immersion">
+        <Cluster>
+          <EditorialLabel inverted>{copy.gps.kicker}</EditorialLabel>
+          <Title inverted>{copy.gps.weakTitle}</Title>
+          <Body inverted>{copy.gps.weakBody}</Body>
+        </Cluster>
+        <PrimaryAction label={copy.gps.list} onPress={() => dispatch({ type: 'setScreen', screen: 'C05' })} />
+        <PrimaryAction quiet inverted label={copy.gps.wait} onPress={() => dispatch({ type: 'setScreen', screen: 'K05' })} />
       </Screen>
     </DensityProvider>
   )
 }
 
 export function SeekingLocationScreen() {
-  const { dispatch, state } = useTraveler()
+  const { dispatch } = useTraveler()
   return (
     <DensityProvider value={0}>
-      <Screen tone="immersion" density={0}>
-        <InstrumentMetric kicker="Location" value={state.location.status} />
-        <PrimaryAction label="Back" onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
+      <Screen tone="immersion">
+        <InstrumentMetric kicker={copy.gps.kicker} value={copy.gps.seeking} />
+        <PrimaryAction label={copy.gps.back} onPress={() => dispatch({ type: 'setScreen', screen: 'C01' })} />
       </Screen>
     </DensityProvider>
   )
@@ -876,14 +852,10 @@ export function SeekingLocationScreen() {
 
 export function DetailHuntScreen() {
   const { dispatch } = useTraveler()
-  const entry = SCREEN_REGISTRY.find((item) => item.id === 'L01')
   return (
-    <Screen density={2}>
-      <EditorialLabel>Visual draft</EditorialLabel>
-      <Title>Detail Hunt</Title>
-      <Body>{entry?.missingForFunctional}</Body>
-      <Meta>Not counted as finished.</Meta>
-      <PrimaryAction quiet label="Back" onPress={() => dispatch({ type: 'closeOverlay' })} />
+    <Screen>
+      <EditorialHeader kicker={copy.hunt.kicker} title={copy.hunt.title} body={copy.hunt.body} />
+      <QuietAction label={copy.hunt.back} onPress={() => dispatch({ type: 'closeOverlay' })} />
     </Screen>
   )
 }
@@ -892,77 +864,25 @@ export function ContractScreen({ id }: { id: ScreenId }) {
   const { dispatch } = useTraveler()
   const entry = SCREEN_REGISTRY.find((item) => item.id === id)
   return (
-    <Screen density={entry?.density ?? 1}>
-      <EditorialLabel>
-        {entry?.id} · {entry?.status}
-      </EditorialLabel>
-      <Title>{entry?.title}</Title>
-      <Body>{entry?.purpose}</Body>
-      <Meta>Gate {entry?.gate} · D{entry?.density}</Meta>
-      <Body>Qué falta para funcional: {entry?.missingForFunctional ?? 'Nothing listed — see status.'}</Body>
-      <PrimaryAction label="Back to gallery" onPress={() => dispatch({ type: 'setScreen', screen: 'Gallery' })} />
+    <Screen>
+      <EditorialLabel>{entry?.title}</EditorialLabel>
+      <Title>{entry?.purpose}</Title>
+      <Body>{entry?.missingForFunctional ?? 'Nothing listed.'}</Body>
+      <PrimaryAction label={copy.gallery.back} onPress={() => dispatch({ type: 'setScreen', screen: 'Gallery' })} />
     </Screen>
   )
 }
 
 const styles = StyleSheet.create({
-  choice: {
-    minHeight: 56,
-    borderBottomWidth: 1,
-    borderBottomColor: color.ink800,
-    justifyContent: 'center',
-  },
-  choiceOn: {
-    backgroundColor: color.warmWhite,
-  },
-  choiceText: {
-    fontFamily: type.uiFallback,
-    fontSize: 18,
-    color: color.ink900,
-  },
-  fragments: {
-    gap: space.s,
-  },
-  fragment: {
-    fontFamily: type.displayFallback,
-    fontSize: 28,
-    color: color.ink900,
-  },
-  walkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.s,
-  },
-  heroBlock: {
-    minHeight: 180,
-    justifyContent: 'flex-end',
-    gap: space.s,
-    paddingVertical: space.l,
-  },
-  discovery: {
-    paddingVertical: space.s,
-  },
-  micro: {
-    fontFamily: type.uiFallback,
-    fontSize: 15,
-    color: color.ink900,
-    paddingVertical: 4,
-  },
-  now: {
-    fontFamily: type.displayFallback,
-    fontSize: 22,
-    color: color.ink900,
-    paddingVertical: 8,
-  },
-  lateral: {
-    marginLeft: space.l,
-    paddingVertical: space.m,
-    borderLeftWidth: 2,
-    borderLeftColor: color.muted,
-    paddingLeft: space.m,
-  },
-  why: {
-    gap: 6,
-    paddingVertical: space.s,
-  },
+  fragments: { gap: 6, marginTop: 12 },
+  fragment: { fontFamily: type.displayItalic, fontSize: 26, color: color.warmWhite },
+  why: { gap: 8, paddingVertical: 8 },
+  whyRule: { width: 24, height: 1.5, backgroundColor: color.ember },
+  listRow: { paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color.hairline },
+  micro: { fontFamily: type.ui, fontSize: 16, color: color.ink900 },
+  now: { fontFamily: type.display, fontSize: 22, color: color.ink900 },
+  nowMark: { fontFamily: type.condensed, letterSpacing: 1.4, textTransform: 'uppercase', fontSize: 11, color: color.emberDeep, marginTop: 4 },
+  settingRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  settingLabel: { fontFamily: type.uiMedium, fontSize: 16, color: color.ink900 },
+  devBlock: { gap: space.m, paddingTop: space.l, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: color.hairline },
 })

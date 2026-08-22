@@ -12,6 +12,7 @@ import type { TravelerAppService } from '../demo/TravelerAppService'
 import { travelerReducer } from './reducer'
 import { loadSession, saveSession, type KeyValueStore } from './persistence'
 import { createInitialState, type TravelerAction, type TravelerState } from './types'
+import { buildPreviewState, isPreviewSession, readPreviewScreen } from './preview'
 
 const TravelerStateContext = createContext<TravelerState | null>(null)
 const TravelerDispatchContext = createContext<Dispatch<TravelerAction> | null>(null)
@@ -29,6 +30,11 @@ export function TravelerProvider({
   const [state, dispatch] = useReducer(travelerReducer, createInitialState())
 
   useEffect(() => {
+    const screen = readPreviewScreen()
+    if (screen) {
+      dispatch({ type: 'hydrate', state: buildPreviewState(screen) })
+      return
+    }
     let cancelled = false
     loadSession(store).then((restored) => {
       if (cancelled) return
@@ -41,6 +47,7 @@ export function TravelerProvider({
 
   useEffect(() => {
     if (!state.hydrated) return
+    if (isPreviewSession()) return
     void saveSession(store, state)
   }, [state, store])
 

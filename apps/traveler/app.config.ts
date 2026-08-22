@@ -29,4 +29,10 @@ export default {
     mapboxToken: process.env.EXPO_PUBLIC_MAPBOX_TOKEN ?? '',
   },
   plugins: ['expo-font', 'expo-location'],
+  web: {
+    bundler: 'metro',
+    name: 'ChronoWalk',
+    themeColor: '#F7F1E6',
+    backgroundColor: '#F7F1E6',
+  },
 }

@@ -8,6 +8,7 @@ import { useForegroundLocation } from './src/location/useForegroundLocation'
 import { createMemoryStore, nativeStore } from './src/state/store'
 import { TravelerProvider, useTraveler } from './src/state/TravelerContext'
 import { color } from './src/design/tokens'
+import { useTravelerFonts } from './src/design/fonts'
 
 const WALK_SCREENS = new Set(['C01', 'C03', 'C06', 'K05', 'J03'])
 
@@ -54,6 +55,14 @@ function Boot() {
 
 export default function App() {
   const store = useMemo(() => nativeStore() ?? createMemoryStore(), [])
+  const { loaded, error } = useTravelerFonts()
+  if (!loaded && !error) {
+    return (
+      <View style={{ flex: 1, backgroundColor: color.bone, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color={color.ember} />
+      </View>
+    )
+  }
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />

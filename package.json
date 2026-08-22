@@ -7,6 +7,7 @@
     "test": "pnpm --filter @chronowalk/domain test && pnpm --filter @chronowalk/traveler test"
   },
   "devDependencies": {
+    "playwright": "^1.62.1",
     "typescript": "~5.8.3",
     "vitest": "^3.2.4"
   }

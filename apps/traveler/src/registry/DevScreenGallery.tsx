@@ -22,7 +22,7 @@ export function DevScreenGallery() {
   )
 
   return (
-    <Screen density={1}>
+    <Screen>
       <ScrollView contentContainerStyle={{ gap: space.s, paddingBottom: space.xl }}>
         <EditorialLabel>DEV</EditorialLabel>
         <Title>Screen gallery</Title>
@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { borderWidth: 1, borderColor: color.ink800, paddingHorizontal: 10, paddingVertical: 6 },
   chipOn: { backgroundColor: color.ember },
-  chipText: { fontFamily: type.uiFallback, fontSize: 12, color: color.ink900 },
+  chipText: { fontFamily: type.ui, fontSize: 12, color: color.ink900 },
   item: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: color.ink800 },
-  id: { fontFamily: type.condensedFallback, letterSpacing: 1.4, color: color.emberDeep },
-  title: { fontFamily: type.displayFallback, fontSize: 22, color: color.ink900 },
+  id: { fontFamily: type.condensed, letterSpacing: 1.4, color: color.emberDeep },
+  title: { fontFamily: type.display, fontSize: 22, color: color.ink900 },
 })

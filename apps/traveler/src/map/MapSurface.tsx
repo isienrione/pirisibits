@@ -1,6 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { RouteItemView } from '@chronowalk/domain'
 import { color, space, type } from '../design/tokens'
+import { copy } from '../copy'
+import { places } from '../media/places'
 
 export function MapSurface({
   items,
@@ -25,8 +27,7 @@ export function MapSurface({
   if (points.length === 0) {
     return (
       <View style={styles.panel}>
-        <Text style={styles.kicker}>Map</Text>
-        <Text style={styles.body}>Not enough sourced coordinates to draw a route. No invented line.</Text>
+        <Text style={styles.body}>{copy.map.empty}</Text>
       </View>
     )
   }
@@ -40,23 +41,15 @@ export function MapSurface({
 
   return (
     <View style={styles.panel}>
-      <Text style={styles.kicker}>{tokenPresent ? 'Schematic from sourced geofences' : 'No Mapbox token'}</Text>
-      <Text style={styles.body}>
-        {tokenPresent
-          ? 'Token is present. Native Mapbox is not mounted in this demo build; the same sourced points are shown as a paper plot so the screen never goes blank.'
-          : 'Configure EXPO_PUBLIC_MAPBOX_TOKEN to enable Mapbox. The route remains readable as a list and as this paper plot.'}
-      </Text>
-      {planning ? (
-        <Text style={styles.body}>Planning mode — distance from you is not shown.</Text>
-      ) : null}
-      <View style={styles.plot} accessibilityLabel="Sourced route schematic">
+      <Text style={styles.body}>{tokenPresent ? copy.map.sketch : copy.map.noToken}</Text>
+      {planning ? <Text style={styles.meta}>{copy.map.planning}</Text> : null}
+      <ImageBackground source={places.map} style={styles.plot} imageStyle={styles.plotImage} accessibilityLabel={copy.map.title}>
+        <View style={styles.plotDim} />
         {points.map((item) => {
-          const x =
-            maxLng === minLng ? 50 : ((item.coordinate!.lng - minLng) / (maxLng - minLng)) * 100
-          const y =
-            maxLat === minLat ? 50 : (1 - (item.coordinate!.lat - minLat) / (maxLat - minLat)) * 100
+          const x = maxLng === minLng ? 50 : ((item.coordinate!.lng - minLng) / (maxLng - minLng)) * 100
+          const y = maxLat === minLat ? 50 : (1 - (item.coordinate!.lat - minLat) / (maxLat - minLat)) * 100
           const mystery = item.mystery.isMystery && !mysteryRevealed
-          const size = item.treatment === 'hero' ? 18 : item.treatment === 'discovery' ? 12 : 8
+          const size = item.treatment === 'hero' ? 16 : item.treatment === 'discovery' ? 11 : 8
           return (
             <Pressable
               key={item.id}
@@ -77,14 +70,13 @@ export function MapSurface({
                       ? color.ember
                       : item.treatment === 'hero'
                         ? color.actArena
-                        : color.ink900,
+                        : color.warmWhite,
                 },
               ]}
             />
           )
         })}
-      </View>
-      <Text style={styles.meta}>Precision: geofence centers from the Rome manifest. Not turn-by-turn.</Text>
+      </ImageBackground>
     </View>
   )
 }
@@ -92,34 +84,35 @@ export function MapSurface({
 const styles = StyleSheet.create({
   panel: {
     gap: space.s,
-    paddingVertical: space.m,
+    paddingVertical: space.s,
+    flex: 1,
   },
   plot: {
-    height: 220,
-    backgroundColor: color.warmWhite,
-    borderColor: color.ink800,
-    borderWidth: 1,
+    height: 280,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  plotImage: {
+    resizeMode: 'cover',
+    opacity: 0.85,
+  },
+  plotDim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(22,19,15,0.28)',
   },
   dot: {
     position: 'absolute',
     borderRadius: 0,
   },
-  kicker: {
-    fontFamily: type.condensedFallback,
-    letterSpacing: 1.8,
-    textTransform: 'uppercase',
-    color: color.emberDeep,
-    fontSize: 12,
-  },
   body: {
-    fontFamily: type.uiFallback,
+    fontFamily: type.ui,
     fontSize: 15,
     color: color.ink900,
     lineHeight: 22,
   },
   meta: {
-    fontFamily: type.uiFallback,
-    fontSize: 12,
+    fontFamily: type.ui,
+    fontSize: 13,
     color: color.ink800,
   },
 })
