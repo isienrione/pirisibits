@@ -1,70 +1,83 @@
-import { SymbolView } from 'expo-symbols';
-import { Link, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Redirect, Tabs } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
+import { ChronoTokens } from '@/src/theme/tokens';
+import { useChronoStore } from '@/src/store/useChronoStore';
 
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+function TabIcon({ label, focused, glyph }: { label: string; focused: boolean; glyph: string }) {
+  const color = focused ? ChronoTokens.colors.accentRed : ChronoTokens.colors.inkBlack;
+  return (
+    <View style={styles.item}>
+      <Text style={[styles.glyph, { color }]}>{glyph}</Text>
+      <Text style={[styles.label, { color }]}>{label}</Text>
+    </View>
+  );
+}
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const hasCompletedOnboarding = useChronoStore((s) => s.onboardingComplete);
+  if (!hasCompletedOnboarding) {
+    return <Redirect href="/onboarding/interests" />;
+  }
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
+        headerShown: false,
+        tabBarStyle: styles.bar,
+        tabBarShowLabel: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
-              tintColor={color}
-              size={28}
-            />
-          ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable style={{ marginRight: 15 }}>
-                {({ pressed }) => (
-                  <SymbolView
-                    name={{ ios: 'info.circle', android: 'info', web: 'info' }}
-                    size={25}
-                    tintColor={Colors[colorScheme].text}
-                    style={{ opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          title: 'Inicio',
+          tabBarIcon: ({ focused }) => <TabIcon label="Inicio" focused={focused} glyph="⌂" />,
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="catalog"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => (
-            <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
-              tintColor={color}
-              size={28}
-            />
-          ),
+          title: 'Catálogo',
+          tabBarIcon: ({ focused }) => <TabIcon label="Catálogo" focused={focused} glyph="▣" />,
         }}
       />
+      <Tabs.Screen
+        name="tours"
+        options={{
+          title: 'Tours',
+          tabBarIcon: ({ focused }) => <TabIcon label="Tours" focused={focused} glyph="✦" />,
+        }}
+      />
+      <Tabs.Screen
+        name="map"
+        options={{
+          title: 'Mapa',
+          tabBarIcon: ({ focused }) => <TabIcon label="Mapa" focused={focused} glyph="⌖" />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ focused }) => <TabIcon label="Perfil" focused={focused} glyph="⚙" />,
+        }}
+      />
+      <Tabs.Screen name="journal" options={{ href: null }} />
+      <Tabs.Screen name="saved" options={{ href: null }} />
+      <Tabs.Screen name="route" options={{ href: null }} />
+      <Tabs.Screen name="settings" options={{ href: null }} />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  bar: {
+    backgroundColor: ChronoTokens.colors.paperBase,
+    borderTopColor: ChronoTokens.colors.borderSoft,
+    height: 72,
+    paddingTop: 8,
+  },
+  item: { alignItems: 'center', minWidth: 58 },
+  glyph: { fontSize: 18, marginBottom: 2 },
+  label: { fontFamily: ChronoTokens.fonts.body, fontSize: 10 },
+});
