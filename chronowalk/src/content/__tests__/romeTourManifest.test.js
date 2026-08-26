@@ -46,6 +46,8 @@ describe('legacyStopAdapter', () => {
     expect(stop.heroImage).toBe(COLOSSEUM_WAYPOINT.modern_poster_url)
     expect(stop.audio).toBe(COLOSSEUM_WAYPOINT.arrival_immersive_url)
     expect(stop.reconstructionThen).toBe(COLOSSEUM_WAYPOINT.ancient_video_url)
+    // The reveal loop is the "then" layer, so it must prefer the ancient clip.
+    expect(stop.reconstructionLoop).toBe(COLOSSEUM_WAYPOINT.ancient_video_url)
     expect(stop.nextStopId).toBe('palatine-hill-cluster')
     expect(stop.coords.lat).toBeCloseTo(41.8902, 3)
   })
