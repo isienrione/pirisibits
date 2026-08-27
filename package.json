@@ -76,7 +76,9 @@
     "gate:2a1:validate": "python3 scripts/engine/validate_gate_2a1.py && python3 scripts/engine/validate_gate_2a.py && python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/engine/test_gate_2a1.py && python3 scripts/engine/test_gate_2a.py",
     "gate:2a1r:build": "python3 scripts/engine/build_semantic_calibration_v0_1r.py",
     "gate:2a1r:curator": "python3 scripts/engine/generate_gate_2a1_calibration_html.py",
-    "gate:2a1r:validate": "python3 scripts/engine/validate_gate_2a1r.py && python3 scripts/engine/validate_gate_2a1.py && python3 scripts/engine/validate_gate_2a.py && python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/engine/test_gate_2a1r.py && python3 scripts/engine/test_gate_2a1.py && python3 scripts/engine/test_gate_2a.py"
+    "gate:2a1r:validate": "python3 scripts/engine/validate_gate_2a1r.py && python3 scripts/engine/validate_gate_2a1.py && python3 scripts/engine/validate_gate_2a.py && python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/engine/test_gate_2a1r.py && python3 scripts/engine/test_gate_2a1.py && python3 scripts/engine/test_gate_2a.py",
+    "gate:2a1r-ui:build": "python3 scripts/engine/generate_gate_2a1_founder_cockpit.py",
+    "gate:2a1r-ui:validate": "python3 scripts/engine/validate_gate_2a1r_ui.py && python3 scripts/engine/validate_gate_2a1r.py && python3 scripts/physical-graph/validate_gate_1b5.py"
   },
   "private": true
 }
