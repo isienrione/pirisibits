@@ -191,3 +191,86 @@ export type SantiagoEngineNodesFile = {
   nodes: SantiagoEngineNode[]
   counts: Record<string, number>
 }
+
+/** Gate 1B.3 — pedestrian transition classification (provider duration). */
+export type PedestrianEdgeClass = 'GREEN' | 'YELLOW' | 'ORANGE' | 'RED'
+
+export type PhysicalPointRef = {
+  stgoId: string
+  pointId: string
+  pointType: 'experience_point' | 'poi' | 'access' | 'provider'
+  coordinate: LatLng
+  coordinateSource: string
+}
+
+export type PhysicalCost = {
+  distanceM: number
+  durationS: number
+  durationMin: number
+  baseProvider: 'mapbox'
+  stepFree: null
+  surfaceRoughness: null
+  crossingFriction: null
+  inclineFriction: null
+  crowdFriction: null
+  pleasantness: null
+}
+
+export type PedestrianEdgeProvenance = {
+  provider: 'mapbox'
+  providerReference: string | null
+  routingProfile: string
+  routingStatus: 'OK' | 'NO_ROUTE' | 'ERROR'
+  checkedAt: string
+  candidateStraightLineM: number | null
+  responseSummary?: string | null
+}
+
+export type SantiagoPhysicalEdge = {
+  edgeId: string
+  fromPoiId: string
+  toPoiId: string
+  fromPoint: PhysicalPointRef
+  toPoint: PhysicalPointRef
+  mode: 'WALK'
+  distanceM: number
+  durationS: number
+  durationMin: number
+  physicalCost: PhysicalCost
+  provider: 'mapbox'
+  providerReference: string | null
+  geometry: GeoJSON.LineString | null
+  physicalClassification: PedestrianEdgeClass
+  provenance: PedestrianEdgeProvenance
+  curatorStatus: 'PROVIDER_DERIVED'
+  runtimeEligible: boolean
+  uncertaintyFlags: string[]
+  pruned: boolean
+  pruneReason: string | null
+}
+
+export type SantiagoPhysicalEdgesFile = {
+  schemaVersion: 'santiago-physical-edges.v0.1'
+  cityId: 'santiago'
+  gate: '1B.3'
+  mode: 'WALK'
+  physicalRouteGenerationEnabled: false
+  provider: 'mapbox'
+  generatedAt: string
+  eligibleNodeCount: number
+  eligibleStgoIds: string[]
+  excludedStgoIds: Array<{ stgoId: string; reason: string }>
+  counts: Record<string, number>
+  graphHealth: Record<string, unknown>
+  qaRoutes: Array<Record<string, unknown>>
+  referenceMatrixStatus: 'REFERENCE_MATRIX_NOT_PRESENT' | 'COMPARED'
+  edges: SantiagoPhysicalEdge[]
+}
+
+/** Minimal GeoJSON line string for encoded route geometry. */
+export namespace GeoJSON {
+  export type LineString = {
+    type: 'LineString'
+    coordinates: [number, number][]
+  }
+}

@@ -55,7 +55,10 @@
     "gate:1b2:validate": "python3 scripts/physical-graph/validate_physical_data.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b2.py",
     "gate:1b2a:ingest": "python3 scripts/physical-graph/ingest_launch30_curation.py",
     "gate:1b2a:curator": "python3 scripts/physical-graph/generate_gate_1b2a_review_html.py",
-    "gate:1b2a:validate": "python3 scripts/physical-graph/validate_gate_1b2a.py && python3 scripts/physical-graph/validate_gate_1b2.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b2a.py"
+    "gate:1b2a:validate": "python3 scripts/physical-graph/validate_gate_1b2a.py && python3 scripts/physical-graph/validate_gate_1b2.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b2a.py",
+    "gate:1b3:build": "python3 scripts/physical-graph/build_santiago_pedestrian_edges.py",
+    "gate:1b3:curator": "python3 scripts/physical-graph/generate_gate_1b3_review_html.py",
+    "gate:1b3:validate": "python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_gate_1b2a.py && python3 scripts/physical-graph/validate_gate_1b2.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b3.py"
   },
   "private": true
 }
