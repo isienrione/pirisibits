@@ -50,8 +50,8 @@ def main() -> int:
     contract = CONTRACT.read_text(encoding="utf-8")
     report = REPORT.read_text(encoding="utf-8")
 
-    if cal.get("gate") != "2A.1":
-        fail(errors, "calibration gate != 2A.1")
+    if cal.get("gate") not in {"2A.1", "2A.1R"}:
+        fail(errors, "calibration gate must be 2A.1 or 2A.1R")
     if cal.get("curatorApproved") is not False:
         fail(errors, "calibration must not be curatorApproved")
     if cal.get("recordCount") != 30 or len(cal.get("records") or []) != 30:

@@ -37,8 +37,10 @@ describe('Gate 2A node utility foundation', () => {
 
   it('hard-excludes explicit sensitive-memory sites without opt-in (not T1B alone)', () => {
     const pool = buildCandidatePool(nodes, TRAVELER_FIXTURES.A_first_time_essentials)
+    // Founder source sensitive launch nodes: STGO_04, STGO_07, STGO_48 (STGO_19 is NOT founder-sensitive)
     expect(pool.excludedIds).toEqual(expect.arrayContaining(['STGO_04', 'STGO_07', 'STGO_48']))
-    const t1bOnly = launch.find((n) => n.stgoId === 'STGO_02')! // Catedral may carry T1B in tags historically
+    expect(pool.excludedIds).not.toContain('STGO_19')
+    const t1bOnly = launch.find((n) => n.stgoId === 'STGO_02')!
     const el = evaluateNodeEligibility(t1bOnly, TRAVELER_FIXTURES.A_first_time_essentials)
     if ((t1bOnly.themes || []).includes('T1B') && !t1bOnly.isSensitiveMemorySite) {
       expect(el.eligible).toBe(true)

@@ -9,7 +9,7 @@ export { evaluateNodeEligibility } from '@/src/engine/eligibility/evaluateNodeEl
 export { scoreNodeUtility } from '@/src/engine/scoring/nodeUtility'
 export { buildCandidatePool } from '@/src/engine/candidates/buildCandidatePool'
 export { loadSantiagoEngineNodes, loadLaunchNodes } from '@/src/engine/loadSantiagoNodes'
-export { loadEditorialCalibration, loadCalibrationByStgoId } from '@/src/engine/loadCalibration'
+export { loadEditorialCalibration, loadCalibrationByStgoId, loadCanonicalSemanticCalibration, loadSemanticByStgoId } from '@/src/engine/loadCalibration'
 export { TRAVELER_FIXTURES } from '@/src/engine/fixtures/travelerFixtures'
 export * from '@/src/engine/scoring/constants'
 export type * from '@/src/engine/types'

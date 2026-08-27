@@ -143,11 +143,12 @@ def main() -> int:
 <body>
 <header>
   <h1>ChronoWalk Curator Studio — Editorial Calibration</h1>
-  <div class="sub">Gate 2A.1 · AI-proposed values for founder review · Export only (no fake persistence)</div>
+  <div class="sub">Gate 2A.1R · FOUNDER SEED + AI proposals · Export only (no fake persistence)</div>
   <div class="toolbar">
     <select id="poiSelect"></select>
     <button class="primary" id="exportBtn">Export decisions JSON</button>
     <button class="ghost" id="resetBtn">Reset local edits</button>
+    <span class="badge curated">FOUNDER SEED</span>
     <span class="badge ai">AI proposed</span>
     <span class="badge curated">Founder approved (you set)</span>
     <span class="badge unknown">Unknown</span>
@@ -249,15 +250,15 @@ function renderDetail() {{
   document.getElementById('detail').innerHTML = `
     <div><span class="badge">${{r.tier}}</span><span class="badge">${{r.editorialRole || 'role unknown'}}</span><span class="badge ai">${{r.chronoWorth.provenance}}</span></div>
     <h2>${{r.displayName}}</h2>
-    <div class="explain">${{r.stgoId}} · disposition ${{r.launchRuntimeDisposition || '—'}} · demo match ${{r.demoPoiIdMatched || 'none'}}</div>
+    <div class="explain">${{r.stgoId}} · disposition ${{r.launchRuntimeDisposition || '—'}} · <span class="badge curated">${{r.tierProvenance || 'FOUNDER_PRECALIBRATED'}}</span> · vector ${{r.thematicVectorProvenance || 'FOUNDER_PRECALIBRATED'}}</div>
 
-    <h3>ChronoWorth</h3>
+    <h3>ChronoWorth <span class="badge ai">AI PROPOSAL</span></h3>
     <div class="row">
       <div class="field">
         <label>AI proposal (read-only)</label>
         <div class="value" style="font-size:1.4rem">${{r.chronoWorth.proposed}}</div>
         <div class="explain">${{r.chronoWorth.formula || ''}}</div>
-        <div class="explain">heritage ${{contrib.heritage_depth_proxy}} · anchor ${{contrib.anchor_density_proxy}} · micro ${{contrib.micro_reveal_proxy}} · polish ${{contrib.polish_proxy}}</div>
+        <div class="explain">FOUNDER metrics → heritage ${{contrib.heritage_depth ?? contrib.heritage_depth_proxy}} · anchor ${{contrib.anchor_density ?? contrib.anchor_density_proxy}} · micro ${{contrib.micro_reveal ?? contrib.micro_reveal_proxy}} · polish ${{contrib.polish ?? contrib.polish_proxy}}</div>
       </div>
       <div class="field">
         <label>Founder-approved value (overrides proposal)</label>
@@ -271,14 +272,14 @@ function renderDetail() {{
       </div>
     </div>
 
-    <h3>Themes (continuous canonical)</h3>
+    <h3>Themes (continuous canonical) <span class="badge curated">FOUNDER SEED</span></h3>
     ${{themes}}
     <div class="explain">Binary tags derived at threshold ${{r.themeTagThreshold}}: ${{(r.derivedThemeTags || []).join(', ') || 'none'}}</div>
 
-    <h3>Modes M1–M5</h3>
+    <h3>Modes M1–M5 <span class="badge ai">mostly AI / M2 from founder step_free</span></h3>
     <div class="grid5">${{modes}}</div>
 
-    <h3>Visit time (minutes, excludes travel)</h3>
+    <h3>Visit time (minutes, excludes travel) <span class="badge ai">AI PROPOSAL</span></h3>
     <div class="row">
       <div class="field"><label>Min</label><input type="number" id="vmin" value="${{r.visitTime.min}}"/></div>
       <div class="field"><label>Typical</label><input type="number" id="vtyp" value="${{r.visitTime.typical}}"/></div>

@@ -1,10 +1,11 @@
 # Engine V0.1 Implementation Contract
 
-**Gate:** 2A (+ semantic restoration **2A.1**)  
+**Gate:** 2A (+ semantic restoration **2A.1** / founder source restore **2A.1R**)  
 **Status:** CANONICAL (reconstructed from repository types/data — prior `ENGINE_V0_1_IMPLEMENTATION_CONTRACT.md` was unrecoverable)  
 **City substrate:** Santiago Physical Graph V0.1 (frozen Gate 1B.5)  
 **Traveler route generation:** DISABLED (`PHYSICAL_ROUTE_GENERATION_ENABLED = false`)  
-**Editorial calibration:** `EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true` (not curator-approved)
+**Editorial calibration:** `EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true` (founder seed restored in 2A.1R; not curator-approved)  
+**Founder semantic source:** `src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json`
 
 ---
 

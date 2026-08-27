@@ -1,5 +1,6 @@
 /**
- * Load Santiago engine nodes merged with Gate 2A.1 semantic calibration.
+ * Load Santiago engine nodes merged with Gate 2A.1R founder semantic calibration.
+ * Canonical vectors/metrics/flags come from FOUNDER_PRECALIBRATED seed — never pois.ts.
  */
 
 import { readFileSync } from 'node:fs'
@@ -36,6 +37,10 @@ export function loadSantiagoEngineNodes(root = ROOT): EngineNodeRecord[] {
       }
     }
 
+    if (String(cal.thematicVectorProvenance || '') !== 'FOUNDER_PRECALIBRATED') {
+      throw new Error(`Gate 2A.1R: ${n.stgoId} thematicVector must be FOUNDER_PRECALIBRATED`)
+    }
+
     const accessibilityStatus = cal.accessibility.status
     const stepFree =
       accessibilityStatus === 'KNOWN_STEP_FREE'
@@ -45,10 +50,17 @@ export function loadSantiagoEngineNodes(root = ROOT): EngineNodeRecord[] {
           : null
 
     const structuralSuitability = Object.fromEntries(
-      (Object.entries(cal.structuralSuitability) as [ModeCode, { value: number | null; status?: string; provenance?: string }][]).map(
-        ([k, v]) => [k, { value: v.value ?? null, status: v.status, provenance: v.provenance }],
-      ),
+      (
+        Object.entries(cal.structuralSuitability) as [
+          ModeCode,
+          { value: number | null; status?: string; provenance?: string },
+        ][]
+      ).map(([k, v]) => [k, { value: v.value ?? null, status: v.status, provenance: v.provenance }]),
     ) as EngineNodeRecord['structuralSuitability']
+
+    // Explicit sensitive only when PRESENT+true; UNKNOWN/null must not become false-as-evidence.
+    const sensitiveExplicit =
+      cal.sensitiveMemory.status === 'PRESENT' ? Boolean(cal.sensitiveMemory.value) : false
 
     return {
       stgoId: n.stgoId,
@@ -60,7 +72,6 @@ export function loadSantiagoEngineNodes(root = ROOT): EngineNodeRecord[] {
       editorialRole: cal.editorialRole ?? n.editorialRole ?? null,
       tier: n.tier ?? null,
       tierNormalized: cal.tier,
-      // Approved supersedes; otherwise expose effective (proposed) for scoring consumers.
       chronoWorth: cal.chronoWorth.approved ?? cal.chronoWorth.effective,
       chronoWorthProposed: cal.chronoWorth.proposed,
       chronoWorthApproved: cal.chronoWorth.approved,
@@ -72,8 +83,8 @@ export function loadSantiagoEngineNodes(root = ROOT): EngineNodeRecord[] {
       visitTimeTypical: cal.visitTime.typical,
       visitTimeMax: cal.visitTime.max,
       structuralSuitability,
-      isSensitiveMemorySite: cal.sensitiveMemory.value,
-      sensitiveMemory: cal.sensitiveMemory.value,
+      isSensitiveMemorySite: sensitiveExplicit,
+      sensitiveMemory: sensitiveExplicit,
       daylightOnly: cal.operational.daylightOnly,
       daylight_only: cal.operational.daylightOnly,
       stepFree,
