@@ -73,7 +73,9 @@ describe('pricing card hierarchy content', () => {
   })
 
   it('exposes stop counts for the simplified meta row', () => {
-    expect(getLandingTierStats('rome-central').stopCount).toBe(8)
+    // Kebab projection length (8 centro + Appia); customer copy uses stopsLabel.
+    expect(getLandingTierStats('rome-central').stopCount).toBe(9)
+    expect(ROME_TIERS.find((t) => t.id === 'rome-central').stopsLabel).toBe('8 + Appia encore')
     expect(getLandingTierStats('rome-essential').stopCount).toBe(12)
     expect(getLandingTierStats('rome-complete').stopCount).toBe(21)
   })

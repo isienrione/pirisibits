@@ -62,7 +62,9 @@ describe('tourProductTruth', () => {
     const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central.visitStopCount).toBe(10)
-    expect(antica.visitStopCount).toBe(10)
+    // Classic Path B: 11 visit stops (includes enc_circus; excludes pause)
+    expect(antica.visitStopCount).toBe(11)
+    // Heroic default path A omits Palatine + Circus View
     expect(eterna.visitStopCount).toBe(19)
   })
 
