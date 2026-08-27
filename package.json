@@ -37,13 +37,18 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.10",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "gate:1b1:geocode": "python3 scripts/physical-graph/enrich_santiago_physical_graph.py",
+    "gate:1b1:validate": "python3 scripts/physical-graph/validate_physical_data.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b1.py"
   },
   "private": true
 }
