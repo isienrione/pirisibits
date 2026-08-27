@@ -125,9 +125,22 @@ export function buildBoundsFromStops(stops, paddingRatio = 0.25) {
   }
 }
 
+/**
+ * Stops drawn on the pricing-tier map. Historica lists Via Appia in the
+ * expand inventory as encore, but the map stays on the centro walking cluster
+ * (Appia is a ride south, not part of the ~4 km frame).
+ */
+export function getLandingTierMapStops(tierId) {
+  const stops = getLandingTierRouteStops(tierId)
+  if (tierId === 'rome-central') {
+    return stops.filter((stop) => stop.id !== 'appian-way')
+  }
+  return stops
+}
+
 /** Per-tier map frame - central and ancient tiers zoom into their clusters. */
 export function getLandingTierMapBounds(tierId) {
-  const stops = getLandingTierRouteStops(tierId)
+  const stops = getLandingTierMapStops(tierId)
   const padding = TIER_MAP_PADDING[tierId] ?? 0.2
   return buildBoundsFromStops(stops, padding)
 }

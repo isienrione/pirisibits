@@ -1,6 +1,10 @@
 import { buildSmoothRouteD } from './landingRomeMapPaths.js'
 import { getLandingTierBasemapPath } from './landingMapboxStatic.js'
-import { getLandingTierMapBounds, getLandingTierRouteStops, projectRouteStops } from './landingTierRoutes.js'
+import {
+  getLandingTierMapBounds,
+  getLandingTierMapStops,
+  projectRouteStops,
+} from './landingTierRoutes.js'
 
 function PinIcon({ featured = false }) {
   return (
@@ -60,7 +64,7 @@ function MapMarker({ point, index, showTooltip }) {
  * Sepia aerial Rome map with numbered stop markers and walking route - journey UI style.
  */
 export default function LandingTierRouteMap({ tierId, featured = false, className = '' }) {
-  const stops = getLandingTierRouteStops(tierId)
+  const stops = getLandingTierMapStops(tierId)
   const bounds = getLandingTierMapBounds(tierId)
   const points = projectRouteStops(stops, {
     width: 100,

@@ -15,15 +15,16 @@ describe('optional waypoint promotion', () => {
     expect(getOptionalWaypointIds(manifest, 'b')).toEqual([])
   })
 
-  it('enc_circus is not in path B sequence (Palatine flows directly to Titus)', () => {
+  it('enc_circus sits on Path B after Palatine (Path A still skips the fork)', () => {
     const pathA = buildEffectiveSequence(manifest, 'a', [])
     const pathB = buildEffectiveSequence(manifest, 'b', [])
-    expect(pathB).not.toContain('enc_circus')
+    expect(pathB).toContain('enc_circus')
     expect(pathB.slice(-2)).toEqual(['t22', 'w22'])
     expect(pathA).not.toContain('enc_circus')
     expect(pathA.slice(-2)).toEqual(['t22', 'w22'])
-    // Path B goes Palatine → Titus directly
-    expect(pathB[pathB.indexOf('w04') + 1]).toBe('t03')
+    // Path B: Palatine → Circus Maximus View → Titus transit
+    expect(pathB[pathB.indexOf('w04') + 1]).toBe('enc_circus')
+    expect(pathB[pathB.indexOf('enc_circus') + 1]).toBe('t03')
     expect(pathB[pathB.indexOf('t03') + 1]).toBe('w03')
   })
 
