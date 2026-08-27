@@ -37,13 +37,18 @@ export function parseAccessToken(search = '') {
   return new URLSearchParams(search).get('token')?.trim() ?? ''
 }
 
+// Viator manual codes: RM + 6 alphanumerics (e.g. RMA389F7)
+export const VIATOR_CODE_RE = /^RM[A-Z0-9]{6}$/i
+
 export function isAccessTokenFormat(token) {
   if (!token) return false
-  if (allowsDevAccessTokens() && DEV_TOKENS.has(token.toLowerCase())) return true
+  const t = String(token).trim()
+  if (allowsDevAccessTokens() && DEV_TOKENS.has(t.toLowerCase())) return true
   // Claims / credentials are high-entropy hex (≥128 bits). UUIDs may still appear
   // in legacy URLs but are no longer treated as auto-valid local staging tokens.
-  if (UUID_RE.test(token)) return true
-  return /^[a-f0-9]{32,}$/i.test(token)
+  if (UUID_RE.test(t)) return true
+  if (VIATOR_CODE_RE.test(t)) return true
+  return /^[a-f0-9]{32,}$/i.test(t)
 }
 
 function normalizeDeviceAccessPayload(data) {
@@ -244,9 +249,12 @@ export async function validateDeviceAccess(
  * Legacy get_purchase_for_token / validate_access_token paths are not used for grant.
  */
 export async function validateAccessToken(token) {
-  if (!isAccessTokenFormat(token)) {
+  const raw = String(token ?? '').trim()
+  if (!isAccessTokenFormat(raw)) {
     return { ok: false, reason: 'invalid_format' }
   }
+  // Viator codes are stored uppercased; phones love to autocorrect to lowercase.
+  token = VIATOR_CODE_RE.test(raw) ? raw.toUpperCase() : raw
 
   // One-time claim exchange (email / URL). Does not treat local staging UUID lists
   // as entitlement authority.
