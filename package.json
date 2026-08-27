@@ -67,7 +67,10 @@
     "gate:1b41:validate": "python3 scripts/physical-graph/validate_gate_1b41.py && python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b41.py",
     "gate:1b5:build": "python3 scripts/physical-graph/freeze_physical_graph_v0_1.py",
     "gate:1b5:curator": "python3 scripts/physical-graph/generate_gate_1b5_review_html.py",
-    "gate:1b5:validate": "python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/physical-graph/validate_gate_1b41.py && python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b5.py"
+    "gate:1b5:validate": "python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/physical-graph/validate_gate_1b41.py && python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b5.py",
+    "gate:2a:scores": "npx --yes tsx scripts/engine/emit_fixture_scores.ts",
+    "gate:2a:curator": "python3 scripts/engine/generate_gate_2a_review_html.py",
+    "gate:2a:validate": "python3 scripts/engine/validate_gate_2a.py && python3 scripts/physical-graph/validate_gate_1b5.py && python3 scripts/engine/test_gate_2a.py"
   },
   "private": true
 }

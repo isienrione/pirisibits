@@ -1,0 +1,98 @@
+{
+  "gate": "2A",
+  "launchCount": 30,
+  "fields": {
+    "runtimePhysicalEligibility": {
+      "complete": 30,
+      "partial": 0,
+      "missing": 0
+    },
+    "chronoWorth": {
+      "complete": 0,
+      "partial": 0,
+      "missing": 30
+    },
+    "themesT1A_T9": {
+      "complete": 30,
+      "partial": 0,
+      "missing": 0
+    },
+    "modesM1_M5": {
+      "complete": 0,
+      "partial": 30,
+      "missing": 0
+    },
+    "editorialRole": {
+      "complete": 30,
+      "partial": 0,
+      "missing": 0
+    },
+    "essentialityProxy": {
+      "complete": 7,
+      "partial": 23,
+      "missing": 0
+    },
+    "discoveryClassification": {
+      "complete": 12,
+      "partial": 18,
+      "missing": 0
+    },
+    "visitDuration": {
+      "complete": 0,
+      "partial": 0,
+      "missing": 30
+    },
+    "openingHours": {
+      "complete": 0,
+      "partial": 0,
+      "missing": 30
+    },
+    "accessibility": {
+      "complete": 0,
+      "partial": 0,
+      "missing": 30
+    },
+    "costBudget": {
+      "complete": 0,
+      "partial": 0,
+      "missing": 30
+    },
+    "provenance": {
+      "complete": 30,
+      "partial": 0,
+      "missing": 0
+    }
+  },
+  "themeHistogram": {
+    "T1A": 7,
+    "T3": 8,
+    "T1B": 8,
+    "T8": 20,
+    "T4": 13,
+    "T5": 2,
+    "T9": 2
+  },
+  "modeHistogram": {
+    "M3": 30
+  },
+  "roleHistogram": {
+    "anchor": 2,
+    "pocket": 6,
+    "micro": 10,
+    "civic": 2,
+    "museum": 1,
+    "architecture": 3,
+    "memory": 2,
+    "plaza": 3,
+    "culture": 1
+  },
+  "deliberatelyNotFabricated": [
+    "chronoWorth",
+    "visitDuration",
+    "openingHours",
+    "accessibility",
+    "culinary T2 tags",
+    "NarrativeEdgeScore",
+    "physical-centrality quality boost"
+  ]
+}

@@ -21,3 +21,9 @@ export const MULTIMODAL_PHYSICAL_GRAPH_READY = true
  * route generation (`PHYSICAL_ROUTE_GENERATION_ENABLED` remains false).
  */
 export const PHYSICAL_LAYER_V0_1_READY = true
+
+/**
+ * Gate 2A — node eligibility + NodeUtility + candidate pool readiness.
+ * Does NOT enable route composition or traveler-facing physical routing.
+ */
+export const NODE_UTILITY_V0_1_READY = true

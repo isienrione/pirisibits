@@ -1,0 +1,1623 @@
+{
+  "A_first_time_essentials": {
+    "STGO_01": {
+      "utility": 73.5,
+      "rank": 1,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_04": {
+      "utility": 73.5,
+      "rank": 2,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_22": {
+      "utility": 70.4,
+      "rank": 3,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_24": {
+      "utility": 51,
+      "rank": 4,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_25": {
+      "utility": 40.6,
+      "rank": 5,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_30": {
+      "utility": 40.6,
+      "rank": 6,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_91": {
+      "utility": 40.6,
+      "rank": 7,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_27": {
+      "utility": 39.4,
+      "rank": 8,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 39.4,
+      "rank": 9,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_92": {
+      "utility": 39.4,
+      "rank": 10,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_26": {
+      "utility": 22.4,
+      "rank": 11,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 22.4,
+      "rank": 12,
+      "matched": []
+    },
+    "STGO_29": {
+      "utility": 20.6,
+      "rank": 13,
+      "matched": []
+    },
+    "STGO_02": {
+      "utility": 19.4,
+      "rank": 14,
+      "matched": []
+    },
+    "STGO_03": {
+      "utility": 19.4,
+      "rank": 15,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 19.4,
+      "rank": 16,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 19.4,
+      "rank": 17,
+      "matched": []
+    },
+    "STGO_19": {
+      "utility": 19.4,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_48": {
+      "utility": 19.4,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_05": {
+      "utility": 16.9,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_06": {
+      "utility": 16.9,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_07": {
+      "utility": 16.9,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_10": {
+      "utility": 16.9,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_18": {
+      "utility": 16.9,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_20": {
+      "utility": 16.9,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_21": {
+      "utility": 16.9,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_34": {
+      "utility": 16.9,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_35": {
+      "utility": 16.9,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "A_first_time_essentials__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "A_first_time_essentials__eligibleCount": 28,
+  "B_civic_history": {
+    "STGO_01": {
+      "utility": 60.2,
+      "rank": 1,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_04": {
+      "utility": 60.2,
+      "rank": 2,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_22": {
+      "utility": 57.1,
+      "rank": 3,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_25": {
+      "utility": 47.3,
+      "rank": 4,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_30": {
+      "utility": 47.3,
+      "rank": 5,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_91": {
+      "utility": 47.3,
+      "rank": 6,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_24": {
+      "utility": 44.3,
+      "rank": 7,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_27": {
+      "utility": 32.7,
+      "rank": 8,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 32.7,
+      "rank": 9,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_92": {
+      "utility": 32.7,
+      "rank": 10,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_05": {
+      "utility": 30.2,
+      "rank": 11,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_06": {
+      "utility": 30.2,
+      "rank": 12,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_07": {
+      "utility": 30.2,
+      "rank": 13,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_10": {
+      "utility": 30.2,
+      "rank": 14,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_18": {
+      "utility": 30.2,
+      "rank": 15,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_20": {
+      "utility": 30.2,
+      "rank": 16,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_21": {
+      "utility": 30.2,
+      "rank": 17,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_34": {
+      "utility": 30.2,
+      "rank": 18,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_35": {
+      "utility": 30.2,
+      "rank": 19,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_26": {
+      "utility": 22.4,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 22.4,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_29": {
+      "utility": 20.6,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_02": {
+      "utility": 19.4,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_03": {
+      "utility": 19.4,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 19.4,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 19.4,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_19": {
+      "utility": 19.4,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_48": {
+      "utility": 19.4,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "B_civic_history__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "B_civic_history__eligibleCount": 28,
+  "C_food_street_life": {
+    "STGO_02": {
+      "utility": 47.4,
+      "rank": 1,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_03": {
+      "utility": 47.4,
+      "rank": 2,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_11": {
+      "utility": 47.4,
+      "rank": 3,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_16": {
+      "utility": 47.4,
+      "rank": 4,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_19": {
+      "utility": 47.4,
+      "rank": 5,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_48": {
+      "utility": 47.4,
+      "rank": 6,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_05": {
+      "utility": 44.9,
+      "rank": 7,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_06": {
+      "utility": 44.9,
+      "rank": 8,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_07": {
+      "utility": 44.9,
+      "rank": 9,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_10": {
+      "utility": 44.9,
+      "rank": 10,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_18": {
+      "utility": 44.9,
+      "rank": 11,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_20": {
+      "utility": 44.9,
+      "rank": 12,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_21": {
+      "utility": 44.9,
+      "rank": 13,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_34": {
+      "utility": 44.9,
+      "rank": 14,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_35": {
+      "utility": 44.9,
+      "rank": 15,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_29": {
+      "utility": 40.6,
+      "rank": 16,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_27": {
+      "utility": 39.4,
+      "rank": 17,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_32": {
+      "utility": 39.4,
+      "rank": 18,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_92": {
+      "utility": 39.4,
+      "rank": 19,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_01": {
+      "utility": 27.5,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_04": {
+      "utility": 27.5,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_24": {
+      "utility": 23,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_22": {
+      "utility": 22.4,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_26": {
+      "utility": 22.4,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 22.4,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_25": {
+      "utility": 20.6,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_30": {
+      "utility": 20.6,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_91": {
+      "utility": 20.6,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "C_food_street_life__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "C_food_street_life__eligibleCount": 28,
+  "D_architecture_aesthetics": {
+    "STGO_24": {
+      "utility": 54.7,
+      "rank": 1,
+      "matched": [
+        "T5",
+        "T3"
+      ]
+    },
+    "STGO_25": {
+      "utility": 52.3,
+      "rank": 2,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_30": {
+      "utility": 52.3,
+      "rank": 3,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_91": {
+      "utility": 52.3,
+      "rank": 4,
+      "matched": [
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_01": {
+      "utility": 43.8,
+      "rank": 5,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_04": {
+      "utility": 43.8,
+      "rank": 6,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_22": {
+      "utility": 40.7,
+      "rank": 7,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_29": {
+      "utility": 38.9,
+      "rank": 8,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_05": {
+      "utility": 35.2,
+      "rank": 9,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_06": {
+      "utility": 35.2,
+      "rank": 10,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_07": {
+      "utility": 35.2,
+      "rank": 11,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_10": {
+      "utility": 35.2,
+      "rank": 12,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_18": {
+      "utility": 35.2,
+      "rank": 13,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_20": {
+      "utility": 35.2,
+      "rank": 14,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_21": {
+      "utility": 35.2,
+      "rank": 15,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_34": {
+      "utility": 35.2,
+      "rank": 16,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_35": {
+      "utility": 35.2,
+      "rank": 17,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_26": {
+      "utility": 27.4,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 27.4,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_02": {
+      "utility": 24.4,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_03": {
+      "utility": 24.4,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 24.4,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 24.4,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_19": {
+      "utility": 24.4,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_27": {
+      "utility": 24.4,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_32": {
+      "utility": 24.4,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_48": {
+      "utility": 24.4,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_92": {
+      "utility": 24.4,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "D_architecture_aesthetics__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "D_architecture_aesthetics__eligibleCount": 28,
+  "E_memory_human_rights": {
+    "STGO_01": {
+      "utility": 53.5,
+      "rank": 1,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_04": {
+      "utility": 53.5,
+      "rank": 2,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_22": {
+      "utility": 50.4,
+      "rank": 3,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_26": {
+      "utility": 42.4,
+      "rank": 4,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_28": {
+      "utility": 42.4,
+      "rank": 5,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_02": {
+      "utility": 39.4,
+      "rank": 6,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_03": {
+      "utility": 39.4,
+      "rank": 7,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_11": {
+      "utility": 39.4,
+      "rank": 8,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_16": {
+      "utility": 39.4,
+      "rank": 9,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_19": {
+      "utility": 39.4,
+      "rank": 10,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_27": {
+      "utility": 39.4,
+      "rank": 11,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 39.4,
+      "rank": 12,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_48": {
+      "utility": 39.4,
+      "rank": 13,
+      "matched": [
+        "T1B"
+      ]
+    },
+    "STGO_92": {
+      "utility": 39.4,
+      "rank": 14,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_24": {
+      "utility": 31,
+      "rank": 15,
+      "matched": []
+    },
+    "STGO_25": {
+      "utility": 20.6,
+      "rank": 16,
+      "matched": []
+    },
+    "STGO_29": {
+      "utility": 20.6,
+      "rank": 17,
+      "matched": []
+    },
+    "STGO_30": {
+      "utility": 20.6,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_91": {
+      "utility": 20.6,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_05": {
+      "utility": 16.9,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_06": {
+      "utility": 16.9,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_07": {
+      "utility": 16.9,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_10": {
+      "utility": 16.9,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_18": {
+      "utility": 16.9,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_20": {
+      "utility": 16.9,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_21": {
+      "utility": 16.9,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_34": {
+      "utility": 16.9,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_35": {
+      "utility": 16.9,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "E_memory_human_rights__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "E_memory_human_rights__eligibleCount": 28,
+  "F_discovery_forward": {
+    "STGO_29": {
+      "utility": 35.3,
+      "rank": 1,
+      "matched": [
+        "T5",
+        "T8"
+      ]
+    },
+    "STGO_02": {
+      "utility": 28.7,
+      "rank": 2,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_03": {
+      "utility": 28.7,
+      "rank": 3,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_11": {
+      "utility": 28.7,
+      "rank": 4,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_16": {
+      "utility": 28.7,
+      "rank": 5,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_19": {
+      "utility": 28.7,
+      "rank": 6,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_48": {
+      "utility": 28.7,
+      "rank": 7,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_05": {
+      "utility": 26.2,
+      "rank": 8,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_06": {
+      "utility": 26.2,
+      "rank": 9,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_07": {
+      "utility": 26.2,
+      "rank": 10,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_10": {
+      "utility": 26.2,
+      "rank": 11,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_18": {
+      "utility": 26.2,
+      "rank": 12,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_20": {
+      "utility": 26.2,
+      "rank": 13,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_21": {
+      "utility": 26.2,
+      "rank": 14,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_34": {
+      "utility": 26.2,
+      "rank": 15,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_35": {
+      "utility": 26.2,
+      "rank": 16,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_24": {
+      "utility": 24.3,
+      "rank": 17,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_27": {
+      "utility": 20.7,
+      "rank": 18,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_32": {
+      "utility": 20.7,
+      "rank": 19,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_92": {
+      "utility": 20.7,
+      "rank": 20,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_01": {
+      "utility": 15.5,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_04": {
+      "utility": 15.5,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_22": {
+      "utility": 10.4,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_26": {
+      "utility": 10.4,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 10.4,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_25": {
+      "utility": 8.6,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_30": {
+      "utility": 8.6,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_91": {
+      "utility": 8.6,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "F_discovery_forward__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "F_discovery_forward__eligibleCount": 28,
+  "G_express_time_boxed": {
+    "STGO_01": {
+      "utility": 61.5,
+      "rank": 1,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_04": {
+      "utility": 61.5,
+      "rank": 2,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_22": {
+      "utility": 58.4,
+      "rank": 3,
+      "matched": [
+        "T1A",
+        "T3"
+      ]
+    },
+    "STGO_24": {
+      "utility": 39,
+      "rank": 4,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_25": {
+      "utility": 28.6,
+      "rank": 5,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_30": {
+      "utility": 28.6,
+      "rank": 6,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_91": {
+      "utility": 28.6,
+      "rank": 7,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_27": {
+      "utility": 27.4,
+      "rank": 8,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 27.4,
+      "rank": 9,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_92": {
+      "utility": 27.4,
+      "rank": 10,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_26": {
+      "utility": 10.4,
+      "rank": 11,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 10.4,
+      "rank": 12,
+      "matched": []
+    },
+    "STGO_29": {
+      "utility": 8.6,
+      "rank": 13,
+      "matched": []
+    },
+    "STGO_02": {
+      "utility": 7.4,
+      "rank": 14,
+      "matched": []
+    },
+    "STGO_03": {
+      "utility": 7.4,
+      "rank": 15,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 7.4,
+      "rank": 16,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 7.4,
+      "rank": 17,
+      "matched": []
+    },
+    "STGO_19": {
+      "utility": 7.4,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_48": {
+      "utility": 7.4,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_05": {
+      "utility": 4.9,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_06": {
+      "utility": 4.9,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_07": {
+      "utility": 4.9,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_10": {
+      "utility": 4.9,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_18": {
+      "utility": 4.9,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_20": {
+      "utility": 4.9,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_21": {
+      "utility": 4.9,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_34": {
+      "utility": 4.9,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_35": {
+      "utility": 4.9,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "G_express_time_boxed__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "G_express_time_boxed__eligibleCount": 28,
+  "H_accessibility_sensitive": {
+    "STGO_01": {
+      "utility": 38.5,
+      "rank": 1,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_04": {
+      "utility": 38.5,
+      "rank": 2,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_24": {
+      "utility": 36,
+      "rank": 3,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_22": {
+      "utility": 35.4,
+      "rank": 4,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_29": {
+      "utility": 33.6,
+      "rank": 5,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_27": {
+      "utility": 32.4,
+      "rank": 6,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 32.4,
+      "rank": 7,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_92": {
+      "utility": 32.4,
+      "rank": 8,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_26": {
+      "utility": 15.4,
+      "rank": 9,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 15.4,
+      "rank": 10,
+      "matched": []
+    },
+    "STGO_25": {
+      "utility": 13.6,
+      "rank": 11,
+      "matched": []
+    },
+    "STGO_30": {
+      "utility": 13.6,
+      "rank": 12,
+      "matched": []
+    },
+    "STGO_91": {
+      "utility": 13.6,
+      "rank": 13,
+      "matched": []
+    },
+    "STGO_02": {
+      "utility": 12.4,
+      "rank": 14,
+      "matched": []
+    },
+    "STGO_03": {
+      "utility": 12.4,
+      "rank": 15,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 12.4,
+      "rank": 16,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 12.4,
+      "rank": 17,
+      "matched": []
+    },
+    "STGO_19": {
+      "utility": 12.4,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_48": {
+      "utility": 12.4,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_05": {
+      "utility": 9.9,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_06": {
+      "utility": 9.9,
+      "rank": 21,
+      "matched": []
+    },
+    "STGO_07": {
+      "utility": 9.9,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_10": {
+      "utility": 9.9,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_18": {
+      "utility": 9.9,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_20": {
+      "utility": 9.9,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_21": {
+      "utility": 9.9,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_34": {
+      "utility": 9.9,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_35": {
+      "utility": 9.9,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "H_accessibility_sensitive__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "H_accessibility_sensitive__eligibleCount": 28,
+  "I_high_comfort": {
+    "STGO_27": {
+      "utility": 52.4,
+      "rank": 1,
+      "matched": [
+        "T1A",
+        "T8"
+      ]
+    },
+    "STGO_32": {
+      "utility": 52.4,
+      "rank": 2,
+      "matched": [
+        "T1A",
+        "T8"
+      ]
+    },
+    "STGO_92": {
+      "utility": 52.4,
+      "rank": 3,
+      "matched": [
+        "T1A",
+        "T8"
+      ]
+    },
+    "STGO_01": {
+      "utility": 38.5,
+      "rank": 4,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_04": {
+      "utility": 38.5,
+      "rank": 5,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_22": {
+      "utility": 35.4,
+      "rank": 6,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_29": {
+      "utility": 33.6,
+      "rank": 7,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_02": {
+      "utility": 32.4,
+      "rank": 8,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_03": {
+      "utility": 32.4,
+      "rank": 9,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_11": {
+      "utility": 32.4,
+      "rank": 10,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_16": {
+      "utility": 32.4,
+      "rank": 11,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_19": {
+      "utility": 32.4,
+      "rank": 12,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_48": {
+      "utility": 32.4,
+      "rank": 13,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_05": {
+      "utility": 29.9,
+      "rank": 14,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_06": {
+      "utility": 29.9,
+      "rank": 15,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_07": {
+      "utility": 29.9,
+      "rank": 16,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_10": {
+      "utility": 29.9,
+      "rank": 17,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_18": {
+      "utility": 29.9,
+      "rank": 18,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_20": {
+      "utility": 29.9,
+      "rank": 19,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_21": {
+      "utility": 29.9,
+      "rank": 20,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_34": {
+      "utility": 29.9,
+      "rank": 21,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_35": {
+      "utility": 29.9,
+      "rank": 22,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_24": {
+      "utility": 16,
+      "rank": 23,
+      "matched": []
+    },
+    "STGO_26": {
+      "utility": 15.4,
+      "rank": 24,
+      "matched": []
+    },
+    "STGO_28": {
+      "utility": 15.4,
+      "rank": 25,
+      "matched": []
+    },
+    "STGO_25": {
+      "utility": 13.6,
+      "rank": 26,
+      "matched": []
+    },
+    "STGO_30": {
+      "utility": 13.6,
+      "rank": 27,
+      "matched": []
+    },
+    "STGO_91": {
+      "utility": 13.6,
+      "rank": 28,
+      "matched": []
+    }
+  },
+  "I_high_comfort__excluded": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "I_high_comfort__eligibleCount": 28
+}

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 2A — Node Utility Review</title>
+<style>
+body { margin:0; font-family: Georgia, serif; background:#f7f1e8; color:#1c1a17; }
+header, section { max-width:1400px; margin:0 auto; padding:18px 20px; }
+table { width:100%; border-collapse:collapse; font-size:13px; background:#fffdf8; }
+th, td { border-bottom:1px solid #e6ddd0; padding:8px; text-align:left; vertical-align:top; }
+th { position:sticky; top:0; background:#efe6d8; }
+.muted { color:#7a6f62; font-size:12px; }
+.excl { color:#8a2f2f; }
+.card { background:#fffdf8; border:1px solid #d9d0c2; border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gate 2A — Node Utility QA Review</h1>
+  <p>Human-readable launch-30 review. Utilities are engine QA fixtures, not customer personas.
+     Missing ChronoWorth / visit time / accessibility are shown honestly.</p>
+</header>
+<section class="card">
+  <h2>Data completeness (launch 30)</h2>
+  <ul><li><b>runtimePhysicalEligibility</b>: complete=30 partial=0 missing=0</li><li><b>chronoWorth</b>: complete=0 partial=0 missing=30</li><li><b>themesT1A_T9</b>: complete=30 partial=0 missing=0</li><li><b>modesM1_M5</b>: complete=0 partial=30 missing=0</li><li><b>editorialRole</b>: complete=30 partial=0 missing=0</li><li><b>essentialityProxy</b>: complete=7 partial=23 missing=0</li><li><b>discoveryClassification</b>: complete=12 partial=18 missing=0</li><li><b>visitDuration</b>: complete=0 partial=0 missing=30</li><li><b>openingHours</b>: complete=0 partial=0 missing=30</li><li><b>accessibility</b>: complete=0 partial=0 missing=30</li><li><b>costBudget</b>: complete=0 partial=0 missing=30</li><li><b>provenance</b>: complete=30 partial=0 missing=0</li></ul>
+</section>
+<section>
+  <table>
+    <thead>
+      <tr>
+        <th>Node</th><th>Role / disposition</th><th>ChronoWorth</th><th>Themes</th><th>Modes</th><th>Visit time</th><th>Missing</th>
+        <th>Essentials</th><th>Civic/Hist</th><th>Memory</th><th>Discovery</th><th>Access-sensitive</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><b>STGO_01</b><br/>Plaza de Armas</td>
+          <td>anchor<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Aesthetics</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>73.5 <span class='muted'>#1</span></td><td>60.2 <span class='muted'>#1</span></td><td>53.5 <span class='muted'>#1</span></td><td>15.5 <span class='muted'>#21</span></td><td>38.5 <span class='muted'>#1</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_02</b><br/>Catedral Metropolitana</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#14</span></td><td>19.4 <span class='muted'>#23</span></td><td>39.4 <span class='muted'>#6</span></td><td>28.7 <span class='muted'>#2</span></td><td>12.4 <span class='muted'>#14</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_03</b><br/>Palacio de La Moneda</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#15</span></td><td>19.4 <span class='muted'>#24</span></td><td>39.4 <span class='muted'>#7</span></td><td>28.7 <span class='muted'>#3</span></td><td>12.4 <span class='muted'>#15</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_04</b><br/>Morandé 80 (President&#x27;s Door)</td>
+          <td>anchor<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Aesthetics</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>73.5 <span class='muted'>#2</span></td><td>60.2 <span class='muted'>#2</span></td><td>53.5 <span class='muted'>#2</span></td><td>15.5 <span class='muted'>#22</span></td><td>38.5 <span class='muted'>#2</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_05</b><br/>Cerro Santa Lucía &amp; Terraza Neptuno</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#20</span></td><td>30.2 <span class='muted'>#11</span></td><td>16.9 <span class='muted'>#20</span></td><td>26.2 <span class='muted'>#8</span></td><td>9.9 <span class='muted'>#20</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_06</b><br/>Barrio París-Londres</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#21</span></td><td>30.2 <span class='muted'>#12</span></td><td>16.9 <span class='muted'>#21</span></td><td>26.2 <span class='muted'>#9</span></td><td>9.9 <span class='muted'>#21</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_07</b><br/>Londres 38 Memorial</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#22</span></td><td>30.2 <span class='muted'>#13</span></td><td>16.9 <span class='muted'>#22</span></td><td>26.2 <span class='muted'>#10</span></td><td>9.9 <span class='muted'>#22</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_10</b><br/>Palacio Pereira</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#23</span></td><td>30.2 <span class='muted'>#14</span></td><td>16.9 <span class='muted'>#23</span></td><td>26.2 <span class='muted'>#11</span></td><td>9.9 <span class='muted'>#23</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_11</b><br/>Barrio Yungay &amp; Plaza Roto Chileno</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#16</span></td><td>19.4 <span class='muted'>#25</span></td><td>39.4 <span class='muted'>#8</span></td><td>28.7 <span class='muted'>#4</span></td><td>12.4 <span class='muted'>#16</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_16</b><br/>Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#17</span></td><td>19.4 <span class='muted'>#26</span></td><td>39.4 <span class='muted'>#9</span></td><td>28.7 <span class='muted'>#5</span></td><td>12.4 <span class='muted'>#17</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_18</b><br/>Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#24</span></td><td>30.2 <span class='muted'>#15</span></td><td>16.9 <span class='muted'>#24</span></td><td>26.2 <span class='muted'>#12</span></td><td>9.9 <span class='muted'>#24</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_19</b><br/>Seguro Obrero Bullet Scars (Correo)</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#18</span></td><td>19.4 <span class='muted'>#27</span></td><td>39.4 <span class='muted'>#10</span></td><td>28.7 <span class='muted'>#6</span></td><td>12.4 <span class='muted'>#18</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_20</b><br/>La Piojera</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#25</span></td><td>30.2 <span class='muted'>#16</span></td><td>16.9 <span class='muted'>#25</span></td><td>26.2 <span class='muted'>#13</span></td><td>9.9 <span class='muted'>#25</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_21</b><br/>Confitería Torres (1879)</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#26</span></td><td>30.2 <span class='muted'>#17</span></td><td>16.9 <span class='muted'>#26</span></td><td>26.2 <span class='muted'>#14</span></td><td>9.9 <span class='muted'>#26</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_22</b><br/>Museo Chileno Arte Precolombino</td>
+          <td>civic<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Aesthetics</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>70.4 <span class='muted'>#3</span></td><td>57.1 <span class='muted'>#3</span></td><td>50.4 <span class='muted'>#3</span></td><td>10.4 <span class='muted'>#23</span></td><td>35.4 <span class='muted'>#4</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_23</b><br/>Inca Tambo Canal Dip (Puente/Stgo)</td>
+          <td>civic<br/><span class='muted'>RUNTIME_EXCLUDED_RESEARCH</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Aesthetics</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td>
+        </tr>
+        <tr>
+          <td><b>STGO_24</b><br/>Barrio Lastarria Corridor</td>
+          <td>museum<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Mindful / Quiet, Aesthetics</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>51 <span class='muted'>#4</span></td><td>44.3 <span class='muted'>#7</span></td><td>31 <span class='muted'>#15</span></td><td>24.3 <span class='muted'>#17</span></td><td>36 <span class='muted'>#3</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_25</b><br/>GAM (Centro Gabriela Mistral)</td>
+          <td>architecture<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Aesthetics, Subculture / Indie</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>40.6 <span class='muted'>#5</span></td><td>47.3 <span class='muted'>#4</span></td><td>20.6 <span class='muted'>#16</span></td><td>8.6 <span class='muted'>#26</span></td><td>13.6 <span class='muted'>#11</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_26</b><br/>MNBA &amp; Parque Forestal</td>
+          <td>memory<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Luxury Heritage</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>22.4 <span class='muted'>#11</span></td><td>22.4 <span class='muted'>#20</span></td><td>42.4 <span class='muted'>#4</span></td><td>10.4 <span class='muted'>#24</span></td><td>15.4 <span class='muted'>#9</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_27</b><br/>Taller Castillo Kulczewski</td>
+          <td>plaza<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>39.4 <span class='muted'>#8</span></td><td>32.7 <span class='muted'>#8</span></td><td>39.4 <span class='muted'>#11</span></td><td>20.7 <span class='muted'>#18</span></td><td>32.4 <span class='muted'>#6</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_28</b><br/>Bocanáriz &amp; Chipe Libre</td>
+          <td>memory<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Luxury Heritage</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>22.4 <span class='muted'>#12</span></td><td>22.4 <span class='muted'>#21</span></td><td>42.4 <span class='muted'>#5</span></td><td>10.4 <span class='muted'>#25</span></td><td>15.4 <span class='muted'>#10</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_29</b><br/>La Chascona (Neruda House)</td>
+          <td>culture<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Mindful / Quiet, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>20.6 <span class='muted'>#13</span></td><td>20.6 <span class='muted'>#22</span></td><td>20.6 <span class='muted'>#17</span></td><td>35.3 <span class='muted'>#1</span></td><td>33.6 <span class='muted'>#5</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_30</b><br/>Bellavista Mural Corridors</td>
+          <td>architecture<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Aesthetics, Subculture / Indie</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>40.6 <span class='muted'>#6</span></td><td>47.3 <span class='muted'>#5</span></td><td>20.6 <span class='muted'>#18</span></td><td>8.6 <span class='muted'>#27</span></td><td>13.6 <span class='muted'>#12</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_32</b><br/>Cerro San Cristóbal Funicular / Hill complex</td>
+          <td>plaza<br/><span class='muted'>RUNTIME_STAGED</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>39.4 <span class='muted'>#9</span></td><td>32.7 <span class='muted'>#9</span></td><td>39.4 <span class='muted'>#12</span></td><td>20.7 <span class='muted'>#19</span></td><td>32.4 <span class='muted'>#7</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_33</b><br/>Kulczewski Funicular Gargoyle</td>
+          <td>micro<br/><span class='muted'>RUNTIME_EXCLUDED_SEMANTIC</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td><td class='excl'>excluded</td>
+        </tr>
+        <tr>
+          <td><b>STGO_34</b><br/>La Vega Central</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#27</span></td><td>30.2 <span class='muted'>#18</span></td><td>16.9 <span class='muted'>#27</span></td><td>26.2 <span class='muted'>#15</span></td><td>9.9 <span class='muted'>#27</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_35</b><br/>Mercado Tirso de Molina</td>
+          <td>micro<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Subculture / Indie, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>16.9 <span class='muted'>#28</span></td><td>30.2 <span class='muted'>#19</span></td><td>16.9 <span class='muted'>#28</span></td><td>26.2 <span class='muted'>#16</span></td><td>9.9 <span class='muted'>#28</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_48</b><br/>Museo de la Memoria y DDHH</td>
+          <td>pocket<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Memory / Human Rights, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>19.4 <span class='muted'>#19</span></td><td>19.4 <span class='muted'>#28</span></td><td>39.4 <span class='muted'>#13</span></td><td>28.7 <span class='muted'>#7</span></td><td>12.4 <span class='muted'>#19</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_91</b><br/>Patronato Textile &amp; Culture Corridor</td>
+          <td>architecture<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Aesthetics, Subculture / Indie</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>40.6 <span class='muted'>#7</span></td><td>47.3 <span class='muted'>#6</span></td><td>20.6 <span class='muted'>#19</span></td><td>8.6 <span class='muted'>#28</span></td><td>13.6 <span class='muted'>#13</span></td>
+        </tr>
+        <tr>
+          <td><b>STGO_92</b><br/>Paseo Bandera Urban Art Corridor</td>
+          <td>plaza<br/><span class='muted'>RUNTIME_READY</span></td>
+          <td>MISSING</td>
+          <td>Civic / Traditional Heritage, Urban Ecology</td>
+          <td>M3</td>
+          <td class='muted'>UNKNOWN</td>
+          <td>ChronoWorth, Visit time, Opening hours, Accessibility</td>
+          <td>39.4 <span class='muted'>#10</span></td><td>32.7 <span class='muted'>#10</span></td><td>39.4 <span class='muted'>#14</span></td><td>20.7 <span class='muted'>#20</span></td><td>32.4 <span class='muted'>#8</span></td>
+        </tr></tbody>
+  </table>
+</section>
+</body>
+</html>
