@@ -48,7 +48,11 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "gate:1b1:geocode": "python3 scripts/physical-graph/enrich_santiago_physical_graph.py",
-    "gate:1b1:validate": "python3 scripts/physical-graph/validate_physical_data.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b1.py"
+    "gate:1b1:validate": "python3 scripts/physical-graph/validate_physical_data.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b1.py",
+    "gate:1b2:build": "python3 scripts/physical-graph/build_santiago_engine_nodes.py",
+    "gate:1b2:geocode": "python3 scripts/physical-graph/enrich_santiago_engine_nodes.py",
+    "gate:1b2:curator": "python3 scripts/physical-graph/generate_curator_review_html.py",
+    "gate:1b2:validate": "python3 scripts/physical-graph/validate_physical_data.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b2.py"
   },
   "private": true
 }

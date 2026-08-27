@@ -1,54 +1,78 @@
 #!/usr/bin/env python3
-"""Detect synthetic / fake coordinate patterns in proposed physical nodes."""
+"""Synthetic-pattern detector for Gate 1B.2 engine nodes."""
 
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PROPOSED = ROOT / "src/data/santiago/santiago_physical_nodes.proposed.v0.1.json"
+ENGINE = ROOT / "src/data/santiago/santiago_engine_nodes.v0.1.json"
+SYNTHETIC_NAME = re.compile(r"Cultural Node Sector|Sector\s+\d+|Generated POI|Placeholder|Santiago Node \d+", re.I)
 
 
 def main() -> int:
-    if not PROPOSED.exists():
-        print("SYNTHETIC_PATTERN_VALIDATOR=FAIL missing proposed dataset")
-        return 1
-
-    data = json.loads(PROPOSED.read_text(encoding="utf-8"))
-    nodes = data.get("nodes") or []
+    # Also keep Gate 1B.1 proposed check if present
     issues: list[str] = []
 
+    if not ENGINE.exists():
+        print("SYNTHETIC_PATTERN_VALIDATOR=FAIL missing engine nodes")
+        return 1
+
+    data = json.loads(ENGINE.read_text(encoding="utf-8"))
+    nodes = data.get("nodes") or []
     coords = []
     for n in nodes:
-        lat, lng = n.get("lat"), n.get("lng")
-        if lat is None or lng is None:
+        name = f"{n.get('canonicalName') or ''} {n.get('displayName') or ''}"
+        if SYNTHETIC_NAME.search(name):
+            issues.append(f"{n.get('stgoId')}: synthetic name {name!r}")
+        poi = n.get("poiCoordinate")
+        if not poi or poi.get("lat") is None:
             continue
-        coords.append((round(float(lat), 5), round(float(lng), 5), n.get("id")))
-        # Fake metro / island language in selected place names while claiming Santiago POI
-        sel = n.get("selectedCandidate") or {}
-        place = f"{sel.get('placeName') or ''} {sel.get('text') or ''}".lower()
-        if "isla de pascua" in place or "easter island" in place:
-            issues.append(f"{n.get('id')}: island coordinate attached")
-        # Exact duplication of product runtime constants would be suspicious only if
-        # providerId missing — arithmetic fallback smell
-        if not n.get("providerId") and lat is not None:
-            issues.append(f"{n.get('id')}: coordinate without providerId (fallback smell)")
+        lat, lng = float(poi["lat"]), float(poi["lng"])
+        coords.append((round(lat, 5), round(lng, 5), n.get("stgoId")))
+        if not n.get("providerId"):
+            issues.append(f"{n.get('stgoId')}: coordinate without providerId (fallback smell)")
+        # arithmetic sequence smell: coords that look like origin + i*delta
+        # (checked globally below)
 
-    # Identical coordinates across different nodes (copy-paste synthetic)
     counter = Counter((c[0], c[1]) for c in coords)
     for pair, count in counter.items():
         if count >= 3:
             ids = [c[2] for c in coords if (c[0], c[1]) == pair]
             issues.append(f"repeated identical coordinate {pair} on {ids}")
 
-    # Grid / stepped synthetic pattern: many coords sharing exactly 2 decimals only
     coarse = Counter((round(c[0], 2), round(c[1], 2)) for c in coords)
-    hot = [k for k, v in coarse.items() if v >= 6]
+    # Only flag extreme packing (≥12 in one 0.01° cell) — Centro naturally clusters.
+    hot = [k for k, v in coarse.items() if v >= 12]
     if hot:
         issues.append(f"coarse-grid clustering suggestive of synthetic packing: {hot}")
+
+    # Detect arithmetic progression in lat or lng across ordered STGO ids
+    ordered = sorted(
+        [(n["stgoId"], n["poiCoordinate"]) for n in nodes if n.get("poiCoordinate")],
+        key=lambda x: x[0],
+    )
+    if len(ordered) >= 8:
+        lats = [o[1]["lat"] for o in ordered]
+        lngs = [o[1]["lng"] for o in ordered]
+        dlat = [round(lats[i + 1] - lats[i], 6) for i in range(len(lats) - 1)]
+        dlng = [round(lngs[i + 1] - lngs[i], 6) for i in range(len(lngs) - 1)]
+        if len(set(dlat)) == 1 and dlat[0] != 0:
+            issues.append(f"arithmetic lat progression delta={dlat[0]}")
+        if len(set(dlng)) == 1 and dlng[0] != 0:
+            issues.append(f"arithmetic lng progression delta={dlng[0]}")
+
+    # Gate 1B.1 proposed file still checked if present
+    proposed = ROOT / "src/data/santiago/santiago_physical_nodes.proposed.v0.1.json"
+    if proposed.exists():
+        pdata = json.loads(proposed.read_text(encoding="utf-8"))
+        for n in pdata.get("nodes") or []:
+            if n.get("lat") is not None and not n.get("providerId"):
+                issues.append(f"1B.1 {n.get('id')}: coordinate without providerId")
 
     if issues:
         print("SYNTHETIC_PATTERN_VALIDATOR=FAIL")

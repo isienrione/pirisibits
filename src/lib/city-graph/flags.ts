@@ -1,7 +1,7 @@
 /**
- * Gate 1B.1 — physical route generation stays disabled.
- * Geocoding / curator review must complete before any route composer
- * may consume provider coordinates.
+ * Gate 1B.2 — physical route generation stays disabled.
+ * Canonical inventory + provider candidates + curator review must complete
+ * before any route composer may consume physical edges.
  */
 export const PHYSICAL_ROUTE_GENERATION_ENABLED = false
 
