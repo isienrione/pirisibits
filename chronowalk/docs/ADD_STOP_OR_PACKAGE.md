@@ -2,9 +2,37 @@
 
 **Read this every time** you add or materially change a Rome stop, a purchasable package, stop media, pricing, or (eventually) a new city.
 
+For Day-1 MAP scope, canonical fields, and which layers to extend, see **[`MAP_PRODUCT_CONTRACT.md`](./MAP_PRODUCT_CONTRACT.md)** and **[`MAP_DAY2_PRODUCTION_AUDIT.md`](./MAP_DAY2_PRODUCTION_AUDIT.md)**.
+
 Production deploys from the **`figma`** branch to **chronowalk.com** (Cloudflare Pages). Landing copy and package IDs on `figma` are what travelers see.
 
 Do **not** edit `src/landing/archive/` unless restoring a dated baseline.
+
+---
+
+## MAP content fields (Day 3A+)
+
+Canonical place IDs remain manifest `wXX` / `enc_circus` / `pause`. MAP metadata is a **sibling model** (not a second place registry):
+
+| Concern | Where | Notes |
+|---------|-------|-------|
+| Place MAP defaults / overrides | `src/content/rome/mapContent.js` → `MAP_PLACE_OVERRIDES` | Attached at load via `src/content/mapContentModel.js` |
+| Discoveries | `src/content/rome/mapContent.js` → `MAP_DISCOVERIES` | IDs must match `d_[a-z0-9_]+` |
+| Interest tags | Closed set in `mapContentModel.js` → `MAP_INTEREST_TAGS` | e.g. `empire`, `sacred`, `engineering` |
+| Reveal tier | `revealTier`: `null` \| `"worthwhile"` \| `"flagship"` | Do **not** mark flagship casually; curation is a later task |
+| time cost | `timeCostMin` minutes (`null` until authored) | Visit-cost for recommendations — not audio duration |
+
+### Adding a Discovery
+
+- [ ] Add an object to `MAP_DISCOVERIES` with `discoveryId` like `d_rostra_coin` (always `d_` prefix).
+- [ ] Optional `placeId` must be a **canonical** journey ID (`w10`, not `colosseum`).
+- [ ] Optional `geo` only when the micro-location differs from the parent place.
+- [ ] `title` / `summary` use `{ en, es }` (or equivalent) — **EN + ES ship together** for customer-facing MAP content.
+- [ ] Set `interestTags`, `unlockScopes` (`central` \| `classic` \| `heroic` \| `own`), and `timeCostMin`.
+- [ ] Do **not** add discoveries to Path A/B sequences, hero waypoint completion, commerce SKUs, or legacy `*-tour.js`.
+- [ ] A Discovery is a short curiosity beat — **not** an incomplete hero waypoint.
+
+Runtime attaches empty defaults today (`interestTags: []`, `timeCostMin: null`, `revealTier: null`, `discoveries: []`) so legacy places keep working.
 
 ---
 
