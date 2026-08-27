@@ -93,5 +93,12 @@ export const ENGINE_POLICY_LONG_WALK_DISCOMFORT_FACTOR = 1.15
 /**
  * When observed Metro segment duration is unresolved, use this topology-only
  * generalized cost per consecutive station hop (NOT labeled as observed time).
+ * Gate 1B.4.1: operational rides prefer SCHEDULED_GTFS_DURATION medians instead.
  */
 export const ENGINE_POLICY_METRO_HOP_FALLBACK_S = 120
+
+/**
+ * Engine policy estimated wait when boarding Metro (seconds).
+ * Half of a typical ~6 min headway. NOT scheduled ride time and NOT physical observation.
+ */
+export const ENGINE_POLICY_METRO_WAIT_FALLBACK_S = 180

@@ -61,7 +61,10 @@
     "gate:1b3:validate": "python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_gate_1b2a.py && python3 scripts/physical-graph/validate_gate_1b2.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b3.py",
     "gate:1b4:build": "python3 scripts/physical-graph/build_santiago_multimodal_graph.py",
     "gate:1b4:curator": "python3 scripts/physical-graph/generate_gate_1b4_review_html.py",
-    "gate:1b4:validate": "python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b4.py"
+    "gate:1b4:validate": "python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b4.py",
+    "gate:1b41:build": "python3 scripts/physical-graph/build_gate_1b41_official_transit.py",
+    "gate:1b41:curator": "python3 scripts/physical-graph/generate_gate_1b41_review_html.py",
+    "gate:1b41:validate": "python3 scripts/physical-graph/validate_gate_1b41.py && python3 scripts/physical-graph/validate_gate_1b4.py && python3 scripts/physical-graph/validate_gate_1b3.py && python3 scripts/physical-graph/validate_synthetic_patterns.py && python3 scripts/physical-graph/test_gate_1b41.py"
   },
   "private": true
 }

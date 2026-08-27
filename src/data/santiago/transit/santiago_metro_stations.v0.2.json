@@ -1,0 +1,2430 @@
+{
+  "schemaVersion": "santiago-metro-stations.v0.2",
+  "gate": "1B.4.1",
+  "provenance": "dtpm_gtfs",
+  "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+  "feedVersion": "V166.20260704",
+  "stationCount": 126,
+  "runtimeOperationalLines": [
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L4A",
+    "L5",
+    "L6"
+  ],
+  "stations": [
+    {
+      "stationId": "METRO_GTFS_AG",
+      "gtfsStopId": "AG",
+      "canonicalName": "Camino Agrícola",
+      "lat": -33.491921,
+      "lng": -70.617491,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253295175",
+      "osmMatchDistanceM": 14.7
+    },
+    {
+      "stationId": "METRO_GTFS_AH",
+      "gtfsStopId": "AH",
+      "canonicalName": "San Alberto Hurtado",
+      "lat": -33.4542110000313,
+      "lng": -70.6922765002798,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253282358",
+      "osmMatchDistanceM": 1.1
+    },
+    {
+      "stationId": "METRO_GTFS_AL",
+      "gtfsStopId": "AL",
+      "canonicalName": "Alcántara",
+      "lat": -33.415419000018,
+      "lng": -70.5896634998623,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527592",
+      "osmMatchDistanceM": 30.5
+    },
+    {
+      "stationId": "METRO_GTFS_AN-NA",
+      "gtfsStopId": "AN-NA",
+      "canonicalName": "Santa Ana",
+      "lat": -33.43830000276319,
+      "lng": -70.65973700005196,
+      "lines": [
+        "L2",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_477827069",
+      "osmMatchDistanceM": 15.8
+    },
+    {
+      "stationId": "METRO_GTFS_AV",
+      "gtfsStopId": "AV",
+      "canonicalName": "Vespucio Norte",
+      "lat": -33.380832501078,
+      "lng": -70.6466290008906,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_267078399",
+      "osmMatchDistanceM": 28.2
+    },
+    {
+      "stationId": "METRO_GTFS_BA-BQ",
+      "gtfsStopId": "BA-BQ",
+      "canonicalName": "Baquedano",
+      "lat": -33.43746450142523,
+      "lng": -70.63415749950464,
+      "lines": [
+        "L1",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_1157168087",
+      "osmMatchDistanceM": 74.5
+    },
+    {
+      "stationId": "METRO_GTFS_BE",
+      "gtfsStopId": "BE",
+      "canonicalName": "Bellas Artes",
+      "lat": -33.436437,
+      "lng": -70.644239,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253281389",
+      "osmMatchDistanceM": 23.8
+    },
+    {
+      "stationId": "METRO_GTFS_BIL",
+      "gtfsStopId": "BIL",
+      "canonicalName": "Francisco Bilbao",
+      "lat": -33.4316600000293,
+      "lng": -70.5849245003265,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252981531",
+      "osmMatchDistanceM": 25.3
+    },
+    {
+      "stationId": "METRO_GTFS_BIO",
+      "gtfsStopId": "BIO",
+      "canonicalName": "Bío Bío",
+      "lat": -33.47666,
+      "lng": -70.64236,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_601280944",
+      "osmMatchDistanceM": 17.8
+    },
+    {
+      "stationId": "METRO_GTFS_BL",
+      "gtfsStopId": "BL",
+      "canonicalName": "Blanqueado",
+      "lat": -33.4411305000716,
+      "lng": -70.7068835000858,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_475498009",
+      "osmMatchDistanceM": 31.0
+    },
+    {
+      "stationId": "METRO_GTFS_BR",
+      "gtfsStopId": "BR",
+      "canonicalName": "Barrancas",
+      "lat": -33.4527,
+      "lng": -70.739578,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_391007642",
+      "osmMatchDistanceM": 59.1
+    },
+    {
+      "stationId": "METRO_GTFS_CA-PCA",
+      "gtfsStopId": "CA-PCA",
+      "canonicalName": "Puente Cal y Canto",
+      "lat": -33.43294500017409,
+      "lng": -70.65321866695074,
+      "lines": [
+        "L2",
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6506316370",
+      "osmMatchDistanceM": 17.7
+    },
+    {
+      "stationId": "METRO_GTFS_CAR",
+      "gtfsStopId": "CAR",
+      "canonicalName": "Cardenal Caro",
+      "lat": -33.373314,
+      "lng": -70.686283,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531487",
+      "osmMatchDistanceM": 7.9
+    },
+    {
+      "stationId": "METRO_GTFS_CB",
+      "gtfsStopId": "CB",
+      "canonicalName": "Cerro Blanco",
+      "lat": -33.422701000054,
+      "lng": -70.6452344996378,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_944490442",
+      "osmMatchDistanceM": 17.3
+    },
+    {
+      "stationId": "METRO_GTFS_CCH",
+      "gtfsStopId": "CCH",
+      "canonicalName": "Conchalí",
+      "lat": -33.397531,
+      "lng": -70.669564,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531283",
+      "osmMatchDistanceM": 40.1
+    },
+    {
+      "stationId": "METRO_GTFS_CE",
+      "gtfsStopId": "CE",
+      "canonicalName": "Cementerios",
+      "lat": -33.413869,
+      "lng": -70.643831,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_265684316",
+      "osmMatchDistanceM": 25.0
+    },
+    {
+      "stationId": "METRO_GTFS_CER",
+      "gtfsStopId": "CER",
+      "canonicalName": "Cerrillos",
+      "lat": -33.483438,
+      "lng": -70.694744,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_2776463407",
+      "osmMatchDistanceM": 75.3
+    },
+    {
+      "stationId": "METRO_GTFS_CH-UCH",
+      "gtfsStopId": "CH-UCH",
+      "canonicalName": "Universidad de Chile",
+      "lat": -33.4436740008104,
+      "lng": -70.65035679966876,
+      "lines": [
+        "L1",
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_5227884069",
+      "osmMatchDistanceM": 35.3
+    },
+    {
+      "stationId": "METRO_GTFS_CM",
+      "gtfsStopId": "CM",
+      "canonicalName": "Copa Lo Martinez",
+      "lat": -33.57088,
+      "lng": -70.67366,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530419352",
+      "osmMatchDistanceM": 35.0
+    },
+    {
+      "stationId": "METRO_GTFS_CN",
+      "gtfsStopId": "CN",
+      "canonicalName": "Ciudad del Niño",
+      "lat": -33.5096130002021,
+      "lng": -70.6566629998577,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699834",
+      "osmMatchDistanceM": 7.9
+    },
+    {
+      "stationId": "METRO_GTFS_COL",
+      "gtfsStopId": "COL",
+      "canonicalName": "Cristóbal Colón",
+      "lat": -33.4262390000614,
+      "lng": -70.5913565005398,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252981526",
+      "osmMatchDistanceM": 35.9
+    },
+    {
+      "stationId": "METRO_GTFS_CV",
+      "gtfsStopId": "CV",
+      "canonicalName": "Carlos Valdovinos",
+      "lat": -33.486572500029,
+      "lng": -70.6190210000322,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253295179",
+      "osmMatchDistanceM": 24.5
+    },
+    {
+      "stationId": "METRO_GTFS_DE",
+      "gtfsStopId": "DE",
+      "canonicalName": "Departamental",
+      "lat": -33.5025035001789,
+      "lng": -70.6546435001872,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699773",
+      "osmMatchDistanceM": 7.1
+    },
+    {
+      "stationId": "METRO_GTFS_DO",
+      "gtfsStopId": "DO",
+      "canonicalName": "Dorsal",
+      "lat": -33.396749,
+      "lng": -70.642995,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_267077543",
+      "osmMatchDistanceM": 33.4
+    },
+    {
+      "stationId": "METRO_GTFS_DS",
+      "gtfsStopId": "DS",
+      "canonicalName": "Del Sol",
+      "lat": -33.489988,
+      "lng": -70.753539,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_549216801",
+      "osmMatchDistanceM": 48.0
+    },
+    {
+      "stationId": "METRO_GTFS_EB",
+      "gtfsStopId": "EB",
+      "canonicalName": "El Bosque",
+      "lat": -33.54642,
+      "lng": -70.66699,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530413430",
+      "osmMatchDistanceM": 27.8
+    },
+    {
+      "stationId": "METRO_GTFS_EC",
+      "gtfsStopId": "EC",
+      "canonicalName": "Ecuador",
+      "lat": -33.4558520000734,
+      "lng": -70.6997090002258,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253282361",
+      "osmMatchDistanceM": 8.1
+    },
+    {
+      "stationId": "METRO_GTFS_ECO",
+      "gtfsStopId": "ECO",
+      "canonicalName": "Elisa Correa",
+      "lat": -33.568978,
+      "lng": -70.583827,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256378408",
+      "osmMatchDistanceM": 35.2
+    },
+    {
+      "stationId": "METRO_GTFS_EI",
+      "gtfsStopId": "EI",
+      "canonicalName": "Einstein",
+      "lat": -33.405617,
+      "lng": -70.64351,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_944490452",
+      "osmMatchDistanceM": 48.1
+    },
+    {
+      "stationId": "METRO_GTFS_EL",
+      "gtfsStopId": "EL",
+      "canonicalName": "Estación Central",
+      "lat": -33.4510403336808,
+      "lng": -70.6790756671766,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252528391",
+      "osmMatchDistanceM": 26.4
+    },
+    {
+      "stationId": "METRO_GTFS_EM",
+      "gtfsStopId": "EM",
+      "canonicalName": "Escuela Militar",
+      "lat": -33.4137962513945,
+      "lng": -70.5834134986974,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527589",
+      "osmMatchDistanceM": 76.6
+    },
+    {
+      "stationId": "METRO_GTFS_EP",
+      "gtfsStopId": "EP",
+      "canonicalName": "El Parrón",
+      "lat": -33.5264300003383,
+      "lng": -70.6613919999116,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699913",
+      "osmMatchDistanceM": 1.2
+    },
+    {
+      "stationId": "METRO_GTFS_ESN",
+      "gtfsStopId": "ESN",
+      "canonicalName": "Estadio Nacional",
+      "lat": -33.4626335000084,
+      "lng": -70.6069290000594,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_3932022758",
+      "osmMatchDistanceM": 71.7
+    },
+    {
+      "stationId": "METRO_GTFS_ESP",
+      "gtfsStopId": "ESP",
+      "canonicalName": "Chile España",
+      "lat": -33.455206,
+      "lng": -70.597489,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_1894898784",
+      "osmMatchDistanceM": 69.1
+    },
+    {
+      "stationId": "METRO_GTFS_FCV",
+      "gtfsStopId": "FCV",
+      "canonicalName": "Fernando Castillo Velasco",
+      "lat": -33.452321,
+      "lng": -70.558179,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6512675039",
+      "osmMatchDistanceM": 25.4
+    },
+    {
+      "stationId": "METRO_GTFS_FER",
+      "gtfsStopId": "FER",
+      "canonicalName": "Ferrocarril",
+      "lat": -33.36515,
+      "lng": -70.70593,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530436046",
+      "osmMatchDistanceM": 50.7
+    },
+    {
+      "stationId": "METRO_GTFS_FRA-FR",
+      "gtfsStopId": "FRA-FR",
+      "canonicalName": "Franklin",
+      "lat": -33.4763635003272,
+      "lng": -70.64911200173368,
+      "lines": [
+        "L2",
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4519756994",
+      "osmMatchDistanceM": 47.3
+    },
+    {
+      "stationId": "METRO_GTFS_GL",
+      "gtfsStopId": "GL",
+      "canonicalName": "Gruta de Lourdes",
+      "lat": -33.4382706667008,
+      "lng": -70.6909406666527,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_475498004",
+      "osmMatchDistanceM": 30.0
+    },
+    {
+      "stationId": "METRO_GTFS_GO",
+      "gtfsStopId": "GO",
+      "canonicalName": "El Golf",
+      "lat": -33.4166810001873,
+      "lng": -70.5961859995077,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527596",
+      "osmMatchDistanceM": 44.9
+    },
+    {
+      "stationId": "METRO_GTFS_HM",
+      "gtfsStopId": "HM",
+      "canonicalName": "Hernando de Magallanes",
+      "lat": -33.408201,
+      "lng": -70.556103,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_390998425",
+      "osmMatchDistanceM": 38.0
+    },
+    {
+      "stationId": "METRO_GTFS_HOS",
+      "gtfsStopId": "HOS",
+      "canonicalName": "Hospitales",
+      "lat": -33.417829,
+      "lng": -70.656054,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531279",
+      "osmMatchDistanceM": 41.1
+    },
+    {
+      "stationId": "METRO_GTFS_HSR",
+      "gtfsStopId": "HSR",
+      "canonicalName": "Hospital Sótero del Río",
+      "lat": -33.5767460005552,
+      "lng": -70.5823165005658,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256378595",
+      "osmMatchDistanceM": 16.9
+    },
+    {
+      "stationId": "METRO_GTFS_IRA-IR",
+      "gtfsStopId": "IRA-IR",
+      "canonicalName": "Irarrázaval",
+      "lat": -33.45331450075462,
+      "lng": -70.62862200264205,
+      "lines": [
+        "L3",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6506316374",
+      "osmMatchDistanceM": 195.4
+    },
+    {
+      "stationId": "METRO_GTFS_ISU",
+      "gtfsStopId": "ISU",
+      "canonicalName": "Inés de Suárez",
+      "lat": -33.43841,
+      "lng": -70.606742,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_601294862",
+      "osmMatchDistanceM": 65.2
+    },
+    {
+      "stationId": "METRO_GTFS_LA",
+      "gtfsStopId": "LA",
+      "canonicalName": "Unión Latinoamericana",
+      "lat": -33.4493046667187,
+      "lng": -70.6733970000011,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252528387",
+      "osmMatchDistanceM": 7.7
+    },
+    {
+      "stationId": "METRO_GTFS_LC-LCI",
+      "gtfsStopId": "LC-LCI",
+      "canonicalName": "La Cisterna",
+      "lat": -33.53762585759427,
+      "lng": -70.66450871339096,
+      "lines": [
+        "L2",
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_5564321725",
+      "osmMatchDistanceM": 34.8
+    },
+    {
+      "stationId": "METRO_GTFS_LCR",
+      "gtfsStopId": "LCR",
+      "canonicalName": "Lo Cruzat",
+      "lat": -33.3664432120537,
+      "lng": -70.720480519152,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530436047",
+      "osmMatchDistanceM": 78.9
+    },
+    {
+      "stationId": "METRO_GTFS_LD",
+      "gtfsStopId": "LD",
+      "canonicalName": "Los Dominicos",
+      "lat": -33.4079660003098,
+      "lng": -70.5451156663444,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_390998430",
+      "osmMatchDistanceM": 14.4
+    },
+    {
+      "stationId": "METRO_GTFS_LE-LEN",
+      "gtfsStopId": "LE-LEN",
+      "canonicalName": "Los Leones",
+      "lat": -33.42135000045148,
+      "lng": -70.60833179979042,
+      "lines": [
+        "L1",
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_5227884071",
+      "osmMatchDistanceM": 77.4
+    },
+    {
+      "stationId": "METRO_GTFS_LF",
+      "gtfsStopId": "LF",
+      "canonicalName": "Bellavista de La Florida",
+      "lat": -33.5196737504854,
+      "lng": -70.5998685008082,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256999811",
+      "osmMatchDistanceM": 22.3
+    },
+    {
+      "stationId": "METRO_GTFS_LGR",
+      "gtfsStopId": "LGR",
+      "canonicalName": "La Granja",
+      "lat": -33.541150500016,
+      "lng": -70.6160410001947,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301703223",
+      "osmMatchDistanceM": 2.4
+    },
+    {
+      "stationId": "METRO_GTFS_LH-HE",
+      "gtfsStopId": "LH-HE",
+      "canonicalName": "Los Héroes",
+      "lat": -33.4464140003288,
+      "lng": -70.6614859997553,
+      "lines": [
+        "L1",
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_2307244234",
+      "osmMatchDistanceM": 99.8
+    },
+    {
+      "stationId": "METRO_GTFS_LIB",
+      "gtfsStopId": "LIB",
+      "canonicalName": "Los Libertadores",
+      "lat": -33.365575,
+      "lng": -70.690667,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_2390287915",
+      "osmMatchDistanceM": 123.9
+    },
+    {
+      "stationId": "METRO_GTFS_LL",
+      "gtfsStopId": "LL",
+      "canonicalName": "El Llano",
+      "lat": -33.4825920005116,
+      "lng": -70.6494913339987,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699361",
+      "osmMatchDistanceM": 10.2
+    },
+    {
+      "stationId": "METRO_GTFS_LM",
+      "gtfsStopId": "LM",
+      "canonicalName": "La Moneda",
+      "lat": -33.444869201097,
+      "lng": -70.6551847995323,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_3391796062",
+      "osmMatchDistanceM": 29.1
+    },
+    {
+      "stationId": "METRO_GTFS_LME",
+      "gtfsStopId": "LME",
+      "canonicalName": "Las Mercedes",
+      "lat": -33.6014065003725,
+      "lng": -70.5774894994835,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_463165229",
+      "osmMatchDistanceM": 3.0
+    },
+    {
+      "stationId": "METRO_GTFS_LO",
+      "gtfsStopId": "LO",
+      "canonicalName": "Lo Ovalle",
+      "lat": -33.5172895002066,
+      "lng": -70.6588529999999,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699842",
+      "osmMatchDistanceM": 3.7
+    },
+    {
+      "stationId": "METRO_GTFS_LOR",
+      "gtfsStopId": "LOR",
+      "canonicalName": "Los Orientales",
+      "lat": -33.4624280002695,
+      "lng": -70.5738685008655,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256372838",
+      "osmMatchDistanceM": 21.8
+    },
+    {
+      "stationId": "METRO_GTFS_LP",
+      "gtfsStopId": "LP",
+      "canonicalName": "Las Parcelas",
+      "lat": -33.475021,
+      "lng": -70.740398,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_463084774",
+      "osmMatchDistanceM": 47.8
+    },
+    {
+      "stationId": "METRO_GTFS_LPR",
+      "gtfsStopId": "LPR",
+      "canonicalName": "Los Presidentes",
+      "lat": -33.4796120004368,
+      "lng": -70.578619000311,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256373484",
+      "osmMatchDistanceM": 25.4
+    },
+    {
+      "stationId": "METRO_GTFS_LQU",
+      "gtfsStopId": "LQU",
+      "canonicalName": "Los Quillayes",
+      "lat": -33.560877,
+      "lng": -70.585288,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256377970",
+      "osmMatchDistanceM": 38.8
+    },
+    {
+      "stationId": "METRO_GTFS_LR",
+      "gtfsStopId": "LR",
+      "canonicalName": "Las Rejas",
+      "lat": -33.4575140001779,
+      "lng": -70.7065992501643,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253282379",
+      "osmMatchDistanceM": 14.8
+    },
+    {
+      "stationId": "METRO_GTFS_LS",
+      "gtfsStopId": "LS",
+      "canonicalName": "Laguna Sur",
+      "lat": -33.462384,
+      "lng": -70.738134,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_391008466",
+      "osmMatchDistanceM": 32.4
+    },
+    {
+      "stationId": "METRO_GTFS_LTO",
+      "gtfsStopId": "LTO",
+      "canonicalName": "Las Torres",
+      "lat": -33.4994285004767,
+      "lng": -70.5866750005799,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256374120",
+      "osmMatchDistanceM": 37.6
+    },
+    {
+      "stationId": "METRO_GTFS_LV",
+      "gtfsStopId": "LV",
+      "canonicalName": "Lo Vial",
+      "lat": -33.496842000108,
+      "lng": -70.6529965002026,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699645",
+      "osmMatchDistanceM": 2.3
+    },
+    {
+      "stationId": "METRO_GTFS_LVA",
+      "gtfsStopId": "LVA",
+      "canonicalName": "Lo Valledor",
+      "lat": -33.477694,
+      "lng": -70.680962,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_3670590083",
+      "osmMatchDistanceM": 79.2
+    },
+    {
+      "stationId": "METRO_GTFS_MA",
+      "gtfsStopId": "MA",
+      "canonicalName": "Mirador",
+      "lat": -33.513087,
+      "lng": -70.606208,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253295159",
+      "osmMatchDistanceM": 36.3
+    },
+    {
+      "stationId": "METRO_GTFS_MAC",
+      "gtfsStopId": "MAC",
+      "canonicalName": "Macul",
+      "lat": -33.5093810000803,
+      "lng": -70.5900709992973,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256374127",
+      "osmMatchDistanceM": 16.1
+    },
+    {
+      "stationId": "METRO_GTFS_MAT",
+      "gtfsStopId": "MAT",
+      "canonicalName": "Matta",
+      "lat": -33.457966,
+      "lng": -70.642977,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531275",
+      "osmMatchDistanceM": 35.0
+    },
+    {
+      "stationId": "METRO_GTFS_MEY",
+      "gtfsStopId": "MEY",
+      "canonicalName": "Monseñor Eyzaguirre",
+      "lat": -33.453375,
+      "lng": -70.613785,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_1363217828",
+      "osmMatchDistanceM": 31.8
+    },
+    {
+      "stationId": "METRO_GTFS_MM",
+      "gtfsStopId": "MM",
+      "canonicalName": "Manuel Montt",
+      "lat": -33.4286535001209,
+      "lng": -70.6196305002969,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527600",
+      "osmMatchDistanceM": 11.3
+    },
+    {
+      "stationId": "METRO_GTFS_MQ",
+      "gtfsStopId": "MQ",
+      "canonicalName": "Manquehue",
+      "lat": -33.4092271697542,
+      "lng": -70.5689079980065,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_390998417",
+      "osmMatchDistanceM": 80.9
+    },
+    {
+      "stationId": "METRO_GTFS_MT",
+      "gtfsStopId": "MT",
+      "canonicalName": "Monte Tabor",
+      "lat": -33.482091,
+      "lng": -70.745823,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_463084780",
+      "osmMatchDistanceM": 41.8
+    },
+    {
+      "stationId": "METRO_GTFS_NP",
+      "gtfsStopId": "NP",
+      "canonicalName": "Neptuno",
+      "lat": -33.4514660000993,
+      "lng": -70.7226654999901,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4519746485",
+      "osmMatchDistanceM": 12.8
+    },
+    {
+      "stationId": "METRO_GTFS_NU-NUB",
+      "gtfsStopId": "NU-NUB",
+      "canonicalName": "Ñuble",
+      "lat": -33.467438,
+      "lng": -70.625628,
+      "lines": [
+        "L5",
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_615092336",
+      "osmMatchDistanceM": 81.3
+    },
+    {
+      "stationId": "METRO_GTFS_NUN-NUO",
+      "gtfsStopId": "NUN-NUO",
+      "canonicalName": "Ñuñoa",
+      "lat": -33.45442599999999,
+      "lng": -70.605107,
+      "lines": [
+        "L3",
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6506316376",
+      "osmMatchDistanceM": 29.1
+    },
+    {
+      "stationId": "METRO_GTFS_OB",
+      "gtfsStopId": "OB",
+      "canonicalName": "Observatorio",
+      "lat": -33.56039,
+      "lng": -70.6703,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530419351",
+      "osmMatchDistanceM": 23.1
+    },
+    {
+      "stationId": "METRO_GTFS_PAC",
+      "gtfsStopId": "PAC",
+      "canonicalName": "Presidente Pedro Aguirre Cerda",
+      "lat": -33.478477,
+      "lng": -70.664988,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_601268662",
+      "osmMatchDistanceM": 30.2
+    },
+    {
+      "stationId": "METRO_GTFS_PAL",
+      "gtfsStopId": "PAL",
+      "canonicalName": "Parque Almagro",
+      "lat": -33.451431,
+      "lng": -70.650662,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4550281347",
+      "osmMatchDistanceM": 10.2
+    },
+    {
+      "stationId": "METRO_GTFS_PB",
+      "gtfsStopId": "PB",
+      "canonicalName": "Parque Bustamante",
+      "lat": -33.4428255003292,
+      "lng": -70.6320845003297,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_475497992",
+      "osmMatchDistanceM": 11.9
+    },
+    {
+      "stationId": "METRO_GTFS_PDG",
+      "gtfsStopId": "PDG",
+      "canonicalName": "Príncipe de Gales",
+      "lat": -33.4389173336975,
+      "lng": -70.573009999793,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252981541",
+      "osmMatchDistanceM": 34.5
+    },
+    {
+      "stationId": "METRO_GTFS_PE",
+      "gtfsStopId": "PE",
+      "canonicalName": "Pedrero",
+      "lat": -33.508054,
+      "lng": -70.612344,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253295163",
+      "osmMatchDistanceM": 15.0
+    },
+    {
+      "stationId": "METRO_GTFS_PEG-PZE",
+      "gtfsStopId": "PEG-PZE",
+      "canonicalName": "Plaza Egaña",
+      "lat": -33.453245000938914,
+      "lng": -70.57091133399429,
+      "lines": [
+        "L3",
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6506316379",
+      "osmMatchDistanceM": 28.8
+    },
+    {
+      "stationId": "METRO_GTFS_PI",
+      "gtfsStopId": "PI",
+      "canonicalName": "Hospital El Pino",
+      "lat": -33.5826850000564,
+      "lng": -70.6767600006371,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530419353",
+      "osmMatchDistanceM": 22.1
+    },
+    {
+      "stationId": "METRO_GTFS_PIN",
+      "gtfsStopId": "PIN",
+      "canonicalName": "Protectora de la Infancia",
+      "lat": -33.5892805001949,
+      "lng": -70.5796770000348,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256379524",
+      "osmMatchDistanceM": 35.7
+    },
+    {
+      "stationId": "METRO_GTFS_PJ",
+      "gtfsStopId": "PJ",
+      "canonicalName": "Pajaritos",
+      "lat": -33.4573606674556,
+      "lng": -70.7156393335818,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253282383",
+      "osmMatchDistanceM": 21.9
+    },
+    {
+      "stationId": "METRO_GTFS_PM",
+      "gtfsStopId": "PM",
+      "canonicalName": "Plaza de Maipú",
+      "lat": -33.509923333399,
+      "lng": -70.7568933332511,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_3587889955",
+      "osmMatchDistanceM": 32.3
+    },
+    {
+      "stationId": "METRO_GTFS_PPA",
+      "gtfsStopId": "PPA",
+      "canonicalName": "Plaza de Puente Alto",
+      "lat": -33.6094197507587,
+      "lng": -70.5756327506493,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_491641302",
+      "osmMatchDistanceM": 22.5
+    },
+    {
+      "stationId": "METRO_GTFS_PQ",
+      "gtfsStopId": "PQ",
+      "canonicalName": "Parque O'Higgins",
+      "lat": -33.460700500022,
+      "lng": -70.6568764999963,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253360557",
+      "osmMatchDistanceM": 16.5
+    },
+    {
+      "stationId": "METRO_GTFS_PQU",
+      "gtfsStopId": "PQU",
+      "canonicalName": "Plaza Quilicura",
+      "lat": -33.3656937072977,
+      "lng": -70.7293896612974,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4530436048",
+      "osmMatchDistanceM": 46.1
+    },
+    {
+      "stationId": "METRO_GTFS_PR",
+      "gtfsStopId": "PR",
+      "canonicalName": "Lo Prado",
+      "lat": -33.443204,
+      "lng": -70.716864,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_476909750",
+      "osmMatchDistanceM": 25.0
+    },
+    {
+      "stationId": "METRO_GTFS_PT",
+      "gtfsStopId": "PT",
+      "canonicalName": "Patronato",
+      "lat": -33.4294940004763,
+      "lng": -70.6471859996248,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_944490419",
+      "osmMatchDistanceM": 27.2
+    },
+    {
+      "stationId": "METRO_GTFS_PU",
+      "gtfsStopId": "PU",
+      "canonicalName": "Pudahuel",
+      "lat": -33.4447000001698,
+      "lng": -70.7409764996301,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_475498017",
+      "osmMatchDistanceM": 23.9
+    },
+    {
+      "stationId": "METRO_GTFS_PV",
+      "gtfsStopId": "PV",
+      "canonicalName": "Pedro de Valdivia",
+      "lat": -33.4252307504914,
+      "lng": -70.613821000677,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527599",
+      "osmMatchDistanceM": 28.1
+    },
+    {
+      "stationId": "METRO_GTFS_PZ-PZA",
+      "gtfsStopId": "PZ-PZA",
+      "canonicalName": "Plaza de Armas",
+      "lat": -33.43745420417868,
+      "lng": -70.65098919924002,
+      "lines": [
+        "L3",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6231367141",
+      "osmMatchDistanceM": 27.1
+    },
+    {
+      "stationId": "METRO_GTFS_PZC",
+      "gtfsStopId": "PZC",
+      "canonicalName": "Plaza Chacabuco",
+      "lat": -33.406435,
+      "lng": -70.660871,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531280",
+      "osmMatchDistanceM": 38.5
+    },
+    {
+      "stationId": "METRO_GTFS_QN",
+      "gtfsStopId": "QN",
+      "canonicalName": "Quinta Normal",
+      "lat": -33.4403945000005,
+      "lng": -70.6804460000066,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_254343697",
+      "osmMatchDistanceM": 14.7
+    },
+    {
+      "stationId": "METRO_GTFS_RA",
+      "gtfsStopId": "RA",
+      "canonicalName": "Rodrigo de Araya",
+      "lat": -33.478073,
+      "lng": -70.622192,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253295184",
+      "osmMatchDistanceM": 29.3
+    },
+    {
+      "stationId": "METRO_GTFS_RC",
+      "gtfsStopId": "RC",
+      "canonicalName": "Cumming",
+      "lat": -33.439081,
+      "lng": -70.668727,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253281419",
+      "osmMatchDistanceM": 19.2
+    },
+    {
+      "stationId": "METRO_GTFS_RGR",
+      "gtfsStopId": "RGR",
+      "canonicalName": "Grecia",
+      "lat": -33.4695980040618,
+      "lng": -70.5760219974342,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256372848",
+      "osmMatchDistanceM": 45.2
+    },
+    {
+      "stationId": "METRO_GTFS_RMA",
+      "gtfsStopId": "RMA",
+      "canonicalName": "Rojas Magallanes",
+      "lat": -33.535751,
+      "lng": -70.592853,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256377241",
+      "osmMatchDistanceM": 42.1
+    },
+    {
+      "stationId": "METRO_GTFS_RO",
+      "gtfsStopId": "RO",
+      "canonicalName": "Rondizzoni",
+      "lat": -33.470183,
+      "lng": -70.656325,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_227926453",
+      "osmMatchDistanceM": 58.6
+    },
+    {
+      "stationId": "METRO_GTFS_RP",
+      "gtfsStopId": "RP",
+      "canonicalName": "República",
+      "lat": -33.4477040003231,
+      "lng": -70.6667376670974,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252528383",
+      "osmMatchDistanceM": 37.0
+    },
+    {
+      "stationId": "METRO_GTFS_RQU",
+      "gtfsStopId": "RQU",
+      "canonicalName": "Quilín",
+      "lat": -33.4882755038026,
+      "lng": -70.5802475026891,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256374109",
+      "osmMatchDistanceM": 15.8
+    },
+    {
+      "stationId": "METRO_GTFS_SA",
+      "gtfsStopId": "SA",
+      "canonicalName": "Salvador",
+      "lat": -33.4328226000889,
+      "lng": -70.6259352003323,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_520459156",
+      "osmMatchDistanceM": 18.3
+    },
+    {
+      "stationId": "METRO_GTFS_SB",
+      "gtfsStopId": "SB",
+      "canonicalName": "Santiago Bueras",
+      "lat": -33.496779,
+      "lng": -70.757302,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_476917797",
+      "osmMatchDistanceM": 61.0
+    },
+    {
+      "stationId": "METRO_GTFS_SBO",
+      "gtfsStopId": "SBO",
+      "canonicalName": "Simón Bolívar",
+      "lat": -33.4461070002363,
+      "lng": -70.571867499432,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252981546",
+      "osmMatchDistanceM": 10.2
+    },
+    {
+      "stationId": "METRO_GTFS_SI",
+      "gtfsStopId": "SI",
+      "canonicalName": "Santa Isabel",
+      "lat": -33.4469665003525,
+      "lng": -70.6305194997132,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253294531",
+      "osmMatchDistanceM": 18.9
+    },
+    {
+      "stationId": "METRO_GTFS_SJ",
+      "gtfsStopId": "SJ",
+      "canonicalName": "San Joaquín",
+      "lat": -33.4988330001422,
+      "lng": -70.6157615001038,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_4593692288",
+      "osmMatchDistanceM": 56.2
+    },
+    {
+      "stationId": "METRO_GTFS_SJE",
+      "gtfsStopId": "SJE",
+      "canonicalName": "San José de la Estrella",
+      "lat": -33.553463,
+      "lng": -70.586562,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_470378182",
+      "osmMatchDistanceM": 39.8
+    },
+    {
+      "stationId": "METRO_GTFS_SJU",
+      "gtfsStopId": "SJU",
+      "canonicalName": "Santa Julia",
+      "lat": -33.5311045003382,
+      "lng": -70.6055380006224,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301703081",
+      "osmMatchDistanceM": 0.3
+    },
+    {
+      "stationId": "METRO_GTFS_SL",
+      "gtfsStopId": "SL",
+      "canonicalName": "Santa Lucía",
+      "lat": -33.4426015001015,
+      "lng": -70.6450135004098,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527604",
+      "osmMatchDistanceM": 29.2
+    },
+    {
+      "stationId": "METRO_GTFS_SM",
+      "gtfsStopId": "SM",
+      "canonicalName": "San Miguel",
+      "lat": -33.4887287505838,
+      "lng": -70.6511055003364,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301699379",
+      "osmMatchDistanceM": 3.4
+    },
+    {
+      "stationId": "METRO_GTFS_SP-SO",
+      "gtfsStopId": "SP-SO",
+      "canonicalName": "San Pablo",
+      "lat": -33.44486450014094,
+      "lng": -70.72302149943044,
+      "lines": [
+        "L1",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_668141380",
+      "osmMatchDistanceM": 74.7
+    },
+    {
+      "stationId": "METRO_GTFS_SRA",
+      "gtfsStopId": "SRA",
+      "canonicalName": "San Ramón",
+      "lat": -33.5412560000362,
+      "lng": -70.643032499722,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301704116",
+      "osmMatchDistanceM": 9.3
+    },
+    {
+      "stationId": "METRO_GTFS_SRO",
+      "gtfsStopId": "SRO",
+      "canonicalName": "Santa Rosa",
+      "lat": -33.5424160003251,
+      "lng": -70.6341105001584,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_301703484",
+      "osmMatchDistanceM": 3.5
+    },
+    {
+      "stationId": "METRO_GTFS_TB-TOB",
+      "gtfsStopId": "TB-TOB",
+      "canonicalName": "Tobalaba",
+      "lat": -33.418119835792474,
+      "lng": -70.60192866420536,
+      "lines": [
+        "L1",
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527597",
+      "osmMatchDistanceM": 42.3
+    },
+    {
+      "stationId": "METRO_GTFS_TO",
+      "gtfsStopId": "TO",
+      "canonicalName": "Toesca",
+      "lat": -33.4529735000973,
+      "lng": -70.6585815009479,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_141096340",
+      "osmMatchDistanceM": 0.4
+    },
+    {
+      "stationId": "METRO_GTFS_TRI",
+      "gtfsStopId": "TRI",
+      "canonicalName": "Trinidad",
+      "lat": -33.546932,
+      "lng": -70.587818,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_256377430",
+      "osmMatchDistanceM": 75.7
+    },
+    {
+      "stationId": "METRO_GTFS_UC",
+      "gtfsStopId": "UC",
+      "canonicalName": "Universidad Católica",
+      "lat": -33.4398775005508,
+      "lng": -70.6399685003287,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_252527603",
+      "osmMatchDistanceM": 14.7
+    },
+    {
+      "stationId": "METRO_GTFS_US",
+      "gtfsStopId": "US",
+      "canonicalName": "Universidad de Santiago",
+      "lat": -33.4527110000353,
+      "lng": -70.6861880000361,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_253282351",
+      "osmMatchDistanceM": 37.7
+    },
+    {
+      "stationId": "METRO_GTFS_VFR",
+      "gtfsStopId": "VFR",
+      "canonicalName": "Villa Frei",
+      "lat": -33.454816,
+      "lng": -70.580146,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_1894900066",
+      "osmMatchDistanceM": 125.1
+    },
+    {
+      "stationId": "METRO_GTFS_VIV",
+      "gtfsStopId": "VIV",
+      "canonicalName": "Vivaceta",
+      "lat": -33.385377,
+      "lng": -70.679303,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6228531486",
+      "osmMatchDistanceM": 31.3
+    },
+    {
+      "stationId": "METRO_GTFS_VMA-VIM",
+      "gtfsStopId": "VMA-VIM",
+      "canonicalName": "Vicuña Mackenna",
+      "lat": -33.519824,
+      "lng": -70.596213,
+      "lines": [
+        "L4",
+        "L4A"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6514765510",
+      "osmMatchDistanceM": 6.7
+    },
+    {
+      "stationId": "METRO_GTFS_VVA-VV",
+      "gtfsStopId": "VVA-VV",
+      "canonicalName": "Vicente Valdés",
+      "lat": -33.52638825035503,
+      "lng": -70.59685400063252,
+      "lines": [
+        "L4",
+        "L5"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_6514737770",
+      "osmMatchDistanceM": 6.6
+    },
+    {
+      "stationId": "METRO_GTFS_ZA",
+      "gtfsStopId": "ZA",
+      "canonicalName": "Zapadores",
+      "lat": -33.391309000003,
+      "lng": -70.6425814999764,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "ACCESSIBLE",
+      "accessibilityProvenance": "gtfs.stops.wheelchair_boarding",
+      "provenance": "dtpm_gtfs",
+      "provenanceSource": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+      "feedVersion": "V166.20260704",
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED",
+      "runtimeOperational": true,
+      "osmStationIdRef": "METRO_OSM_265684322",
+      "osmMatchDistanceM": 42.7
+    }
+  ]
+}
