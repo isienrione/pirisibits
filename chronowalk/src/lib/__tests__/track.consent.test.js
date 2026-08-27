@@ -56,6 +56,8 @@ describe('product analytics (immediate init)', () => {
           maskAllInputs: false,
           maskTextSelector: '[data-ph-mask]',
           recordCrossOriginIframes: false,
+          inlineStylesheet: true,
+          collectFonts: true,
         }),
       }),
     )

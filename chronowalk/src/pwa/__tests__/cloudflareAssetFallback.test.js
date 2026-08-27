@@ -30,16 +30,18 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(redirects).not.toMatch(/\/walk-together\s+[^\n]*\s+404/)
   })
 
-  it('keeps index.html / landing / sw.js revalidating; hashes assets as immutable', () => {
+  it('keeps index.html / landing / sw.js revalidating; hashed assets must-revalidate', () => {
     const headers = readFileSync(join(ROOT, 'public/_headers'), 'utf8')
     expect(headers).toMatch(/\/sw\.js[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/index\.html[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/landing[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/reset-shell(?:\.html)?[\s\S]*?no-cache/)
-    expect(headers).toMatch(/\/assets\/\*[\s\S]*?immutable/)
+    expect(headers).toMatch(/\/assets\/\*[\s\S]*?must-revalidate/)
     expect(headers).toMatch(/\/robots\.txt[\s\S]*?Content-Type:\s*text\/plain/)
     expect(headers).toMatch(/\/sitemap\.xml[\s\S]*?Content-Type:\s*application\/xml/)
     expect(headers).not.toMatch(/\/404\.html/)
+    // PostHog replay (eu.posthog.com) must be allowed to fetch CSS/fonts/images.
+    expect(headers).toMatch(/\/\*[\s\S]*?Access-Control-Allow-Origin:\s*\*/)
   })
 
   it('service worker source rejects HTML for asset/module routes and binds shell to /', () => {
@@ -74,6 +76,9 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('/?cw_clean=1')
     expect(html).toContain('/rome/reset-shell?force=1')
     expect(html).toContain('CriOS')
+    expect(html).toMatch(
+      /fonts\.googleapis\.com\/css2[^>]*crossorigin="anonymous"|crossorigin="anonymous"[^>]*fonts\.googleapis\.com\/css2/,
+    )
     // PR #214: auto navigation WAS the Chrome loop — keep it gone.
     expect(html).not.toContain('location.replace')
     expect(html).not.toContain('location.reload')
