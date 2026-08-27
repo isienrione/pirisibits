@@ -24,15 +24,28 @@ describe('Gate 2A node utility foundation', () => {
     expect(NODE_UTILITY_V0_1_READY).toBe(true)
   })
 
-  it('evaluates launch corpus only and excludes STGO_23 / STGO_33 / backlog', () => {
+  it('evaluates launch corpus only; STGO_23 backlog-excluded; STGO_33/104 active but physically ineligible', () => {
     const pool = buildCandidatePool(nodes, TRAVELER_FIXTURES.A_first_time_essentials)
     expect(pool.evaluatedLaunchCount).toBe(30)
-    expect(pool.excludedIds).toEqual(expect.arrayContaining(['STGO_23', 'STGO_33']))
+    expect(launch.map((n) => n.stgoId)).toContain('STGO_33')
+    expect(launch.map((n) => n.stgoId)).toContain('STGO_104')
+    expect(launch.map((n) => n.stgoId)).not.toContain('STGO_23')
     expect(pool.candidates.some((c) => c.nodeId === 'STGO_23')).toBe(false)
+    // STGO_23 left active launch (backlog / RUNTIME_EXCLUDED_RESEARCH) — not scored into pool exclusions.
+    expect(pool.excludedIds).not.toContain('STGO_23')
+    // STGO_33 restored to ACTIVE_LAUNCH (not RUNTIME_EXCLUDED_SEMANTIC) but still physicalRouteGenerationEligible=false.
+    const stgo33 = launch.find((n) => n.stgoId === 'STGO_33')!
+    expect(stgo33.launchRuntimeDisposition).toBe('ACTIVE_LAUNCH')
+    expect(stgo33.launchRuntimeDisposition).not.toBe('RUNTIME_EXCLUDED_SEMANTIC')
+    expect(stgo33.physicalRouteGenerationEligible).toBe(false)
+    expect(pool.excludedIds).toContain('STGO_33')
+    expect(pool.excludedIds).toContain('STGO_104')
     expect(pool.candidates.some((c) => c.nodeId === 'STGO_33')).toBe(false)
+    expect(pool.candidates.some((c) => c.nodeId === 'STGO_104')).toBe(false)
     const backlogIds = new Set(nodes.filter((n) => !n.launchCorpus).map((n) => n.stgoId))
+    expect(backlogIds.has('STGO_23')).toBe(true)
     expect(pool.candidates.some((c) => backlogIds.has(c.nodeId))).toBe(false)
-    expect(pool.backlogLeakCount).toBe(73)
+    expect(pool.backlogLeakCount).toBe(74)
   })
 
   it('hard-excludes explicit sensitive-memory sites without opt-in (not T1B alone)', () => {
@@ -75,6 +88,20 @@ describe('Gate 2A node utility foundation', () => {
     expect(scored.components.editorial.available).toBe(true)
     expect(scored.yourMatch).toBeGreaterThanOrEqual(0)
     expect(scored.yourMatch).not.toBe(scored.chronoWorthEffective)
+  })
+
+  it('keeps STGO_104 ChronoWorth UNAVAILABLE (null semantics, not zero)', () => {
+    const node = launch.find((n) => n.stgoId === 'STGO_104')!
+    expect(node.chronoWorthProposed).toBeNull()
+    expect(node.chronoWorthApproved).toBeNull()
+    expect(node.chronoWorthEffective).toBeNull()
+    expect(String(node.chronoWorthProvenance)).toMatch(/UNAVAILABLE/)
+    for (const code of THEME_CODES) {
+      expect(node.thematicVector?.[code] ?? null).toBeNull()
+    }
+    const scored = scoreNodeUtility(node, TRAVELER_FIXTURES.B_civic_history)
+    expect(scored.chronoWorthEffective).toBeNull()
+    expect(scored.components.editorial.available).toBe(false)
   })
 
   it('ranks civic/history travelers toward T1A/T3 tagged anchors when tags support it', () => {

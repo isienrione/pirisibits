@@ -111,7 +111,7 @@ export type ProvenanceBlock = {
 }
 
 /**
- * Canonical Santiago engine node (STGO_01 … STGO_103).
+ * Canonical Santiago engine node (STGO_01 … STGO_103 + founder extensions).
  * Null is valid for unknown factual fields — never fabricate.
  */
 export type SantiagoEngineNode = {
@@ -165,7 +165,7 @@ export type SantiagoEngineNode = {
   providerId: string | null
   /** Human curator approval from Gate 1B.2A founder review; never automatic from Mapbox. */
   curatorApproval: 'CURATOR_APPROVED' | null
-  launchPhysicalReadiness?: LaunchPhysicalReadiness | null
+  launchPhysicalReadiness?: LaunchPhysicalReadiness | string | null
   physicalPoints?: PhysicalPoint[]
   accessPoints?: PhysicalPoint[]
   providerAudit?: Record<string, unknown> | null
@@ -173,15 +173,21 @@ export type SantiagoEngineNode = {
   physicalRouteGenerationEligible?: boolean
   /** Hard rule mirror — must remain false in generated data. */
   physicalRouteGenerationEnabled: false
+  /** Gate 1B.5 / 2A.1R runtime disposition (editorial + physical readiness). */
+  launchRuntimeDisposition?: string | null
+  launchRuntimeDispositionReason?: string | null
+  runtimePhysicalEndpoint?: unknown
+  experienceHeadingDegrees?: number | null
+  founderExtension?: boolean
 }
 
 export type SantiagoEngineNodesFile = {
   schemaVersion: 'santiago-engine-nodes.v0.1'
   cityId: 'santiago'
-  gate: '1B.2' | '1B.2A'
-  nodeCount: 103
+  gate: string
+  nodeCount: number
   launchCorpusCount: 30
-  backlogCount: 73
+  backlogCount: number
   physicalRouteGenerationEnabled: false
   autoCuratorApproveFromMapbox: false
   coordinatePolicy: string
@@ -191,6 +197,11 @@ export type SantiagoEngineNodesFile = {
   launchCorpusStgoIds: string[]
   nodes: SantiagoEngineNode[]
   counts: Record<string, number>
+  canonicalInventory?: {
+    frozenSeedCount: number
+    extensionCount: number
+    total: number
+  }
 }
 
 /** Gate 1B.3 — pedestrian transition classification (provider duration). */

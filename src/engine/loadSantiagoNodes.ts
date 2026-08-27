@@ -37,8 +37,13 @@ export function loadSantiagoEngineNodes(root = ROOT): EngineNodeRecord[] {
       }
     }
 
-    if (String(cal.thematicVectorProvenance || '') !== 'FOUNDER_PRECALIBRATED') {
-      throw new Error(`Gate 2A.1R: ${n.stgoId} thematicVector must be FOUNDER_PRECALIBRATED`)
+    const vectorProvenance = String(cal.thematicVectorProvenance || '')
+    // Founder-extension nodes (e.g. STGO_104) may be intentionally UNKNOWN until curated.
+    // UNKNOWN must remain loadable and must not be coerced to zero downstream.
+    if (vectorProvenance !== 'FOUNDER_PRECALIBRATED' && vectorProvenance !== 'UNKNOWN') {
+      throw new Error(
+        `Gate 2A.1R: ${n.stgoId} thematicVector must be FOUNDER_PRECALIBRATED or UNKNOWN (got ${vectorProvenance || 'missing'})`,
+      )
     }
 
     const accessibilityStatus = cal.accessibility.status

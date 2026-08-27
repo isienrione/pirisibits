@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json"
 OUT = ROOT / "src/data/santiago/curation/launch30_score_rationales.v0.1.json"
-CHECKPOINT = "af8874f8efa106ec87e0262eec43329c666e8444"
+CHECKPOINT = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
 
 THEME_LABELS = {
     "T1A": "Civic, Military & Traditional Heritage",
@@ -81,10 +81,39 @@ def low_confidence_text(field: str) -> dict:
     }
 
 
-def theme_rationale(code: str, value: float, vector: dict, rec: dict) -> dict:
+def founder_added_unknown_rationale(field: str, label: str) -> dict:
+    return {
+        "field": field,
+        "label": label,
+        "value": None,
+        "provenance": "UNKNOWN",
+        "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+        "confidence": "HIGH",
+        "whyThisScore": (
+            "No prior calibrated score exists. This is a new founder-added launch node."
+        ),
+        "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+        "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+        "evidenceLimitations": (
+            "STGO_104 was added after the frozen 103-node seed; founder calibration is required "
+            "before any numeric rationale can exist."
+        ),
+        "proposalRationale": None,
+    }
+
+
+def is_unknown_number(v) -> bool:
+    return v is None
+
+
+def theme_rationale(code: str, value, vector: dict, rec: dict) -> dict:
     label = THEME_LABELS[code]
+    if is_unknown_number(value) or any(is_unknown_number(vector.get(k)) for k in THEME_LABELS):
+        if rec.get("stgoId") == "STGO_104" or rec.get("thematicVectorProvenance") == "UNKNOWN":
+            return founder_added_unknown_rationale(code, label)
+    value = float(value)
     others = sorted(
-        ((k, float(vector[k])) for k in THEME_LABELS if k != code),
+        ((k, float(vector[k])) for k in THEME_LABELS if k != code and not is_unknown_number(vector.get(k))),
         key=lambda x: x[1],
         reverse=True,
     )
@@ -185,13 +214,16 @@ def theme_rationale(code: str, value: float, vector: dict, rec: dict) -> dict:
     }
 
 
-def metric_rationale(key: str, value: float, metrics: dict, rec: dict) -> dict:
+def metric_rationale(key: str, value, metrics: dict, rec: dict) -> dict:
     label = METRIC_LABELS[key]
+    if is_unknown_number(value) or rec.get("stgoId") == "STGO_104":
+        return founder_added_unknown_rationale(key, label)
+    value = float(value)
     b = band(value)
     name = rec.get("displayName") or rec["stgoId"]
     tier = rec.get("tier")
-    others = {k: float(metrics[k]) for k in METRIC_LABELS if k != key}
-    lead = max(others.items(), key=lambda x: x[1])
+    others = {k: float(metrics[k]) for k in METRIC_LABELS if k != key and not is_unknown_number(metrics.get(k))}
+    lead = max(others.items(), key=lambda x: x[1]) if others else (key, value)
     conf = "HIGH" if value >= 0.8 or value <= 0.15 else "LOW"
     if tier == "canonical_anchor" and key == "anchor_density" and value >= 0.7:
         conf = "HIGH"
@@ -232,8 +264,10 @@ def metric_rationale(key: str, value: float, metrics: dict, rec: dict) -> dict:
 
 
 def tier_rationale(rec: dict) -> dict:
-    tier = rec["tier"]
+    tier = rec.get("tier")
     name = rec.get("displayName") or rec["stgoId"]
+    if tier is None or rec.get("tierProvenance") == "UNKNOWN" or rec.get("stgoId") == "STGO_104":
+        return founder_added_unknown_rationale("tier", "Editorial tier")
     ad = float(rec["structuralMetrics"]["anchor_density"])
     mr = float(rec["structuralMetrics"]["micro_reveal"])
     why = f"{name} is classified as `{tier}` in the founder seed."
@@ -265,6 +299,10 @@ def tier_rationale(rec: dict) -> dict:
 
 def visit_rationale(rec: dict) -> dict:
     vt = rec["visitTime"]
+    if vt.get("min") is None or rec.get("stgoId") == "STGO_104":
+        out = founder_added_unknown_rationale("visitTimeMin", "Visit time (min / typical / max)")
+        out["value"] = {"min": None, "typical": None, "max": None}
+        return out
     return {
         "field": "visitTimeMin",
         "label": "Visit time (min / typical / max)",
@@ -293,6 +331,8 @@ def mode_rationale(code: str, entry: dict, rec: dict) -> dict:
     val = entry.get("value")
     status = entry.get("status")
     prov = entry.get("provenance") or "AI_PROPOSED_UNVERIFIED"
+    if rec.get("stgoId") == "STGO_104" or (val is None and status == "UNKNOWN" and rec.get("thematicVectorProvenance") == "UNKNOWN"):
+        return founder_added_unknown_rationale(code, label)
     is_ai = "AI_PROPOSED" in str(prov) or code in {"M1", "M3", "M4", "M5"} and "FOUNDER" not in str(prov)
     flags = rec.get("flags") or {}
     polish = float(rec["structuralMetrics"]["polish"])
@@ -407,6 +447,13 @@ def flag_rationales(rec: dict) -> list[dict]:
 
 
 def thematic_summary(vector: dict) -> dict:
+    if any(is_unknown_number(vector.get(c)) for c in THEME_LABELS):
+        return {
+            "text": "No prior calibrated thematic profile exists. This is a new founder-added launch node.",
+            "top3": [],
+            "weakThemes": [],
+            "contrast": "All T1A–T9 values are UNKNOWN until founder calibration.",
+        }
     ranked = sorted(vector.items(), key=lambda x: float(x[1]), reverse=True)
     top3 = [{"code": c, "label": THEME_LABELS[c], "value": float(v)} for c, v in ranked[:3]]
     weak = [{"code": c, "label": THEME_LABELS[c], "value": float(v)} for c, v in ranked if float(v) <= 0.05][:3]
@@ -422,6 +469,8 @@ def thematic_summary(vector: dict) -> dict:
 
 
 def structural_summary(metrics: dict) -> str:
+    if any(is_unknown_number(metrics.get(k)) for k in METRIC_LABELS):
+        return "No prior structural profile exists. This is a new founder-added launch node (all metrics UNKNOWN)."
     ad, hd, mr, po = (
         float(metrics["anchor_density"]),
         float(metrics["heritage_depth"]),
@@ -444,6 +493,21 @@ def round1(x: float) -> float:
 
 
 def chrono_breakdown(metrics: dict) -> dict:
+    if any(is_unknown_number(metrics.get(k)) for k in METRIC_LABELS):
+        return {
+            "contributions": {
+                "heritage_depth": None,
+                "anchor_density": None,
+                "micro_reveal": None,
+                "polish": None,
+            },
+            "raw": None,
+            "status": "UNAVAILABLE",
+            "plainLanguage": (
+                "ChronoWorth is UNAVAILABLE until the founder supplies all four structural metrics. "
+                "UNKNOWN must not be treated as zero."
+            ),
+        }
     hd = float(metrics["heritage_depth"])
     ad = float(metrics["anchor_density"])
     mr = float(metrics["micro_reveal"])
@@ -461,7 +525,7 @@ def chrono_breakdown(metrics: dict) -> dict:
         f"Most of this POI's global ChronoWorth comes from {lead[0].replace('_',' ')} "
         f"({contrib[lead[0]]}), while {soft[0].replace('_',' ')} contributes less ({contrib[soft[0]]})."
     )
-    return {"contributions": contrib, "raw": raw, "plainLanguage": plain}
+    return {"contributions": contrib, "raw": raw, "status": "AVAILABLE", "plainLanguage": plain}
 
 
 def main() -> int:
@@ -472,11 +536,11 @@ def main() -> int:
     for rec in sorted(cal["records"], key=lambda r: r["stgoId"]):
         fields = []
         for code, val in rec["thematicVector"].items():
-            r = theme_rationale(code, float(val), rec["thematicVector"], rec)
+            r = theme_rationale(code, val, rec["thematicVector"], rec)
             fields.append(r)
             conf_hist[r["confidence"]] += 1
         for key, val in rec["structuralMetrics"].items():
-            r = metric_rationale(key, float(val), rec["structuralMetrics"], rec)
+            r = metric_rationale(key, val, rec["structuralMetrics"], rec)
             fields.append(r)
             conf_hist[r["confidence"]] += 1
         tr = tier_rationale(rec)
@@ -506,15 +570,17 @@ def main() -> int:
 
     payload = {
         "schemaVersion": "santiago-launch30-score-rationales.v0.1",
-        "gate": "2A.1R-UI.1",
+        "gate": "2A.1R-ADD-01R",
         "sourceCheckpointSha": CHECKPOINT,
         "sourceCalibration": str(LAUNCH.relative_to(ROOT)),
         "recordCount": 30,
         "confidenceHistogram": conf_hist,
         "notes": [
-            "Rationales are deterministic reconstructions from Gate 2A.1R calibration metadata.",
+            "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R calibration metadata.",
             "They do not change scores.",
             "SOURCE_RATIONALE vs AI_PROPOSAL_RATIONALE are distinct.",
+            "STGO_104 has no prior source rationale — founder-added UNKNOWN node.",
+            "STGO_33 rationales use corrected identity (no Funicular naming).",
             "LOW confidence means insufficient descriptive evidence — not a score defect.",
         ],
         "records": records,

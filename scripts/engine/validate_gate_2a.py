@@ -25,7 +25,6 @@ PHYSICAL_PATHS = [
     "src/data/santiago/santiago_multimodal_graph.v0.3.json",
     "src/data/santiago/santiago_physical_graph_manifest.v0.1.json",
     "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json",
-    "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
 ]
 
 THEME_CODES = {"T1A", "T1B", "T3", "T4", "T5", "T6", "T7", "T8", "T9"}
@@ -65,11 +64,11 @@ def main() -> int:
     provider = json.loads(PROVIDER.read_text(encoding="utf-8"))
     flags = FLAGS.read_text(encoding="utf-8")
 
-    if engine.get("nodeCount") != 103:
-        fail(errors, "103 inventory broken")
+    if engine.get("nodeCount") != 104:
+        fail(errors, "104 inventory broken (103 seed + 1 founder extension)")
     launch = [n for n in engine["nodes"] if n.get("launchCorpus")]
     backlog = [n for n in engine["nodes"] if not n.get("launchCorpus")]
-    if len(launch) != 30 or len(backlog) != 73:
+    if len(launch) != 30 or len(backlog) != 74:
         fail(errors, "launch/backlog split broken")
 
     # Physical freeze immutability vs starting SHA
@@ -109,7 +108,7 @@ def main() -> int:
             if m not in {"M1", "M2", "M3", "M4", "M5"}:
                 fail(errors, f"{n['stgoId']}: illegal mode {m}")
 
-    if set(membership.get("runtimeExcludedIds") or []) != {"STGO_23", "STGO_33"}:
+    if set(membership.get("runtimeExcludedIds") or []) != {"STGO_23"}:
         fail(errors, "excluded membership drift")
 
     # Completeness audit (do not fill)

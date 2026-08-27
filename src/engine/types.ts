@@ -168,7 +168,7 @@ export type EngineNodeRecord = {
   physicalRouteGenerationEligible?: boolean | null
   launchPhysicalReadiness?: string | null
   /** Optional Gate 2A.1 continuous semantic fields (preferred over binary themes). */
-  thematicVector?: Partial<Record<import('@/src/lib/city-graph/types').ThemeCode, number>> | null
+  thematicVector?: Partial<Record<import('@/src/lib/city-graph/types').ThemeCode, number | null>> | null
   chronoWorthProposed?: number | null
   chronoWorthApproved?: number | null
   chronoWorthEffective?: number | null

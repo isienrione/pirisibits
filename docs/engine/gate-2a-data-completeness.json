@@ -3,9 +3,9 @@
   "launchCount": 30,
   "fields": {
     "runtimePhysicalEligibility": {
-      "complete": 30,
+      "complete": 28,
       "partial": 0,
-      "missing": 0
+      "missing": 2
     },
     "chronoWorth": {
       "complete": 0,
@@ -13,29 +13,29 @@
       "missing": 30
     },
     "themesT1A_T9": {
-      "complete": 30,
+      "complete": 29,
       "partial": 0,
-      "missing": 0
+      "missing": 1
     },
     "modesM1_M5": {
       "complete": 0,
-      "partial": 30,
-      "missing": 0
+      "partial": 29,
+      "missing": 1
     },
     "editorialRole": {
-      "complete": 30,
+      "complete": 29,
       "partial": 0,
-      "missing": 0
+      "missing": 1
     },
     "essentialityProxy": {
-      "complete": 7,
+      "complete": 6,
       "partial": 23,
-      "missing": 0
+      "missing": 1
     },
     "discoveryClassification": {
-      "complete": 12,
+      "complete": 11,
       "partial": 18,
-      "missing": 0
+      "missing": 1
     },
     "visitDuration": {
       "complete": 0,
@@ -64,8 +64,8 @@
     }
   },
   "themeHistogram": {
-    "T1A": 7,
-    "T3": 8,
+    "T1A": 6,
+    "T3": 7,
     "T1B": 8,
     "T8": 20,
     "T4": 13,
@@ -73,18 +73,19 @@
     "T9": 2
   },
   "modeHistogram": {
-    "M3": 30
+    "M3": 29
   },
   "roleHistogram": {
     "anchor": 2,
     "pocket": 6,
     "micro": 10,
-    "civic": 2,
+    "civic": 1,
     "museum": 1,
     "architecture": 3,
     "memory": 2,
     "plaza": 3,
-    "culture": 1
+    "culture": 1,
+    "null": 1
   },
   "deliberatelyNotFabricated": [
     "chronoWorth",

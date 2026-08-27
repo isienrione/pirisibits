@@ -14,7 +14,7 @@ import { loadEditorialCalibration } from '@/src/engine/loadCalibration'
 const ROOT = resolve(__dirname, '../../..')
 const COCKPIT = resolve(ROOT, 'docs/engine/gate-2a1-founder-calibration-cockpit.html')
 const OLD = resolve(ROOT, 'docs/engine/gate-2a1-editorial-calibration.html')
-const START = 'af8874f8efa106ec87e0262eec43329c666e8444'
+const START = '1b0ef938e681eedcd95d57f449a411e4b972d2b0'
 
 describe('Gate 2A.1R-UI founder calibration cockpit', () => {
   const html = readFileSync(COCKPIT, 'utf8')
@@ -35,8 +35,12 @@ describe('Gate 2A.1R-UI founder calibration cockpit', () => {
     const source = JSON.parse(m![1]!)
     expect(source.records).toHaveLength(30)
     expect(source.sourceCheckpointSha).toBe(START)
+    expect(['2A.1R-UI.1', '2A.1R-ADD-01R']).toContain(source.gate)
     expect(source.normalizationCorpus).toBe('SANTIAGO_LAUNCH30_V0_1')
     const by = new Map(launch.records.map((r) => [r.stgoId, r]))
+    expect(source.records.map((r: { stgoId: string }) => r.stgoId)).toContain('STGO_104')
+    expect(source.records.map((r: { stgoId: string }) => r.stgoId)).toContain('STGO_33')
+    expect(source.records.map((r: { stgoId: string }) => r.stgoId)).not.toContain('STGO_23')
     for (const r of source.records) {
       const o = by.get(r.stgoId)!
       expect(r.thematicVector).toEqual(o.thematicVector)

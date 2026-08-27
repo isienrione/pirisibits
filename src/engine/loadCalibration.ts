@@ -1,5 +1,6 @@
 /**
- * Load Gate 2A.1R editorial calibration (launch 30) and canonical 103-node semantic seed.
+ * Load Gate 2A.1R editorial calibration (launch 30) and canonical semantic inventory
+ * (frozen 103-node founder seed + founder extensions, currently 104).
  */
 
 import { readFileSync } from 'node:fs'

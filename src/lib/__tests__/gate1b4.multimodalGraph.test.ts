@@ -68,7 +68,7 @@ describe('Gate 1B.4 Santiago multimodal physical graph', () => {
     expect(multi.sanCristobalStaging.routingEndpoint).toBe('funicular')
   })
 
-  it('excludes unresolved launch nodes and preserves 103-node inventory', () => {
+  it('excludes unresolved launch nodes and preserves 104-node inventory (103 seed + STGO_104)', () => {
     const engine = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json'), 'utf8'),
     ) as SantiagoEngineNodesFile
@@ -78,13 +78,22 @@ describe('Gate 1B.4 Santiago multimodal physical graph', () => {
     const multi = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_multimodal_graph.v0.1.json'), 'utf8'),
     ) as SantiagoMultimodalGraphFile
-    expect(engine.nodeCount).toBe(103)
+    expect(engine.nodeCount).toBe(104)
     expect(engine.nodes.filter((n) => n.launchCorpus)).toHaveLength(30)
-    expect(engine.nodes.filter((n) => !n.launchCorpus)).toHaveLength(73)
+    expect(engine.nodes.filter((n) => !n.launchCorpus)).toHaveLength(74)
+    const launchIds = engine.nodes.filter((n) => n.launchCorpus).map((n) => n.stgoId)
+    expect(launchIds).toContain('STGO_104')
+    expect(launchIds).toContain('STGO_33')
+    expect(launchIds).not.toContain('STGO_23')
+    expect(engine.nodes.find((n) => n.stgoId === 'STGO_33')?.launchRuntimeDisposition).not.toBe(
+      'RUNTIME_EXCLUDED_SEMANTIC',
+    )
+    // Frozen Gate 1B.3/1B.4 physical edges: STGO_05/23/33 remain off this adjacency slice.
     for (const blocked of ['STGO_05', 'STGO_23', 'STGO_33']) {
       expect(adj.eligibleStgoIds).not.toContain(blocked)
       expect(multi.poiMetroAccessEdges.some((e) => e.stgoId === blocked)).toBe(false)
     }
+    expect(multi.physicalRouteGenerationEnabled).toBe(false)
   })
 
   it('never leaks secrets', () => {

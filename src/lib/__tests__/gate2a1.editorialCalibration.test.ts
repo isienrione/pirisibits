@@ -48,19 +48,35 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     }
   })
 
-  it('restores exactly 103 canonical semantic records from founder source', () => {
-    expect(semantic.recordCount).toBe(103)
-    expect(semantic.records).toHaveLength(103)
-    expect(semantic.gate).toBe('2A.1R')
+  it('restores canonical semantic inventory as 104 (103 seed + STGO_104 extension)', () => {
+    expect(semantic.recordCount).toBe(104)
+    expect(semantic.records).toHaveLength(104)
+    expect(['2A.1R', '2A.1R-ADD-01R']).toContain(semantic.gate)
     expect(semantic.sourceDataset).toMatch(/SANTIAGO_ENGINE_DATASET_V0.1/)
+    expect(semantic.records.map((r) => r.stgoId)).toContain('STGO_104')
   })
 
-  it('maps all launch 30 to founder-precalibrated continuous T1A–T9', () => {
+  it('maps launch 30 founder-precalibrated vectors; STGO_104 remains UNKNOWN/null', () => {
     expect(launch).toHaveLength(30)
-    expect(launchCal.founderVectorRestored).toBe(30)
-    expect(launchCal.binarySyntheticReplaced).toBe(30)
+    expect(launch.map((n) => n.stgoId)).toContain('STGO_104')
+    expect(launch.map((n) => n.stgoId)).toContain('STGO_33')
+    expect(launch.map((n) => n.stgoId)).not.toContain('STGO_23')
     expect(launchCal.demoNameMatches ?? 0).toBe(0)
-    for (const n of launch) {
+
+    const calibrated = launchCal.records.filter((r) => r.stgoId !== 'STGO_104')
+    const bolsa = launchCal.records.find((r) => r.stgoId === 'STGO_104')!
+    expect(bolsa.thematicVectorProvenance).toBe('UNKNOWN')
+    expect(bolsa.structuralMetricsProvenance).toBe('UNKNOWN')
+    expect(bolsa.chronoWorth.status).toBe('UNAVAILABLE')
+    expect(bolsa.chronoWorth.proposed).toBeNull()
+    for (const code of THEME_CODES) {
+      expect(bolsa.thematicVector[code]).toBeNull()
+    }
+    for (const key of ['heritage_depth', 'anchor_density', 'micro_reveal', 'polish']) {
+      expect(bolsa.structuralMetrics?.[key] ?? null).toBeNull()
+    }
+
+    for (const n of launch.filter((x) => x.stgoId !== 'STGO_104')) {
       expect(n.thematicVector).toBeTruthy()
       for (const code of THEME_CODES) {
         const v = Number(n.thematicVector![code])
@@ -68,18 +84,26 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
         expect(v).toBeLessThanOrEqual(1)
       }
     }
-    for (const r of launchCal.records) {
+    for (const r of calibrated) {
       expect(r.thematicVectorProvenance).toBe('FOUNDER_PRECALIBRATED')
       expect(r.structuralMetricsProvenance).toBe('FOUNDER_PRECALIBRATED')
       expect(r.tierProvenance).toBe('FOUNDER_PRECALIBRATED')
-      expect(r.demoPoiIdMatched).toBeNull()
+      expect(r.demoPoiIdMatched ?? null).toBeNull()
       expect(JSON.stringify(r.sources || [])).not.toMatch(/BINARY_THEME_EXPANSION|pois\.ts|DEMO_POI/)
     }
+
+    const stgo33 = launchCal.records.find((r) => r.stgoId === 'STGO_33')!
+    expect(stgo33.displayName).toBe('Gárgola de Luciano K')
+    expect(stgo33.canonicalName ?? stgo33.displayName).toBe('Gárgola de Luciano K')
+    expect(stgo33.displayName).not.toMatch(/Funicular/i)
+    expect(stgo33.legacyAlias?.alias).toBe('Kulczewski Funicular Gargoyle')
+    expect(stgo33.legacyAlias?.status).toMatch(/deprecated/i)
+    expect(stgo33.launchRuntimeDisposition).toBe('ACTIVE_LAUNCH')
   })
 
   it('restores T2 Culinary from founder source (no heuristic override)', () => {
     const sourceById = new Map(source.nodes.map((n: { poi_id: string }) => [n.poi_id, n]))
-    for (const r of launchCal.records) {
+    for (const r of launchCal.records.filter((x) => x.stgoId !== 'STGO_104')) {
       const src = sourceById.get(r.stgoId) as {
         source_calibration: { vectors: { t2: number } }
       }
@@ -91,9 +115,9 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     )
   })
 
-  it('restores structural metrics exactly from founder source', () => {
+  it('restores structural metrics exactly from founder source for seed nodes', () => {
     const sourceById = new Map(source.nodes.map((n: { poi_id: string }) => [n.poi_id, n]))
-    for (const r of semantic.records) {
+    for (const r of semantic.records.filter((x) => x.stgoId !== 'STGO_104')) {
       const src = sourceById.get(r.stgoId) as {
         source_calibration: {
           structural_metrics: Record<string, number>
@@ -104,15 +128,17 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
   })
 
   it('uses zero binary-0.7 fallback and zero pois.ts canonical scoring dependency', () => {
-    expect(launchCal.binarySyntheticReplaced).toBe(30)
     expect(launchCal.demoNameMatches ?? 0).toBe(0)
-    for (const r of launchCal.records) {
-      expect(r.demoPoiIdMatched).toBeNull()
+    for (const r of launchCal.records.filter((x) => x.stgoId !== 'STGO_104')) {
+      expect(r.demoPoiIdMatched ?? null).toBeNull()
       expect(r.thematicVectorProvenance).toBe('FOUNDER_PRECALIBRATED')
-      const types = (r.sources || []).map((s) => String(s.type || ''))
+      const types = (r.sources || []).map((s) => String((s as { type?: string }).type || ''))
       expect(types.every((t) => t === 'FOUNDER_PRECALIBRATED')).toBe(true)
     }
-    const scored = scoreNodeUtility(launch[0]!, TRAVELER_FIXTURES.B_civic_history)
+    const scored = scoreNodeUtility(
+      launch.find((n) => n.stgoId === 'STGO_01')!,
+      TRAVELER_FIXTURES.B_civic_history,
+    )
     expect(scored.components.interests.provenance).toMatch(/continuous thematicVector/)
     expect(scored.components.interests.provenance).not.toMatch(/binary theme fallback/)
   })
@@ -120,6 +146,17 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
   it('recomputes ChronoWorth from founder structural metrics as AI proposal', () => {
     for (const r of launchCal.records) {
       const sm = r.structuralMetrics!
+      if (
+        sm.heritage_depth == null ||
+        sm.anchor_density == null ||
+        sm.micro_reveal == null ||
+        sm.polish == null
+      ) {
+        expect(r.chronoWorth.status).toBe('UNAVAILABLE')
+        expect(r.chronoWorth.proposed).toBeNull()
+        expect(r.chronoWorth.approved).toBeNull()
+        continue
+      }
       const raw =
         100 * (0.35 * sm.heritage_depth + 0.3 * sm.anchor_density + 0.2 * sm.micro_reveal + 0.15 * sm.polish)
       // Match Python round-half-even used by the builder.
@@ -134,7 +171,7 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
       // Prefer exact contributions; allow ±1 for half-even edge cases.
       expect(r.chronoWorth.proposed).toBeGreaterThanOrEqual(Math.floor(raw))
       expect(r.chronoWorth.proposed).toBeLessThanOrEqual(Math.ceil(raw))
-      expect(Math.abs(r.chronoWorth.proposed - raw)).toBeLessThanOrEqual(0.5000001)
+      expect(Math.abs((r.chronoWorth.proposed as number) - raw)).toBeLessThanOrEqual(0.5000001)
       expect(r.chronoWorth.approved).toBeNull()
       expect(String(r.chronoWorth.provenance)).toMatch(/AI_PROPOSED/)
       expect(r.chronoWorth.contributions).toMatchObject({
@@ -160,11 +197,13 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
   })
 
   it('derives ThemeCode tags from founder vectors only', () => {
-    for (const r of launchCal.records) {
+    for (const r of launchCal.records.filter((x) => x.stgoId !== 'STGO_104')) {
       expect(r.derivedThemeTags).toEqual(
         deriveThemeTags(r.thematicVector as Record<ThemeCode, number>, DERIVED_THEME_TAG_THRESHOLD),
       )
     }
+    const bolsa = launchCal.records.find((r) => r.stgoId === 'STGO_104')!
+    expect(bolsa.derivedThemeTags).toEqual([])
   })
 
   it('NodeUtility culinary fixture ranks founder T2 nodes first', () => {
@@ -176,10 +215,17 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     expect(top5).toEqual(expect.arrayContaining(['STGO_34', 'STGO_20']))
   })
 
-  it('keeps STGO_23/33 excluded, backlog out, and no route/NarrativeEdge', () => {
+  it('keeps STGO_23 out of launch, STGO_33 active (not semantic-excluded), backlog 74, no route/NarrativeEdge', () => {
     const pool = buildCandidatePool(nodes, TRAVELER_FIXTURES.A_first_time_essentials)
-    expect(pool.excludedIds).toEqual(expect.arrayContaining(['STGO_23', 'STGO_33']))
-    expect(pool.backlogLeakCount).toBe(73)
+    expect(pool.evaluatedLaunchCount).toBe(30)
+    expect(pool.excludedIds).not.toContain('STGO_23')
+    expect(pool.candidates.some((c) => c.nodeId === 'STGO_23')).toBe(false)
+    const stgo33 = launch.find((n) => n.stgoId === 'STGO_33')!
+    expect(stgo33.launchRuntimeDisposition).toBe('ACTIVE_LAUNCH')
+    expect(stgo33.launchRuntimeDisposition).not.toBe('RUNTIME_EXCLUDED_SEMANTIC')
+    // Still physicalRouteGenerationEligible=false → pool-excluded for routing eligibility.
+    expect(pool.excludedIds).toContain('STGO_33')
+    expect(pool.backlogLeakCount).toBe(74)
     const blob = JSON.stringify(pool)
     expect(blob).not.toMatch(/NarrativeEdgeScore|optimizeItinerary|ArcQuality/)
   })

@@ -16,20 +16,18 @@ SEMANTIC = ROOT / "src/data/santiago/santiago_semantic_calibration.v0.1.json"
 SOURCE = ROOT / "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 FLAGS = ROOT / "src/lib/city-graph/flags.ts"
 GEN = ROOT / "scripts/engine/generate_gate_2a1_founder_cockpit.py"
-START = "af8874f8efa106ec87e0262eec43329c666e8444"
+START = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
 PHYSICAL = [
     "src/data/santiago/santiago_physical_edges.v0.1.json",
     "src/data/santiago/santiago_pedestrian_adjacency.v0.2.json",
     "src/data/santiago/santiago_multimodal_graph.v0.3.json",
     "src/data/santiago/santiago_physical_graph_manifest.v0.1.json",
     "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json",
-    "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
 ]
 SEMANTIC_PATHS = [
-    "src/data/santiago/santiago_semantic_calibration.v0.1.json",
     "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
-    "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
 ]
+# Membership/semantic/launch calibration are updated by Gate 2A.1R-ADD-01R; frozen seed remains immutable.
 
 
 def fail(errors: list[str], msg: str) -> None:
@@ -192,8 +190,8 @@ def main() -> int:
             print(" -", e)
         return 1
 
-    cws = [(r["stgoId"], r["chronoWorthProposed"]) for r in source["records"]]
-    top = max(cws, key=lambda x: x[1])
+    cws = [(r["stgoId"], r["chronoWorthProposed"]) for r in source["records"] if r.get("chronoWorthProposed") is not None]
+    top = max(cws, key=lambda x: x[1]) if cws else ("NONE", None)
     print("GATE_2A1R_UI_VALIDATOR=PASS")
     print(json.dumps({"launchPois": 30, "topChronoWorthProposed": {"id": top[0], "value": top[1]}}))
     return 0

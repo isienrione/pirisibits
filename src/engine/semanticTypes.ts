@@ -28,9 +28,10 @@ export type FieldProvenance =
   | 'CURATOR_APPROVED'
 
 export type ChronoWorthBlock = {
-  proposed: number
+  proposed: number | null
   approved: number | null
-  effective: number
+  effective: number | null
+  status?: string
   provenance: FieldProvenance | string
   formula?: string
   contributions?: Record<string, unknown>
@@ -38,9 +39,9 @@ export type ChronoWorthBlock = {
 }
 
 export type VisitTimeBlock = {
-  min: number
-  typical: number
-  max: number
+  min: number | null
+  typical: number | null
+  max: number | null
   unit: 'minutes'
   includesTravelTime: false
   approved: null | { min: number; typical: number; max: number }
@@ -57,12 +58,12 @@ export type SemanticCalibrationRecord = {
   displayName: string
   legacySlug?: string | null
   demoPoiIdMatched?: string | null
-  tier: string
+  tier: string | null
   tierProvenance?: string
   editorialRole: string | null
-  thematicVector: Record<ThemeCode, number>
+  thematicVector: Record<ThemeCode, number | null>
   thematicVectorProvenance?: string
-  structuralMetrics?: Record<string, number>
+  structuralMetrics?: Record<string, number | null>
   structuralMetricsProvenance?: string
   flags?: Record<string, { value: boolean | null; status: string; provenance: string }>
   derivedThemeTags: ThemeCode[]
@@ -72,11 +73,19 @@ export type SemanticCalibrationRecord = {
   structuralSuitability: Record<ModeCode, ModeSuitability>
   sensitiveMemory: { value: boolean | null; status?: string; provenance: string; note?: string }
   accessibility: { status: 'KNOWN_STEP_FREE' | 'KNOWN_NOT_STEP_FREE' | 'UNKNOWN'; provenance: string }
-  operational: { classification: string; daylightOnly: boolean | null; provenance: string }
+  operational: { classification: string; daylightOnly: boolean | null; provenance: string; openingHours?: null }
   sources?: Array<Record<string, unknown>>
   sourceProvenance?: Record<string, unknown>
   launchRuntimeDisposition?: string | null
   physicalRouteGenerationEligible?: boolean | null
+  physicalStatus?: string | null
+  founderNodeBadges?: string[]
+  canonicalName?: string | null
+  shortName?: string | null
+  coordinates?: Record<string, unknown> | null
+  legacyAlias?: { alias: string; status: string } | null
+  identityCorrection?: Record<string, unknown> | null
+  launchCorpus?: boolean
 }
 
 export type SemanticCalibrationFile = {

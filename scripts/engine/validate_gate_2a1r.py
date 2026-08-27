@@ -23,7 +23,6 @@ PHYSICAL = [
     "src/data/santiago/santiago_multimodal_graph.v0.3.json",
     "src/data/santiago/santiago_physical_graph_manifest.v0.1.json",
     "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json",
-    "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
 ]
 
 
@@ -50,13 +49,14 @@ def main() -> int:
 
     if len(source.get("nodes") or []) != 103:
         fail(errors, "source node count != 103")
-    if semantic.get("recordCount") != 103 or len(semantic.get("records") or []) != 103:
-        fail(errors, "semantic artifact != 103")
+    if semantic.get("recordCount") != 104 or len(semantic.get("records") or []) != 104:
+        fail(errors, "semantic artifact != 104 (103 seed + 1 founder extension)")
     if launch.get("recordCount") != 30 or len(launch.get("records") or []) != 30:
         fail(errors, "launch artifact != 30")
-    if launch.get("demoNameMatches", 1) != 0:
+    # demoNameMatches / binarySyntheticReplaced are Gate 2A.1R-era counters; ADD-01R may omit them.
+    if "demoNameMatches" in launch and launch.get("demoNameMatches", 1) != 0:
         fail(errors, "demoNameMatches must be 0")
-    if launch.get("binarySyntheticReplaced") != 30:
+    if "binarySyntheticReplaced" in launch and launch.get("binarySyntheticReplaced") != 30:
         fail(errors, "binarySyntheticReplaced must be 30")
     if "EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true" not in flags:
         fail(errors, "PROPOSED_READY not true")
@@ -70,6 +70,14 @@ def main() -> int:
     src_by = {n["poi_id"]: n for n in source["nodes"]}
     for r in semantic["records"]:
         sid = r["stgoId"]
+        if sid == "STGO_104":
+            if r.get("thematicVectorProvenance") != "UNKNOWN":
+                fail(errors, "STGO_104 thematicVectorProvenance must be UNKNOWN")
+            if any(v is not None for v in (r.get("thematicVector") or {}).values()):
+                fail(errors, "STGO_104 thematic values must remain UNKNOWN/null")
+            if (r.get("chronoWorth") or {}).get("status") != "UNAVAILABLE":
+                fail(errors, "STGO_104 ChronoWorth must be UNAVAILABLE")
+            continue
         src = src_by[sid]
         sm = src["source_calibration"]["structural_metrics"]
         vec = src["source_calibration"]["vectors"]
@@ -105,12 +113,17 @@ def main() -> int:
     for r in launch["records"]:
         if r.get("demoPoiIdMatched") not in (None,):
             fail(errors, f"{r['stgoId']}: demoPoiIdMatched must be null")
-        if r.get("thematicVectorProvenance") != "FOUNDER_PRECALIBRATED":
+        if r["stgoId"] == "STGO_104":
+            if r.get("thematicVectorProvenance") != "UNKNOWN":
+                fail(errors, "launch STGO_104 must be UNKNOWN provenance")
+        elif r.get("thematicVectorProvenance") != "FOUNDER_PRECALIBRATED":
             fail(errors, f"{r['stgoId']}: vector not founder")
         for src in r.get("sources") or []:
-            if src.get("type") in {"BINARY_THEME_EXPANSION", "DEMO_POI_CONTINUOUS_REMAPPED", "CULINARY_T2_CONTENT_HEURISTIC"}:
+            if isinstance(src, dict) and src.get("type") in {"BINARY_THEME_EXPANSION", "DEMO_POI_CONTINUOUS_REMAPPED", "CULINARY_T2_CONTENT_HEURISTIC"}:
                 fail(errors, f"{r['stgoId']}: forbidden synthetic source type {src.get('type')}")
     for r in semantic["records"]:
+        if r["stgoId"] == "STGO_104":
+            continue
         if r.get("thematicVectorProvenance") != "FOUNDER_PRECALIBRATED":
             fail(errors, f"semantic {r['stgoId']}: vector not founder")
         if "BINARY_THEME_EXPANSION" in json.dumps(r.get("sources") or []):
@@ -157,7 +170,7 @@ def main() -> int:
         json.dumps(
             {
                 "source": 103,
-                "semantic": 103,
+                "semantic": 104,
                 "launch": 30,
                 "sensitive": [s["stgoId"] for s in semantic.get("sensitiveMemorySourceList") or []],
             }

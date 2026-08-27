@@ -1,7 +1,7 @@
 {
   "schemaVersion": "launch-corpus.v0.1",
   "cityId": "santiago",
-  "gate": "1B.2A",
+  "gate": "2A.1R-ADD-01R",
   "ids": [
     "STGO_01",
     "STGO_02",
@@ -18,13 +18,13 @@
     "STGO_20",
     "STGO_21",
     "STGO_22",
-    "STGO_23",
     "STGO_24",
     "STGO_25",
     "STGO_26",
     "STGO_27",
     "STGO_28",
     "STGO_29",
+    "STGO_30",
     "STGO_32",
     "STGO_33",
     "STGO_34",
@@ -32,7 +32,7 @@
     "STGO_48",
     "STGO_91",
     "STGO_92",
-    "STGO_30"
+    "STGO_104"
   ],
   "stgoIds": [
     "STGO_01",
@@ -50,13 +50,13 @@
     "STGO_20",
     "STGO_21",
     "STGO_22",
-    "STGO_23",
     "STGO_24",
     "STGO_25",
     "STGO_26",
     "STGO_27",
     "STGO_28",
     "STGO_29",
+    "STGO_30",
     "STGO_32",
     "STGO_33",
     "STGO_34",
@@ -64,8 +64,14 @@
     "STGO_48",
     "STGO_91",
     "STGO_92",
-    "STGO_30"
+    "STGO_104"
   ],
   "count": 30,
-  "note": "Founder-reviewed launch corpus keyed by canonical STGO IDs (Gate 1B.2A)."
+  "note": "Active Launch30 after Gate 2A.1R-ADD-01R: STGO_23 research/excluded removed from active corpus; STGO_33 restored; STGO_104 founder-added.",
+  "removedFromActiveLaunch": [
+    "STGO_23"
+  ],
+  "addedToActiveLaunch": [
+    "STGO_104"
+  ]
 }

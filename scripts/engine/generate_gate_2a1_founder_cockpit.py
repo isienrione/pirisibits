@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json"
 SOURCE_DATASET = "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 SEMANTIC = "src/data/santiago/santiago_semantic_calibration.v0.1.json"
-CHECKPOINT = "af8874f8efa106ec87e0262eec43329c666e8444"
+CHECKPOINT = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
 OUT = ROOT / "docs/engine/gate-2a1-founder-calibration-cockpit.html"
 RATIONALES = ROOT / "src/data/santiago/curation/launch30_score_rationales.v0.1.json"
 
@@ -168,9 +168,12 @@ def slim_record(r: dict) -> dict:
             "status": v.get("status"),
             "provenance": v.get("provenance"),
         }
+    cw = r.get("chronoWorth") or {}
     return {
         "stgoId": r["stgoId"],
         "displayName": r["displayName"],
+        "canonicalName": r.get("canonicalName") or r["displayName"],
+        "shortName": r.get("shortName"),
         "tier": r["tier"],
         "tierProvenance": r.get("tierProvenance"),
         "editorialRole": r.get("editorialRole"),
@@ -178,8 +181,9 @@ def slim_record(r: dict) -> dict:
         "thematicVectorProvenance": r.get("thematicVectorProvenance"),
         "structuralMetrics": r["structuralMetrics"],
         "structuralMetricsProvenance": r.get("structuralMetricsProvenance"),
-        "chronoWorthProposed": r["chronoWorth"]["proposed"],
-        "chronoWorthProvenance": r["chronoWorth"]["provenance"],
+        "chronoWorthProposed": cw.get("proposed"),
+        "chronoWorthStatus": cw.get("status"),
+        "chronoWorthProvenance": cw.get("provenance"),
         "visitTime": {
             "min": r["visitTime"]["min"],
             "typical": r["visitTime"]["typical"],
@@ -192,6 +196,15 @@ def slim_record(r: dict) -> dict:
         "accessibility": r.get("accessibility"),
         "operational": r.get("operational"),
         "launchRuntimeDisposition": r.get("launchRuntimeDisposition"),
+        "physicalStatus": r.get("physicalStatus"),
+        "coordinates": r.get("coordinates"),
+        "founderNodeBadges": r.get("founderNodeBadges") or [],
+        "legacyAlias": r.get("legacyAlias"),
+        "identityCorrection": r.get("identityCorrection"),
+        "requiresFounderCalibrationBeforeApproval": bool(
+            ((r.get("sourceProvenance") or {}).get("requiresFounderCalibrationBeforeApproval"))
+            or r.get("stgoId") == "STGO_104"
+        ),
     }
 
 
@@ -200,7 +213,7 @@ def main() -> int:
     assert len(cal["records"]) == 30
     payload = {
         "schemaVersion": "santiago-launch30-founder-cockpit.source.v0.1",
-        "gate": "2A.1R-UI.1",
+        "gate": "2A.1R-ADD-01R",
         "sourceCheckpointSha": CHECKPOINT,
         "sourceDataset": SOURCE_DATASET,
         "canonicalSemanticArtifact": SEMANTIC,
@@ -309,7 +322,7 @@ th{{cursor:pointer;color:var(--muted);font-weight:600}}
 <body>
 <header>
   <h1>Founder Calibration Cockpit — Santiago Launch 30</h1>
-  <div class="sub">Gate 2A.1R-UI.1 · Score rationales + immutable source · editable founder draft · localStorage · export for Gate 2A.2 ingest</div>
+  <div class="sub">Gate 2A.1R-ADD-01R · Launch30 = 30 (Bolsa + restored STGO_33) · score rationales · localStorage · export for Gate 2A.2 ingest</div>
   <div class="toolbar">
     <button id="prevBtn">← Prev</button>
     <button id="nextBtn">Next →</button>
@@ -348,7 +361,7 @@ const RATIONALES = {rationales_json};
 const THEME_META = {theme_json};
 const METRIC_META = {metric_json};
 const MODE_META = {mode_json};
-const STORAGE_KEY = 'cw_founder_cockpit_launch30_v0_1';
+const STORAGE_KEY = 'cw_founder_cockpit_launch30_v0_1_add01r';
 const THEMES = ['T1A','T1B','T2','T3','T4','T5','T6','T7','T8','T9'];
 const METRICS = ['anchor_density','heritage_depth','micro_reveal','polish'];
 const MODES = ['M1','M2','M3','M4','M5'];
@@ -356,12 +369,19 @@ const TIERS = ['canonical_anchor','thematic_pocket','micro_reveal'];
 
 function deepClone(x){{ return JSON.parse(JSON.stringify(x)); }}
 function clamp01(x){{ return Math.max(0, Math.min(1, Number(x)||0)); }}
-function toUi(v){{ return Math.round(clamp01(v)*100); }}
-function fromUi(v){{ return clamp01(Number(v)/100); }}
+function isUnknown(v){{ return v === null || v === undefined || v === '' || Number.isNaN(v); }}
+function toUi(v){{ return isUnknown(v) ? null : Math.round(clamp01(v)*100); }}
+function fromUi(v){{ if (v === '' || v === null || v === undefined) return null; return clamp01(Number(v)/100); }}
 function round1(n){{ return Math.round(n*10)/10; }}
 function round2(n){{ return Math.round(n*100)/100; }}
+function displayUi(v){{ return isUnknown(v) ? 'UNKNOWN' : String(toUi(v)); }}
+
+function metricsComplete(m){{
+  return m && METRICS.every(k => !isUnknown(m[k]));
+}}
 
 function rawChrono(m){{
+  if (!metricsComplete(m)) return null;
   return 100*(0.35*clamp01(m.heritage_depth)+0.30*clamp01(m.anchor_density)+0.20*clamp01(m.micro_reveal)+0.15*clamp01(m.polish));
 }}
 
@@ -371,17 +391,21 @@ function makeDraftFromSource(src){{
     const m = src.modes[k] || {{}};
     modes[k] = {{ value: m.value == null ? null : clamp01(m.value), status: m.status || null, evidence: m.status || 'UNKNOWN' }};
   }});
+  const tv = {{}};
+  THEMES.forEach(t => {{ tv[t] = isUnknown(src.thematicVector?.[t]) ? null : clamp01(src.thematicVector[t]); }});
+  const sm = {{}};
+  METRICS.forEach(m => {{ sm[m] = isUnknown(src.structuralMetrics?.[m]) ? null : clamp01(src.structuralMetrics[m]); }});
   return {{
     stgoId: src.stgoId,
-    thematicVector: deepClone(src.thematicVector),
-    structuralMetrics: deepClone(src.structuralMetrics),
-    tier: src.tier,
-    visitTimeMin: src.visitTime.min,
-    visitTimeTypical: src.visitTime.typical,
-    visitTimeMax: src.visitTime.max,
+    thematicVector: tv,
+    structuralMetrics: sm,
+    tier: src.tier == null ? null : src.tier,
+    visitTimeMin: src.visitTime?.min ?? null,
+    visitTimeTypical: src.visitTime?.typical ?? null,
+    visitTimeMax: src.visitTime?.max ?? null,
     modes,
     accessibilityState: src.accessibility?.status || 'UNKNOWN',
-    operationalState: src.operational?.classification || 'HOURS_REQUIRED_UNKNOWN',
+    operationalState: src.operational?.classification || 'UNKNOWN',
     needsResearch: false,
     founderNote: '',
     founderChangeReasons: {{}},
@@ -450,6 +474,9 @@ function provenanceBadgeForRationale(rat){{
 }}
 
 function liveThematicSummary(vec){{
+  if (THEMES.some(t => isUnknown(vec[t]))) {{
+    return {{ text:'No prior calibrated thematic profile exists. This is a new founder-added launch node.', top3:[], weakThemes:[], contrast:'All T1A–T9 values are UNKNOWN until founder calibration.' }};
+  }}
   const ranked = THEMES.map(t => [t, Number(vec[t]||0)]).sort((a,b)=>b[1]-a[1]);
   const top3 = ranked.slice(0,3);
   const weak = ranked.filter(x=>x[1]<=0.05).slice(0,3);
@@ -473,6 +500,7 @@ function liveThematicSummary(vec){{
 }}
 
 function liveStructuralSummary(m){{
+  if (!metricsComplete(m)) return 'No prior structural profile exists — all metrics UNKNOWN until founder calibration.';
   const ad=clamp01(m.anchor_density), hd=clamp01(m.heritage_depth), mr=clamp01(m.micro_reveal), po=clamp01(m.polish);
   const parts = [
     ad>=0.7?'high-anchor':ad>=0.4?'moderate-anchor':'low-anchor',
@@ -484,6 +512,9 @@ function liveStructuralSummary(m){{
 }}
 
 function liveChronoBreakdown(m){{
+  if (!metricsComplete(m)) {{
+    return {{contributions:{{heritage_depth:null,anchor_density:null,micro_reveal:null,polish:null}}, raw:null, plainLanguage:'ChronoWorth UNAVAILABLE until founder supplies all four structural metrics. UNKNOWN is not zero.'}};
+  }}
   const hd=clamp01(m.heritage_depth), ad=clamp01(m.anchor_density), mr=clamp01(m.micro_reveal), po=clamp01(m.polish);
   const contributions = {{
     heritage_depth: round1(hd*35),
@@ -534,8 +565,10 @@ function toast(msg){{
 }}
 
 function fieldChanged(srcVal, draftVal){{
+  if (isUnknown(srcVal) && isUnknown(draftVal)) return false;
+  if (isUnknown(srcVal) || isUnknown(draftVal)) return true;
   if (typeof srcVal === 'number' || typeof draftVal === 'number') {{
-    return round2(Number(srcVal||0)) !== round2(Number(draftVal||0));
+    return round2(Number(srcVal)) !== round2(Number(draftVal));
   }}
   return JSON.stringify(srcVal) !== JSON.stringify(draftVal);
 }}
@@ -567,11 +600,12 @@ function corpusScores(){{
     const d = store.drafts[r.stgoId];
     const raw = rawChrono(d.structuralMetrics);
     raws[r.stgoId] = raw;
-    if (raw > maxRaw) maxRaw = raw;
+    if (raw != null && raw > maxRaw) maxRaw = raw;
   }});
   const norms = {{}};
   SOURCE.records.forEach(r => {{
-    norms[r.stgoId] = maxRaw > 0 ? (100 * raws[r.stgoId] / maxRaw) : 0;
+    if (raws[r.stgoId] == null) norms[r.stgoId] = null;
+    else norms[r.stgoId] = maxRaw > 0 ? (100 * raws[r.stgoId] / maxRaw) : 0;
   }});
   return {{ raws, norms, maxRaw }};
 }}
@@ -592,7 +626,16 @@ function saveDraft(){{
 }}
 
 function approvePoi(){{
+  const src = sourceById[currentId];
   const d = store.drafts[currentId];
+  if (src.requiresFounderCalibrationBeforeApproval) {{
+    const missingThemes = THEMES.filter(t => isUnknown(d.thematicVector[t]));
+    const missingMetrics = METRICS.filter(m => isUnknown(d.structuralMetrics[m]));
+    if (missingThemes.length || missingMetrics.length || isUnknown(d.tier)) {{
+      toast('STGO_104 requires founder calibration before approval (UNKNOWN remains)');
+      return;
+    }}
+  }}
   d.founderApproval = 'APPROVED';
   d.approvedAt = new Date().toISOString();
   store.lastSavedAt = d.approvedAt;
@@ -650,28 +693,32 @@ function renderList(){{
     const ch = changedFields(id);
     const b = document.createElement('button');
     b.className = 'item'+(id===currentId?' active':'')+(ch.length?' dirty':'');
+    const rel = norms[id] == null ? 'CW n/a' : ('Rel '+Math.round(norms[id]));
     b.innerHTML = `<div class="id">${{id}}</div><div class="name">${{r.displayName}}</div>
-      <div class="meta">${{d.tier}} · Rel ${{Math.round(norms[id])}} · ${{d.founderApproval}} · Δ${{ch.length}}</div>`;
+      <div class="meta">${{d.tier || 'tier UNKNOWN'}} · ${{rel}} · ${{d.founderApproval}} · Δ${{ch.length}}</div>`;
     b.onclick = () => {{ currentId = id; render(); }};
     list.appendChild(b);
   }});
 }}
 
 function sliderHTML(label, kind, key, src01, draft01, provenanceBadge, stgoId){{
-  const s = toUi(src01), dr = toUi(draft01);
-  const changed = s !== dr;
-  const delta = dr - s;
+  const sUnk = isUnknown(src01), dUnk = isUnknown(draft01);
+  const s = sUnk ? null : toUi(src01), dr = dUnk ? null : toUi(draft01);
+  const changed = fieldChanged(src01, draft01);
+  const delta = (s == null || dr == null) ? null : (dr - s);
   const id = stgoId || currentId;
+  const rangeVal = dr == null ? 0 : dr;
+  const numVal = dr == null ? '' : dr;
   return `<div class="slider-wrap field ${{changed?'changed':''}}">
     <div class="slider-head"><span><b>${{label}}</b> ${{provenanceBadge||''}}</span>
-      <span><input type="number" min="0" max="100" step="1" value="${{dr}}" data-kind="${{kind}}" data-key="${{key}}" class="numedit" style="width:4.2rem"/> / 100
+      <span><input type="number" min="0" max="100" step="1" value="${{numVal}}" placeholder="UNKNOWN" data-kind="${{kind}}" data-key="${{key}}" class="numedit" style="width:4.2rem"/> / 100
       <button class="resetf" data-reset-kind="${{kind}}" data-reset-key="${{key}}">Reset field</button></span></div>
     <div class="slider-track">
-      <div class="orig-mark" style="left:${{s}}%" title="SOURCE ${{s}}"></div>
-      <input type="range" min="0" max="100" step="1" value="${{dr}}" data-kind="${{kind}}" data-key="${{key}}" class="rng"/>
+      ${{s == null ? '' : `<div class="orig-mark" style="left:${{s}}%" title="SOURCE ${{s}}"></div>`}}
+      <input type="range" min="0" max="100" step="1" value="${{rangeVal}}" data-kind="${{kind}}" data-key="${{key}}" class="rng" ${{dUnk?'style="opacity:.45"':''}}/>
     </div>
     <div class="anchors"><span>0 absent</span><span>25 weak</span><span>50 meaningful</span><span>75 strong</span><span>100 archetypal</span></div>
-    <div class="cmp">SOURCE <b class="source">${{s}}</b> → FOUNDER <b class="founder">${{dr}}</b> · Δ <b class="delta">${{delta>=0?'+':''}}${{delta}}</b>${{changed?' · ORIGINAL → DRAFT':''}}</div>
+    <div class="cmp">SOURCE <b class="source">${{displayUi(src01)}}</b> → FOUNDER <b class="founder">${{displayUi(draft01)}}</b>${{delta==null?'':` · Δ <b class="delta">${{delta>=0?'+':''}}${{delta}}</b>`}}${{changed?' · ORIGINAL → DRAFT':''}}</div>
     ${{rationaleHTML(id, key, changed)}}
   </div>`;
 }}
@@ -691,13 +738,17 @@ function renderDetail(){{
 
   let themes = THEMES.map(t => {{
     const meta = THEME_META.find(x => x[0]===t);
-    const badge = `<span class="badge ${{fieldChanged(src.thematicVector[t], d.thematicVector[t])?'founder':'source'}}">${{fieldChanged(src.thematicVector[t], d.thematicVector[t])?'FOUNDER_EDITED':'FOUNDER_PRECALIBRATED'}}</span>`;
+    const edited = fieldChanged(src.thematicVector[t], d.thematicVector[t]);
+    const unk = isUnknown(src.thematicVector[t]) && isUnknown(d.thematicVector[t]);
+    const badge = `<span class="badge ${{edited?'founder':(unk?'unknown':'source')}}">${{edited?'FOUNDER_EDITED':(unk?'UNKNOWN':'FOUNDER_PRECALIBRATED')}}</span>`;
     return sliderHTML(`${{t}} · ${{meta?meta[1]:t}}`, 'theme', t, src.thematicVector[t], d.thematicVector[t], badge, currentId);
   }}).join('');
 
   let metrics = METRICS.map(m => {{
     const meta = METRIC_META.find(x => x[0]===m);
-    const badge = `<span class="badge ${{fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m])?'founder':'source'}}">${{fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m])?'FOUNDER_EDITED':'FOUNDER_PRECALIBRATED'}}</span>`;
+    const edited = fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m]);
+    const unk = isUnknown(src.structuralMetrics[m]) && isUnknown(d.structuralMetrics[m]);
+    const badge = `<span class="badge ${{edited?'founder':(unk?'unknown':'source')}}">${{edited?'FOUNDER_EDITED':(unk?'UNKNOWN':'FOUNDER_PRECALIBRATED')}}</span>`;
     return sliderHTML(meta?meta[1]:m, 'metric', m, src.structuralMetrics[m], d.structuralMetrics[m], badge, currentId);
   }}).join('');
 
@@ -728,7 +779,12 @@ function renderDetail(){{
       <span class="badge source">SOURCE IMMUTABLE</span>
     </div>
     <h2>${{src.displayName}}</h2>
-    <div class="statusline">${{src.stgoId}} · disposition ${{src.launchRuntimeDisposition||'—'}} · editorialRole ${{src.editorialRole||'—'}} · jump
+    <div>${{(src.founderNodeBadges||[]).map(b=>`<span class="badge founder">${{b.replace(/_/g,' ')}}</span>`).join('')}}
+      ${{src.stgoId==='STGO_104'?'<span class="badge ai">NEW FOUNDER NODE</span><span class="badge warn">NOT IN ORIGINAL 103-NODE SEED</span>':''}}
+      ${{src.stgoId==='STGO_33'?'<span class="badge founder">FOUNDER SEMANTIC CORRECTION</span><span class="badge">LEGACY NAME DEPRECATED</span>':''}}
+      ${{src.legacyAlias?`<span class="badge">legacy: ${{src.legacyAlias.alias}}</span>`:''}}
+    </div>
+    <div class="statusline">${{src.stgoId}} · disposition ${{src.launchRuntimeDisposition||'—'}} · physical ${{src.physicalStatus||'—'}} · editorialRole ${{src.editorialRole||'—'}} · jump
       <select id="jump">${{SOURCE.records.map(r=>`<option value="${{r.stgoId}}" ${{r.stgoId===currentId?'selected':''}}>${{r.stgoId}} — ${{r.displayName}}</option>`).join('')}}</select>
     </div>
 
@@ -736,13 +792,13 @@ function renderDetail(){{
     <div class="cwbox">
       <div class="field">
         <div class="badge ai">RAW ChronoWorth</div>
-        <div class="big">${{round1(raw)}} / 100</div>
+        <div class="big">${{raw==null?'UNAVAILABLE':(round1(raw)+' / 100')}}</div>
         <div class="cmp">100×(0.35·heritage + 0.30·anchor + 0.20·micro + 0.15·polish)</div>
-        <div class="cmp">Live from founder draft structural metrics</div>
+        <div class="cmp">${{raw==null?'Requires all four structural metrics (UNKNOWN ≠ 0)':'Live from founder draft structural metrics'}}</div>
       </div>
       <div class="field">
         <div class="badge founder">RELATIVE ChronoWorth</div>
-        <div class="big">${{Math.round(norm)}} / 100</div>
+        <div class="big">${{norm==null?'UNAVAILABLE':(Math.round(norm)+' / 100')}}</div>
         <div class="cmp">Corpus: <b>${{SOURCE.normalizationCorpus}}</b></div>
         <div class="cmp">max raw in Launch30 = ${{round1(maxRaw)}} (${{topId}}) ⇒ relative max 100</div>
         <div class="cmp">Not globally comparable across future cities</div>
@@ -751,12 +807,12 @@ function renderDetail(){{
     <div class="summary-box">
       <h4>Weighted contribution breakdown (live)</h4>
       <div class="contrib">
-        <div><span>Heritage depth</span><span>${{clamp01(d.structuralMetrics.heritage_depth).toFixed(2)}} × 35 = <b>${{cwBreak.contributions.heritage_depth}}</b></span></div>
-        <div><span>Anchor density</span><span>${{clamp01(d.structuralMetrics.anchor_density).toFixed(2)}} × 30 = <b>${{cwBreak.contributions.anchor_density}}</b></span></div>
-        <div><span>Micro reveal</span><span>${{clamp01(d.structuralMetrics.micro_reveal).toFixed(2)}} × 20 = <b>${{cwBreak.contributions.micro_reveal}}</b></span></div>
-        <div><span>Polish</span><span>${{clamp01(d.structuralMetrics.polish).toFixed(2)}} × 15 = <b>${{cwBreak.contributions.polish}}</b></span></div>
+        <div><span>Heritage depth</span><span>${{isUnknown(d.structuralMetrics.heritage_depth)?'UNKNOWN':(clamp01(d.structuralMetrics.heritage_depth).toFixed(2)+' × 35 = <b>'+cwBreak.contributions.heritage_depth+'</b>')}}</span></div>
+        <div><span>Anchor density</span><span>${{isUnknown(d.structuralMetrics.anchor_density)?'UNKNOWN':(clamp01(d.structuralMetrics.anchor_density).toFixed(2)+' × 30 = <b>'+cwBreak.contributions.anchor_density+'</b>')}}</span></div>
+        <div><span>Micro reveal</span><span>${{isUnknown(d.structuralMetrics.micro_reveal)?'UNKNOWN':(clamp01(d.structuralMetrics.micro_reveal).toFixed(2)+' × 20 = <b>'+cwBreak.contributions.micro_reveal+'</b>')}}</span></div>
+        <div><span>Polish</span><span>${{isUnknown(d.structuralMetrics.polish)?'UNKNOWN':(clamp01(d.structuralMetrics.polish).toFixed(2)+' × 15 = <b>'+cwBreak.contributions.polish+'</b>')}}</span></div>
       </div>
-      <div class="contrib-eq">Raw ChronoWorth = ${{cwBreak.raw}}</div>
+      <div class="contrib-eq">Raw ChronoWorth = ${{cwBreak.raw==null?'UNAVAILABLE':cwBreak.raw}}</div>
       <p class="plain">${{cwBreak.plainLanguage}}</p>
       <p class="cmp">Source seed raw was ${{round1(src.chronoWorthProposed)}} · source rationale artifact preserved separately (immutable prose).</p>
     </div>
@@ -839,6 +895,8 @@ function renderDetail(){{
     el.onchange = (e) => {{
       const kind = e.target.dataset.kind, key = e.target.dataset.key;
       if (e.target.value === '') {{
+        if (kind==='theme') store.drafts[currentId].thematicVector[key] = null;
+        if (kind==='metric') store.drafts[currentId].structuralMetrics[key] = null;
         if (kind==='mode') store.drafts[currentId].modes[key].value = null;
       }} else {{
         const val = fromUi(e.target.value);
@@ -897,7 +955,7 @@ function renderOverview(){{
   const tb = document.querySelector('#overview tbody');
   tb.innerHTML = rows.map(r => `<tr style="cursor:pointer" data-id="${{r.id}}">
     <td>${{r.id}}</td><td>${{r.name}}</td><td>${{r.tier}}</td>
-    <td>${{round1(r.raw)}}</td><td><b>${{Math.round(r.norm)}}</b></td><td>${{r.ch}}</td><td>${{r.appr}}</td></tr>`).join('');
+    <td>${{r.raw==null?'n/a':round1(r.raw)}}</td><td><b>${{r.norm==null?'n/a':Math.round(r.norm)}}</b></td><td>${{r.ch}}</td><td>${{r.appr}}</td></tr>`).join('');
   tb.querySelectorAll('tr').forEach(tr => tr.onclick = () => {{ currentId = tr.dataset.id; render(); }});
 }}
 

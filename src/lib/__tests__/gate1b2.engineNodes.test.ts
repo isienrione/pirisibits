@@ -8,7 +8,14 @@ import {
 import type { SantiagoEngineNodesFile } from '../city-graph/types'
 
 const root = resolve(__dirname, '../../..')
-const expectedIds = Array.from({ length: 103 }, (_, i) => `STGO_${String(i + 1).padStart(2, '0')}`)
+const expectedIds = Array.from({ length: 104 }, (_, i) => `STGO_${String(i + 1).padStart(2, '0')}`)
+const ACTIVE_LAUNCH_IDS = [
+  'STGO_01', 'STGO_02', 'STGO_03', 'STGO_04', 'STGO_05', 'STGO_06', 'STGO_07',
+  'STGO_10', 'STGO_11', 'STGO_16', 'STGO_18', 'STGO_19', 'STGO_20', 'STGO_21',
+  'STGO_22', 'STGO_24', 'STGO_25', 'STGO_26', 'STGO_27', 'STGO_28', 'STGO_29',
+  'STGO_30', 'STGO_32', 'STGO_33', 'STGO_34', 'STGO_35', 'STGO_48', 'STGO_91',
+  'STGO_92', 'STGO_104',
+]
 
 describe('Gate 1B.2 Santiago canonical physical node layer', () => {
   it('keeps physical route generation disabled and never auto-approves Mapbox', () => {
@@ -16,18 +23,29 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
     expect(AUTO_CURATOR_APPROVE_FROM_MAPBOX).toBe(false)
   })
 
-  it('authoritative inventory is exactly STGO_01…STGO_103', () => {
+  it('authoritative inventory is STGO_01…STGO_104 (103 frozen seed + STGO_104 extension)', () => {
+    const frozen = JSON.parse(
+      readFileSync(resolve(root, 'src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json'), 'utf8'),
+    )
+    expect(frozen.nodes).toHaveLength(103)
+    expect(frozen.source_node_count).toBe(103)
+
     const path = resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json')
     expect(existsSync(path)).toBe(true)
     const data = JSON.parse(readFileSync(path, 'utf8')) as SantiagoEngineNodesFile
-    expect(data.nodeCount).toBe(103)
-    expect(data.nodes).toHaveLength(103)
+    expect(data.nodeCount).toBe(104)
+    expect(data.nodes).toHaveLength(104)
     expect(data.nodes.map((n) => n.stgoId)).toEqual(expectedIds)
-    expect(new Set(data.nodes.map((n) => n.stgoId)).size).toBe(103)
+    expect(new Set(data.nodes.map((n) => n.stgoId)).size).toBe(104)
     expect(data.launchCorpusCount).toBe(30)
-    expect(data.backlogCount).toBe(73)
+    expect(data.backlogCount).toBe(74)
     expect(data.nodes.filter((n) => n.launchCorpus)).toHaveLength(30)
-    expect(data.nodes.filter((n) => !n.launchCorpus)).toHaveLength(73)
+    expect(data.nodes.filter((n) => !n.launchCorpus)).toHaveLength(74)
+    expect(data.nodes.filter((n) => n.launchCorpus).map((n) => n.stgoId).sort()).toEqual(
+      [...ACTIVE_LAUNCH_IDS].sort(),
+    )
+    expect(data.launchCorpusStgoIds).toEqual(expect.arrayContaining(['STGO_33', 'STGO_104']))
+    expect(data.launchCorpusStgoIds).not.toContain('STGO_23')
   })
 
   it('rejects synthetic names and preserves backlog provider discipline', () => {
@@ -72,7 +90,7 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
     const launchNodes = data.nodes.filter((n) => n.launchCorpus)
     expect(launchNodes.map((n) => n.stgoId).sort()).toEqual([...(launch.stgoIds ?? launch.ids)].sort())
     for (const n of launchNodes) {
-      expect(n.stgoId).toMatch(/^STGO_(?:0[1-9]|[1-9]\d|10[0-3])$/)
+      expect(n.stgoId).toMatch(/^STGO_(?:0[1-9]|[1-9]\d|10[0-4])$/)
       expect(data.launchCorpusStgoIds).toContain(n.stgoId)
     }
   })

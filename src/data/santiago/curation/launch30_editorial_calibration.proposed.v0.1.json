@@ -1,7 +1,7 @@
 {
   "schemaVersion": "santiago-launch30-editorial-calibration.proposed.v0.1",
-  "gate": "2A.1R",
-  "status": "FOUNDER_SEED_PLUS_AI_PROPOSED_UNVERIFIED",
+  "gate": "2A.1R-ADD-01R",
+  "status": "FOUNDER_SEED_PLUS_EXTENSION_PLUS_AI_PROPOSED_UNVERIFIED",
   "curatorApproved": false,
   "canonicalTaxonomy": [
     "T1A",
@@ -16,16 +16,20 @@
     "T9"
   ],
   "sourceDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+  "founderExtensionsArtifact": "src/data/santiago/source/santiago_founder_extensions.v0.1.json",
+  "identityCorrectionsArtifact": "src/data/santiago/curation/santiago_founder_identity_corrections.v0.1.json",
   "canonicalSemanticArtifact": "src/data/santiago/santiago_semantic_calibration.v0.1.json",
+  "normalizationCorpus": "SANTIAGO_LAUNCH30_V0_1",
   "notes": [
-    "Themes / structural metrics / tier / explicit flags: FOUNDER_PRECALIBRATED.",
-    "ChronoWorth / visitTime / most M-mode values: AI_PROPOSED_UNVERIFIED.",
-    "M2 accessibility uses FOUNDER_PRECALIBRATED step_free when PRESENT.",
-    "No binary→0.7. No pois.ts canonical dependency."
+    "Active launch/review corpus remains exactly 30 (STGO_23 removed from active set; STGO_104 added).",
+    "STGO_33 restored with corrected identity; founder source calibration preserved.",
+    "STGO_104 founder-added; semantic UNKNOWNs require founder calibration before approval.",
+    "ChronoWorth / visitTime / most M-mode values remain AI_PROPOSED_UNVERIFIED where previously proposed.",
+    "STGO_104 ChronoWorth UNAVAILABLE until all four structural metrics are founder-supplied."
   ],
   "chronoWorthFormula": {
     "expression": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
-    "inputs": "FOUNDER_PRECALIBRATED structural_metrics",
+    "inputs": "FOUNDER_PRECALIBRATED structural_metrics (or founder-supplied for STGO_104)",
     "forbiddenInputs": [
       "physicalCentrality",
       "edgeDegree",
@@ -38,9 +42,38 @@
     ]
   },
   "recordCount": 30,
-  "demoNameMatches": 0,
-  "founderVectorRestored": 30,
-  "binarySyntheticReplaced": 30,
+  "activeLaunchIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_32",
+    "STGO_33",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92",
+    "STGO_104"
+  ],
   "records": [
     {
       "stgoId": "STGO_01",
@@ -192,16 +225,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.77,
         "recomputedChronoWorth0_100": 69
-      },
-      "legacySlug": "la-moneda",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_02",
@@ -354,16 +378,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.8,
         "recomputedChronoWorth0_100": 71
-      },
-      "legacySlug": "morande-80",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_03",
@@ -516,16 +531,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.84,
         "recomputedChronoWorth0_100": 77
-      },
-      "legacySlug": "londres-38",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_04",
@@ -678,16 +684,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.78,
         "recomputedChronoWorth0_100": 71
-      },
-      "legacySlug": "plaza-de-armas",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_05",
@@ -840,16 +837,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.81,
         "recomputedChronoWorth0_100": 73
-      },
-      "legacySlug": "pasaje-phillips",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_06",
@@ -1002,16 +990,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.73,
         "recomputedChronoWorth0_100": 68
-      },
-      "legacySlug": "catedral",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_07",
@@ -1164,16 +1143,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.76,
         "recomputedChronoWorth0_100": 68
-      },
-      "legacySlug": "merced",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_10",
@@ -1326,16 +1296,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.72,
         "recomputedChronoWorth0_100": 68
-      },
-      "legacySlug": "parque-forestal",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_11",
@@ -1488,16 +1449,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.69,
         "recomputedChronoWorth0_100": 62
-      },
-      "legacySlug": "gam",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_16",
@@ -1650,16 +1602,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.71,
         "recomputedChronoWorth0_100": 66
-      },
-      "legacySlug": "museo-memoria",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_18",
@@ -1812,16 +1755,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.76,
         "recomputedChronoWorth0_100": 70
-      },
-      "legacySlug": "barrio-brasil",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_19",
@@ -1974,16 +1908,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.72,
         "recomputedChronoWorth0_100": 65
-      },
-      "legacySlug": "barrio-italia",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_20",
@@ -2136,16 +2061,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.65,
         "recomputedChronoWorth0_100": 56
-      },
-      "legacySlug": "san-francisco",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_21",
@@ -2298,16 +2214,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.72,
         "recomputedChronoWorth0_100": 67
-      },
-      "legacySlug": "palacio-pereira",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_22",
@@ -2460,178 +2367,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.83,
         "recomputedChronoWorth0_100": 76
-      },
-      "legacySlug": "ex-congreso",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
-    },
-    {
-      "stgoId": "STGO_23",
-      "displayName": "Inca Tambo Canal Dip (Puente/Stgo)",
-      "commune": "Centro",
-      "islandId": "ISLAND_01_CENTRO_CIVICO",
-      "tier": "micro_reveal",
-      "tierProvenance": "FOUNDER_PRECALIBRATED",
-      "editorialRole": "civic",
-      "thematicVector": {
-        "T1A": 0.85,
-        "T1B": 0.0,
-        "T2": 0.0,
-        "T3": 0.0,
-        "T4": 0.0,
-        "T5": 0.0,
-        "T6": 0.0,
-        "T7": 0.6,
-        "T8": 0.8,
-        "T9": 0.0
-      },
-      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
-      "structuralMetrics": {
-        "anchor_density": 0.2,
-        "heritage_depth": 0.9,
-        "micro_reveal": 0.95,
-        "polish": 0.4
-      },
-      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
-      "flags": {
-        "daylight_only": {
-          "value": true,
-          "status": "PRESENT",
-          "provenance": "FOUNDER_PRECALIBRATED"
-        },
-        "step_free": {
-          "value": true,
-          "status": "PRESENT",
-          "provenance": "FOUNDER_PRECALIBRATED"
-        },
-        "curbside_hub": {
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "sourceDictValueIgnored": false
-        },
-        "exclude_for_m5": {
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "sourceDictValueIgnored": false
-        },
-        "is_sensitive_memory": {
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "sourceDictValueIgnored": false
-        }
-      },
-      "derivedThemeTags": [
-        "T1A",
-        "T7",
-        "T8"
-      ],
-      "themeTagThreshold": 0.45,
-      "chronoWorth": {
-        "proposed": 62,
-        "approved": null,
-        "effective": 62,
-        "provenance": "AI_PROPOSED_UNVERIFIED",
-        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
-        "contributions": {
-          "heritage_depth": 0.9,
-          "anchor_density": 0.2,
-          "micro_reveal": 0.95,
-          "polish": 0.4,
-          "weights": {
-            "heritage": 0.35,
-            "anchor": 0.3,
-            "micro": 0.2,
-            "polish": 0.15
-          }
-        },
-        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
-      },
-      "visitTime": {
-        "min": 12,
-        "typical": 20,
-        "max": 30,
-        "unit": "minutes",
-        "includesTravelTime": false,
-        "approved": null,
-        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
-        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
-      },
-      "structuralSuitability": {
-        "M1": {
-          "value": 0.629,
-          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
-        },
-        "M2": {
-          "value": 0.85,
-          "status": "KNOWN_STEP_FREE",
-          "provenance": "FOUNDER_PRECALIBRATED:step_free"
-        },
-        "M3": {
-          "value": 0.55,
-          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
-        },
-        "M4": {
-          "value": 0.1,
-          "status": "DAYLIGHT_ONLY",
-          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
-        },
-        "M5": {
-          "value": 0.57,
-          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
-        }
-      },
-      "sensitiveMemory": {
-        "value": null,
-        "status": "UNKNOWN",
-        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
-      },
-      "accessibility": {
-        "status": "KNOWN_STEP_FREE",
-        "provenance": "FOUNDER_PRECALIBRATED:step_free"
-      },
-      "operational": {
-        "classification": "DAYLIGHT_ONLY",
-        "daylightOnly": true,
-        "provenance": "FOUNDER_PRECALIBRATED"
-      },
-      "sourceProvenance": {
-        "priority": "FOUNDER_PRECALIBRATED",
-        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
-        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
-        "source": "user-provided 103-node pre-calibrated master inventory",
-        "source_fields_are_frozen_input": true,
-        "derived_fields_are_ai_proposals": true,
-        "source_present_flag_keys": [
-          "daylight_only",
-          "step_free"
-        ]
-      },
-      "launchCorpus": true,
-      "launchRuntimeDisposition": "RUNTIME_EXCLUDED_RESEARCH",
-      "physicalRouteGenerationEligible": false,
-      "qaCompare": {
-        "sourceAiChronoWorth01": 0.68,
-        "recomputedChronoWorth0_100": 62
-      },
-      "legacySlug": "plaza-constitucion",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_24",
@@ -2784,16 +2520,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.74,
         "recomputedChronoWorth0_100": 69
-      },
-      "legacySlug": "museo-bellas-artes",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_25",
@@ -2946,16 +2673,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.8,
         "recomputedChronoWorth0_100": 72
-      },
-      "legacySlug": "estacion-mapocho",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_26",
@@ -3108,16 +2826,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.82,
         "recomputedChronoWorth0_100": 74
-      },
-      "legacySlug": "cementerio-general",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_27",
@@ -3270,16 +2979,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.73,
         "recomputedChronoWorth0_100": 67
-      },
-      "legacySlug": "plaza-nunoa",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_28",
@@ -3432,16 +3132,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.65,
         "recomputedChronoWorth0_100": 57
-      },
-      "legacySlug": "villa-grimaldi",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_29",
@@ -3594,16 +3285,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.82,
         "recomputedChronoWorth0_100": 73
-      },
-      "legacySlug": "teatro-municipal",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_30",
@@ -3756,16 +3438,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.67,
         "recomputedChronoWorth0_100": 57
-      },
-      "legacySlug": "casa-de-los-diez",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_32",
@@ -3918,20 +3591,11 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.82,
         "recomputedChronoWorth0_100": 74
-      },
-      "legacySlug": "plaza-bulnes",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_33",
-      "displayName": "Kulczewski Funicular Gargoyle",
+      "displayName": "Gárgola de Luciano K",
       "commune": "Bellavista",
       "islandId": "ISLAND_03_SAN_CRISTOBAL",
       "tier": "micro_reveal",
@@ -4075,21 +3739,31 @@
         ]
       },
       "launchCorpus": true,
-      "launchRuntimeDisposition": "RUNTIME_EXCLUDED_SEMANTIC",
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
       "physicalRouteGenerationEligible": false,
       "qaCompare": {
         "sourceAiChronoWorth01": 0.73,
         "recomputedChronoWorth0_100": 67
       },
-      "legacySlug": "iglesia-de-san-agustin",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      "canonicalName": "Gárgola de Luciano K",
+      "physicalStatus": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION",
+      "founderNodeBadges": [
+        "FOUNDER_SEMANTIC_CORRECTION",
+        "LEGACY_NAME_DEPRECATED"
+      ],
+      "aliases": [
+        "Kulczewski Funicular Gargoyle"
+      ],
+      "legacyAlias": {
+        "alias": "Kulczewski Funicular Gargoyle",
+        "status": "deprecated_alias"
+      },
+      "identityCorrection": {
+        "gate": "2A.1R-ADD-01R",
+        "oldName": "Kulczewski Funicular Gargoyle",
+        "newName": "Gárgola de Luciano K",
+        "provenance": "FOUNDER_SEMANTIC_CORRECTION"
+      }
     },
     {
       "stgoId": "STGO_34",
@@ -4242,16 +3916,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.79,
         "recomputedChronoWorth0_100": 68
-      },
-      "legacySlug": "iglesia-de-santo-domingo",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_35",
@@ -4404,16 +4069,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.69,
         "recomputedChronoWorth0_100": 61
-      },
-      "legacySlug": "iglesia-de-san-saturnino",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_48",
@@ -4566,16 +4222,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.84,
         "recomputedChronoWorth0_100": 76
-      },
-      "legacySlug": "patio-bellavista",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_91",
@@ -4728,16 +4375,7 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.64,
         "recomputedChronoWorth0_100": 56
-      },
-      "legacySlug": "torre-entel",
-      "demoPoiIdMatched": null,
-      "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
-      ]
+      }
     },
     {
       "stgoId": "STGO_92",
@@ -4890,15 +4528,169 @@
       "qaCompare": {
         "sourceAiChronoWorth01": 0.63,
         "recomputedChronoWorth0_100": 55
+      }
+    },
+    {
+      "stgoId": "STGO_104",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "shortName": "Bolsa de Comercio de Santiago",
+      "canonicalName": "Edificio de la Bolsa de Comercio de Santiago",
+      "commune": null,
+      "islandId": null,
+      "city": "Santiago",
+      "country": "Chile",
+      "tier": null,
+      "tierProvenance": "UNKNOWN",
+      "editorialRole": null,
+      "thematicVector": {
+        "T1A": null,
+        "T1B": null,
+        "T2": null,
+        "T3": null,
+        "T4": null,
+        "T5": null,
+        "T6": null,
+        "T7": null,
+        "T8": null,
+        "T9": null
       },
-      "legacySlug": "plaza-vicuna",
+      "thematicVectorProvenance": "UNKNOWN",
+      "structuralMetrics": {
+        "anchor_density": null,
+        "heritage_depth": null,
+        "micro_reveal": null,
+        "polish": null
+      },
+      "structuralMetricsProvenance": "UNKNOWN",
+      "flags": {
+        "daylight_only": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "step_free": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        }
+      },
+      "derivedThemeTags": [],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": null,
+        "approved": null,
+        "effective": null,
+        "status": "UNAVAILABLE",
+        "provenance": "UNAVAILABLE_UNTIL_FOUNDER_STRUCTURAL_METRICS",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "note": "ChronoWorth unavailable until founder supplies all four structural metrics. UNKNOWN must not become 0."
+      },
+      "visitTime": {
+        "min": null,
+        "typical": null,
+        "max": null,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "UNKNOWN",
+        "source": "no AI proposal — founder-added node requires curation"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M2": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M3": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M4": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN",
+        "note": "Absence is not false; no sensitive-memory claim invented for STGO_104."
+      },
+      "accessibility": {
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN"
+      },
+      "operational": {
+        "classification": "UNKNOWN",
+        "daylightOnly": null,
+        "openingHours": null,
+        "provenance": "UNKNOWN"
+      },
+      "coordinates": {
+        "poiCoordinate": {
+          "lat": -33.4423866,
+          "lng": -70.6517565,
+          "provenance": "FOUNDER_SUPPLIED_GOOGLE_MAPS"
+        },
+        "experiencePoint": {
+          "lat": -33.4421764,
+          "lng": -70.6517853,
+          "headingDegrees": 155.14,
+          "provenance": "FOUNDER_SUPPLIED"
+        },
+        "entranceCoordinate": null,
+        "entranceStatus": "UNKNOWN",
+        "note": "poi_coordinate ≠ entrance/access ≠ experience_point; entrance not inferred."
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_ADDED_POST_SEED",
+        "dataset": "src/data/santiago/source/santiago_founder_extensions.v0.1.json",
+        "baseSeedDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "santiago-founder-extensions.v0.1",
+        "source": "Founder-added after frozen SANTIAGO_ENGINE_DATASET_V0.1 103-node seed.",
+        "source_fields_are_frozen_input": false,
+        "requiresFounderCalibrationBeforeApproval": true
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
+      "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+      "physicalRouteGenerationEligible": false,
+      "founderNodeBadges": [
+        "NEW_FOUNDER_NODE",
+        "NOT_IN_ORIGINAL_103_NODE_SEED"
+      ],
+      "qaCompare": null,
+      "legacySlug": null,
       "demoPoiIdMatched": null,
       "sources": [
-        {
-          "type": "FOUNDER_PRECALIBRATED",
-          "dataset": "SANTIAGO_ENGINE_DATASET_V0.1.json",
-          "note": "Canonical continuous vectors + structural metrics + tier + flags"
-        }
+        "src/data/santiago/source/santiago_founder_extensions.v0.1.json"
       ]
     }
   ]

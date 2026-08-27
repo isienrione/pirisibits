@@ -84,14 +84,14 @@ def main() -> int:
         fail(errors, "engine physicalLayerGate must be 1B.5")
     if engine.get("physicalLayerV01Ready") is not True:
         fail(errors, "engine physicalLayerV01Ready must be true")
-    if engine.get("gate") != "1B.2A":
-        fail(errors, "engine curation gate marker must remain 1B.2A")
+    if engine.get("gate") not in {"1B.2A", "2A.1R-ADD-01R"}:
+        fail(errors, "engine curation gate marker must remain 1B.2A or ADD-01R")
     launch = [n for n in engine["nodes"] if n.get("launchCorpus")]
     backlog = [n for n in engine["nodes"] if not n.get("launchCorpus")]
     if len(launch) != 30:
         fail(errors, "launch corpus size != 30")
-    if len(backlog) != 73:
-        fail(errors, "backlog size != 73")
+    if len(backlog) != 74:
+        fail(errors, "backlog size != 74 (104 inventory − 30 launch)")
 
     if provider.get("counts", {}).get("runtimeWalkEdges") != 598:
         fail(errors, "Gate 1B.3 provider runtime edges not preserved at 598")
@@ -100,17 +100,17 @@ def main() -> int:
     if "STGO_05" in (provider.get("eligibleStgoIds") or []):
         fail(errors, "Gate 1B.3 provider eligible set must not silently absorb STGO_05")
 
-    # Membership dispositions
+    # Membership dispositions (post Gate 2A.1R-ADD-01R)
     if membership.get("runtimeReadyCount") != 27:
         fail(errors, f"runtimeReadyCount expected 27 got {membership.get('runtimeReadyCount')}")
     if membership.get("runtimeStagedCount") != 1:
         fail(errors, "runtimeStagedCount expected 1 (STGO_32)")
-    if membership.get("runtimeExcludedCount") != 2:
-        fail(errors, "runtimeExcludedCount expected 2")
+    if membership.get("runtimeExcludedCount") != 1:
+        fail(errors, "runtimeExcludedCount expected 1 (STGO_23 only)")
     if membership.get("runtimeStagedIds") != ["STGO_32"]:
         fail(errors, "STGO_32 must be sole RUNTIME_STAGED")
-    if set(membership.get("runtimeExcludedIds") or []) != {"STGO_23", "STGO_33"}:
-        fail(errors, "excluded must be exactly STGO_23 and STGO_33")
+    if set(membership.get("runtimeExcludedIds") or []) != {"STGO_23"}:
+        fail(errors, "excluded must be exactly STGO_23")
     if "STGO_05" not in (membership.get("runtimeReadyIds") or []):
         fail(errors, "STGO_05 must be RUNTIME_READY")
     if len(membership.get("runtimeRoutingIds") or []) != 28:
@@ -140,10 +140,18 @@ def main() -> int:
         fail(errors, "STGO_23 must remain ineligible")
 
     n33 = by["STGO_33"]
-    if n33.get("launchRuntimeDisposition") != "RUNTIME_EXCLUDED_SEMANTIC":
-        fail(errors, "STGO_33 must be RUNTIME_EXCLUDED_SEMANTIC")
+    if n33.get("launchRuntimeDisposition") != "ACTIVE_LAUNCH":
+        fail(errors, "STGO_33 must be ACTIVE_LAUNCH after ADD-01R restore")
     if n33.get("physicalRouteGenerationEligible") is not False:
-        fail(errors, "STGO_33 must remain ineligible")
+        fail(errors, "STGO_33 must remain physically ineligible until regression gate")
+    if "Funicular" in (n33.get("displayName") or "") or "Funicular" in (n33.get("canonicalName") or ""):
+        fail(errors, "STGO_33 active name must not contain Funicular")
+
+    n104 = by.get("STGO_104")
+    if not n104 or not n104.get("launchCorpus"):
+        fail(errors, "STGO_104 must exist in launch corpus")
+    if n104.get("physicalRouteGenerationEligible") is not False:
+        fail(errors, "STGO_104 must remain edge-ineligible pending enrichment")
 
     n32 = by["STGO_32"]
     if n32.get("launchRuntimeDisposition") != "RUNTIME_STAGED":

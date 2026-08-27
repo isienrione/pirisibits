@@ -15,7 +15,7 @@ LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.propo
 BUILDER = ROOT / "scripts/engine/build_launch30_score_rationales_v0_1.py"
 GEN = ROOT / "scripts/engine/generate_gate_2a1_founder_cockpit.py"
 FLAGS = ROOT / "src/lib/city-graph/flags.ts"
-START = "af8874f8efa106ec87e0262eec43329c666e8444"
+START = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
 
 REQUIRED_FIELDS = [
     "T1A",
@@ -51,12 +51,9 @@ PHYSICAL = [
     "src/data/santiago/santiago_multimodal_graph.v0.3.json",
     "src/data/santiago/santiago_physical_graph_manifest.v0.1.json",
     "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json",
-    "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
 ]
 SEMANTIC_PATHS = [
-    "src/data/santiago/santiago_semantic_calibration.v0.1.json",
     "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
-    "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
 ]
 
 
@@ -106,12 +103,16 @@ def main() -> int:
                 else:
                     conf_hist[conf] += 1
                 if f == "visitTimeMin":
-                    if fields[f].get("rationaleClass") != "AI_PROPOSAL_RATIONALE":
-                        fail(errors, f"{sid}.visitTimeMin must be AI_PROPOSAL_RATIONALE")
-                    if "AI_PROPOSED_UNVERIFIED" not in str(fields[f].get("evidenceLimitations", "")) and "AI_PROPOSED_UNVERIFIED" not in str(
-                        fields[f].get("provenance", "")
-                    ):
-                        fail(errors, f"{sid}.visitTimeMin must mark AI_PROPOSED_UNVERIFIED")
+                    if sid == "STGO_104":
+                        if "No prior calibrated score exists" not in str(fields[f].get("whyThisScore", "")):
+                            fail(errors, "STGO_104 visitTime must state no prior calibrated score")
+                    else:
+                        if fields[f].get("rationaleClass") != "AI_PROPOSAL_RATIONALE":
+                            fail(errors, f"{sid}.visitTimeMin must be AI_PROPOSAL_RATIONALE")
+                        if "AI_PROPOSED_UNVERIFIED" not in str(fields[f].get("evidenceLimitations", "")) and "AI_PROPOSED_UNVERIFIED" not in str(
+                            fields[f].get("provenance", "")
+                        ):
+                            fail(errors, f"{sid}.visitTimeMin must mark AI_PROPOSED_UNVERIFIED")
                 for key in ("whyThisScore", "whyNotHigher", "whyNotLower", "confidence"):
                     if not fields[f].get(key):
                         fail(errors, f"{sid}.{f}: missing {key}")
@@ -122,20 +123,24 @@ def main() -> int:
         def js_round1(x: float) -> float:
             return float(int(x * 10 + 0.5)) / 10.0
 
-        expected = {
-            "heritage_depth": js_round1(float(m["heritage_depth"]) * 35),
-            "anchor_density": js_round1(float(m["anchor_density"]) * 30),
-            "micro_reveal": js_round1(float(m["micro_reveal"]) * 20),
-            "polish": js_round1(float(m["polish"]) * 15),
-        }
         br = rec.get("chronoWorthBreakdown") or {}
-        contrib = br.get("contributions") or {}
-        for k, v in expected.items():
-            if contrib.get(k) != v:
-                fail(errors, f"{sid}: ChronoWorth {k} contrib {contrib.get(k)} != {v}")
-        raw_expected = js_round1(sum(expected.values()))
-        if br.get("raw") != raw_expected:
-            fail(errors, f"{sid}: ChronoWorth raw {br.get('raw')} != {raw_expected}")
+        if any(m.get(k) is None for k in ("heritage_depth", "anchor_density", "micro_reveal", "polish")):
+            if br.get("status") != "UNAVAILABLE" and br.get("raw") is not None:
+                fail(errors, f"{sid}: ChronoWorth must be UNAVAILABLE when metrics UNKNOWN")
+        else:
+            expected = {
+                "heritage_depth": js_round1(float(m["heritage_depth"]) * 35),
+                "anchor_density": js_round1(float(m["anchor_density"]) * 30),
+                "micro_reveal": js_round1(float(m["micro_reveal"]) * 20),
+                "polish": js_round1(float(m["polish"]) * 15),
+            }
+            contrib = br.get("contributions") or {}
+            for k, v in expected.items():
+                if contrib.get(k) != v:
+                    fail(errors, f"{sid}: ChronoWorth {k} contrib {contrib.get(k)} != {v}")
+            raw_expected = js_round1(sum(expected.values()))
+            if br.get("raw") != raw_expected:
+                fail(errors, f"{sid}: ChronoWorth raw {br.get('raw')} != {raw_expected}")
         if not rec.get("thematicSummary"):
             fail(errors, f"{sid}: missing thematicSummary")
         if not rec.get("structuralSummary"):
@@ -163,8 +168,8 @@ def main() -> int:
         source = json.loads(m_src.group(1))
         if source.get("sourceCheckpointSha") != START:
             fail(errors, "cockpit sourceCheckpointSha mismatch")
-        if source.get("gate") != "2A.1R-UI.1":
-            fail(errors, "cockpit gate must be 2A.1R-UI.1")
+        if source.get("gate") not in {"2A.1R-UI.1", "2A.1R-ADD-01R"}:
+            fail(errors, "cockpit gate must be 2A.1R-UI.1 or 2A.1R-ADD-01R")
         by = {r["stgoId"]: r for r in launch["records"]}
         for r in source["records"]:
             o = by[r["stgoId"]]

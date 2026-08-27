@@ -1,18 +1,20 @@
 {
   "schemaVersion": "santiago-launch30-score-rationales.v0.1",
-  "gate": "2A.1R-UI.1",
-  "sourceCheckpointSha": "af8874f8efa106ec87e0262eec43329c666e8444",
+  "gate": "2A.1R-ADD-01R",
+  "sourceCheckpointSha": "1b0ef938e681eedcd95d57f449a411e4b972d2b0",
   "sourceCalibration": "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
   "recordCount": 30,
   "confidenceHistogram": {
-    "HIGH": 318,
-    "MEDIUM": 259,
-    "LOW": 203
+    "HIGH": 334,
+    "MEDIUM": 251,
+    "LOW": 195
   },
   "notes": [
-    "Rationales are deterministic reconstructions from Gate 2A.1R calibration metadata.",
+    "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R calibration metadata.",
     "They do not change scores.",
     "SOURCE_RATIONALE vs AI_PROPOSAL_RATIONALE are distinct.",
+    "STGO_104 has no prior source rationale — founder-added UNKNOWN node.",
+    "STGO_33 rationales use corrected identity (no Funicular naming).",
     "LOW confidence means insufficient descriptive evidence — not a score defect."
   ],
   "records": [
@@ -399,6 +401,7 @@
           "polish": 7.5
         },
         "raw": 68.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (4.0)."
       }
     },
@@ -785,6 +788,7 @@
           "polish": 10.5
         },
         "raw": 71.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (2.0)."
       }
     },
@@ -1171,6 +1175,7 @@
           "polish": 12.0
         },
         "raw": 76.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (3.0)."
       }
     },
@@ -1557,6 +1562,7 @@
           "polish": 9.0
         },
         "raw": 71.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (34.3), while anchor density contributes less (9.0)."
       }
     },
@@ -1943,6 +1949,7 @@
           "polish": 9.8
         },
         "raw": 72.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (6.0)."
       }
     },
@@ -2329,6 +2336,7 @@
           "polish": 10.5
         },
         "raw": 68.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (10.0)."
       }
     },
@@ -2715,6 +2723,7 @@
           "polish": 7.5
         },
         "raw": 68.0,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (35.0), while anchor density contributes less (7.5)."
       }
     },
@@ -3101,7 +3110,374 @@
           "polish": 12.8
         },
         "raw": 68.6,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (8.0)."
+      }
+    },
+    {
+      "stgoId": "STGO_104",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "fields": [
+        {
+          "field": "T1A",
+          "label": "Civic, Military & Traditional Heritage",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T1B",
+          "label": "Memory, Human Rights & Grassroots",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T2",
+          "label": "Culinary Explorer & Gastronomy",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T3",
+          "label": "Urban Shutterbug & Aesthetics",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T4",
+          "label": "Subculture, Street Art & Indie",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T5",
+          "label": "Mindful, Green & Quiet Living",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T6",
+          "label": "Dark Lore, Forensics & Macabre",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T7",
+          "label": "Budget Hacker & Street Life",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T8",
+          "label": "Urban Ecology & Conscious Living",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T9",
+          "label": "Luxury Heritage & High Craft",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "anchor_density",
+          "label": "Anchor density (canonical importance)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "heritage_depth",
+          "label": "Heritage depth (storytelling material)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "micro_reveal",
+          "label": "Micro reveal (hidden discovery potential)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "polish",
+          "label": "Polish (finish / visitor readiness)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "tier",
+          "label": "Editorial tier",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "visitTimeMin",
+          "label": "Visit time (min / typical / max)",
+          "value": {
+            "min": null,
+            "typical": null,
+            "max": null
+          },
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M1",
+          "label": "Express / Time-Boxed",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M2",
+          "label": "Accessibility / Step-Free",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M3",
+          "label": "Family & Kid Quest",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M4",
+          "label": "Night Owl / Nocturnal",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M5",
+          "label": "High Comfort / Low Friction",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "flag:daylight_only",
+          "label": "daylight_only",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `daylight_only` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:step_free",
+          "label": "step_free",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `step_free` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:curbside_hub",
+          "label": "curbside_hub",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `curbside_hub` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:exclude_for_m5",
+          "label": "exclude_for_m5",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `exclude_for_m5` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:is_sensitive_memory",
+          "label": "is_sensitive_memory",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `is_sensitive_memory` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        }
+      ],
+      "thematicSummary": {
+        "text": "No prior calibrated thematic profile exists. This is a new founder-added launch node.",
+        "top3": [],
+        "weakThemes": [],
+        "contrast": "All T1A–T9 values are UNKNOWN until founder calibration."
+      },
+      "structuralSummary": "No prior structural profile exists. This is a new founder-added launch node (all metrics UNKNOWN).",
+      "chronoWorthBreakdown": {
+        "contributions": {
+          "heritage_depth": null,
+          "anchor_density": null,
+          "micro_reveal": null,
+          "polish": null
+        },
+        "raw": null,
+        "status": "UNAVAILABLE",
+        "plainLanguage": "ChronoWorth is UNAVAILABLE until the founder supplies all four structural metrics. UNKNOWN must not be treated as zero."
       }
     },
     {
@@ -3487,6 +3863,7 @@
           "polish": 6.8
         },
         "raw": 61.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while polish contributes less (6.8)."
       }
     },
@@ -3873,6 +4250,7 @@
           "polish": 9.0
         },
         "raw": 66.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while polish contributes less (9.0)."
       }
     },
@@ -4259,6 +4637,7 @@
           "polish": 10.5
         },
         "raw": 70.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (10.5)."
       }
     },
@@ -4645,6 +5024,7 @@
           "polish": 7.5
         },
         "raw": 64.6,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while anchor density contributes less (6.0)."
       }
     },
@@ -5031,6 +5411,7 @@
           "polish": 3.0
         },
         "raw": 55.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (3.0)."
       }
     },
@@ -5417,6 +5798,7 @@
           "polish": 12.8
         },
         "raw": 66.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (6.0)."
       }
     },
@@ -5803,393 +6185,8 @@
           "polish": 13.5
         },
         "raw": 76.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (4.0)."
-      }
-    },
-    {
-      "stgoId": "STGO_23",
-      "displayName": "Inca Tambo Canal Dip (Puente/Stgo)",
-      "fields": [
-        {
-          "field": "T1A",
-          "label": "Civic, Military & Traditional Heritage",
-          "value": 0.85,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder T1A=85 (near-archetypal / defining) for Civic, Military & Traditional Heritage. Within this POI's vector, the leading companion theme is T8=80. Editorial role/tier context in the calibration record: civic / micro_reveal.",
-          "whyNotHigher": "Not at 100 because the founder vector places T1A in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T8) also compete for experiential emphasis.",
-          "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T1A weight (85), indicating the theme is intrinsic rather than background noise.",
-          "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
-        },
-        {
-          "field": "T1B",
-          "label": "Memory, Human Rights & Grassroots",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T1B (Memory, Human Rights & Grassroots) weight in the founder continuous vector, so memory, human rights & grassroots is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T1B would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T2",
-          "label": "Culinary Explorer & Gastronomy",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T2 (Culinary Explorer & Gastronomy) weight in the founder continuous vector, so culinary explorer & gastronomy is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T2 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T3",
-          "label": "Urban Shutterbug & Aesthetics",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T3 (Urban Shutterbug & Aesthetics) weight in the founder continuous vector, so urban shutterbug & aesthetics is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T3 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T4",
-          "label": "Subculture, Street Art & Indie",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T4 (Subculture, Street Art & Indie) weight in the founder continuous vector, so subculture, street art & indie is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T4 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T5",
-          "label": "Mindful, Green & Quiet Living",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T5 (Mindful, Green & Quiet Living) weight in the founder continuous vector, so mindful, green & quiet living is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T5 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T6",
-          "label": "Dark Lore, Forensics & Macabre",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T6 (Dark Lore, Forensics & Macabre) weight in the founder continuous vector, so dark lore, forensics & macabre is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T6 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "T7",
-          "label": "Budget Hacker & Street Life",
-          "value": 0.6,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder T7=60 (strongly characteristic) for Budget Hacker & Street Life. Within this POI's vector, the leading companion theme is T1A=85. Editorial role/tier context in the calibration record: civic / micro_reveal.",
-          "whyNotHigher": "Not at 100 because the founder vector places T7 in the 'strongly characteristic' band rather than as a sole archetypal maximum; other themes (e.g. T1A) also compete for experiential emphasis.",
-          "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T7 weight (60), indicating the theme is intrinsic rather than background noise.",
-          "evidenceLimitations": "Rationale confidence: LOW — score inherited from founder seed; source record does not contain enough descriptive evidence to reconstruct the original reasoning."
-        },
-        {
-          "field": "T8",
-          "label": "Urban Ecology & Conscious Living",
-          "value": 0.8,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder T8=80 (near-archetypal / defining) for Urban Ecology & Conscious Living. Within this POI's vector, the leading companion theme is T1A=85. Editorial role/tier context in the calibration record: civic / micro_reveal.",
-          "whyNotHigher": "Not at 100 because the founder vector places T8 in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T1A) also compete for experiential emphasis.",
-          "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T8 weight (80), indicating the theme is intrinsic rather than background noise.",
-          "evidenceLimitations": "Rationale confidence: LOW — score inherited from founder seed; source record does not contain enough descriptive evidence to reconstruct the original reasoning."
-        },
-        {
-          "field": "T9",
-          "label": "Luxury Heritage & High Craft",
-          "value": 0.0,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) carries a near-zero T9 (Luxury Heritage & High Craft) weight in the founder continuous vector, so luxury heritage & high craft is treated as irrelevant to this experience's scoring profile.",
-          "whyNotHigher": "Raising T9 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
-          "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
-          "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
-        },
-        {
-          "field": "anchor_density",
-          "label": "Anchor density (canonical importance)",
-          "value": 0.2,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder anchor_density=20 (weak/incidental). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
-          "whyNotHigher": "Not higher because founder seed keeps anchor_density below ceiling (band: weak/incidental), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
-          "whyNotLower": "Already weak (20).",
-          "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
-        },
-        {
-          "field": "heritage_depth",
-          "label": "Heritage depth (storytelling material)",
-          "value": 0.9,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder heritage_depth=90 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
-          "whyNotHigher": "Not higher because founder seed keeps heritage_depth below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
-          "whyNotLower": "Not lower because a 90 reading is material in the founder structural seed and would understate the recorded heritage depth (storytelling material) if collapsed toward incidental.",
-          "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
-        },
-        {
-          "field": "micro_reveal",
-          "label": "Micro reveal (hidden discovery potential)",
-          "value": 0.95,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder micro_reveal=95 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is heritage_depth=90.",
-          "whyNotHigher": "Not higher because founder seed keeps micro_reveal below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
-          "whyNotLower": "Not lower because a 95 reading is material in the founder structural seed and would understate the recorded micro reveal (hidden discovery potential) if collapsed toward incidental.",
-          "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
-        },
-        {
-          "field": "polish",
-          "label": "Polish (finish / visitor readiness)",
-          "value": 0.4,
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) has founder polish=40 (meaningful but not defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
-          "whyNotHigher": "Not higher because founder seed keeps polish below ceiling (band: meaningful but not defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
-          "whyNotLower": "Not lower because a 40 reading is material in the founder structural seed and would understate the recorded polish (finish / visitor readiness) if collapsed toward incidental.",
-          "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
-        },
-        {
-          "field": "tier",
-          "label": "Editorial tier",
-          "value": "micro_reveal",
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Inca Tambo Canal Dip (Puente/Stgo) is classified as `micro_reveal` in the founder seed. Aligns with discovery-oriented micro_reveal=95 emphasis.",
-          "whyNotHigher": "Founder seed did not place this in thematic_pocket/canonical_anchor.",
-          "whyNotLower": "Already the most granular tier class.",
-          "evidenceLimitations": null
-        },
-        {
-          "field": "visitTimeMin",
-          "label": "Visit time (min / typical / max)",
-          "value": {
-            "min": 12,
-            "typical": 20,
-            "max": 30
-          },
-          "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
-          "rationaleClass": "AI_PROPOSAL_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "AI proposal sets min=12, typical=20, max=30 minutes (excludes travel). Heuristic inherits Gate 2A.1 proposal / tier-based dwell estimate.",
-          "whyNotHigher": "Longer authored dwell is not evidenced in the calibration record.",
-          "whyNotLower": "A non-trivial on-site dwell is assumed for a launch experience stop.",
-          "proposalRationale": "Estimated from tier/experience depth heuristics and preserved Gate 2A.1 AI visit proposal metadata.",
-          "evidenceLimitations": "No field-observed dwell-time evidence exists in the canonical semantic record. AI_PROPOSED_UNVERIFIED — not factual observed behavior."
-        },
-        {
-          "field": "M1",
-          "label": "Express / Time-Boxed",
-          "value": 0.629,
-          "status": null,
-          "provenance": "AI_PROPOSED_FROM_VISIT_TIME",
-          "rationaleClass": "AI_PROPOSAL_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "AI proposal maps express suitability from proposed typical visit time (20 min).",
-          "whyNotHigher": "Heuristic ceiling reflects limited operational evidence in the calibration record.",
-          "whyNotLower": "Proposal still assigns non-zero suitability where source does not forbid it.",
-          "proposalRationale": "AI proposal maps express suitability from proposed typical visit time (20 min).",
-          "evidenceLimitations": "Visit duration itself is AI_PROPOSED_UNVERIFIED; M1 inherits that uncertainty. AI_PROPOSED_UNVERIFIED."
-        },
-        {
-          "field": "M2",
-          "label": "Accessibility / Step-Free",
-          "value": 0.85,
-          "status": "KNOWN_STEP_FREE",
-          "provenance": "FOUNDER_PRECALIBRATED:step_free",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "M2 uses FOUNDER_PRECALIBRATED step_free=True (mapped suitability=85, status=KNOWN_STEP_FREE).",
-          "whyNotHigher": "Cannot exceed evidence; suitability is bounded by explicit step_free flag mapping.",
-          "whyNotLower": "Explicit founder flag provides positive/negative evidence rather than UNKNOWN.",
-          "evidenceLimitations": "step_free is not the same as full accessibility audit / certification breadth."
-        },
-        {
-          "field": "M3",
-          "label": "Family & Kid Quest",
-          "value": 0.55,
-          "status": null,
-          "provenance": "AI_PROPOSED_ROLE_HEURISTIC",
-          "rationaleClass": "AI_PROPOSAL_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "AI role/anchor heuristic sets M3=55. Sensitive-memory PRESENT+true depresses family suitability when applicable.",
-          "whyNotHigher": "Heuristic ceiling reflects limited operational evidence in the calibration record.",
-          "whyNotLower": "Proposal still assigns non-zero suitability where source does not forbid it.",
-          "proposalRationale": "AI role/anchor heuristic sets M3=55. Sensitive-memory PRESENT+true depresses family suitability when applicable.",
-          "evidenceLimitations": "No observed family-visit fieldwork in the semantic record. AI_PROPOSED_UNVERIFIED."
-        },
-        {
-          "field": "M4",
-          "label": "Night Owl / Nocturnal",
-          "value": 0.1,
-          "status": "DAYLIGHT_ONLY",
-          "provenance": "FOUNDER_PRECALIBRATED:daylight_only",
-          "rationaleClass": "AI_PROPOSAL_RATIONALE",
-          "confidence": "MEDIUM",
-          "whyThisScore": "Daylight_only=true in founder flags → low nocturnal suitability (10).",
-          "whyNotHigher": "Heuristic ceiling reflects limited operational evidence in the calibration record.",
-          "whyNotLower": "Proposal still assigns non-zero suitability where source does not forbid it.",
-          "proposalRationale": "Daylight_only=true in founder flags → low nocturnal suitability (10).",
-          "evidenceLimitations": "Opening-hour schedules remain largely UNKNOWN; daylight flag is the constraining evidence. AI_PROPOSED_UNVERIFIED."
-        },
-        {
-          "field": "M5",
-          "label": "High Comfort / Low Friction",
-          "value": 0.57,
-          "status": null,
-          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS",
-          "rationaleClass": "AI_PROPOSAL_RATIONALE",
-          "confidence": "LOW",
-          "whyThisScore": "AI proposal from polish=40 and exclude_for_m5 status=UNKNOWN.",
-          "whyNotHigher": "Heuristic ceiling reflects limited operational evidence in the calibration record.",
-          "whyNotLower": "Proposal still assigns non-zero suitability where source does not forbid it.",
-          "proposalRationale": "AI proposal from polish=40 and exclude_for_m5 status=UNKNOWN.",
-          "evidenceLimitations": "Comfort friction fields beyond polish/exclude_for_m5 remain sparse. AI_PROPOSED_UNVERIFIED."
-        },
-        {
-          "field": "flag:daylight_only",
-          "label": "daylight_only",
-          "value": true,
-          "status": "PRESENT",
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Founder flag `daylight_only` is PRESENT with value=True.",
-          "whyNotHigher": "Boolean/flag field — no higher state beyond PRESENT evidence.",
-          "whyNotLower": "PRESENT evidence should not be dropped without curator action.",
-          "evidenceLimitations": null
-        },
-        {
-          "field": "flag:step_free",
-          "label": "step_free",
-          "value": true,
-          "status": "PRESENT",
-          "provenance": "FOUNDER_PRECALIBRATED",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Founder flag `step_free` is PRESENT with value=True.",
-          "whyNotHigher": "Boolean/flag field — no higher state beyond PRESENT evidence.",
-          "whyNotLower": "PRESENT evidence should not be dropped without curator action.",
-          "evidenceLimitations": null
-        },
-        {
-          "field": "flag:curbside_hub",
-          "label": "curbside_hub",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `curbside_hub` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:exclude_for_m5",
-          "label": "exclude_for_m5",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `exclude_for_m5` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:is_sensitive_memory",
-          "label": "is_sensitive_memory",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `is_sensitive_memory` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        }
-      ],
-      "thematicSummary": {
-        "text": "Primarily Civic, Military & Traditional Heritage (85), Urban Ecology & Conscious Living (80), Budget Hacker & Street Life (60). Weakest/near-absent: T1B=0, T2=0, T3=0.",
-        "top3": [
-          {
-            "code": "T1A",
-            "label": "Civic, Military & Traditional Heritage",
-            "value": 0.85
-          },
-          {
-            "code": "T8",
-            "label": "Urban Ecology & Conscious Living",
-            "value": 0.8
-          },
-          {
-            "code": "T7",
-            "label": "Budget Hacker & Street Life",
-            "value": 0.6
-          }
-        ],
-        "weakThemes": [
-          {
-            "code": "T1B",
-            "label": "Memory, Human Rights & Grassroots",
-            "value": 0.0
-          },
-          {
-            "code": "T2",
-            "label": "Culinary Explorer & Gastronomy",
-            "value": 0.0
-          },
-          {
-            "code": "T3",
-            "label": "Urban Shutterbug & Aesthetics",
-            "value": 0.0
-          }
-        ],
-        "contrast": "Strong T1A profile with near-absent mid/low themes (T1B=0, T2=0, T3=0)."
-      },
-      "structuralSummary": "Low-anchor, high-heritage experience with moderate finish and high micro-reveal value.",
-      "chronoWorthBreakdown": {
-        "contributions": {
-          "heritage_depth": 31.5,
-          "anchor_density": 6.0,
-          "micro_reveal": 19.0,
-          "polish": 6.0
-        },
-        "raw": 62.5,
-        "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while anchor density contributes less (6.0)."
       }
     },
     {
@@ -6575,6 +6572,7 @@
           "polish": 12.0
         },
         "raw": 69.0,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while micro reveal contributes less (8.0)."
       }
     },
@@ -6961,6 +6959,7 @@
           "polish": 12.8
         },
         "raw": 72.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while micro reveal contributes less (6.0)."
       }
     },
@@ -7347,6 +7346,7 @@
           "polish": 12.0
         },
         "raw": 74.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
       }
     },
@@ -7733,6 +7733,7 @@
           "polish": 10.5
         },
         "raw": 67.3,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while anchor density contributes less (9.0)."
       }
     },
@@ -8119,6 +8120,7 @@
           "polish": 13.5
         },
         "raw": 57.0,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from anchor density (18.0), while micro reveal contributes less (8.0)."
       }
     },
@@ -8505,6 +8507,7 @@
           "polish": 11.3
         },
         "raw": 72.6,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (6.0)."
       }
     },
@@ -8891,6 +8894,7 @@
           "polish": 7.5
         },
         "raw": 57.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (21.0), while polish contributes less (7.5)."
       }
     },
@@ -9277,12 +9281,13 @@
           "polish": 12.0
         },
         "raw": 74.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
       }
     },
     {
       "stgoId": "STGO_33",
-      "displayName": "Kulczewski Funicular Gargoyle",
+      "displayName": "Gárgola de Luciano K",
       "fields": [
         {
           "field": "T1A",
@@ -9291,7 +9296,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder T1A=75 (near-archetypal / defining) for Civic, Military & Traditional Heritage. Within this POI's vector, the leading companion theme is T6=90. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Gárgola de Luciano K has founder T1A=75 (near-archetypal / defining) for Civic, Military & Traditional Heritage. Within this POI's vector, the leading companion theme is T6=90. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T1A in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T6) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T1A weight (75), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -9303,7 +9308,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T1B (Memory, Human Rights & Grassroots) weight in the founder continuous vector, so memory, human rights & grassroots is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T1B (Memory, Human Rights & Grassroots) weight in the founder continuous vector, so memory, human rights & grassroots is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T1B would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9315,7 +9320,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T2 (Culinary Explorer & Gastronomy) weight in the founder continuous vector, so culinary explorer & gastronomy is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T2 (Culinary Explorer & Gastronomy) weight in the founder continuous vector, so culinary explorer & gastronomy is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T2 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9327,7 +9332,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder T3=85 (near-archetypal / defining) for Urban Shutterbug & Aesthetics. Within this POI's vector, the leading companion theme is T6=90. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Gárgola de Luciano K has founder T3=85 (near-archetypal / defining) for Urban Shutterbug & Aesthetics. Within this POI's vector, the leading companion theme is T6=90. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T3 in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T6) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T3 weight (85), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -9339,7 +9344,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T4 (Subculture, Street Art & Indie) weight in the founder continuous vector, so subculture, street art & indie is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T4 (Subculture, Street Art & Indie) weight in the founder continuous vector, so subculture, street art & indie is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T4 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9351,7 +9356,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T5 (Mindful, Green & Quiet Living) weight in the founder continuous vector, so mindful, green & quiet living is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T5 (Mindful, Green & Quiet Living) weight in the founder continuous vector, so mindful, green & quiet living is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T5 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9363,7 +9368,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder T6=90 (near-archetypal / defining) for Dark Lore, Forensics & Macabre. Within this POI's vector, the leading companion theme is T3=85. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Gárgola de Luciano K has founder T6=90 (near-archetypal / defining) for Dark Lore, Forensics & Macabre. Within this POI's vector, the leading companion theme is T3=85. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T6 in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T3) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T6 weight (90), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -9375,7 +9380,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T7 (Budget Hacker & Street Life) weight in the founder continuous vector, so budget hacker & street life is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T7 (Budget Hacker & Street Life) weight in the founder continuous vector, so budget hacker & street life is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T7 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9387,7 +9392,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T8 (Urban Ecology & Conscious Living) weight in the founder continuous vector, so urban ecology & conscious living is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T8 (Urban Ecology & Conscious Living) weight in the founder continuous vector, so urban ecology & conscious living is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T8 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9399,7 +9404,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Kulczewski Funicular Gargoyle carries a near-zero T9 (Luxury Heritage & High Craft) weight in the founder continuous vector, so luxury heritage & high craft is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Gárgola de Luciano K carries a near-zero T9 (Luxury Heritage & High Craft) weight in the founder continuous vector, so luxury heritage & high craft is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T9 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -9411,7 +9416,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "LOW",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder anchor_density=30 (meaningful but not defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
+          "whyThisScore": "Gárgola de Luciano K has founder anchor_density=30 (meaningful but not defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
           "whyNotHigher": "Not higher because founder seed keeps anchor_density below ceiling (band: meaningful but not defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 30 reading is material in the founder structural seed and would understate the recorded anchor density (canonical importance) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -9423,7 +9428,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder heritage_depth=85 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
+          "whyThisScore": "Gárgola de Luciano K has founder heritage_depth=85 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
           "whyNotHigher": "Not higher because founder seed keeps heritage_depth below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 85 reading is material in the founder structural seed and would understate the recorded heritage depth (storytelling material) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -9435,7 +9440,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder micro_reveal=95 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is heritage_depth=85.",
+          "whyThisScore": "Gárgola de Luciano K has founder micro_reveal=95 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is heritage_depth=85.",
           "whyNotHigher": "Not higher because founder seed keeps micro_reveal below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 95 reading is material in the founder structural seed and would understate the recorded micro reveal (hidden discovery potential) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -9447,7 +9452,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "LOW",
-          "whyThisScore": "Kulczewski Funicular Gargoyle has founder polish=60 (strongly characteristic). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
+          "whyThisScore": "Gárgola de Luciano K has founder polish=60 (strongly characteristic). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=95.",
           "whyNotHigher": "Not higher because founder seed keeps polish below ceiling (band: strongly characteristic), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 60 reading is material in the founder structural seed and would understate the recorded polish (finish / visitor readiness) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -9459,7 +9464,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Kulczewski Funicular Gargoyle is classified as `micro_reveal` in the founder seed. Aligns with discovery-oriented micro_reveal=95 emphasis.",
+          "whyThisScore": "Gárgola de Luciano K is classified as `micro_reveal` in the founder seed. Aligns with discovery-oriented micro_reveal=95 emphasis.",
           "whyNotHigher": "Founder seed did not place this in thematic_pocket/canonical_anchor.",
           "whyNotLower": "Already the most granular tier class.",
           "evidenceLimitations": null
@@ -9663,6 +9668,7 @@
           "polish": 9.0
         },
         "raw": 66.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while anchor density contributes less (9.0)."
       }
     },
@@ -10049,6 +10055,7 @@
           "polish": 5.3
         },
         "raw": 68.6,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (5.3)."
       }
     },
@@ -10435,6 +10442,7 @@
           "polish": 7.5
         },
         "raw": 61.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (24.5), while polish contributes less (7.5)."
       }
     },
@@ -10821,6 +10829,7 @@
           "polish": 13.5
         },
         "raw": 76.0,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
       }
     },
@@ -11207,6 +11216,7 @@
           "polish": 6.8
         },
         "raw": 55.8,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from anchor density (19.5), while polish contributes less (6.8)."
       }
     },
@@ -11593,6 +11603,7 @@
           "polish": 10.5
         },
         "raw": 54.5,
+        "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from micro reveal (18.0), while polish contributes less (10.5)."
       }
     }

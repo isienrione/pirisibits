@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "santiago-founder-extensions.v0.1",
+  "gate": "2A.1R-ADD-01R",
+  "sourceCheckpointSha": "1b0ef938e681eedcd95d57f449a411e4b972d2b0",
+  "baseSeedDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+  "baseSeedCount": 103,
+  "baseSeedSha256": "fd8e6fa5329dac91d74105c379884b53c1157ef737caec3e75430c8b81fe5ff5",
+  "extensionCount": 1,
+  "currentCanonicalInventory": 104,
+  "notes": [
+    "Extensions sit beside the frozen 103-node seed; the seed bytes must remain identical.",
+    "STGO_104 semantics are UNKNOWN until founder calibration — never coerce UNKNOWN to 0."
+  ],
+  "extensions": [
+    {
+      "stgoId": "STGO_104",
+      "canonicalName": "Edificio de la Bolsa de Comercio de Santiago",
+      "shortName": "Bolsa de Comercio de Santiago",
+      "city": "Santiago",
+      "country": "Chile",
+      "provenance": "FOUNDER_ADDED_POST_SEED",
+      "sourceNote": "Founder-added after frozen SANTIAGO_ENGINE_DATASET_V0.1 103-node seed.",
+      "poiCoordinate": {
+        "lat": -33.4423866,
+        "lng": -70.6517565,
+        "provenance": "FOUNDER_SUPPLIED_GOOGLE_MAPS"
+      },
+      "experiencePoint": {
+        "lat": -33.4421764,
+        "lng": -70.6517853,
+        "headingDegrees": 155.14,
+        "provenance": "FOUNDER_SUPPLIED"
+      },
+      "entranceCoordinate": null,
+      "entranceStatus": "UNKNOWN",
+      "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+      "semanticStatus": "REQUIRES_FOUNDER_CALIBRATION",
+      "launchMembership": "ACTIVE_LAUNCH"
+    }
+  ]
+}

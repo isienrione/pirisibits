@@ -1,10 +1,10 @@
 {
   "schemaVersion": "santiago-engine-nodes.v0.1",
   "cityId": "santiago",
-  "gate": "1B.2A",
-  "nodeCount": 103,
+  "gate": "2A.1R-ADD-01R",
+  "nodeCount": 104,
   "launchCorpusCount": 30,
-  "backlogCount": 73,
+  "backlogCount": 74,
   "physicalRouteGenerationEnabled": false,
   "autoCuratorApproveFromMapbox": false,
   "coordinatePolicy": "Provider candidates only. Never fabricate. Never auto CURATOR_APPROVED.",
@@ -26,13 +26,13 @@
     "STGO_20",
     "STGO_21",
     "STGO_22",
-    "STGO_23",
     "STGO_24",
     "STGO_25",
     "STGO_26",
     "STGO_27",
     "STGO_28",
     "STGO_29",
+    "STGO_30",
     "STGO_32",
     "STGO_33",
     "STGO_34",
@@ -40,7 +40,7 @@
     "STGO_48",
     "STGO_91",
     "STGO_92",
-    "STGO_30"
+    "STGO_104"
   ],
   "nodes": [
     {
@@ -4881,8 +4881,8 @@
           "status": "partial"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 23,
       "geocodeQuery": "Plaza de la Constitución Moneda Santiago Centro Chile",
       "queryUsed": "Plaza de la Constitución Moneda Santiago Centro Chile",
@@ -7307,9 +7307,11 @@
     {
       "stgoId": "STGO_33",
       "legacySlug": "iglesia-de-san-agustin",
-      "canonicalName": "Kulczewski Funicular Gargoyle",
-      "displayName": "Kulczewski Funicular Gargoyle",
-      "aliases": [],
+      "canonicalName": "Gárgola de Luciano K",
+      "displayName": "Gárgola de Luciano K",
+      "aliases": [
+        "Kulczewski Funicular Gargoyle"
+      ],
       "commune": null,
       "neighborhood": "Santiago Centro",
       "identityStatus": "RESOLVED",
@@ -7493,25 +7495,30 @@
         },
         "capturedAt": "2026-08-27T05:17:00.699010+00:00"
       },
-      "launchPhysicalReadiness": "NEEDS_SEMANTIC_REVIEW",
+      "launchPhysicalReadiness": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION",
       "curatorCuration": {
         "gate": "1B.2A",
         "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
-        "founderPlaceName": "Kulczewski Funicular Gargoyle",
+        "founderPlaceName": "Gárgola de Luciano K",
         "googleMapsUrls": [
           "https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=8.115650956896644&panoid=3VJbWxYDWGtY9x_wRVxMuw&yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
           "https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=8.115650956896644&panoid=3VJbWxYDWGtY9x_wRVxMuw&yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
         ],
         "notes": "its lvciano K hotel today",
         "rawFeedbackText": "@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t",
-        "semanticWarning": "EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO_27 already covers Casa-Taller Kulczewski. No repository evidence resolves gargoyle vs hotel semantics.",
+        "semanticWarning": "Founder correction: experience valid; prior Funicular naming deprecated. Luciano K hotel association is contextual/fun-fact, not an exclusion reason.",
         "researchBlocker": null,
         "coordinateConflict": null,
         "providerDiffMeters": null,
         "curatorOverrideProvider": false,
         "overrideReason": null,
         "uiColor": "RED",
-        "gate1b5Disposition": "EXCLUDED_FROM_LAUNCH_RUNTIME"
+        "gate1b5Disposition": "EXCLUDED_FROM_LAUNCH_RUNTIME",
+        "legacyAlias": {
+          "alias": "Kulczewski Funicular Gargoyle",
+          "status": "deprecated_alias"
+        },
+        "identityCorrectionGate": "2A.1R-ADD-01R"
       },
       "physicalPoints": [
         {
@@ -7530,8 +7537,8 @@
       ],
       "accessPoints": [],
       "physicalRouteGenerationEligible": false,
-      "launchRuntimeDisposition": "RUNTIME_EXCLUDED_SEMANTIC",
-      "launchRuntimeDispositionReason": "EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO_27 already covers Casa-Taller Kulczewski. No repository evidence resolves gargoyle vs hotel semantics."
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
+      "launchRuntimeDispositionReason": "Gate 2A.1R-ADD-01R founder semantic correction; legacy Funicular name deprecated."
     },
     {
       "stgoId": "STGO_34",
@@ -19042,11 +19049,128 @@
       "providerId": "address.3996540446793210",
       "curatorApproval": null,
       "physicalRouteGenerationEnabled": false
+    },
+    {
+      "stgoId": "STGO_104",
+      "legacySlug": "bolsa-de-comercio-de-santiago",
+      "canonicalName": "Edificio de la Bolsa de Comercio de Santiago",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "aliases": [
+        "Bolsa de Comercio de Santiago"
+      ],
+      "commune": null,
+      "neighborhood": null,
+      "identityStatus": "RESOLVED",
+      "identityMissingSource": null,
+      "themes": [],
+      "modes": [],
+      "editorialRole": null,
+      "tier": null,
+      "chronoWorth": null,
+      "poiCoordinate": {
+        "lat": -33.4423866,
+        "lng": -70.6517565
+      },
+      "entranceCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4421764,
+        "lng": -70.6517853
+      },
+      "experienceHeadingDegrees": 155.14,
+      "nearestTransit": {
+        "stationName": null,
+        "line": null,
+        "distanceMeters": null,
+        "status": "UNRESOLVED"
+      },
+      "geographicIsland": null,
+      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "legacyContentId": null,
+      "legacyMappingStatus": "founder_extension",
+      "provenance": {
+        "identity": {
+          "status": "RESOLVED",
+          "sources": [
+            "santiago_founder_extensions.v0.1"
+          ],
+          "missingSource": null
+        },
+        "physical": {
+          "provider": null,
+          "coordinatePolicy": "founder-supplied-google-maps-poi-and-experience-point",
+          "curatorApproval": "never-automatic",
+          "selectionStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+          "humanCurationGate": "2A.1R-ADD-01R",
+          "humanCurationSource": "founder-google-maps"
+        },
+        "editorial": {
+          "source": "santiago_founder_extensions.v0.1",
+          "status": "absent"
+        }
+      },
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
+      "verificationPriority": 104,
+      "geocodeQuery": "Edificio de la Bolsa de Comercio de Santiago Chile",
+      "queryUsed": null,
+      "providerClassification": "FOUNDER_SUPPLIED",
+      "providerCandidate": null,
+      "candidates": [],
+      "selectionReason": "FOUNDER_SUPPLIED_GOOGLE_MAPS",
+      "providerId": null,
+      "curatorApproval": null,
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": null,
+      "launchPhysicalReadiness": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+      "curatorCuration": {
+        "gate": "2A.1R-ADD-01R",
+        "source": "santiago_founder_extensions.v0.1.json",
+        "founderPlaceName": "Edificio de la Bolsa de Comercio de Santiago",
+        "shortName": "Bolsa de Comercio de Santiago",
+        "poiCoordinate": {
+          "lat": -33.4423866,
+          "lng": -70.6517565
+        },
+        "experiencePoint": {
+          "lat": -33.4421764,
+          "lng": -70.6517853,
+          "headingDegrees": 155.14
+        },
+        "entranceCoordinate": null,
+        "notes": "NEW FOUNDER NODE — NOT IN ORIGINAL 103-NODE SEED"
+      },
+      "physicalPoints": [
+        {
+          "id": "poi",
+          "role": "poi_coordinate",
+          "coordinate": {
+            "lat": -33.4423866,
+            "lng": -70.6517565
+          },
+          "provenance": "FOUNDER_SUPPLIED_GOOGLE_MAPS"
+        },
+        {
+          "id": "experience",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4421764,
+            "lng": -70.6517853
+          },
+          "headingDegrees": 155.14,
+          "provenance": "FOUNDER_SUPPLIED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": false,
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
+      "launchRuntimeDispositionReason": "Founder-added active launch node pending semantic calibration and edge enrichment.",
+      "runtimePhysicalEndpoint": null,
+      "founderExtension": true
     }
   ],
   "counts": {
     "launch": 30,
-    "backlog": 73,
+    "backlog": 74,
     "curatorApprovedPoi": 24,
     "curatorApprovedExperience": 29,
     "accessPoints": 3,
@@ -19059,9 +19183,17 @@
     "runtimeReady": 27,
     "runtimeStaged": 1,
     "runtimeExcluded": 2,
-    "physicalLayerGate": "1B.5"
+    "physicalLayerGate": "1B.5",
+    "nodes": 104,
+    "launchCorpus": 30,
+    "founderExtensions": 1
   },
   "humanCurationPolicy": "Founder Google Maps / Street View review = CURATOR_APPROVED, not FIELD_VERIFIED.",
   "physicalLayerGate": "1B.5",
-  "physicalLayerV01Ready": true
+  "physicalLayerV01Ready": true,
+  "canonicalInventory": {
+    "frozenSeedCount": 103,
+    "extensionCount": 1,
+    "total": 104
+  }
 }
