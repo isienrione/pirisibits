@@ -23,7 +23,13 @@ export const MULTIMODAL_PHYSICAL_GRAPH_READY = true
 export const PHYSICAL_LAYER_V0_1_READY = true
 
 /**
- * Gate 2A — node eligibility + NodeUtility + candidate pool readiness.
- * Does NOT enable route composition or traveler-facing physical routing.
+ * Gate 2A.1 — node eligibility + NodeUtility readiness remains true.
+ * Editorial calibration proposals are available for founder review.
  */
 export const NODE_UTILITY_V0_1_READY = true
+
+/** Proposed (not founder-approved) editorial calibration package ready. */
+export const EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true
+
+/** Remains false until founder-approved calibration is ingested. */
+export const EDITORIAL_CALIBRATION_CURATOR_APPROVED = false

@@ -59,6 +59,13 @@ export const MICRO_INTERESTS = {
     title: 'Vida cotidiana',
     subtitle: 'Mercado, pregón y el oficio de la calle.',
   },
+  gastronomia: {
+    pillar: 'vida_local',
+    vectors: ['T2'],
+    code: 'T2',
+    title: 'Gastronomía',
+    subtitle: 'Mesas, mercados y la cocina de la ciudad.',
+  },
   naturaleza_cerros: {
     pillar: 'naturaleza',
     vectors: ['T7'],

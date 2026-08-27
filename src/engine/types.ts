@@ -29,6 +29,7 @@ export type EligibilityWarningCode =
   | 'SENSITIVE_THEME_WITHOUT_OPT_IN'
   | 'STAGED_PHYSICAL_ENDPOINT'
   | 'FRICTION_FIELDS_UNKNOWN'
+  | 'DAYLIGHT_CLOCK_UNSPECIFIED'
 
 export type EligibilityReason = {
   code: EligibilityReasonCode
@@ -100,6 +101,9 @@ export type NodeUtilityResult = {
   displayName: string | null
   eligible: boolean
   utility: number
+  /** Traveler-specific fit only (interests + structural + discovery). Not ChronoWorth. */
+  yourMatch: number
+  chronoWorthEffective: number | null
   components: {
     editorial: ScoreComponent
     interests: ScoreComponent
@@ -163,7 +167,20 @@ export type EngineNodeRecord = {
   launchRuntimeDisposition?: string | null
   physicalRouteGenerationEligible?: boolean | null
   launchPhysicalReadiness?: string | null
-  /** Optional explicit flags — usually absent on Santiago freeze. */
+  /** Optional Gate 2A.1 continuous semantic fields (preferred over binary themes). */
+  thematicVector?: Partial<Record<import('@/src/lib/city-graph/types').ThemeCode, number>> | null
+  chronoWorthProposed?: number | null
+  chronoWorthApproved?: number | null
+  chronoWorthEffective?: number | null
+  chronoWorthProvenance?: string | null
+  visitDurationMinutes?: number | null
+  timeCostMinutes?: number | null
+  visitTimeMin?: number | null
+  visitTimeTypical?: number | null
+  visitTimeMax?: number | null
+  structuralSuitability?: Partial<
+    Record<import('@/src/lib/city-graph/types').ModeCode, { value: number | null; status?: string; provenance?: string }>
+  > | null
   isSensitiveMemorySite?: boolean | null
   sensitiveMemory?: boolean | null
   daylightOnly?: boolean | null
@@ -171,9 +188,8 @@ export type EngineNodeRecord = {
   stepFree?: boolean | null
   step_free_certified?: boolean | null
   accessibility?: string | null
-  visitDurationMinutes?: number | null
-  timeCostMinutes?: number | null
   openingHours?: unknown
   editoriallyDisabled?: boolean | null
   sanCristobalStaging?: { routingEndpoint?: string; summitImplied?: boolean } | null
+  tierNormalized?: string | null
 }

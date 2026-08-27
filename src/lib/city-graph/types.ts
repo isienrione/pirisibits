@@ -7,6 +7,7 @@
 export type ThemeCode =
   | 'T1A'
   | 'T1B'
+  | 'T2'
   | 'T3'
   | 'T4'
   | 'T5'

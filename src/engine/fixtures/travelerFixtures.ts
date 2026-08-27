@@ -23,7 +23,7 @@ export const TRAVELER_FIXTURES: Record<string, TravelerModel> = {
     mobilityArchetype: 'M3',
   }),
   C_food_street_life: normalizeTraveler({
-    interests: ['vida_cotidiana', 'barrios_vivos'],
+    interests: ['gastronomia'],
     rhythm: 'espontaneo',
     timeBudgetMinutes: 105,
     walkChunkMinutes: 30,

@@ -5,10 +5,10 @@ import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { buildCandidatePool } from '../../src/engine/candidates/buildCandidatePool'
 import { TRAVELER_FIXTURES } from '../../src/engine/fixtures/travelerFixtures'
-import { loadLaunchNodes } from '../../src/engine/loadSantiagoNodes'
+import { loadSantiagoEngineNodes } from '../../src/engine/loadSantiagoNodes'
 
 const root = resolve(__dirname, '../..')
-const nodes = loadLaunchNodes(root)
+const nodes = loadSantiagoEngineNodes(root)
 const out: Record<string, unknown> = {}
 
 for (const [id, traveler] of Object.entries(TRAVELER_FIXTURES)) {

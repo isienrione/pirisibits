@@ -1,20 +1,29 @@
 /**
- * Gate 2A — canonical taxonomy labels for Engine V0.1.
- * Source of truth for Santiago engine nodes: ThemeCode / ModeCode in city-graph/types.
- *
- * NOTE: Prompt-era “T2 Culinary Explorer” is NOT present on Santiago ThemeCode.
- * Demo algorithm.ts maps vector index T2 → memory (T1B alias). Do not invent T2 culinary tags.
+ * Gate 2A.1 — canonical taxonomy with continuous T1A–T9 including T2 Culinary.
+ * Continuous named vectors are canonical; ThemeCode tags are DERIVED.
  */
 
 import type { ModeCode, ThemeCode } from '@/src/lib/city-graph/types'
 
-export const THEME_CODES = ['T1A', 'T1B', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9'] as const satisfies readonly ThemeCode[]
+export const THEME_CODES = [
+  'T1A',
+  'T1B',
+  'T2',
+  'T3',
+  'T4',
+  'T5',
+  'T6',
+  'T7',
+  'T8',
+  'T9',
+] as const satisfies readonly ThemeCode[]
 
 export const MODE_CODES = ['M1', 'M2', 'M3', 'M4', 'M5'] as const satisfies readonly ModeCode[]
 
 export const THEME_LABELS: Record<ThemeCode, string> = {
   T1A: 'Civic, Military & Traditional Heritage',
   T1B: 'Memory, Human Rights & Grassroots',
+  T2: 'Culinary Explorer & Gastronomy',
   T3: 'Urban Shutterbug & Aesthetics',
   T4: 'Subculture, Street Art & Indie',
   T5: 'Mindful, Green & Quiet Living',
@@ -22,14 +31,6 @@ export const THEME_LABELS: Record<ThemeCode, string> = {
   T7: 'Budget Hacker & Street Life',
   T8: 'Urban Ecology & Conscious Living',
   T9: 'Luxury Heritage & High Craft',
-}
-
-/** Aspirational culinary axis — FUTURE_NOT_2A (absent from ThemeCode). */
-export const FUTURE_THEME_T2_CULINARY = {
-  code: 'T2',
-  label: 'Culinary Explorer & Gastronomy',
-  status: 'FUTURE_NOT_2A' as const,
-  note: 'Not present on Santiago ThemeCode; do not invent culinary tags in Gate 2A.',
 }
 
 export const MODE_LABELS: Record<ModeCode, string> = {
@@ -48,7 +49,9 @@ export const DISCOVERY_POSTURE_LABELS = {
 
 export type DiscoveryPostureCode = keyof typeof DISCOVERY_POSTURE_LABELS
 
-/** Editorial roles observed on Santiago launch corpus (not collapsed). */
+/** Derive binary ThemeCode tags from continuous vector (convenience only). */
+export const DERIVED_THEME_TAG_THRESHOLD = 0.45
+
 export const EDITORIAL_ROLE_LABELS: Record<string, string> = {
   anchor: 'Anchor / essential civic stop',
   pocket: 'Pocket revelation',
@@ -61,10 +64,19 @@ export const EDITORIAL_ROLE_LABELS: Record<string, string> = {
   culture: 'Culture house / corridor',
 }
 
+export const TIER_LABELS: Record<string, string> = {
+  canonical_anchor: 'Canonical anchor',
+  thematic_pocket: 'Thematic pocket',
+  micro_reveal: 'Micro reveal',
+  launch: 'Launch tier (legacy)',
+  expansion: 'Expansion / backlog tier (legacy)',
+}
+
 export function emptyThemeWeights(): Record<ThemeCode, number> {
   return {
     T1A: 0,
     T1B: 0,
+    T2: 0,
     T3: 0,
     T4: 0,
     T5: 0,
@@ -73,6 +85,17 @@ export function emptyThemeWeights(): Record<ThemeCode, number> {
     T8: 0,
     T9: 0,
   }
+}
+
+export function emptyThematicVector(): Record<ThemeCode, number> {
+  return emptyThemeWeights()
+}
+
+export function deriveThemeTags(
+  vector: Record<ThemeCode, number>,
+  threshold = DERIVED_THEME_TAG_THRESHOLD,
+): ThemeCode[] {
+  return THEME_CODES.filter((code) => (vector[code] ?? 0) >= threshold)
 }
 
 export function emptyModeFlags(): Record<ModeCode, boolean> {

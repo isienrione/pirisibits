@@ -1,9 +1,10 @@
 # Engine V0.1 Implementation Contract
 
-**Gate:** 2A  
+**Gate:** 2A (+ semantic restoration **2A.1**)  
 **Status:** CANONICAL (reconstructed from repository types/data — prior `ENGINE_V0_1_IMPLEMENTATION_CONTRACT.md` was unrecoverable)  
 **City substrate:** Santiago Physical Graph V0.1 (frozen Gate 1B.5)  
-**Traveler route generation:** DISABLED (`PHYSICAL_ROUTE_GENERATION_ENABLED = false`)
+**Traveler route generation:** DISABLED (`PHYSICAL_ROUTE_GENERATION_ENABLED = false`)  
+**Editorial calibration:** `EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true` (not curator-approved)
 
 ---
 
@@ -47,33 +48,34 @@ Gate 2A does **not** answer which complete route to follow.
 
 | Input | Classification | Notes |
 |---|---|---|
-| `ThemeCode` T1A/T1B/T3–T9 on engine nodes | **CANONICAL_EXISTING** | Binary tags; no weights |
-| Prompt “T2 Culinary” | **FUTURE_NOT_2A** | Absent from `ThemeCode`; demo `algorithm.ts` T2 index aliases **T1B memory** — do not invent culinary tags |
-| Modes M1–M5 type | **CANONICAL_EXISTING** | Labels preserved |
-| Launch `modes` values | **PARTIAL_EXISTING** | Launch freeze is almost entirely `M3` |
-| `chronoWorth` | **MISSING_REQUIRED** (for quality) | Field exists; all launch values `null` |
+| Continuous `thematicVector` T1A–T9 incl. **T2 Culinary** | **CANONICAL_RUNTIME (2A.1)** | Named object 0–1; source of NodeUtility interest match |
+| Derived `ThemeCode` tags | **DERIVED_CONVENIENCE** | Threshold 0.45 from continuous vector — never reverse |
+| Binary tags on raw engine JSON | **LEGACY_PARTIAL** | Gate 1B.2 `KIND_THEMES`; expanded/overlaid by calibration |
+| Modes M1–M5 type + `structuralSuitability` | **CANONICAL_EXISTING + AI_PROPOSED** | Continuous/inspectable suitability with provenance; M2 UNKNOWN stays null |
+| `chronoWorth` proposed/approved/effective | **AI_PROPOSED_UNVERIFIED** | Approved remains null until founder ingest |
 | `editorialRole` | **PARTIAL_EXISTING** | Present as open strings (anchor/pocket/micro/…) |
-| `tier` | **PARTIAL_EXISTING** | `launch` / `expansion` |
+| `tier` normalized | **AI_PROPOSED / ROLE-DERIVED** | `canonical_anchor` / `thematic_pocket` / `micro_reveal` (+ legacy launch/expansion retained) |
 | Discovery posture D1/D2/D3 | **CANONICAL_EXISTING** | `RHYTHM_POSTURE` in `algorithm.ts` |
-| Visit duration / timeCost on engine nodes | **MISSING_REQUIRED** | Not authored; demo `dwellMinutes` is Rome/demo POI catalog only |
-| Accessibility on engine nodes | **MISSING_REQUIRED** / **UNKNOWN** | Physical friction audit: UNKNOWN |
-| Opening hours | **MISSING_REQUIRED** | Not authored |
-| Sensitive memory flag on engine nodes | **MISSING_REQUIRED** | Demo POI has `is_sensitive_memory_site`; engine JSON lacks it |
+| Visit duration min/typical/max | **AI_PROPOSED_UNVERIFIED** | Excludes travel time; not auto-approved |
+| Accessibility | **UNKNOWN unless evidenced** | Never invent; KNOWN_STEP_FREE / KNOWN_NOT_STEP_FREE / UNKNOWN |
+| Opening hours | **UNKNOWN** | Not fabricated in 2A.1 |
+| Sensitive memory flag | **EXPLICIT METADATA** | Not inferred from T1B alone |
 | Launch runtime dispositions | **CANONICAL_EXISTING** | Gate 1B.5 membership |
-| Physical centrality / edge degree | **FUTURE_NOT_2A** for NodeUtility | May inform later composition only |
-| NarrativeEdge / ArcState | **FUTURE_NOT_2A** | Interfaces forbidden as operational in 2A |
+| Physical centrality / edge degree | **FUTURE_NOT_2A** for NodeUtility / ChronoWorth | Forbidden as editorial inputs |
+| NarrativeEdge / ArcState | **FUTURE_NOT_2A / Gate 2B** | Interfaces forbidden as operational in 2A/2A.1 |
 | `knapsackEngine.optimizeItinerary` ChronoWorth synthesis | **DEPRECATED for Engine V0.1** | Synthesizes worth from resonance/media — must NOT feed Gate 2A ChronoWorth |
 
 ---
 
 ## Canonical taxonomy (do not rename)
 
-### Themes (`ThemeCode`)
+### Themes (`ThemeCode`) — continuous vector is canonical
 
 | Code | Label |
 |---|---|
 | T1A | Civic, Military & Traditional Heritage |
 | T1B | Memory, Human Rights & Grassroots |
+| T2 | Culinary Explorer & Gastronomy |
 | T3 | Urban Shutterbug & Aesthetics |
 | T4 | Subculture, Street Art & Indie |
 | T5 | Mindful, Green & Quiet Living |
@@ -82,7 +84,8 @@ Gate 2A does **not** answer which complete route to follow.
 | T8 | Urban Ecology & Conscious Living |
 | T9 | Luxury Heritage & High Craft |
 
-T1A and T1B remain distinct. T10 must not be invented. Culinary T2 is future alignment work.
+T1A and T1B remain distinct (never merged). T2 Culinary is restored. T10 must not be invented.  
+Interest match: `traveler_weight × node_thematic_strength` on the continuous vector.
 
 ### Structural modes
 
@@ -142,26 +145,31 @@ Inspectable `hardFailures[]` + `warnings[]`. Thematic preference is never a hard
 
 ---
 
-## NodeUtility
+## NodeUtility + YourMatch
 
 Domain **0–100**. Components (named caps in `src/engine/scoring/constants.ts`):
 
 | Component | Cap | Source |
 |---|---|---|
-| editorial | 30 | ChronoWorth when present; else role soft signal only (ChronoWorth stays MISSING) |
-| interests | 40 | ThemeCode ∩ traveler weights |
-| structural | 15 | Explicit `node.modes` ∩ traveler M preferences |
-| discovery | 10 | D1/D2/D3 × editorialRole |
+| editorial | 30 | ChronoWorth effective (approved ≻ proposed) + role blend |
+| interests | 40 | Continuous vector × traveler theme weights |
+| structural | 15 | `structuralSuitability` (UNKNOWN excluded; never treat UNKNOWN as fit) |
+| discovery | 10 | D1/D2/D3 × editorialRole / normalized tier |
 | context | 5 | Already-visited soft demotion |
 
-**Forbidden in NodeUtility**
+**YourMatch** = traveler-specific fit = interests + structural + discovery.  
+**NodeUtility** = editorial + YourMatch constituents + context.  
+**ChronoWorth ≠ YourMatch ≠ Match-as-popularity.**
+
+**Forbidden in NodeUtility / ChronoWorth**
 
 - Physical centrality / Metro proximity / edge degree
 - NarrativeEdgeScore / ArcState / route coherence
 - Synthesized ChronoWorth from Mapbox / Google / LLM / resonance hacks
-- Invented visit durations or accessibility
+- Invented accessibility (UNKNOWN stays UNKNOWN)
+- Auto-promoting AI proposals to CURATOR_APPROVED
 
-Visit time (authored) is distinct from travel time (physical graph). Gate 2A does not add travel duration into visit cost.
+Visit time (proposed/authored) is distinct from travel time (physical graph). Gate 2A/2A.1 does not add travel duration into visit cost.
 
 ---
 
@@ -181,9 +189,10 @@ Not a route. Backlog must not enter the launch pool.
 
 ## ChronoWorth
 
-Global editorial value — **not** traveler-specific; **not** Your Match / interest score.
+Global editorial value — **not** traveler-specific; **not** YourMatch / interest score.
 
-Launch coverage today: **0/30 present**. Missing behavior: contribution does not invent a curated mid-default; provenance marks `CHRONOWORTH_MISSING`.
+Gate 2A.1 launch coverage: **30/30 AI_PROPOSED**, **0/30 CURATOR_APPROVED**.  
+Founder-approved value always supersedes AI proposal. Proposal formula is documented in `launch30_editorial_calibration.proposed.v0.1.json` and the Gate 2A.1 report.
 
 ---
 

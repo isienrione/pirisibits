@@ -1,15 +1,15 @@
 {
   "A_first_time_essentials": {
-    "STGO_01": {
-      "utility": 73.5,
+    "STGO_03": {
+      "utility": 72.4,
       "rank": 1,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_04": {
-      "utility": 73.5,
+    "STGO_01": {
+      "utility": 70.2,
       "rank": 2,
       "matched": [
         "T1A",
@@ -17,885 +17,817 @@
       ]
     },
     "STGO_22": {
-      "utility": 70.4,
+      "utility": 65.8,
       "rank": 3,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_24": {
-      "utility": 51,
+    "STGO_02": {
+      "utility": 61.5,
       "rank": 4,
       "matched": [
+        "T1A",
         "T3"
       ]
     },
-    "STGO_25": {
-      "utility": 40.6,
+    "STGO_10": {
+      "utility": 51.9,
       "rank": 5,
       "matched": [
+        "T1A",
         "T3"
       ]
     },
-    "STGO_30": {
-      "utility": 40.6,
+    "STGO_05": {
+      "utility": 50.8,
       "rank": 6,
       "matched": [
-        "T3"
-      ]
-    },
-    "STGO_91": {
-      "utility": 40.6,
-      "rank": 7,
-      "matched": [
+        "T1A",
         "T3"
       ]
     },
     "STGO_27": {
-      "utility": 39.4,
+      "utility": 40.3,
+      "rank": 7,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_92": {
+      "utility": 40.3,
       "rank": 8,
       "matched": [
         "T1A"
       ]
     },
     "STGO_32": {
-      "utility": 39.4,
+      "utility": 37.4,
       "rank": 9,
       "matched": [
-        "T1A"
+        "T3"
       ]
     },
-    "STGO_92": {
-      "utility": 39.4,
+    "STGO_25": {
+      "utility": 36.6,
       "rank": 10,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_26": {
-      "utility": 22.4,
+    "STGO_24": {
+      "utility": 36.4,
       "rank": 11,
       "matched": []
     },
-    "STGO_28": {
-      "utility": 22.4,
+    "STGO_91": {
+      "utility": 35.6,
       "rank": 12,
-      "matched": []
+      "matched": [
+        "T3"
+      ]
     },
     "STGO_29": {
-      "utility": 20.6,
+      "utility": 33.9,
       "rank": 13,
-      "matched": []
+      "matched": [
+        "T1A"
+      ]
     },
-    "STGO_02": {
-      "utility": 19.4,
+    "STGO_28": {
+      "utility": 26.6,
       "rank": 14,
       "matched": []
     },
-    "STGO_03": {
-      "utility": 19.4,
+    "STGO_11": {
+      "utility": 25.9,
       "rank": 15,
       "matched": []
     },
-    "STGO_11": {
-      "utility": 19.4,
+    "STGO_30": {
+      "utility": 25.2,
       "rank": 16,
       "matched": []
     },
-    "STGO_16": {
-      "utility": 19.4,
+    "STGO_26": {
+      "utility": 24.2,
       "rank": 17,
       "matched": []
     },
-    "STGO_19": {
-      "utility": 19.4,
+    "STGO_16": {
+      "utility": 24.1,
       "rank": 18,
       "matched": []
     },
-    "STGO_48": {
-      "utility": 19.4,
+    "STGO_20": {
+      "utility": 18.9,
       "rank": 19,
       "matched": []
     },
-    "STGO_05": {
-      "utility": 16.9,
+    "STGO_34": {
+      "utility": 18.9,
       "rank": 20,
       "matched": []
     },
-    "STGO_06": {
-      "utility": 16.9,
+    "STGO_21": {
+      "utility": 18.7,
       "rank": 21,
       "matched": []
     },
-    "STGO_07": {
-      "utility": 16.9,
+    "STGO_35": {
+      "utility": 18.7,
       "rank": 22,
       "matched": []
     },
-    "STGO_10": {
-      "utility": 16.9,
+    "STGO_06": {
+      "utility": 17.3,
       "rank": 23,
       "matched": []
     },
     "STGO_18": {
-      "utility": 16.9,
+      "utility": 17.3,
       "rank": 24,
-      "matched": []
-    },
-    "STGO_20": {
-      "utility": 16.9,
-      "rank": 25,
-      "matched": []
-    },
-    "STGO_21": {
-      "utility": 16.9,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_34": {
-      "utility": 16.9,
-      "rank": 27,
-      "matched": []
-    },
-    "STGO_35": {
-      "utility": 16.9,
-      "rank": 28,
       "matched": []
     }
   },
   "A_first_time_essentials__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "A_first_time_essentials__eligibleCount": 28,
+  "A_first_time_essentials__eligibleCount": 24,
   "B_civic_history": {
-    "STGO_01": {
-      "utility": 60.2,
+    "STGO_03": {
+      "utility": 66.4,
       "rank": 1,
       "matched": [
         "T1A",
-        "T3"
+        "T3",
+        "T4"
       ]
     },
-    "STGO_04": {
-      "utility": 60.2,
+    "STGO_01": {
+      "utility": 60.9,
       "rank": 2,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_22": {
-      "utility": 57.1,
+    "STGO_02": {
+      "utility": 60.8,
       "rank": 3,
+      "matched": [
+        "T1A",
+        "T3",
+        "T4"
+      ]
+    },
+    "STGO_22": {
+      "utility": 56.5,
+      "rank": 4,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_25": {
-      "utility": 47.3,
-      "rank": 4,
+    "STGO_10": {
+      "utility": 54.6,
+      "rank": 5,
       "matched": [
+        "T1A",
         "T3",
         "T4"
       ]
     },
-    "STGO_30": {
-      "utility": 47.3,
-      "rank": 5,
+    "STGO_05": {
+      "utility": 44.1,
+      "rank": 6,
       "matched": [
-        "T3",
-        "T4"
+        "T1A",
+        "T3"
       ]
     },
     "STGO_91": {
-      "utility": 47.3,
-      "rank": 6,
+      "utility": 40.3,
+      "rank": 7,
       "matched": [
         "T3",
         "T4"
       ]
     },
     "STGO_24": {
-      "utility": 44.3,
-      "rank": 7,
-      "matched": [
-        "T3"
-      ]
+      "utility": 36.4,
+      "rank": 8,
+      "matched": []
     },
     "STGO_27": {
-      "utility": 32.7,
-      "rank": 8,
-      "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_32": {
-      "utility": 32.7,
+      "utility": 35.6,
       "rank": 9,
       "matched": [
         "T1A"
       ]
     },
     "STGO_92": {
-      "utility": 32.7,
+      "utility": 35.6,
       "rank": 10,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_05": {
-      "utility": 30.2,
+    "STGO_32": {
+      "utility": 35.4,
       "rank": 11,
       "matched": [
-        "T4"
+        "T3"
       ]
     },
-    "STGO_06": {
-      "utility": 30.2,
+    "STGO_25": {
+      "utility": 33.3,
       "rank": 12,
       "matched": [
-        "T4"
+        "T1A"
       ]
     },
-    "STGO_07": {
-      "utility": 30.2,
+    "STGO_29": {
+      "utility": 31.2,
       "rank": 13,
       "matched": [
-        "T4"
+        "T1A"
       ]
     },
-    "STGO_10": {
-      "utility": 30.2,
+    "STGO_20": {
+      "utility": 28.2,
       "rank": 14,
       "matched": [
         "T4"
       ]
     },
-    "STGO_18": {
-      "utility": 30.2,
+    "STGO_34": {
+      "utility": 28.2,
       "rank": 15,
       "matched": [
         "T4"
       ]
     },
-    "STGO_20": {
-      "utility": 30.2,
+    "STGO_21": {
+      "utility": 28,
       "rank": 16,
       "matched": [
         "T4"
       ]
     },
-    "STGO_21": {
-      "utility": 30.2,
+    "STGO_35": {
+      "utility": 28,
       "rank": 17,
       "matched": [
         "T4"
       ]
     },
-    "STGO_34": {
-      "utility": 30.2,
+    "STGO_06": {
+      "utility": 26.6,
       "rank": 18,
       "matched": [
         "T4"
       ]
     },
-    "STGO_35": {
-      "utility": 30.2,
+    "STGO_18": {
+      "utility": 26.6,
       "rank": 19,
       "matched": [
         "T4"
       ]
     },
-    "STGO_26": {
-      "utility": 22.4,
+    "STGO_28": {
+      "utility": 26.6,
       "rank": 20,
       "matched": []
     },
-    "STGO_28": {
-      "utility": 22.4,
+    "STGO_11": {
+      "utility": 25.9,
       "rank": 21,
       "matched": []
     },
-    "STGO_29": {
-      "utility": 20.6,
+    "STGO_30": {
+      "utility": 25.2,
       "rank": 22,
       "matched": []
     },
-    "STGO_02": {
-      "utility": 19.4,
+    "STGO_26": {
+      "utility": 24.2,
       "rank": 23,
       "matched": []
     },
-    "STGO_03": {
-      "utility": 19.4,
-      "rank": 24,
-      "matched": []
-    },
-    "STGO_11": {
-      "utility": 19.4,
-      "rank": 25,
-      "matched": []
-    },
     "STGO_16": {
-      "utility": 19.4,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_19": {
-      "utility": 19.4,
-      "rank": 27,
-      "matched": []
-    },
-    "STGO_48": {
-      "utility": 19.4,
-      "rank": 28,
+      "utility": 24.1,
+      "rank": 24,
       "matched": []
     }
   },
   "B_civic_history__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "B_civic_history__eligibleCount": 28,
+  "B_civic_history__eligibleCount": 24,
   "C_food_street_life": {
-    "STGO_02": {
-      "utility": 47.4,
+    "STGO_20": {
+      "utility": 64.9,
       "rank": 1,
       "matched": [
-        "T8"
-      ]
-    },
-    "STGO_03": {
-      "utility": 47.4,
-      "rank": 2,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_11": {
-      "utility": 47.4,
-      "rank": 3,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_16": {
-      "utility": 47.4,
-      "rank": 4,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_19": {
-      "utility": 47.4,
-      "rank": 5,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_48": {
-      "utility": 47.4,
-      "rank": 6,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_05": {
-      "utility": 44.9,
-      "rank": 7,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_06": {
-      "utility": 44.9,
-      "rank": 8,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_07": {
-      "utility": 44.9,
-      "rank": 9,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_10": {
-      "utility": 44.9,
-      "rank": 10,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_18": {
-      "utility": 44.9,
-      "rank": 11,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_20": {
-      "utility": 44.9,
-      "rank": 12,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_21": {
-      "utility": 44.9,
-      "rank": 13,
-      "matched": [
-        "T8"
+        "T2"
       ]
     },
     "STGO_34": {
-      "utility": 44.9,
-      "rank": 14,
+      "utility": 64.9,
+      "rank": 2,
       "matched": [
-        "T8"
+        "T2"
+      ]
+    },
+    "STGO_21": {
+      "utility": 62.7,
+      "rank": 3,
+      "matched": [
+        "T2"
       ]
     },
     "STGO_35": {
-      "utility": 44.9,
-      "rank": 15,
+      "utility": 62.7,
+      "rank": 4,
       "matched": [
-        "T8"
+        "T2"
       ]
     },
-    "STGO_29": {
-      "utility": 40.6,
-      "rank": 16,
+    "STGO_28": {
+      "utility": 60.6,
+      "rank": 5,
       "matched": [
-        "T8"
+        "T2"
       ]
     },
-    "STGO_27": {
-      "utility": 39.4,
-      "rank": 17,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_32": {
-      "utility": 39.4,
-      "rank": 18,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_92": {
-      "utility": 39.4,
-      "rank": 19,
-      "matched": [
-        "T8"
-      ]
+    "STGO_03": {
+      "utility": 40.4,
+      "rank": 6,
+      "matched": []
     },
     "STGO_01": {
-      "utility": 27.5,
-      "rank": 20,
+      "utility": 36.2,
+      "rank": 7,
       "matched": []
     },
-    "STGO_04": {
-      "utility": 27.5,
-      "rank": 21,
+    "STGO_02": {
+      "utility": 35.5,
+      "rank": 8,
       "matched": []
     },
-    "STGO_24": {
-      "utility": 23,
-      "rank": 22,
+    "STGO_05": {
+      "utility": 34.8,
+      "rank": 9,
+      "matched": []
+    },
+    "STGO_11": {
+      "utility": 33.9,
+      "rank": 10,
+      "matched": []
+    },
+    "STGO_16": {
+      "utility": 32.1,
+      "rank": 11,
+      "matched": []
+    },
+    "STGO_10": {
+      "utility": 31.9,
+      "rank": 12,
       "matched": []
     },
     "STGO_22": {
-      "utility": 22.4,
-      "rank": 23,
+      "utility": 31.8,
+      "rank": 13,
       "matched": []
     },
-    "STGO_26": {
-      "utility": 22.4,
-      "rank": 24,
-      "matched": []
-    },
-    "STGO_28": {
-      "utility": 22.4,
-      "rank": 25,
+    "STGO_24": {
+      "utility": 28.4,
+      "rank": 14,
       "matched": []
     },
     "STGO_25": {
-      "utility": 20.6,
-      "rank": 26,
+      "utility": 26.6,
+      "rank": 15,
+      "matched": []
+    },
+    "STGO_27": {
+      "utility": 26.3,
+      "rank": 16,
+      "matched": []
+    },
+    "STGO_92": {
+      "utility": 26.3,
+      "rank": 17,
+      "matched": []
+    },
+    "STGO_29": {
+      "utility": 25.9,
+      "rank": 18,
+      "matched": []
+    },
+    "STGO_32": {
+      "utility": 25.4,
+      "rank": 19,
+      "matched": []
+    },
+    "STGO_06": {
+      "utility": 25.3,
+      "rank": 20,
+      "matched": []
+    },
+    "STGO_18": {
+      "utility": 25.3,
+      "rank": 21,
       "matched": []
     },
     "STGO_30": {
-      "utility": 20.6,
-      "rank": 27,
+      "utility": 25.2,
+      "rank": 22,
+      "matched": []
+    },
+    "STGO_26": {
+      "utility": 24.2,
+      "rank": 23,
       "matched": []
     },
     "STGO_91": {
-      "utility": 20.6,
-      "rank": 28,
+      "utility": 21.6,
+      "rank": 24,
       "matched": []
     }
   },
   "C_food_street_life__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "C_food_street_life__eligibleCount": 28,
+  "C_food_street_life__eligibleCount": 24,
   "D_architecture_aesthetics": {
-    "STGO_24": {
-      "utility": 54.7,
+    "STGO_10": {
+      "utility": 60.9,
       "rank": 1,
       "matched": [
-        "T5",
-        "T3"
+        "T3",
+        "T4",
+        "T5"
       ]
     },
-    "STGO_25": {
-      "utility": 52.3,
+    "STGO_02": {
+      "utility": 56.5,
       "rank": 2,
       "matched": [
         "T3",
         "T4"
       ]
     },
-    "STGO_30": {
-      "utility": 52.3,
+    "STGO_03": {
+      "utility": 50.1,
       "rank": 3,
       "matched": [
         "T3",
         "T4"
       ]
     },
-    "STGO_91": {
-      "utility": 52.3,
+    "STGO_01": {
+      "utility": 47.2,
       "rank": 4,
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_24": {
+      "utility": 46.7,
+      "rank": 5,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_91": {
+      "utility": 45.3,
+      "rank": 6,
       "matched": [
         "T3",
         "T4"
       ]
     },
-    "STGO_01": {
-      "utility": 43.8,
-      "rank": 5,
-      "matched": [
-        "T3"
-      ]
-    },
-    "STGO_04": {
-      "utility": 43.8,
-      "rank": 6,
-      "matched": [
-        "T3"
-      ]
-    },
-    "STGO_22": {
-      "utility": 40.7,
+    "STGO_25": {
+      "utility": 44.9,
       "rank": 7,
       "matched": [
-        "T3"
+        "T5"
       ]
     },
     "STGO_29": {
-      "utility": 38.9,
+      "utility": 44.2,
       "rank": 8,
       "matched": [
         "T5"
       ]
     },
-    "STGO_05": {
-      "utility": 35.2,
+    "STGO_22": {
+      "utility": 44.1,
       "rank": 9,
       "matched": [
-        "T4"
+        "T3"
       ]
     },
-    "STGO_06": {
-      "utility": 35.2,
+    "STGO_30": {
+      "utility": 40.9,
       "rank": 10,
       "matched": [
-        "T4"
+        "T5"
       ]
     },
-    "STGO_07": {
-      "utility": 35.2,
+    "STGO_05": {
+      "utility": 37.8,
       "rank": 11,
       "matched": [
-        "T4"
+        "T3"
       ]
     },
-    "STGO_10": {
-      "utility": 35.2,
+    "STGO_11": {
+      "utility": 37.6,
       "rank": 12,
       "matched": [
-        "T4"
+        "T5"
       ]
     },
-    "STGO_18": {
-      "utility": 35.2,
+    "STGO_26": {
+      "utility": 35.9,
       "rank": 13,
       "matched": [
-        "T4"
+        "T5"
       ]
     },
     "STGO_20": {
-      "utility": 35.2,
+      "utility": 33.2,
       "rank": 14,
       "matched": [
         "T4"
       ]
     },
-    "STGO_21": {
-      "utility": 35.2,
+    "STGO_34": {
+      "utility": 33.2,
       "rank": 15,
       "matched": [
         "T4"
       ]
     },
-    "STGO_34": {
-      "utility": 35.2,
+    "STGO_21": {
+      "utility": 33,
       "rank": 16,
       "matched": [
         "T4"
       ]
     },
     "STGO_35": {
-      "utility": 35.2,
+      "utility": 33,
       "rank": 17,
       "matched": [
         "T4"
       ]
     },
-    "STGO_26": {
-      "utility": 27.4,
+    "STGO_32": {
+      "utility": 32.4,
       "rank": 18,
-      "matched": []
+      "matched": [
+        "T3"
+      ]
+    },
+    "STGO_06": {
+      "utility": 31.6,
+      "rank": 19,
+      "matched": [
+        "T4"
+      ]
+    },
+    "STGO_18": {
+      "utility": 31.6,
+      "rank": 20,
+      "matched": [
+        "T4"
+      ]
     },
     "STGO_28": {
-      "utility": 27.4,
-      "rank": 19,
-      "matched": []
-    },
-    "STGO_02": {
-      "utility": 24.4,
-      "rank": 20,
-      "matched": []
-    },
-    "STGO_03": {
-      "utility": 24.4,
+      "utility": 31.6,
       "rank": 21,
       "matched": []
     },
-    "STGO_11": {
-      "utility": 24.4,
+    "STGO_27": {
+      "utility": 31.3,
       "rank": 22,
       "matched": []
     },
-    "STGO_16": {
-      "utility": 24.4,
+    "STGO_92": {
+      "utility": 31.3,
       "rank": 23,
       "matched": []
     },
-    "STGO_19": {
-      "utility": 24.4,
+    "STGO_16": {
+      "utility": 29.1,
       "rank": 24,
-      "matched": []
-    },
-    "STGO_27": {
-      "utility": 24.4,
-      "rank": 25,
-      "matched": []
-    },
-    "STGO_32": {
-      "utility": 24.4,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_48": {
-      "utility": 24.4,
-      "rank": 27,
-      "matched": []
-    },
-    "STGO_92": {
-      "utility": 24.4,
-      "rank": 28,
       "matched": []
     }
   },
   "D_architecture_aesthetics__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "D_architecture_aesthetics__eligibleCount": 28,
+  "D_architecture_aesthetics__eligibleCount": 24,
   "E_memory_human_rights": {
-    "STGO_01": {
-      "utility": 53.5,
+    "STGO_04": {
+      "utility": 81.8,
       "rank": 1,
       "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_04": {
-      "utility": 53.5,
-      "rank": 2,
-      "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_22": {
-      "utility": 50.4,
-      "rank": 3,
-      "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_26": {
-      "utility": 42.4,
-      "rank": 4,
-      "matched": [
-        "T1B"
-      ]
-    },
-    "STGO_28": {
-      "utility": 42.4,
-      "rank": 5,
-      "matched": [
-        "T1B"
-      ]
-    },
-    "STGO_02": {
-      "utility": 39.4,
-      "rank": 6,
-      "matched": [
+        "T1A",
         "T1B"
       ]
     },
     "STGO_03": {
-      "utility": 39.4,
-      "rank": 7,
+      "utility": 75.4,
+      "rank": 2,
       "matched": [
+        "T1A",
         "T1B"
       ]
     },
-    "STGO_11": {
-      "utility": 39.4,
+    "STGO_48": {
+      "utility": 67.7,
+      "rank": 3,
+      "matched": [
+        "T1A",
+        "T1B"
+      ]
+    },
+    "STGO_01": {
+      "utility": 58.2,
+      "rank": 4,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_07": {
+      "utility": 52,
+      "rank": 5,
+      "matched": [
+        "T1A",
+        "T1B"
+      ]
+    },
+    "STGO_22": {
+      "utility": 51.8,
+      "rank": 6,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_02": {
+      "utility": 41.5,
+      "rank": 7,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_28": {
+      "utility": 40.6,
       "rank": 8,
       "matched": [
         "T1B"
       ]
     },
-    "STGO_16": {
-      "utility": 39.4,
+    "STGO_27": {
+      "utility": 40.3,
       "rank": 9,
       "matched": [
-        "T1B"
+        "T1A"
       ]
     },
-    "STGO_19": {
-      "utility": 39.4,
+    "STGO_92": {
+      "utility": 40.3,
       "rank": 10,
       "matched": [
-        "T1B"
+        "T1A"
       ]
     },
-    "STGO_27": {
-      "utility": 39.4,
+    "STGO_05": {
+      "utility": 38.8,
       "rank": 11,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_32": {
-      "utility": 39.4,
+    "STGO_16": {
+      "utility": 38.1,
       "rank": 12,
       "matched": [
-        "T1A"
+        "T1B"
       ]
     },
-    "STGO_48": {
-      "utility": 39.4,
+    "STGO_19": {
+      "utility": 38.1,
       "rank": 13,
       "matched": [
         "T1B"
       ]
     },
-    "STGO_92": {
-      "utility": 39.4,
+    "STGO_25": {
+      "utility": 36.6,
       "rank": 14,
       "matched": [
         "T1A"
       ]
     },
     "STGO_24": {
-      "utility": 31,
+      "utility": 36.4,
       "rank": 15,
       "matched": []
     },
-    "STGO_25": {
-      "utility": 20.6,
-      "rank": 16,
-      "matched": []
-    },
     "STGO_29": {
-      "utility": 20.6,
-      "rank": 17,
-      "matched": []
+      "utility": 33.9,
+      "rank": 16,
+      "matched": [
+        "T1A"
+      ]
     },
-    "STGO_30": {
-      "utility": 20.6,
+    "STGO_10": {
+      "utility": 31.9,
+      "rank": 17,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_32": {
+      "utility": 31.4,
       "rank": 18,
       "matched": []
     },
-    "STGO_91": {
-      "utility": 20.6,
+    "STGO_11": {
+      "utility": 25.9,
       "rank": 19,
       "matched": []
     },
-    "STGO_05": {
-      "utility": 16.9,
+    "STGO_30": {
+      "utility": 25.2,
       "rank": 20,
       "matched": []
     },
-    "STGO_06": {
-      "utility": 16.9,
+    "STGO_26": {
+      "utility": 24.2,
       "rank": 21,
       "matched": []
     },
-    "STGO_07": {
-      "utility": 16.9,
+    "STGO_91": {
+      "utility": 21.6,
       "rank": 22,
       "matched": []
     },
-    "STGO_10": {
-      "utility": 16.9,
+    "STGO_20": {
+      "utility": 18.9,
       "rank": 23,
       "matched": []
     },
-    "STGO_18": {
-      "utility": 16.9,
+    "STGO_34": {
+      "utility": 18.9,
       "rank": 24,
       "matched": []
     },
-    "STGO_20": {
-      "utility": 16.9,
+    "STGO_21": {
+      "utility": 18.7,
       "rank": 25,
       "matched": []
     },
-    "STGO_21": {
-      "utility": 16.9,
+    "STGO_35": {
+      "utility": 18.7,
       "rank": 26,
       "matched": []
     },
-    "STGO_34": {
-      "utility": 16.9,
+    "STGO_06": {
+      "utility": 17.3,
       "rank": 27,
       "matched": []
     },
-    "STGO_35": {
-      "utility": 16.9,
+    "STGO_18": {
+      "utility": 17.3,
       "rank": 28,
       "matched": []
     }
@@ -906,204 +838,195 @@
   ],
   "E_memory_human_rights__eligibleCount": 28,
   "F_discovery_forward": {
-    "STGO_29": {
-      "utility": 35.3,
+    "STGO_24": {
+      "utility": 62.9,
       "rank": 1,
+      "matched": [
+        "T5",
+        "T6",
+        "T8"
+      ]
+    },
+    "STGO_11": {
+      "utility": 60.4,
+      "rank": 2,
+      "matched": [
+        "T5",
+        "T6",
+        "T8"
+      ]
+    },
+    "STGO_30": {
+      "utility": 59.7,
+      "rank": 3,
+      "matched": [
+        "T5",
+        "T6",
+        "T8"
+      ]
+    },
+    "STGO_01": {
+      "utility": 55.2,
+      "rank": 4,
+      "matched": [
+        "T6",
+        "T8"
+      ]
+    },
+    "STGO_25": {
+      "utility": 43.8,
+      "rank": 5,
       "matched": [
         "T5",
         "T8"
       ]
     },
-    "STGO_02": {
-      "utility": 28.7,
-      "rank": 2,
+    "STGO_29": {
+      "utility": 40.4,
+      "rank": 6,
       "matched": [
-        "T8"
-      ]
-    },
-    "STGO_03": {
-      "utility": 28.7,
-      "rank": 3,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_11": {
-      "utility": 28.7,
-      "rank": 4,
-      "matched": [
+        "T5",
         "T8"
       ]
     },
     "STGO_16": {
-      "utility": 28.7,
-      "rank": 5,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_19": {
-      "utility": 28.7,
-      "rank": 6,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_48": {
-      "utility": 28.7,
+      "utility": 39.9,
       "rank": 7,
       "matched": [
         "T8"
       ]
     },
-    "STGO_05": {
-      "utility": 26.2,
+    "STGO_03": {
+      "utility": 38.9,
       "rank": 8,
-      "matched": [
-        "T8"
-      ]
+      "matched": []
     },
-    "STGO_06": {
-      "utility": 26.2,
+    "STGO_10": {
+      "utility": 37.1,
       "rank": 9,
       "matched": [
-        "T8"
+        "T5"
       ]
     },
-    "STGO_07": {
-      "utility": 26.2,
+    "STGO_20": {
+      "utility": 34.7,
       "rank": 10,
       "matched": [
         "T8"
       ]
     },
-    "STGO_10": {
-      "utility": 26.2,
+    "STGO_34": {
+      "utility": 34.7,
       "rank": 11,
       "matched": [
         "T8"
       ]
     },
-    "STGO_18": {
-      "utility": 26.2,
+    "STGO_21": {
+      "utility": 34.5,
       "rank": 12,
       "matched": [
         "T8"
       ]
     },
-    "STGO_20": {
-      "utility": 26.2,
+    "STGO_35": {
+      "utility": 34.5,
       "rank": 13,
       "matched": [
         "T8"
       ]
     },
-    "STGO_21": {
-      "utility": 26.2,
+    "STGO_02": {
+      "utility": 34,
       "rank": 14,
-      "matched": [
-        "T8"
-      ]
+      "matched": []
     },
-    "STGO_34": {
-      "utility": 26.2,
+    "STGO_05": {
+      "utility": 34,
       "rank": 15,
       "matched": [
         "T8"
       ]
     },
-    "STGO_35": {
-      "utility": 26.2,
+    "STGO_26": {
+      "utility": 34,
       "rank": 16,
+      "matched": [
+        "T5",
+        "T8"
+      ]
+    },
+    "STGO_06": {
+      "utility": 33.1,
+      "rank": 17,
       "matched": [
         "T8"
       ]
     },
-    "STGO_24": {
-      "utility": 24.3,
-      "rank": 17,
-      "matched": [
-        "T5"
-      ]
-    },
-    "STGO_27": {
-      "utility": 20.7,
+    "STGO_18": {
+      "utility": 33.1,
       "rank": 18,
       "matched": [
         "T8"
       ]
     },
-    "STGO_32": {
-      "utility": 20.7,
+    "STGO_27": {
+      "utility": 31.9,
       "rank": 19,
       "matched": [
         "T8"
       ]
     },
     "STGO_92": {
-      "utility": 20.7,
+      "utility": 31.9,
       "rank": 20,
       "matched": [
         "T8"
       ]
     },
-    "STGO_01": {
-      "utility": 15.5,
+    "STGO_22": {
+      "utility": 30.3,
       "rank": 21,
       "matched": []
     },
-    "STGO_04": {
-      "utility": 15.5,
+    "STGO_28": {
+      "utility": 28.1,
       "rank": 22,
       "matched": []
     },
-    "STGO_22": {
-      "utility": 10.4,
+    "STGO_32": {
+      "utility": 21.7,
       "rank": 23,
-      "matched": []
-    },
-    "STGO_26": {
-      "utility": 10.4,
-      "rank": 24,
-      "matched": []
-    },
-    "STGO_28": {
-      "utility": 10.4,
-      "rank": 25,
-      "matched": []
-    },
-    "STGO_25": {
-      "utility": 8.6,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_30": {
-      "utility": 8.6,
-      "rank": 27,
-      "matched": []
+      "matched": [
+        "T8"
+      ]
     },
     "STGO_91": {
-      "utility": 8.6,
-      "rank": 28,
+      "utility": 20.1,
+      "rank": 24,
       "matched": []
     }
   },
   "F_discovery_forward__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "F_discovery_forward__eligibleCount": 28,
+  "F_discovery_forward__eligibleCount": 24,
   "G_express_time_boxed": {
-    "STGO_01": {
-      "utility": 61.5,
+    "STGO_03": {
+      "utility": 74.2,
       "rank": 1,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_04": {
-      "utility": 61.5,
+    "STGO_01": {
+      "utility": 69.8,
       "rank": 2,
       "matched": [
         "T1A",
@@ -1111,332 +1034,305 @@
       ]
     },
     "STGO_22": {
-      "utility": 58.4,
+      "utility": 66.5,
       "rank": 3,
       "matched": [
         "T1A",
         "T3"
       ]
     },
-    "STGO_24": {
-      "utility": 39,
+    "STGO_02": {
+      "utility": 64.9,
       "rank": 4,
       "matched": [
+        "T1A",
         "T3"
       ]
     },
-    "STGO_25": {
-      "utility": 28.6,
+    "STGO_10": {
+      "utility": 54.9,
       "rank": 5,
       "matched": [
+        "T1A",
         "T3"
       ]
     },
-    "STGO_30": {
-      "utility": 28.6,
+    "STGO_05": {
+      "utility": 49.2,
       "rank": 6,
       "matched": [
+        "T1A",
         "T3"
       ]
     },
-    "STGO_91": {
-      "utility": 28.6,
+    "STGO_24": {
+      "utility": 39.4,
       "rank": 7,
-      "matched": [
-        "T3"
-      ]
+      "matched": []
     },
     "STGO_27": {
-      "utility": 27.4,
+      "utility": 39.2,
       "rank": 8,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_32": {
-      "utility": 27.4,
+    "STGO_92": {
+      "utility": 39.2,
       "rank": 9,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_92": {
-      "utility": 27.4,
+    "STGO_25": {
+      "utility": 37.7,
       "rank": 10,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_26": {
-      "utility": 10.4,
+    "STGO_91": {
+      "utility": 37.4,
       "rank": 11,
-      "matched": []
+      "matched": [
+        "T3"
+      ]
     },
-    "STGO_28": {
-      "utility": 10.4,
+    "STGO_32": {
+      "utility": 33.3,
       "rank": 12,
-      "matched": []
+      "matched": [
+        "T3"
+      ]
     },
     "STGO_29": {
-      "utility": 8.6,
+      "utility": 32.3,
       "rank": 13,
-      "matched": []
+      "matched": [
+        "T1A"
+      ]
     },
-    "STGO_02": {
-      "utility": 7.4,
+    "STGO_28": {
+      "utility": 31.2,
       "rank": 14,
       "matched": []
     },
-    "STGO_03": {
-      "utility": 7.4,
+    "STGO_11": {
+      "utility": 30.4,
       "rank": 15,
       "matched": []
     },
-    "STGO_11": {
-      "utility": 7.4,
+    "STGO_30": {
+      "utility": 28.5,
       "rank": 16,
       "matched": []
     },
-    "STGO_16": {
-      "utility": 7.4,
+    "STGO_26": {
+      "utility": 25.1,
       "rank": 17,
       "matched": []
     },
-    "STGO_19": {
-      "utility": 7.4,
+    "STGO_16": {
+      "utility": 24.8,
       "rank": 18,
       "matched": []
     },
-    "STGO_48": {
-      "utility": 7.4,
+    "STGO_06": {
+      "utility": 18.9,
       "rank": 19,
       "matched": []
     },
-    "STGO_05": {
-      "utility": 4.9,
+    "STGO_18": {
+      "utility": 18.9,
       "rank": 20,
       "matched": []
     },
-    "STGO_06": {
-      "utility": 4.9,
+    "STGO_20": {
+      "utility": 17.9,
       "rank": 21,
       "matched": []
     },
-    "STGO_07": {
-      "utility": 4.9,
+    "STGO_34": {
+      "utility": 17.9,
       "rank": 22,
       "matched": []
     },
-    "STGO_10": {
-      "utility": 4.9,
+    "STGO_21": {
+      "utility": 17.7,
       "rank": 23,
       "matched": []
     },
-    "STGO_18": {
-      "utility": 4.9,
-      "rank": 24,
-      "matched": []
-    },
-    "STGO_20": {
-      "utility": 4.9,
-      "rank": 25,
-      "matched": []
-    },
-    "STGO_21": {
-      "utility": 4.9,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_34": {
-      "utility": 4.9,
-      "rank": 27,
-      "matched": []
-    },
     "STGO_35": {
-      "utility": 4.9,
-      "rank": 28,
+      "utility": 17.7,
+      "rank": 24,
       "matched": []
     }
   },
   "G_express_time_boxed__excluded": [
+    "STGO_04",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_33",
+    "STGO_48"
   ],
-  "G_express_time_boxed__eligibleCount": 28,
+  "G_express_time_boxed__eligibleCount": 24,
   "H_accessibility_sensitive": {
-    "STGO_01": {
-      "utility": 38.5,
+    "STGO_25": {
+      "utility": 53.3,
       "rank": 1,
       "matched": [
-        "T1A"
+        "T1A",
+        "T5"
       ]
     },
-    "STGO_04": {
-      "utility": 38.5,
+    "STGO_03": {
+      "utility": 47.1,
       "rank": 2,
       "matched": [
         "T1A"
       ]
     },
     "STGO_24": {
-      "utility": 36,
+      "utility": 45.1,
       "rank": 3,
       "matched": [
         "T5"
       ]
     },
-    "STGO_22": {
-      "utility": 35.4,
+    "STGO_01": {
+      "utility": 44.7,
       "rank": 4,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_29": {
-      "utility": 33.6,
+    "STGO_22": {
+      "utility": 40.5,
       "rank": 5,
-      "matched": [
-        "T5"
-      ]
-    },
-    "STGO_27": {
-      "utility": 32.4,
-      "rank": 6,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_32": {
-      "utility": 32.4,
+    "STGO_10": {
+      "utility": 38.6,
+      "rank": 6,
+      "matched": [
+        "T1A",
+        "T5"
+      ]
+    },
+    "STGO_02": {
+      "utility": 38.2,
       "rank": 7,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_92": {
-      "utility": 32.4,
+    "STGO_30": {
+      "utility": 37.9,
       "rank": 8,
+      "matched": [
+        "T5"
+      ]
+    },
+    "STGO_27": {
+      "utility": 34.8,
+      "rank": 9,
       "matched": [
         "T1A"
       ]
     },
+    "STGO_92": {
+      "utility": 34.8,
+      "rank": 10,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_11": {
+      "utility": 32.6,
+      "rank": 11,
+      "matched": [
+        "T5"
+      ]
+    },
     "STGO_26": {
-      "utility": 15.4,
-      "rank": 9,
-      "matched": []
+      "utility": 30.2,
+      "rank": 12,
+      "matched": [
+        "T5"
+      ]
     },
     "STGO_28": {
-      "utility": 15.4,
-      "rank": 10,
-      "matched": []
-    },
-    "STGO_25": {
-      "utility": 13.6,
-      "rank": 11,
-      "matched": []
-    },
-    "STGO_30": {
-      "utility": 13.6,
-      "rank": 12,
-      "matched": []
-    },
-    "STGO_91": {
-      "utility": 13.6,
+      "utility": 26.3,
       "rank": 13,
       "matched": []
     },
-    "STGO_02": {
-      "utility": 12.4,
+    "STGO_16": {
+      "utility": 20.8,
       "rank": 14,
       "matched": []
     },
-    "STGO_03": {
-      "utility": 12.4,
+    "STGO_91": {
+      "utility": 18.3,
       "rank": 15,
       "matched": []
     },
-    "STGO_11": {
-      "utility": 12.4,
+    "STGO_20": {
+      "utility": 15.6,
       "rank": 16,
       "matched": []
     },
-    "STGO_16": {
-      "utility": 12.4,
+    "STGO_34": {
+      "utility": 15.6,
       "rank": 17,
       "matched": []
     },
-    "STGO_19": {
-      "utility": 12.4,
+    "STGO_21": {
+      "utility": 15.4,
       "rank": 18,
       "matched": []
     },
-    "STGO_48": {
-      "utility": 12.4,
+    "STGO_35": {
+      "utility": 15.4,
       "rank": 19,
       "matched": []
     },
-    "STGO_05": {
-      "utility": 9.9,
+    "STGO_06": {
+      "utility": 14,
       "rank": 20,
       "matched": []
     },
-    "STGO_06": {
-      "utility": 9.9,
-      "rank": 21,
-      "matched": []
-    },
-    "STGO_07": {
-      "utility": 9.9,
-      "rank": 22,
-      "matched": []
-    },
-    "STGO_10": {
-      "utility": 9.9,
-      "rank": 23,
-      "matched": []
-    },
     "STGO_18": {
-      "utility": 9.9,
-      "rank": 24,
-      "matched": []
-    },
-    "STGO_20": {
-      "utility": 9.9,
-      "rank": 25,
-      "matched": []
-    },
-    "STGO_21": {
-      "utility": 9.9,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_34": {
-      "utility": 9.9,
-      "rank": 27,
-      "matched": []
-    },
-    "STGO_35": {
-      "utility": 9.9,
-      "rank": 28,
+      "utility": 14,
+      "rank": 21,
       "matched": []
     }
   },
   "H_accessibility_sensitive__excluded": [
+    "STGO_04",
+    "STGO_05",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_29",
+    "STGO_32",
+    "STGO_33",
+    "STGO_48"
   ],
-  "H_accessibility_sensitive__eligibleCount": 28,
+  "H_accessibility_sensitive__eligibleCount": 21,
   "I_high_comfort": {
-    "STGO_27": {
-      "utility": 52.4,
+    "STGO_01": {
+      "utility": 62.8,
       "rank": 1,
       "matched": [
         "T1A",
         "T8"
       ]
     },
-    "STGO_32": {
-      "utility": 52.4,
+    "STGO_27": {
+      "utility": 51.8,
       "rank": 2,
       "matched": [
         "T1A",
@@ -1444,180 +1340,147 @@
       ]
     },
     "STGO_92": {
-      "utility": 52.4,
+      "utility": 51.8,
       "rank": 3,
       "matched": [
         "T1A",
         "T8"
       ]
     },
-    "STGO_01": {
-      "utility": 38.5,
+    "STGO_03": {
+      "utility": 51.4,
       "rank": 4,
       "matched": [
         "T1A"
       ]
     },
-    "STGO_04": {
-      "utility": 38.5,
-      "rank": 5,
-      "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_22": {
-      "utility": 35.4,
-      "rank": 6,
-      "matched": [
-        "T1A"
-      ]
-    },
-    "STGO_29": {
-      "utility": 33.6,
-      "rank": 7,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_02": {
-      "utility": 32.4,
-      "rank": 8,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_03": {
-      "utility": 32.4,
-      "rank": 9,
-      "matched": [
-        "T8"
-      ]
-    },
     "STGO_11": {
-      "utility": 32.4,
-      "rank": 10,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_16": {
-      "utility": 32.4,
-      "rank": 11,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_19": {
-      "utility": 32.4,
-      "rank": 12,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_48": {
-      "utility": 32.4,
-      "rank": 13,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_05": {
-      "utility": 29.9,
-      "rank": 14,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_06": {
-      "utility": 29.9,
-      "rank": 15,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_07": {
-      "utility": 29.9,
-      "rank": 16,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_10": {
-      "utility": 29.9,
-      "rank": 17,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_18": {
-      "utility": 29.9,
-      "rank": 18,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_20": {
-      "utility": 29.9,
-      "rank": 19,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_21": {
-      "utility": 29.9,
-      "rank": 20,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_34": {
-      "utility": 29.9,
-      "rank": 21,
-      "matched": [
-        "T8"
-      ]
-    },
-    "STGO_35": {
-      "utility": 29.9,
-      "rank": 22,
+      "utility": 49,
+      "rank": 5,
       "matched": [
         "T8"
       ]
     },
     "STGO_24": {
-      "utility": 16,
-      "rank": 23,
+      "utility": 48.4,
+      "rank": 6,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_30": {
+      "utility": 47.5,
+      "rank": 7,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_22": {
+      "utility": 44.8,
+      "rank": 8,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_25": {
+      "utility": 44.3,
+      "rank": 9,
+      "matched": [
+        "T1A",
+        "T8"
+      ]
+    },
+    "STGO_02": {
+      "utility": 43.1,
+      "rank": 10,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_16": {
+      "utility": 37.8,
+      "rank": 11,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_10": {
+      "utility": 33.5,
+      "rank": 12,
+      "matched": [
+        "T1A"
+      ]
+    },
+    "STGO_20": {
+      "utility": 32.6,
+      "rank": 13,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_34": {
+      "utility": 32.6,
+      "rank": 14,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_21": {
+      "utility": 32.4,
+      "rank": 15,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_35": {
+      "utility": 32.4,
+      "rank": 16,
+      "matched": [
+        "T8"
+      ]
+    },
+    "STGO_28": {
+      "utility": 31.9,
+      "rank": 17,
       "matched": []
     },
     "STGO_26": {
-      "utility": 15.4,
-      "rank": 24,
-      "matched": []
+      "utility": 31.2,
+      "rank": 18,
+      "matched": [
+        "T8"
+      ]
     },
-    "STGO_28": {
-      "utility": 15.4,
-      "rank": 25,
-      "matched": []
+    "STGO_06": {
+      "utility": 31,
+      "rank": 19,
+      "matched": [
+        "T8"
+      ]
     },
-    "STGO_25": {
-      "utility": 13.6,
-      "rank": 26,
-      "matched": []
-    },
-    "STGO_30": {
-      "utility": 13.6,
-      "rank": 27,
-      "matched": []
+    "STGO_18": {
+      "utility": 31,
+      "rank": 20,
+      "matched": [
+        "T8"
+      ]
     },
     "STGO_91": {
-      "utility": 13.6,
-      "rank": 28,
+      "utility": 22.6,
+      "rank": 21,
       "matched": []
     }
   },
   "I_high_comfort__excluded": [
+    "STGO_04",
+    "STGO_05",
+    "STGO_07",
+    "STGO_19",
     "STGO_23",
-    "STGO_33"
+    "STGO_29",
+    "STGO_32",
+    "STGO_33",
+    "STGO_48"
   ],
-  "I_high_comfort__eligibleCount": 28
+  "I_high_comfort__eligibleCount": 21
 }

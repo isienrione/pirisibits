@@ -119,13 +119,21 @@ export function evaluateNodeEligibility(
     })
   }
 
-  const now = context.now ?? new Date()
-  if (explicitDaylightOnly(node) && !isDaylightSantiago(now)) {
-    hardFailures.push({
-      code: 'EXPLICIT_DAYLIGHT_ONLY_AT_NIGHT',
-      message: 'Node is daylight-only and current Santiago time is night',
-      evidenceState: 'PRESENT',
-    })
+  const now = context.now
+  if (explicitDaylightOnly(node)) {
+    if (now == null) {
+      warnings.push({
+        code: 'DAYLIGHT_CLOCK_UNSPECIFIED',
+        message: 'Node is daylight-only but evaluation clock was not provided — not hard-excluding',
+        evidenceState: 'PARTIAL',
+      })
+    } else if (!isDaylightSantiago(now)) {
+      hardFailures.push({
+        code: 'EXPLICIT_DAYLIGHT_ONLY_AT_NIGHT',
+        message: 'Node is daylight-only and current Santiago time is night',
+        evidenceState: 'PRESENT',
+      })
+    }
   }
 
   const visited = new Set(context.alreadyVisitedStgoIds ?? [])
@@ -155,7 +163,12 @@ export function evaluateNodeEligibility(
     })
   }
 
-  if (node.chronoWorth == null) {
+  const chronoPresent =
+    node.chronoWorthApproved != null ||
+    node.chronoWorth != null ||
+    node.chronoWorthEffective != null ||
+    node.chronoWorthProposed != null
+  if (!chronoPresent) {
     warnings.push({
       code: 'CHRONOWORTH_MISSING',
       message: 'ChronoWorth absent — editorial component will not invent a curated default',
