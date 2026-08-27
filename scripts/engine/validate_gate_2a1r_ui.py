@@ -16,7 +16,7 @@ SEMANTIC = ROOT / "src/data/santiago/santiago_semantic_calibration.v0.1.json"
 SOURCE = ROOT / "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 FLAGS = ROOT / "src/lib/city-graph/flags.ts"
 GEN = ROOT / "scripts/engine/generate_gate_2a1_founder_cockpit.py"
-START = "aee3098b2f70c64799a896c51377b6da02dd9f90"
+START = "af8874f8efa106ec87e0262eec43329c666e8444"
 PHYSICAL = [
     "src/data/santiago/santiago_physical_edges.v0.1.json",
     "src/data/santiago/santiago_pedestrian_adjacency.v0.2.json",
@@ -51,7 +51,7 @@ def main() -> int:
     flags = FLAGS.read_text(encoding="utf-8")
     launch = json.loads(LAUNCH.read_text(encoding="utf-8"))
 
-    m = re.search(r"const SOURCE = (\{.*?\});\nconst THEME_META", html, re.S)
+    m = re.search(r"const SOURCE = (\{.*?\});\nconst (?:RATIONALES|THEME_META)", html, re.S)
     if not m:
         fail(errors, "embedded SOURCE payload missing")
         print("GATE_2A1R_UI_VALIDATOR=FAIL")

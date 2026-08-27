@@ -15,8 +15,9 @@ ROOT = Path(__file__).resolve().parents[2]
 LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json"
 SOURCE_DATASET = "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 SEMANTIC = "src/data/santiago/santiago_semantic_calibration.v0.1.json"
-CHECKPOINT = "aee3098b2f70c64799a896c51377b6da02dd9f90"
+CHECKPOINT = "af8874f8efa106ec87e0262eec43329c666e8444"
 OUT = ROOT / "docs/engine/gate-2a1-founder-calibration-cockpit.html"
+RATIONALES = ROOT / "src/data/santiago/curation/launch30_score_rationales.v0.1.json"
 
 THEME_META = [
     ("T1A", "Civic, Military & Traditional Heritage",
@@ -199,19 +200,24 @@ def main() -> int:
     assert len(cal["records"]) == 30
     payload = {
         "schemaVersion": "santiago-launch30-founder-cockpit.source.v0.1",
-        "gate": "2A.1R-UI",
+        "gate": "2A.1R-UI.1",
         "sourceCheckpointSha": CHECKPOINT,
         "sourceDataset": SOURCE_DATASET,
         "canonicalSemanticArtifact": SEMANTIC,
         "launchCalibrationArtifact": str(LAUNCH.relative_to(ROOT)),
+        "rationaleArtifact": str(RATIONALES.relative_to(ROOT)),
         "normalizationCorpus": "SANTIAGO_LAUNCH30_V0_1",
         "chronoWorthFormula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
         "records": [slim_record(r) for r in sorted(cal["records"], key=lambda x: x["stgoId"])],
     }
+    if not RATIONALES.exists():
+        raise SystemExit(f"missing rationales: {RATIONALES} — run build_launch30_score_rationales_v0_1.py first")
+    rationales = json.loads(RATIONALES.read_text(encoding="utf-8"))
     theme_json = json.dumps(THEME_META, ensure_ascii=False)
     metric_json = json.dumps(METRIC_META, ensure_ascii=False)
     mode_json = json.dumps(MODE_META, ensure_ascii=False)
     source_json = json.dumps(payload, ensure_ascii=False)
+    rationales_json = json.dumps(rationales, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -271,7 +277,16 @@ h3{{margin:1.1rem 0 .45rem;font-size:.82rem;text-transform:uppercase;letter-spac
 .cmp b.source{{color:var(--source)}}
 .cmp b.founder{{color:var(--founder)}}
 .cmp b.delta{{color:var(--delta)}}
+.rationale{{margin-top:.45rem;border-top:1px dashed var(--line);padding-top:.4rem}}
+.rationale summary{{cursor:pointer;color:var(--source);font-size:.82rem}}
+.rationale .body{{font-size:.82rem;line-height:1.4;color:var(--ink);margin-top:.35rem}}
+.rationale .body p{{margin:.25rem 0}}
+.change-reason{{margin-top:.35rem}}
+.change-reason input{{width:100%}}
+.summary-box{{background:#f8fafc;border:1px dashed var(--line);border-radius:10px;padding:.65rem .75rem;margin:.5rem 0;font-size:.9rem}}
 .cwbox{{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}}
+.contrib{{font-variant-numeric:tabular-nums;font-size:.85rem}}
+.contrib div{{display:flex;justify-content:space-between;gap:.5rem;padding:.15rem 0;border-bottom:1px solid #f5f5f4}}
 .cwbox .big{{font-size:1.5rem;font-variant-numeric:tabular-nums}}
 table{{width:100%;border-collapse:collapse;font-size:.85rem}}
 th,td{{border-bottom:1px solid var(--line);padding:.4rem .35rem;text-align:left}}
@@ -284,12 +299,17 @@ th{{cursor:pointer;color:var(--muted);font-weight:600}}
 .unsaved{{color:var(--warn);font-weight:700}}
 .statusline{{font-size:.85rem;color:var(--muted)}}
 .resetf{{font-size:.75rem;padding:.15rem .4rem;margin-left:.35rem}}
+.badge.conf-high{{color:var(--ok);border-color:#bbf7d0;background:#f0fdf4}}
+.badge.conf-medium{{color:var(--ai);border-color:#fde68a;background:#fffbeb}}
+.badge.conf-low{{color:var(--warn);border-color:#fecaca;background:#fef2f2}}
+.plain{{margin:.35rem 0 0;font-size:.88rem}}
+.contrib-eq{{color:var(--muted);font-size:.78rem}}
 </style>
 </head>
 <body>
 <header>
   <h1>Founder Calibration Cockpit — Santiago Launch 30</h1>
-  <div class="sub">Gate 2A.1R-UI · Immutable source snapshot + editable founder draft · localStorage persistence · export for Gate 2A.2 ingest</div>
+  <div class="sub">Gate 2A.1R-UI.1 · Score rationales + immutable source · editable founder draft · localStorage · export for Gate 2A.2 ingest</div>
   <div class="toolbar">
     <button id="prevBtn">← Prev</button>
     <button id="nextBtn">Next →</button>
@@ -324,6 +344,7 @@ th{{cursor:pointer;color:var(--muted);font-weight:600}}
 <div class="toast" id="toast"></div>
 <script>
 const SOURCE = {source_json};
+const RATIONALES = {rationales_json};
 const THEME_META = {theme_json};
 const METRIC_META = {metric_json};
 const MODE_META = {mode_json};
@@ -363,6 +384,7 @@ function makeDraftFromSource(src){{
     operationalState: src.operational?.classification || 'HOURS_REQUIRED_UNKNOWN',
     needsResearch: false,
     founderNote: '',
+    founderChangeReasons: {{}},
     founderApproval: 'UNREVIEWED',
     approvedAt: null,
   }};
@@ -393,9 +415,10 @@ let store = loadStore();
 if (!store || store.sourceCheckpointSha !== SOURCE.sourceCheckpointSha || !store.drafts) {{
   store = defaultStore();
 }} else {{
-  // Ensure all 30 exist
+  // Ensure all 30 exist + migrate change-reason map
   SOURCE.records.forEach(r => {{
     if (!store.drafts[r.stgoId]) store.drafts[r.stgoId] = makeDraftFromSource(r);
+    if (!store.drafts[r.stgoId].founderChangeReasons) store.drafts[r.stgoId].founderChangeReasons = {{}};
   }});
 }}
 
@@ -403,6 +426,106 @@ let currentId = SOURCE.records[0].stgoId;
 let sortKey = 'norm';
 let sortDir = -1;
 const sourceById = Object.fromEntries(SOURCE.records.map(r => [r.stgoId, r]));
+
+
+const rationaleById = Object.fromEntries((RATIONALES.records||[]).map(r => [r.stgoId, r]));
+
+function getFieldRationale(stgoId, field){{
+  const rec = rationaleById[stgoId];
+  if (!rec) return null;
+  return (rec.fields||[]).find(f => f.field === field) || null;
+}}
+
+function confBadge(c){{
+  const cls = c==='HIGH'?'conf-high':(c==='MEDIUM'?'conf-medium':'conf-low');
+  return `<span class="badge ${{cls}}">confidence ${{c||'LOW'}}</span>`;
+}}
+
+function provenanceBadgeForRationale(rat){{
+  if (!rat) return '';
+  if (rat.rationaleClass === 'AI_PROPOSAL_RATIONALE' || /AI_PROPOSED/i.test(String(rat.provenance||''))) {{
+    return `<span class="badge ai">AI_PROPOSED_UNVERIFIED</span>`;
+  }}
+  return `<span class="badge source">SOURCE RATIONALE</span>`;
+}}
+
+function liveThematicSummary(vec){{
+  const ranked = THEMES.map(t => [t, Number(vec[t]||0)]).sort((a,b)=>b[1]-a[1]);
+  const top3 = ranked.slice(0,3);
+  const weak = ranked.filter(x=>x[1]<=0.05).slice(0,3);
+  const weakUse = weak.length ? weak : ranked.slice(-3);
+  const label = (t) => {{
+    const m = THEME_META.find(x=>x[0]===t);
+    return m ? m[1] : t;
+  }};
+  const primary = top3.filter(x=>x[1]>0.05).map(([t,v])=>`${{label(t)}} (${{toUi(v)}})`).join(', ') || 'no strong themes';
+  const weakTxt = weakUse.map(([t,v])=>`${{t}}=${{toUi(v)}}`).join(', ');
+  let contrast = null;
+  if (top3[0][1] >= 0.7 && ranked.slice(5).some(x=>x[1]<=0.05)) {{
+    contrast = `Strong ${{top3[0][0]}} profile with near-absent mid/low themes (${{weakTxt}}).`;
+  }}
+  return {{
+    text: `Primarily ${{primary}}. Weakest/near-absent: ${{weakTxt}}.`,
+    top3: top3.map(([code,value])=>({{code,label:label(code),value}})),
+    weakThemes: weakUse.map(([code,value])=>({{code,label:label(code),value}})),
+    contrast
+  }};
+}}
+
+function liveStructuralSummary(m){{
+  const ad=clamp01(m.anchor_density), hd=clamp01(m.heritage_depth), mr=clamp01(m.micro_reveal), po=clamp01(m.polish);
+  const parts = [
+    ad>=0.7?'high-anchor':ad>=0.4?'moderate-anchor':'low-anchor',
+    hd>=0.7?'high-heritage':hd>=0.4?'moderate-heritage':'low-heritage',
+    mr>=0.7?'high micro-reveal':mr>=0.4?'moderate micro-reveal':'limited hidden-discovery',
+    po>=0.7?'high polish':po>=0.4?'moderate finish':'raw/unfinished feel',
+  ];
+  return `${{parts[0][0].toUpperCase()+parts[0].slice(1)}}, ${{parts[1]}} experience with ${{parts[3]}} and ${{parts[2]}} value.`;
+}}
+
+function liveChronoBreakdown(m){{
+  const hd=clamp01(m.heritage_depth), ad=clamp01(m.anchor_density), mr=clamp01(m.micro_reveal), po=clamp01(m.polish);
+  const contributions = {{
+    heritage_depth: round1(hd*35),
+    anchor_density: round1(ad*30),
+    micro_reveal: round1(mr*20),
+    polish: round1(po*15),
+  }};
+  const raw = round1(contributions.heritage_depth+contributions.anchor_density+contributions.micro_reveal+contributions.polish);
+  const entries = Object.entries(contributions);
+  const lead = entries.reduce((a,b)=>a[1]>=b[1]?a:b);
+  const soft = entries.reduce((a,b)=>a[1]<=b[1]?a:b);
+  const plain = `Most of this POI's global ChronoWorth comes from ${{lead[0].replace(/_/g,' ')}} (${{lead[1]}}), while ${{soft[0].replace(/_/g,' ')}} contributes less (${{soft[1]}}).`;
+  return {{contributions, raw, plainLanguage: plain}};
+}}
+
+function rationaleHTML(stgoId, field, changed){{
+  const rat = getFieldRationale(stgoId, field);
+  const reason = (store.drafts[stgoId].founderChangeReasons||{{}})[field] || '';
+  let body = '';
+  if (!rat) {{
+    body = `<p><i>No structured rationale record for ${{field}}.</i></p>`;
+  }} else {{
+    const isAi = rat.rationaleClass === 'AI_PROPOSAL_RATIONALE' || /AI_PROPOSED/i.test(String(rat.provenance||''));
+    body = `
+      <div>${{provenanceBadgeForRationale(rat)}} ${{confBadge(rat.confidence)}} <span class="badge">${{rat.rationaleClass||''}}</span></div>
+      ${{isAi ? `<p><b>AI proposal rationale:</b> ${{rat.proposalRationale || rat.whyThisScore}}</p>` : `<p><b>Why this score:</b> ${{rat.whyThisScore||''}}</p>`}}
+      <p><b>Why not higher:</b> ${{rat.whyNotHigher||'—'}}</p>
+      <p><b>Why not lower:</b> ${{rat.whyNotLower||'—'}}</p>
+      ${{rat.evidenceLimitations ? `<p><b>Evidence limitation:</b> ${{rat.evidenceLimitations}}</p>` : ''}}
+      <p class="cmp">Source value frozen at generation: <b class="source">${{typeof rat.value==='object'?JSON.stringify(rat.value): (typeof rat.value==='number'? (Number.isInteger(rat.value)?rat.value:toUi(rat.value)) : rat.value)}}</b> · immutable after founder edits</p>
+    `;
+  }}
+  return `<details class="rationale" data-field="${{field}}">
+    <summary>Why this score?</summary>
+    <div class="body">${{body}}</div>
+  </details>
+  <div class="change-reason" style="${{changed?'':'display:none'}}" data-reason-for="${{field}}">
+    <label class="cmp">Why I changed this (optional)</label>
+    <input type="text" data-change-reason="${{field}}" value="${{String(reason).replace(/"/g,'&quot;')}}" placeholder="Optional founder calibration note for city replication"/>
+  </div>`;
+}}
+
 
 function toast(msg){{
   const t = document.getElementById('toast');
@@ -495,6 +618,10 @@ function resetField(kind, key){{
   if (kind==='mode') {{
     d.modes[key].value = src.modes[key]?.value == null ? null : clamp01(src.modes[key].value);
   }}
+  if (d.founderChangeReasons) {{
+    const reasonKey = kind==='tier' ? 'tier' : key;
+    delete d.founderChangeReasons[reasonKey];
+  }}
   markDirty();
 }}
 
@@ -530,10 +657,11 @@ function renderList(){{
   }});
 }}
 
-function sliderHTML(label, kind, key, src01, draft01, provenanceBadge){{
+function sliderHTML(label, kind, key, src01, draft01, provenanceBadge, stgoId){{
   const s = toUi(src01), dr = toUi(draft01);
   const changed = s !== dr;
   const delta = dr - s;
+  const id = stgoId || currentId;
   return `<div class="slider-wrap field ${{changed?'changed':''}}">
     <div class="slider-head"><span><b>${{label}}</b> ${{provenanceBadge||''}}</span>
       <span><input type="number" min="0" max="100" step="1" value="${{dr}}" data-kind="${{kind}}" data-key="${{key}}" class="numedit" style="width:4.2rem"/> / 100
@@ -544,6 +672,7 @@ function sliderHTML(label, kind, key, src01, draft01, provenanceBadge){{
     </div>
     <div class="anchors"><span>0 absent</span><span>25 weak</span><span>50 meaningful</span><span>75 strong</span><span>100 archetypal</span></div>
     <div class="cmp">SOURCE <b class="source">${{s}}</b> → FOUNDER <b class="founder">${{dr}}</b> · Δ <b class="delta">${{delta>=0?'+':''}}${{delta}}</b>${{changed?' · ORIGINAL → DRAFT':''}}</div>
+    ${{rationaleHTML(id, key, changed)}}
   </div>`;
 }}
 
@@ -555,17 +684,21 @@ function renderDetail(){{
   const norm = norms[currentId];
   const ch = changedFields(currentId);
   const topId = Object.keys(raws).sort((a,b)=>raws[b]-raws[a])[0];
+  const themeSum = liveThematicSummary(d.thematicVector);
+  const structSum = liveStructuralSummary(d.structuralMetrics);
+  const cwBreak = liveChronoBreakdown(d.structuralMetrics);
+  const srcRat = rationaleById[currentId];
 
   let themes = THEMES.map(t => {{
     const meta = THEME_META.find(x => x[0]===t);
     const badge = `<span class="badge ${{fieldChanged(src.thematicVector[t], d.thematicVector[t])?'founder':'source'}}">${{fieldChanged(src.thematicVector[t], d.thematicVector[t])?'FOUNDER_EDITED':'FOUNDER_PRECALIBRATED'}}</span>`;
-    return sliderHTML(`${{t}} · ${{meta?meta[1]:t}}`, 'theme', t, src.thematicVector[t], d.thematicVector[t], badge);
+    return sliderHTML(`${{t}} · ${{meta?meta[1]:t}}`, 'theme', t, src.thematicVector[t], d.thematicVector[t], badge, currentId);
   }}).join('');
 
   let metrics = METRICS.map(m => {{
     const meta = METRIC_META.find(x => x[0]===m);
     const badge = `<span class="badge ${{fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m])?'founder':'source'}}">${{fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m])?'FOUNDER_EDITED':'FOUNDER_PRECALIBRATED'}}</span>`;
-    return sliderHTML(meta?meta[1]:m, 'metric', m, src.structuralMetrics[m], d.structuralMetrics[m], badge);
+    return sliderHTML(meta?meta[1]:m, 'metric', m, src.structuralMetrics[m], d.structuralMetrics[m], badge, currentId);
   }}).join('');
 
   let modes = MODES.map(m => {{
@@ -579,9 +712,10 @@ function renderDetail(){{
       return `<div class="field"><b>${{m}} · ${{meta?meta[1]:m}}</b> ${{badge}}<div class="cmp">UNKNOWN — no invented evidence</div>
         <label>Set draft 0–100 (optional)</label>
         <input type="number" min="0" max="100" class="numedit" data-kind="mode" data-key="${{m}}" value="" placeholder="UNKNOWN"/>
-        <button class="resetf" data-reset-kind="mode" data-reset-key="${{m}}">Reset field</button></div>`;
+        <button class="resetf" data-reset-kind="mode" data-reset-key="${{m}}">Reset field</button>
+        ${{rationaleHTML(currentId, m, false)}}</div>`;
     }}
-    return sliderHTML(`${{m}} · ${{meta?meta[1]:m}}`, 'mode', m, sv ?? 0, dv ?? 0, badge) +
+    return sliderHTML(`${{m}} · ${{meta?meta[1]:m}}`, 'mode', m, sv ?? 0, dv ?? 0, badge, currentId) +
       (m==='M2' ? `<div class="cmp">Evidence: ${{d.modes.M2.evidence || src.modes.M2?.status || 'UNKNOWN'}} · UNKNOWN never auto-becomes yes/no</div>` : '');
   }}).join('');
 
@@ -598,21 +732,45 @@ function renderDetail(){{
       <select id="jump">${{SOURCE.records.map(r=>`<option value="${{r.stgoId}}" ${{r.stgoId===currentId?'selected':''}}>${{r.stgoId}} — ${{r.displayName}}</option>`).join('')}}</select>
     </div>
 
-    <h3>ChronoWorth</h3>
+    <h3>ChronoWorth explanation</h3>
     <div class="cwbox">
       <div class="field">
-        <div class="badge ai">RAW (formula)</div>
+        <div class="badge ai">RAW ChronoWorth</div>
         <div class="big">${{round1(raw)}} / 100</div>
         <div class="cmp">100×(0.35·heritage + 0.30·anchor + 0.20·micro + 0.15·polish)</div>
         <div class="cmp">Live from founder draft structural metrics</div>
       </div>
       <div class="field">
-        <div class="badge founder">RELATIVE Santiago ChronoWorth</div>
+        <div class="badge founder">RELATIVE ChronoWorth</div>
         <div class="big">${{Math.round(norm)}} / 100</div>
         <div class="cmp">Corpus: <b>${{SOURCE.normalizationCorpus}}</b></div>
         <div class="cmp">max raw in Launch30 = ${{round1(maxRaw)}} (${{topId}}) ⇒ relative max 100</div>
         <div class="cmp">Not globally comparable across future cities</div>
       </div>
+    </div>
+    <div class="summary-box">
+      <h4>Weighted contribution breakdown (live)</h4>
+      <div class="contrib">
+        <div><span>Heritage depth</span><span>${{clamp01(d.structuralMetrics.heritage_depth).toFixed(2)}} × 35 = <b>${{cwBreak.contributions.heritage_depth}}</b></span></div>
+        <div><span>Anchor density</span><span>${{clamp01(d.structuralMetrics.anchor_density).toFixed(2)}} × 30 = <b>${{cwBreak.contributions.anchor_density}}</b></span></div>
+        <div><span>Micro reveal</span><span>${{clamp01(d.structuralMetrics.micro_reveal).toFixed(2)}} × 20 = <b>${{cwBreak.contributions.micro_reveal}}</b></span></div>
+        <div><span>Polish</span><span>${{clamp01(d.structuralMetrics.polish).toFixed(2)}} × 15 = <b>${{cwBreak.contributions.polish}}</b></span></div>
+      </div>
+      <div class="contrib-eq">Raw ChronoWorth = ${{cwBreak.raw}}</div>
+      <p class="plain">${{cwBreak.plainLanguage}}</p>
+      <p class="cmp">Source seed raw was ${{round1(src.chronoWorthProposed)}} · source rationale artifact preserved separately (immutable prose).</p>
+    </div>
+
+    <div class="summary-box">
+      <h4>Current thematic interpretation</h4>
+      <p class="plain">${{themeSum.text}}</p>
+      ${{themeSum.contrast ? `<p class="cmp"><b>Contrast:</b> ${{themeSum.contrast}}</p>` : ''}}
+      <p class="cmp">Top 3: ${{themeSum.top3.map(t=>t.code+'='+toUi(t.value)).join(' · ')}} · Weak: ${{themeSum.weakThemes.map(t=>t.code+'='+toUi(t.value)).join(' · ')}}</p>
+    </div>
+    <div class="summary-box">
+      <h4>Current structural interpretation</h4>
+      <p class="plain">${{structSum}}</p>
+      <p class="cmp">Updates live with founder structural edits. Source snapshot summary: ${{(srcRat && srcRat.structuralSummary) || '—'}}</p>
     </div>
 
     <h3>Themes T1A–T9 <span class="badge source">FOUNDER_PRECALIBRATED seed</span></h3>
@@ -628,6 +786,7 @@ function renderDetail(){{
         <select id="tierSel">${{TIERS.map(t=>`<option value="${{t}}" ${{t===d.tier?'selected':''}}>${{t}}</option>`).join('')}}</select>
         <button class="resetf" data-reset-kind="tier" data-reset-key="tier">Reset field</button>
         <div class="cmp">SOURCE <b class="source">${{src.tier}}</b> → FOUNDER <b class="founder">${{d.tier}}</b></div>
+        ${{rationaleHTML(currentId, 'tier', fieldChanged(src.tier,d.tier))}}
       </div>
       <div class="field ${{fieldChanged(src.visitTime.min,d.visitTimeMin)?'changed':''}}">
         <label>Visit time min / typical / max (minutes, no travel)</label>
@@ -637,6 +796,7 @@ function renderDetail(){{
           <input type="number" id="vmax" value="${{d.visitTimeMax}}" style="width:5rem"/>
         </div>
         <div class="cmp"><span class="badge ai">AI_PROPOSED_UNVERIFIED seed</span> SOURCE min ${{src.visitTime.min}}</div>
+        ${{rationaleHTML(currentId, 'visitTimeMin', fieldChanged(src.visitTime.min,d.visitTimeMin)||fieldChanged(src.visitTime.typical,d.visitTimeTypical)||fieldChanged(src.visitTime.max,d.visitTimeMax))}}
       </div>
     </div>
     ${{modes}}
@@ -700,6 +860,17 @@ function renderDetail(){{
   document.getElementById('opsState').onchange = (e) => {{ store.drafts[currentId].operationalState = e.target.value; markDirty(); }};
   document.getElementById('needsResearch').onchange = (e) => {{ store.drafts[currentId].needsResearch = e.target.checked; markDirty(); }};
   document.getElementById('note').onchange = (e) => {{ store.drafts[currentId].founderNote = e.target.value; markDirty(); }};
+  document.querySelectorAll('[data-change-reason]').forEach(el => {{
+    el.onchange = (e) => {{
+      if (!store.drafts[currentId].founderChangeReasons) store.drafts[currentId].founderChangeReasons = {{}};
+      const field = e.target.dataset.changeReason;
+      const val = e.target.value.trim();
+      if (val) store.drafts[currentId].founderChangeReasons[field] = val;
+      else delete store.drafts[currentId].founderChangeReasons[field];
+      store.dirty = true;
+      document.getElementById('saveStatus').innerHTML = '<span class="unsaved">Unsaved changes</span> · Last saved: '+(store.lastSavedAt || 'never');
+    }};
+  }});
   document.getElementById('jump').onchange = (e) => {{ currentId = e.target.value; render(); }};
 }}
 
@@ -782,6 +953,32 @@ function renderGuide(){{
   document.getElementById('closeGuide').onclick = () => document.getElementById('guideModal').classList.remove('open');
 }}
 
+function exportField(stgoId, field, sourceValue, draftValue, changed){{
+  const rat = getFieldRationale(stgoId, field);
+  const reasons = store.drafts[stgoId].founderChangeReasons || {{}};
+  const isAi = !!(rat && (rat.rationaleClass === 'AI_PROPOSAL_RATIONALE' || /AI_PROPOSED/i.test(String(rat.provenance||''))));
+  const out = {{
+    field,
+    sourceValue,
+    draftValue,
+    changed: !!changed,
+    provenance: changed ? 'FOUNDER_EDITED' : (isAi ? 'AI_PROPOSED_UNVERIFIED' : (rat?.provenance || 'FOUNDER_PRECALIBRATED')),
+    sourceRationale: rat ? {{
+      rationaleClass: rat.rationaleClass,
+      whyThisScore: rat.whyThisScore,
+      whyNotHigher: rat.whyNotHigher,
+      whyNotLower: rat.whyNotLower,
+    }} : null,
+    rationaleConfidence: rat?.confidence || null,
+    founderChangeReason: reasons[field] || null,
+  }};
+  if (isAi) {{
+    out.proposalRationale = rat?.proposalRationale || rat?.whyThisScore || null;
+    out.evidenceLimitations = rat?.evidenceLimitations || null;
+  }}
+  return out;
+}}
+
 function exportJson(){{
   const {{raws, norms, maxRaw}} = corpusScores();
   let approved=0, modified=0, unreviewed=0, needs=0, unchangedApproved=0;
@@ -792,6 +989,13 @@ function exportJson(){{
     if (ch.length || d.founderApproval==='MODIFIED_AFTER_APPROVAL') modified++;
     if (d.founderApproval==='UNREVIEWED') unreviewed++;
     if (d.needsResearch) needs++;
+    const fieldExports = [];
+    THEMES.forEach(t => fieldExports.push(exportField(src.stgoId, t, src.thematicVector[t], d.thematicVector[t], fieldChanged(src.thematicVector[t], d.thematicVector[t]))));
+    METRICS.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.structuralMetrics[m], d.structuralMetrics[m], fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m]))));
+    fieldExports.push(exportField(src.stgoId, 'tier', src.tier, d.tier, fieldChanged(src.tier, d.tier)));
+    fieldExports.push(exportField(src.stgoId, 'visitTimeMin', src.visitTime, {{ min:d.visitTimeMin, typical:d.visitTimeTypical, max:d.visitTimeMax }}, fieldChanged(src.visitTime.min, d.visitTimeMin)||fieldChanged(src.visitTime.typical, d.visitTimeTypical)||fieldChanged(src.visitTime.max, d.visitTimeMax)));
+    MODES.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.modes[m]?.value ?? null, d.modes[m]?.value ?? null, fieldChanged(src.modes[m]?.value, d.modes[m]?.value))));
+    const cw = liveChronoBreakdown(d.structuralMetrics);
     return {{
       stgoId: src.stgoId,
       displayName: src.displayName,
@@ -816,7 +1020,12 @@ function exportJson(){{
         operationalState: d.operationalState,
         needsResearch: d.needsResearch,
         founderNote: d.founderNote,
+        founderChangeReasons: d.founderChangeReasons || {{}},
       }},
+      fields: fieldExports,
+      thematicInterpretation: liveThematicSummary(d.thematicVector),
+      structuralInterpretation: liveStructuralSummary(d.structuralMetrics),
+      chronoWorthBreakdown: cw,
       changedFields: ch,
       founderApproval: d.founderApproval,
       approvedAt: d.approvedAt,
@@ -825,18 +1034,19 @@ function exportJson(){{
       provenance: {{
         thematicVector: fieldChanged(src.thematicVector, d.thematicVector) ? 'FOUNDER_EDITED' : 'FOUNDER_PRECALIBRATED',
         structuralMetrics: fieldChanged(src.structuralMetrics, d.structuralMetrics) ? 'FOUNDER_EDITED' : 'FOUNDER_PRECALIBRATED',
-        visitTime: 'AI_PROPOSED_UNVERIFIED_OR_FOUNDER_EDITED',
+        visitTime: fieldChanged(src.visitTime.min, d.visitTimeMin) ? 'FOUNDER_EDITED' : 'AI_PROPOSED_UNVERIFIED',
       }},
     }};
   }});
   const incomplete = approved < 30;
   const doc = {{
     schemaVersion: 'santiago-launch30-founder-calibration.reviewed.v0.1',
-    gate: '2A.1R-UI',
+    gate: '2A.1R-UI.1',
     sourceCheckpointSha: SOURCE.sourceCheckpointSha,
     sourceDataset: SOURCE.sourceDataset,
     canonicalSemanticArtifact: SOURCE.canonicalSemanticArtifact,
     launchCalibrationArtifact: SOURCE.launchCalibrationArtifact,
+    rationaleArtifact: SOURCE.rationaleArtifact,
     normalizationCorpus: SOURCE.normalizationCorpus,
     chronoWorthFormula: SOURCE.chronoWorthFormula,
     exportTimestamp: new Date().toISOString(),

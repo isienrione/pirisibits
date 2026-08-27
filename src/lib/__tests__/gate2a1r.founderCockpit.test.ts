@@ -14,7 +14,7 @@ import { loadEditorialCalibration } from '@/src/engine/loadCalibration'
 const ROOT = resolve(__dirname, '../../..')
 const COCKPIT = resolve(ROOT, 'docs/engine/gate-2a1-founder-calibration-cockpit.html')
 const OLD = resolve(ROOT, 'docs/engine/gate-2a1-editorial-calibration.html')
-const START = 'aee3098b2f70c64799a896c51377b6da02dd9f90'
+const START = 'af8874f8efa106ec87e0262eec43329c666e8444'
 
 describe('Gate 2A.1R-UI founder calibration cockpit', () => {
   const html = readFileSync(COCKPIT, 'utf8')
@@ -30,7 +30,7 @@ describe('Gate 2A.1R-UI founder calibration cockpit', () => {
   })
 
   it('embeds exactly 30 launch POIs matching Gate 2A.1R values', () => {
-    const m = html.match(/const SOURCE = (\{[\s\S]*?\});\nconst THEME_META/)
+    const m = html.match(/const SOURCE = (\{[\s\S]*?\});\nconst (?:RATIONALES|THEME_META)/)
     expect(m).toBeTruthy()
     const source = JSON.parse(m![1]!)
     expect(source.records).toHaveLength(30)
