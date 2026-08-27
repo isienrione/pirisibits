@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 1B.4 — Multimodal Physical Graph Review</title>
+<style>
+body { margin:0; font-family: Georgia, "Iowan Old Style", serif; background: linear-gradient(180deg,#f4efe6,#ebe4d8); color:#1a1a1a; }
+header.top, section { max-width:1100px; margin:0 auto; padding:18px 20px; }
+.card { background:#fffdf8; border:1px solid #d8cfc0; border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+.grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); }
+.badge { display:inline-block; font-size:11px; letter-spacing:.04em; padding:2px 8px; border-radius:999px; margin-right:4px; }
+.badge.green { background:#d9f0e0; }
+.badge.yellow { background:#fff0c2; }
+.badge.red { background:#f7d6d6; }
+.badge.blue { background:#d9e6f7; }
+.warn { background:#fff3cd; padding:8px; border-radius:8px; }
+code { background:#f0ebe3; padding:1px 5px; border-radius:4px; font-size:12px; }
+ul { margin:6px 0 0 18px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Gate 1B.4 — Santiago multimodal physical graph</h1>
+  <p>Curator review. Traveler route generation remains disabled. Observed times and engine-policy costs are labeled separately.</p>
+</header>
+<section class="card">
+  <h2>Summary</h2>
+  <p>Dense provider WALK edges: 598 · Sparse operational: 393 · Reduction: 34.3%</p>
+  <p>Metro stations: 126 · Lines: 8 · Interchanges: 16</p>
+  <p>POI↔Metro access edges: 108 · Ride topology edges: 270 · Transfers: 32</p>
+  <p>Rideshare/macro edges: 0 · Inventory: 103 (Launch 30 / Backlog 73)</p>
+  <p>Contracts: ENGINE=CONTRACT_NOT_RECOVERABLE; PHYSICAL_GRAPH=CONTRACT_NOT_RECOVERABLE</p>
+  <p>Reference matrix: REFERENCE_MATRIX_NOT_PRESENT · Thematic/narrative used: False</p>
+</section>
+<section>
+  <h2>San Cristóbal (STGO_32) staged structure</h2>
+  <div class="card">
+    <p>Routing endpoint: <code>funicular</code> — funicular base. Summit ascent unresolved.</p>
+    <ul><li><code>hill_concept_poi</code> — CONCEPT_ONLY </li><li><code>funicular_base</code> — ACTIVE_ROUTING_ENDPOINT </li><li><code>acceso_carlos_reed</code> — ACCESS_PRESERVED_NOT_COLLAPSED </li><li><code>teleferico_pedro_de_valdivia</code> — ACCESS_PRESERVED_NOT_COLLAPSED </li><li><code>ascent_transport</code> — UNRESOLVED_INACTIVE No trustworthy funicular duration/provider segment in Gate 1B.4</li><li><code>upper_experience</code> — UNRESOLVED Arrival at funicular base ≠ summit</li></ul>
+  </div>
+</section>
+<section>
+  <h2>Launch POIs</h2>
+  <div class="grid">
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Plaza de Armas</strong>
+            <code>STGO_01</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Museo Chileno Arte Precolombino — 3.38 min / 216.2 m (GREEN)</li><li>Catedral Metropolitana — 3.5 min / 229.6 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 7.52 min / 597.9 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 8.01 min / 616.3 m (GREEN)</li><li>La Piojera — 8.26 min / 674.5 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 8.29 min / 663.4 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 8.71 min / 663.5 m (GREEN)</li><li>Palacio Pereira — 9.12 min / 782.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Plaza de Armas</b> (L3, L5) — 3.3 min / 211.1 m · PRIMARY · Mapbox</li><li><b>Santa Ana</b> (L2, L5) — 7.1 min / 648.9 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Catedral Metropolitana</strong>
+            <code>STGO_02</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Plaza de Armas — 2.87 min / 229.6 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 3.06 min / 225.6 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 3.11 min / 267.5 m (GREEN)</li><li>La Piojera — 5.34 min / 495.0 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 6.62 min / 540.0 m (GREEN)</li><li>Mercado Tirso de Molina — 7.73 min / 688.5 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 8.08 min / 628.8 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 9.3 min / 779.9 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Plaza de Armas</b> (L3, L5) — 0.3 min / 31.5 m · PRIMARY · Mapbox</li><li><b>Puente Cal y Canto</b> (L2, L3) — 7.8 min / 690.0 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Palacio de La Moneda</strong>
+            <code>STGO_03</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Morandé 80 (President&#x27;s Door) — 3.64 min / 274.6 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 4.44 min / 340.1 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 5.44 min / 421.4 m (GREEN)</li><li>Confitería Torres (1879) — 6.09 min / 512.6 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 7.49 min / 581.7 m (GREEN)</li><li>Barrio París-Londres — 8.47 min / 691.3 m (GREEN)</li><li>Londres 38 Memorial — 8.97 min / 730.8 m (GREEN)</li><li>Palacio Pereira — 10.2 min / 849.3 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>La Moneda</b> (L1) — 2.8 min / 191.3 m · PRIMARY · Mapbox</li><li><b>Universidad de Chile</b> (L1, L3) — 5.3 min / 425.2 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Morandé 80 (President&#x27;s Door)</strong>
+            <code>STGO_04</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Seguro Obrero Bullet Scars (Correo) — 0.8 min / 65.5 m (GREEN)</li><li>Palacio de La Moneda — 2.67 min / 247.2 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 3.61 min / 298.2 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 3.85 min / 307.1 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 6.75 min / 563.7 m (GREEN)</li><li>Plaza de Armas — 7.33 min / 649.3 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 7.59 min / 607.7 m (GREEN)</li><li>Palacio Pereira — 8.34 min / 727.3 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>La Moneda</b> (L1) — 5.0 min / 415.5 m · PRIMARY · Mapbox</li><li><b>Universidad de Chile</b> (L1, L3) — 5.7 min / 496.9 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge red">BLOCKED</span> <span class="badge yellow">REVIEW</span>
+            <strong>Cerro Santa Lucía &amp; Terraza Neptuno</strong>
+            <code>STGO_05</code>
+          </header>
+          <p class='warn'>PARTIAL_REVIEW_REQUIRED — excluded; curation unchanged</p>
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Barrio París-Londres</strong>
+            <code>STGO_06</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Londres 38 Memorial — 0.63 min / 49.5 m (GREEN)</li><li>Palacio de La Moneda — 8.06 min / 663.9 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 8.41 min / 625.6 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 9.4 min / 763.0 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 9.96 min / 773.1 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 10.38 min / 792.6 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 10.85 min / 825.4 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 12.97 min / 1012.9 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad de Chile</b> (L1, L3) — 4.1 min / 317.5 m · PRIMARY · Mapbox</li><li><b>Santa Lucía</b> (L1) — 7.3 min / 564.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Londres 38 Memorial</strong>
+            <code>STGO_07</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Barrio París-Londres — 0.52 min / 49.5 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 8.92 min / 678.8 m (GREEN)</li><li>Palacio de La Moneda — 9.06 min / 703.3 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 10.4 min / 802.4 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 10.44 min / 826.2 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 10.89 min / 845.8 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 11.33 min / 878.5 m (GREEN)</li><li>Catedral Metropolitana — 12.98 min / 1073.0 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad de Chile</b> (L1, L3) — 4.5 min / 357.1 m · PRIMARY · Mapbox</li><li><b>Santa Lucía</b> (L1) — 6.4 min / 493.2 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Palacio Pereira</strong>
+            <code>STGO_10</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Confitería Torres (1879) — 8.43 min / 720.6 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 8.48 min / 657.4 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 9.09 min / 697.9 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 9.11 min / 685.2 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 9.25 min / 722.9 m (GREEN)</li><li>Plaza de Armas — 9.63 min / 780.7 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 10.16 min / 739.4 m (GREEN)</li><li>Palacio de La Moneda — 10.35 min / 849.3 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Santa Ana</b> (L2, L5) — 3.9 min / 366.2 m · PRIMARY · Mapbox</li><li><b>Los Héroes</b> (L1, L2) — 10.3 min / 907.8 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Barrio Yungay &amp; Plaza Roto Chileno</strong>
+            <code>STGO_11</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Museo de la Memoria y DDHH — 8.01 min / 742.6 m (GREEN)</li><li>Palacio Pereira — 23.12 min / 1882.6 m (YELLOW)</li><li>Plaza de Armas — 26.94 min / 2168.6 m (YELLOW)</li><li>Museo Chileno Arte Precolombino — 29.19 min / 2335.1 m (YELLOW)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Cumming</b> (L5) — 8.6 min / 712.9 m · PRIMARY · Mapbox</li><li><b>Quinta Normal</b> (L5) — 9.5 min / 844.4 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Pasaje Matte &amp; Hidden Ballroom</strong>
+            <code>STGO_16</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Museo Chileno Arte Precolombino — 2.12 min / 187.6 m (GREEN)</li><li>Catedral Metropolitana — 2.62 min / 225.6 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 3.56 min / 314.4 m (GREEN)</li><li>Plaza de Armas — 4.88 min / 403.8 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 5.02 min / 403.2 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 5.99 min / 542.1 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 6.76 min / 607.7 m (GREEN)</li><li>La Piojera — 7.44 min / 670.6 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Plaza de Armas</b> (L3, L5) — 2.2 min / 194.1 m · PRIMARY · Mapbox</li><li><b>Universidad de Chile</b> (L1, L3) — 6.6 min / 573.0 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Edificio Palacio Ariztía (Flat-Iron)</strong>
+            <code>STGO_18</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Seguro Obrero Bullet Scars (Correo) — 3.23 min / 276.8 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 3.47 min / 298.2 m (GREEN)</li><li>Palacio de La Moneda — 4.44 min / 394.0 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 4.78 min / 350.9 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 5.67 min / 403.2 m (GREEN)</li><li>Barrio París-Londres — 5.98 min / 503.9 m (GREEN)</li><li>Londres 38 Memorial — 6.63 min / 557.1 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 7.79 min / 590.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad de Chile</b> (L1, L3) — 2.9 min / 251.5 m · PRIMARY · Mapbox</li><li><b>La Moneda</b> (L1) — 6.9 min / 563.4 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Seguro Obrero Bullet Scars (Correo)</strong>
+            <code>STGO_19</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Morandé 80 (President&#x27;s Door) — 0.77 min / 65.5 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 3.05 min / 241.6 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 3.34 min / 276.8 m (GREEN)</li><li>Palacio de La Moneda — 3.44 min / 312.7 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 5.94 min / 498.1 m (GREEN)</li><li>Plaza de Armas — 6.53 min / 583.8 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 6.79 min / 542.1 m (GREEN)</li><li>Palacio Pereira — 7.54 min / 661.8 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad de Chile</b> (L1, L3) — 5.7 min / 489.5 m · PRIMARY · Mapbox</li><li><b>La Moneda</b> (L1) — 5.8 min / 481.1 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>La Piojera</strong>
+            <code>STGO_20</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Mercado Tirso de Molina — 3.16 min / 259.3 m (GREEN)</li><li>Catedral Metropolitana — 6.3 min / 495.0 m (GREEN)</li><li>La Vega Central — 6.84 min / 561.3 m (GREEN)</li><li>Plaza de Armas — 8.1 min / 633.0 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 8.72 min / 695.5 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 8.83 min / 670.6 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 12.39 min / 985.0 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 12.47 min / 995.8 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Puente Cal y Canto</b> (L2, L3) — 2.4 min / 180.7 m · PRIMARY · Mapbox</li><li><b>Plaza de Armas</b> (L3, L5) — 6.1 min / 476.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Confitería Torres (1879)</strong>
+            <code>STGO_21</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Palacio de La Moneda — 7.03 min / 559.4 m (GREEN)</li><li>Palacio Pereira — 8.64 min / 693.0 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 9.74 min / 753.4 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 10.54 min / 818.9 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 11.36 min / 901.6 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 13.59 min / 1060.5 m (GREEN)</li><li>Barrio París-Londres — 15.21 min / 1254.2 m (GREEN)</li><li>Londres 38 Memorial — 15.75 min / 1293.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Los Héroes</b> (L1, L2) — 2.8 min / 281.5 m · PRIMARY · Mapbox</li><li><b>La Moneda</b> (L1) — 4.7 min / 363.6 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Museo Chileno Arte Precolombino</strong>
+            <code>STGO_22</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Pasaje Matte &amp; Hidden Ballroom — 2.65 min / 187.6 m (GREEN)</li><li>Plaza de Armas — 2.76 min / 216.2 m (GREEN)</li><li>Catedral Metropolitana — 3.2 min / 267.5 m (GREEN)</li><li>Seguro Obrero Bullet Scars (Correo) — 6.13 min / 498.2 m (GREEN)</li><li>Paseo Bandera Urban Art Corridor — 6.63 min / 516.7 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 6.9 min / 563.8 m (GREEN)</li><li>Palacio Pereira — 7.91 min / 699.9 m (GREEN)</li><li>La Piojera — 8.01 min / 712.5 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Plaza de Armas</b> (L3, L5) — 2.8 min / 236.0 m · PRIMARY · Mapbox</li><li><b>Puente Cal y Canto</b> (L2, L3) — 7.8 min / 678.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge red">BLOCKED</span> <span class="badge yellow">REVIEW</span>
+            <strong>Inca Tambo Canal Dip (Puente/Stgo)</strong>
+            <code>STGO_23</code>
+          </header>
+          <p class='warn'>UNRESOLVED_RESEARCH_REQUIRED — excluded</p>
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Barrio Lastarria Corridor</strong>
+            <code>STGO_24</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Bocanáriz &amp; Chipe Libre — 1.0 min / 105.2 m (GREEN)</li><li>Taller Castillo Kulczewski — 3.48 min / 291.4 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 5.16 min / 445.2 m (GREEN)</li><li>GAM (Centro Gabriela Mistral) — 5.27 min / 359.7 m (GREEN)</li><li>Bellavista Mural Corridors — 8.61 min / 736.2 m (GREEN)</li><li>La Chascona (Neruda House) — 11.5 min / 991.2 m (GREEN)</li><li>Cerro San Cristóbal Funicular / Hill complex — 12.33 min / 1069.3 m (GREEN)</li><li>Catedral Metropolitana — 12.43 min / 1081.9 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad Católica</b> (L1) — 5.4 min / 434.0 m · PRIMARY · Mapbox</li><li><b>Bellas Artes</b> (L5) — 5.4 min / 436.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>GAM (Centro Gabriela Mistral)</strong>
+            <code>STGO_25</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Bocanáriz &amp; Chipe Libre — 3.26 min / 254.5 m (GREEN)</li><li>Barrio Lastarria Corridor — 4.82 min / 359.7 m (GREEN)</li><li>Taller Castillo Kulczewski — 6.14 min / 473.7 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 9.99 min / 805.0 m (GREEN)</li><li>Bellavista Mural Corridors — 13.44 min / 1095.9 m (GREEN)</li><li>Londres 38 Memorial — 13.95 min / 1155.3 m (GREEN)</li><li>Barrio París-Londres — 14.48 min / 1226.6 m (GREEN)</li><li>La Chascona (Neruda House) — 16.32 min / 1350.9 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad Católica</b> (L1) — 3.4 min / 230.6 m · PRIMARY · Mapbox</li><li><b>Santa Lucía</b> (L1) — 8.0 min / 662.1 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>MNBA &amp; Parque Forestal</strong>
+            <code>STGO_26</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Barrio Lastarria Corridor — 5.36 min / 445.2 m (GREEN)</li><li>Bocanáriz &amp; Chipe Libre — 6.36 min / 550.4 m (GREEN)</li><li>Taller Castillo Kulczewski — 7.55 min / 633.6 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 9.04 min / 815.9 m (GREEN)</li><li>Catedral Metropolitana — 9.44 min / 837.2 m (GREEN)</li><li>Bellavista Mural Corridors — 9.65 min / 799.3 m (GREEN)</li><li>GAM (Centro Gabriela Mistral) — 10.63 min / 805.0 m (GREEN)</li><li>La Vega Central — 11.01 min / 1005.1 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Bellas Artes</b> (L5) — 2.5 min / 192.7 m · PRIMARY · Mapbox</li><li><b>Plaza de Armas</b> (L3, L5) — 9.8 min / 868.7 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Taller Castillo Kulczewski</strong>
+            <code>STGO_27</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Bocanáriz &amp; Chipe Libre — 2.28 min / 219.2 m (GREEN)</li><li>Barrio Lastarria Corridor — 3.45 min / 291.4 m (GREEN)</li><li>GAM (Centro Gabriela Mistral) — 6.55 min / 473.7 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 7.32 min / 633.6 m (GREEN)</li><li>Bellavista Mural Corridors — 10.03 min / 857.5 m (GREEN)</li><li>La Chascona (Neruda House) — 12.91 min / 1112.6 m (GREEN)</li><li>Cerro San Cristóbal Funicular / Hill complex — 13.75 min / 1190.7 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 15.81 min / 1341.0 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad Católica</b> (L1) — 6.7 min / 548.0 m · PRIMARY · Mapbox</li><li><b>Bellas Artes</b> (L5) — 7.6 min / 624.9 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Bocanáriz &amp; Chipe Libre</strong>
+            <code>STGO_28</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Barrio Lastarria Corridor — 1.56 min / 105.2 m (GREEN)</li><li>Taller Castillo Kulczewski — 2.87 min / 219.2 m (GREEN)</li><li>GAM (Centro Gabriela Mistral) — 4.27 min / 254.5 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 6.72 min / 550.4 m (GREEN)</li><li>Bellavista Mural Corridors — 10.17 min / 841.4 m (GREEN)</li><li>La Chascona (Neruda House) — 13.06 min / 1096.4 m (GREEN)</li><li>Catedral Metropolitana — 13.48 min / 1156.5 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 13.83 min / 1168.4 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad Católica</b> (L1) — 4.4 min / 328.8 m · PRIMARY · Mapbox</li><li><b>Bellas Artes</b> (L5) — 7.0 min / 541.7 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>La Chascona (Neruda House)</strong>
+            <code>STGO_29</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Cerro San Cristóbal Funicular / Hill complex — 1.97 min / 177.1 m (GREEN)</li><li>Bellavista Mural Corridors — 3.31 min / 279.7 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 8.01 min / 730.2 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 11.6 min / 998.5 m (GREEN)</li><li>Barrio Lastarria Corridor — 11.8 min / 990.2 m (GREEN)</li><li>Bocanáriz &amp; Chipe Libre — 12.8 min / 1095.4 m (GREEN)</li><li>Taller Castillo Kulczewski — 13.29 min / 1111.6 m (GREEN)</li><li>La Vega Central — 13.7 min / 1233.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Patronato</b> (L2) — 11.0 min / 1003.4 m · PRIMARY · Mapbox</li><li><b>Baquedano</b> (L1, L5) — 12.9 min / 1016.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Cerro San Cristóbal Funicular / Hill complex</strong>
+            <code>STGO_32</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>La Chascona (Neruda House) — 2.15 min / 177.1 m (GREEN)</li><li>Bellavista Mural Corridors — 5.46 min / 456.8 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 7.77 min / 697.1 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 12.58 min / 1076.6 m (GREEN)</li><li>Barrio Lastarria Corridor — 12.83 min / 1068.3 m (GREEN)</li><li>Bocanáriz &amp; Chipe Libre — 13.83 min / 1173.5 m (GREEN)</li><li>La Vega Central — 14.06 min / 1271.8 m (GREEN)</li><li>Taller Castillo Kulczewski — 14.32 min / 1189.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Patronato</b> (L2) — 10.7 min / 970.2 m · PRIMARY · Mapbox</li><li><b>Cerro Blanco</b> (L2) — 13.6 min / 1208.6 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge red">BLOCKED</span> <span class="badge yellow">REVIEW</span>
+            <strong>Kulczewski Funicular Gargoyle</strong>
+            <code>STGO_33</code>
+          </header>
+          <p class='warn'>NEEDS_SEMANTIC_REVIEW — excluded</p>
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>La Vega Central</strong>
+            <code>STGO_34</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Mercado Tirso de Molina — 3.29 min / 298.9 m (GREEN)</li><li>La Piojera — 6.52 min / 561.3 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 7.07 min / 574.7 m (GREEN)</li><li>Catedral Metropolitana — 11.62 min / 956.3 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 12.57 min / 1004.4 m (GREEN)</li><li>Plaza de Armas — 13.86 min / 1133.4 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 14.15 min / 1131.9 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 14.48 min / 1195.9 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Patronato</b> (L2) — 3.5 min / 295.4 m · PRIMARY · Mapbox</li><li><b>Puente Cal y Canto</b> (L2, L3) — 6.7 min / 575.8 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Mercado Tirso de Molina</strong>
+            <code>STGO_35</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>La Piojera — 3.28 min / 259.3 m (GREEN)</li><li>La Vega Central — 3.63 min / 298.9 m (GREEN)</li><li>Catedral Metropolitana — 8.8 min / 688.5 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 10.7 min / 873.6 m (GREEN)</li><li>Plaza de Armas — 11.01 min / 865.6 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 11.34 min / 864.1 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 11.38 min / 906.0 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 13.55 min / 1037.3 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Puente Cal y Canto</b> (L2, L3) — 3.4 min / 273.8 m · PRIMARY · Mapbox</li><li><b>Patronato</b> (L2) — 7.2 min / 594.3 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Museo de la Memoria y DDHH</strong>
+            <code>STGO_48</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Barrio Yungay &amp; Plaza Roto Chileno — 9.2 min / 743.1 m (GREEN)</li><li>Palacio Pereira — 27.09 min / 2173.7 m (YELLOW)</li><li>Plaza de Armas — 31.07 min / 2456.5 m (YELLOW)</li><li>Museo Chileno Arte Precolombino — 33.14 min / 2618.8 m (YELLOW)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Quinta Normal</b> (L5) — 1.4 min / 101.8 m · PRIMARY · Mapbox</li><li><b>Cumming</b> (L5) — 12.4 min / 1001.6 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Patronato Textile &amp; Culture Corridor</strong>
+            <code>STGO_91</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>La Vega Central — 6.27 min / 574.7 m (GREEN)</li><li>Cerro San Cristóbal Funicular / Hill complex — 8.72 min / 697.1 m (GREEN)</li><li>La Chascona (Neruda House) — 9.23 min / 730.2 m (GREEN)</li><li>Mercado Tirso de Molina — 9.56 min / 873.6 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 10.3 min / 815.1 m (GREEN)</li><li>Bellavista Mural Corridors — 11.94 min / 974.4 m (GREEN)</li><li>La Piojera — 12.67 min / 1106.9 m (GREEN)</li><li>Catedral Metropolitana — 15.59 min / 1301.1 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Patronato</b> (L2) — 3.0 min / 273.1 m · PRIMARY · Mapbox</li><li><b>Cerro Blanco</b> (L2) — 11.1 min / 992.9 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Paseo Bandera Urban Art Corridor</strong>
+            <code>STGO_92</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>Seguro Obrero Bullet Scars (Correo) — 2.6 min / 241.6 m (GREEN)</li><li>Edificio Palacio Ariztía (Flat-Iron) — 3.02 min / 250.3 m (GREEN)</li><li>Morandé 80 (President&#x27;s Door) — 3.37 min / 307.1 m (GREEN)</li><li>Pasaje Matte &amp; Hidden Ballroom — 3.9 min / 314.4 m (GREEN)</li><li>Museo Chileno Arte Precolombino — 6.02 min / 502.0 m (GREEN)</li><li>Palacio de La Moneda — 6.03 min / 554.4 m (GREEN)</li><li>Catedral Metropolitana — 6.52 min / 540.0 m (GREEN)</li><li>Plaza de Armas — 6.73 min / 616.3 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Universidad de Chile</b> (L1, L3) — 6.1 min / 520.7 m · PRIMARY · Mapbox</li><li><b>Plaza de Armas</b> (L3, L5) — 6.1 min / 508.5 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article>
+        <article class="card">
+          <header>
+            <span class="badge green">READY</span>
+            <strong>Bellavista Mural Corridors</strong>
+            <code>STGO_30</code>
+          </header>
+          
+              <p><b>Sparse walking neighbors</b></p><ul><li>La Chascona (Neruda House) — 3.24 min / 279.7 m (GREEN)</li><li>Cerro San Cristóbal Funicular / Hill complex — 5.2 min / 456.8 m (GREEN)</li><li>Barrio Lastarria Corridor — 8.83 min / 735.1 m (GREEN)</li><li>MNBA &amp; Parque Forestal — 9.41 min / 799.3 m (GREEN)</li><li>Bocanáriz &amp; Chipe Libre — 9.83 min / 840.3 m (GREEN)</li><li>Taller Castillo Kulczewski — 10.32 min / 856.5 m (GREEN)</li><li>Patronato Textile &amp; Culture Corridor — 10.85 min / 974.4 m (GREEN)</li><li>La Vega Central — 13.72 min / 1220.7 m (GREEN)</li></ul>
+              <p><b>Useful Metro station(s)</b></p><ul><li><b>Baquedano</b> (L1, L5) — 10.5 min / 805.9 m · PRIMARY · Mapbox</li><li><b>Bellas Artes</b> (L5) — 12.0 min / 975.0 m · SECONDARY · Mapbox</li></ul>
+              <p><b>Unresolved fields:</b> Metro segment times · station accessibility · entrance pins</p>
+            
+        </article></div>
+</section>
+<section>
+  <h2>Multimodal QA routes</h2>
+  
+        <article class="card">
+          <h3>Plaza de Armas → Lastarria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span> generalized cost=940.1</p>
+          <p>Modes: METRO_RIDE, POI_METRO_ACCESS · Transfers: 0 ·
+             Metro lines: L5</p>
+          <p>Observed physical duration: UNRESOLVED (contains engine-policy Metro hops)</p>
+          <p>Unverified: METRO_SEGMENT_TIME_UNRESOLVED</p>
+          <p>Walk-only alternative: 1006.4s / cost 1085.4</p>
+          <details><summary>Legs</summary><ul><li>POI_METRO_ACCESS: STGO_01 → METRO_OSM_6231367141 · 195.9s · line L5</li><li>METRO_RIDE: METRO_OSM_6231367141 → METRO_OSM_253281389 · observed time UNKNOWN · line L5</li><li>POI_METRO_ACCESS: METRO_OSM_253281389 → STGO_24 · 324.2s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>La Moneda → Londres 38</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span> generalized cost=547.0</p>
+          <p>Modes: WALK · Transfers: 0 ·
+             Metro lines: none</p>
+          <p>Observed physical duration: 538.3</p>
+          <p>Unverified: none</p>
+          <p>Walk-only alternative: 538.3s / cost 547.0</p>
+          <details><summary>Legs</summary><ul><li>WALK: STGO_03 → STGO_07 · 538.3s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>Lastarria → La Chascona</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span> generalized cost=716.5</p>
+          <p>Modes: WALK · Transfers: 0 ·
+             Metro lines: none</p>
+          <p>Observed physical duration: 711.0</p>
+          <p>Unverified: none</p>
+          <p>Walk-only alternative: 689.7s / cost 721.2</p>
+          <details><summary>Legs</summary><ul><li>WALK: STGO_24 → STGO_30 · 516.8s</li><li>WALK: STGO_30 → STGO_29 · 194.2s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>La Vega → GAM</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span> generalized cost=1433.2</p>
+          <p>Modes: WALK · Transfers: 0 ·
+             Metro lines: none</p>
+          <p>Observed physical duration: 1392.0</p>
+          <p>Unverified: none</p>
+          <p>Walk-only alternative: 1392.0s / cost 1456.8</p>
+          <details><summary>Legs</summary><ul><li>WALK: STGO_34 → STGO_26 · 754.5s</li><li>WALK: STGO_26 → STGO_24 · 321.6s</li><li>WALK: STGO_24 → STGO_25 · 315.9s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>Yungay → Museo de la Memoria</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span> generalized cost=480.7</p>
+          <p>Modes: WALK · Transfers: 0 ·
+             Metro lines: none</p>
+          <p>Observed physical duration: 480.6</p>
+          <p>Unverified: none</p>
+          <p>Walk-only alternative: 480.6s / cost 480.7</p>
+          <details><summary>Legs</summary><ul><li>WALK: STGO_11 → STGO_48 · 480.6s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>Centro → Museo de la Memoria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span> generalized cost=942.8</p>
+          <p>Modes: METRO_RIDE, POI_METRO_ACCESS · Transfers: 0 ·
+             Metro lines: L5</p>
+          <p>Observed physical duration: UNRESOLVED (contains engine-policy Metro hops)</p>
+          <p>Unverified: METRO_SEGMENT_TIME_UNRESOLVED</p>
+          <p>Walk-only alternative: 1963.1s / cost 2113.6</p>
+          <details><summary>Legs</summary><ul><li>POI_METRO_ACCESS: STGO_01 → METRO_OSM_6231367141 · 195.9s · line L5</li><li>METRO_RIDE: METRO_OSM_6231367141 → METRO_OSM_477827069 · observed time UNKNOWN · line L5</li><li>METRO_RIDE: METRO_OSM_477827069 → METRO_OSM_253281419 · observed time UNKNOWN · line L5</li><li>METRO_RIDE: METRO_OSM_253281419 → METRO_OSM_254343697 · observed time UNKNOWN · line L5</li><li>POI_METRO_ACCESS: METRO_OSM_254343697 → STGO_48 · 86.9s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>Centro → Yungay</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span> generalized cost=1252.6</p>
+          <p>Modes: METRO_RIDE, POI_METRO_ACCESS · Transfers: 0 ·
+             Metro lines: L5</p>
+          <p>Observed physical duration: UNRESOLVED (contains engine-policy Metro hops)</p>
+          <p>Unverified: METRO_SEGMENT_TIME_UNRESOLVED</p>
+          <p>Walk-only alternative: 1482.5s / cost 1632.9</p>
+          <details><summary>Legs</summary><ul><li>POI_METRO_ACCESS: STGO_01 → METRO_OSM_6231367141 · 195.9s · line L5</li><li>METRO_RIDE: METRO_OSM_6231367141 → METRO_OSM_477827069 · observed time UNKNOWN · line L5</li><li>METRO_RIDE: METRO_OSM_477827069 → METRO_OSM_253281419 · observed time UNKNOWN · line L5</li><li>POI_METRO_ACCESS: METRO_OSM_253281419 → STGO_11 · 516.7s</li></ul></details>
+        </article>
+        <article class="card">
+          <h3>Centro → Plaza Ñuñoa</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span> generalized cost=1072.4</p>
+          <p>Modes: METRO_RIDE, POI_METRO_ACCESS · Transfers: 0 ·
+             Metro lines: L5</p>
+          <p>Observed physical duration: UNRESOLVED (contains engine-policy Metro hops)</p>
+          <p>Unverified: METRO_SEGMENT_TIME_UNRESOLVED</p>
+          <p>Walk-only alternative: 1214.8s / cost 1299.2</p>
+          <details><summary>Legs</summary><ul><li>POI_METRO_ACCESS: STGO_01 → METRO_OSM_6231367141 · 195.9s · line L5</li><li>METRO_RIDE: METRO_OSM_6231367141 → METRO_OSM_253281389 · observed time UNKNOWN · line L5</li><li>POI_METRO_ACCESS: METRO_OSM_253281389 → STGO_27 · 456.5s</li></ul></details>
+        </article>
+</section>
+</body>
+</html>

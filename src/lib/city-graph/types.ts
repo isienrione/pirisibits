@@ -274,3 +274,185 @@ export namespace GeoJSON {
     coordinates: [number, number][]
   }
 }
+
+/** Gate 1B.4 — verification / provenance states for transit entities. */
+export type TransitVerificationState =
+  | 'NETWORK_TOPOLOGY_VERIFIED'
+  | 'SEGMENT_TIME_VERIFIED'
+  | 'PROVIDER_DERIVED'
+  | 'UNRESOLVED'
+  | 'UNKNOWN'
+
+export type PedestrianAdjacencyEdge = {
+  edgeId: string
+  fromPoiId: string
+  toPoiId: string
+  mode: 'WALK'
+  distanceM: number
+  durationS: number
+  durationMin: number
+  physicalClassification: PedestrianEdgeClass
+  providerEdgeId: string
+  provider: 'mapbox'
+  runtimeEligible: true
+  sparsificationReason: string
+  provenance: {
+    gate: '1B.4'
+    tracesToGate1B3ProviderEdge: true
+    providerReference: string | null
+  }
+}
+
+export type SantiagoPedestrianAdjacencyFile = {
+  schemaVersion: 'santiago-pedestrian-adjacency.v0.1'
+  gate: '1B.4'
+  physicalRouteGenerationEnabled: false
+  denseProviderRuntimeEdgeCount: number
+  sparseOperationalEdgeCount: number
+  reductionPercent: number
+  eligibleStgoIds: string[]
+  graphHealth: Record<string, unknown>
+  edges: PedestrianAdjacencyEdge[]
+}
+
+export type TransitStation = {
+  stationId: string
+  canonicalName: string
+  lat: number
+  lng: number
+  lines: string[]
+  accessibility: 'UNKNOWN'
+  provenance: 'openstreetmap'
+  provenanceSource: string
+  osmNodeId: number
+  verificationState: TransitVerificationState
+}
+
+export type TransitLine = {
+  lineId: string
+  canonicalName: string
+  colour: string | null
+  osmRelationId: number | null
+  stationOrder: string[]
+  topologyStatus: 'NETWORK_TOPOLOGY_VERIFIED' | 'UNRESOLVED'
+  segmentTimingStatus: 'SEGMENT_TIME_UNRESOLVED'
+  provenance: 'openstreetmap'
+  provenanceSource: string
+}
+
+export type SantiagoMetroStationsFile = {
+  schemaVersion: 'santiago-metro-stations.v0.1'
+  gate: '1B.4'
+  provenance: 'openstreetmap'
+  provenanceSource: string
+  stationCount: number
+  stations: TransitStation[]
+}
+
+export type SantiagoMetroLinesFile = {
+  schemaVersion: 'santiago-metro-lines.v0.1'
+  gate: '1B.4'
+  provenance: 'openstreetmap'
+  provenanceSource: string
+  lineCount: number
+  lines: TransitLine[]
+}
+
+export type PoiMetroAccessEdge = {
+  edgeId: string
+  from: string
+  to: string
+  mode: 'POI_METRO_ACCESS'
+  distanceMeters: number
+  durationSeconds: number
+  provider: 'mapbox'
+  provenance: Record<string, unknown>
+  stationId: string
+  stgoId: string
+  accessRole: 'PRIMARY' | 'SECONDARY' | 'QA_CANDIDATE'
+  verificationState: 'PROVIDER_DERIVED'
+  runtimePreferred: boolean
+}
+
+export type MetroRideEdge = {
+  edgeId: string
+  fromStationId: string
+  toStationId: string
+  lineId: string
+  mode: 'METRO_RIDE'
+  observedDurationSeconds: null
+  topologyStatus: 'NETWORK_TOPOLOGY_VERIFIED'
+  segmentTimingStatus: 'SEGMENT_TIME_UNRESOLVED'
+  enginePolicyHopCostSeconds: number
+  provenance: Record<string, unknown>
+}
+
+export type MetroTransferEdge = {
+  edgeId: string
+  stationId: string
+  fromLineId: string
+  toLineId: string
+  mode: 'METRO_TRANSFER'
+  observedDurationSeconds: null
+  enginePolicyTransferPenaltySeconds: number
+  provenance: Record<string, unknown>
+  verificationState: 'NETWORK_TOPOLOGY_VERIFIED'
+}
+
+export type MacroConnectorEdge = {
+  edgeId: string
+  from: string
+  to: string
+  mode: 'RIDESHARE'
+  distanceMeters: number | null
+  durationSeconds: number | null
+  provider: 'mapbox' | null
+  runtimeEligible: boolean
+  reason: string
+}
+
+export type MultimodalRouteLeg = {
+  mode: 'WALK' | 'POI_METRO_ACCESS' | 'METRO_RIDE' | 'METRO_TRANSFER' | 'RIDESHARE'
+  from: string
+  to: string
+  edgeId: string | null
+  physicalDurationSeconds: number | null
+  physicalDistanceMeters: number | null
+  generalizedCostSeconds: number
+  lineId?: string | null
+  unverified: boolean
+}
+
+export type MultimodalRoute = {
+  origin: string
+  destination: string
+  legs: MultimodalRouteLeg[]
+  physicalDurationSeconds: number | null
+  physicalDistanceMeters: number | null
+  generalizedCost: number
+  modeChanges: number
+  metroLinesUsed: string[]
+  transfers: number
+  unverifiedComponents: string[]
+  provenanceSummary: string
+  pedestrianOnlyAlternative: Record<string, unknown> | null
+  selectionReason: string
+}
+
+export type SantiagoMultimodalGraphFile = {
+  schemaVersion: 'santiago-multimodal-graph.v0.1'
+  gate: '1B.4'
+  physicalRouteGenerationEnabled: false
+  multimodalPhysicalGraphReady: boolean
+  contractRecovery: Record<string, string>
+  referenceMatrixStatus: 'REFERENCE_MATRIX_NOT_PRESENT'
+  thematicNarrativeUsed: false
+  counts: Record<string, number>
+  sanCristobalStaging: Record<string, unknown>
+  unresolvedLaunch: Array<{ stgoId: string; reason: string }>
+  qaRoutes: MultimodalRoute[]
+  poiMetroAccessEdges: PoiMetroAccessEdge[]
+  metroRideEdges: MetroRideEdge[]
+  metroTransferEdges: MetroTransferEdge[]
+  rideshareMacroEdges: MacroConnectorEdge[]
+}

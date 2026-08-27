@@ -1,0 +1,1789 @@
+{
+  "schemaVersion": "santiago-metro-stations.v0.1",
+  "gate": "1B.4",
+  "provenance": "openstreetmap",
+  "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+  "stationCount": 126,
+  "stations": [
+    {
+      "stationId": "METRO_OSM_1157168087",
+      "canonicalName": "Baquedano",
+      "lat": -33.4372174,
+      "lng": -70.6334109,
+      "lines": [
+        "L1",
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 1157168087,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_1363217828",
+      "canonicalName": "Monseñor Eyzaguirre",
+      "lat": -33.4531944,
+      "lng": -70.613519,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 1363217828,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_141096340",
+      "canonicalName": "Toesca",
+      "lat": -33.4529746,
+      "lng": -70.6585851,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 141096340,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_1894898784",
+      "canonicalName": "Chile España",
+      "lat": -33.4549078,
+      "lng": -70.5981422,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 1894898784,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_1894900066",
+      "canonicalName": "Villa Frei",
+      "lat": -33.4546697,
+      "lng": -70.5814833,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 1894900066,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_227926453",
+      "canonicalName": "Rondizzoni",
+      "lat": -33.4696578,
+      "lng": -70.6563736,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 227926453,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_2307244234",
+      "canonicalName": "Los Héroes",
+      "lat": -33.4461853,
+      "lng": -70.6604458,
+      "lines": [
+        "L1",
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 2307244234,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_2390287915",
+      "canonicalName": "Los Libertadores",
+      "lat": -33.3654303,
+      "lng": -70.6919903,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 2390287915,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527589",
+      "canonicalName": "Escuela Militar",
+      "lat": -33.4134817,
+      "lng": -70.5826796,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527589,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527592",
+      "canonicalName": "Alcántara",
+      "lat": -33.4154469,
+      "lng": -70.5899906,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527592,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527596",
+      "canonicalName": "El Golf",
+      "lat": -33.4166189,
+      "lng": -70.5957077,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527596,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527597",
+      "canonicalName": "Tobalaba",
+      "lat": -33.4182154,
+      "lng": -70.6014872,
+      "lines": [
+        "L1",
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527597,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527599",
+      "canonicalName": "Pedro de Valdivia",
+      "lat": -33.425483,
+      "lng": -70.6137959,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527599,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527600",
+      "canonicalName": "Manuel Montt",
+      "lat": -33.4285532,
+      "lng": -70.6196465,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527600,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527603",
+      "canonicalName": "Universidad Católica",
+      "lat": -33.4397617,
+      "lng": -70.6398924,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527603,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252527604",
+      "canonicalName": "Santa Lucía",
+      "lat": -33.4424649,
+      "lng": -70.6447442,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252527604,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252528383",
+      "canonicalName": "República",
+      "lat": -33.447702,
+      "lng": -70.6671366,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252528383,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252528387",
+      "canonicalName": "Unión Latinoamericana",
+      "lat": -33.4493623,
+      "lng": -70.673351,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252528387,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252528391",
+      "canonicalName": "Estación Central",
+      "lat": -33.4508228,
+      "lng": -70.6789622,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252528391,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252981526",
+      "canonicalName": "Cristóbal Colón",
+      "lat": -33.4263163,
+      "lng": -70.5909808,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252981526,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252981531",
+      "canonicalName": "Francisco Bilbao",
+      "lat": -33.4317928,
+      "lng": -70.584703,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252981531,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252981541",
+      "canonicalName": "Príncipe de Gales",
+      "lat": -33.4392047,
+      "lng": -70.5731497,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252981541,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_252981546",
+      "canonicalName": "Simón Bolívar",
+      "lat": -33.4461845,
+      "lng": -70.5719261,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 252981546,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253281389",
+      "canonicalName": "Bellas Artes",
+      "lat": -33.4366322,
+      "lng": -70.6441329,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253281389,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253281419",
+      "canonicalName": "Cumming",
+      "lat": -33.4391444,
+      "lng": -70.668534,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253281419,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253282351",
+      "canonicalName": "Universidad de Santiago",
+      "lat": -33.4528554,
+      "lng": -70.6865552,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253282351,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253282358",
+      "canonicalName": "San Alberto Hurtado",
+      "lat": -33.4542019,
+      "lng": -70.6922721,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253282358,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253282361",
+      "canonicalName": "Ecuador",
+      "lat": -33.4559226,
+      "lng": -70.6997325,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253282361,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253282379",
+      "canonicalName": "Las Rejas",
+      "lat": -33.4575386,
+      "lng": -70.7067561,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253282379,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253282383",
+      "canonicalName": "Pajaritos",
+      "lat": -33.4574748,
+      "lng": -70.7154469,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253282383,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253294531",
+      "canonicalName": "Santa Isabel",
+      "lat": -33.4471204,
+      "lng": -70.6304343,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253294531,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253295159",
+      "canonicalName": "Mirador",
+      "lat": -33.5133028,
+      "lng": -70.6059146,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253295159,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253295163",
+      "canonicalName": "Pedrero",
+      "lat": -33.5079499,
+      "lng": -70.6124467,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253295163,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253295175",
+      "canonicalName": "Camino Agrícola",
+      "lat": -33.4917907,
+      "lng": -70.6175195,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253295175,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253295179",
+      "canonicalName": "Carlos Valdovinos",
+      "lat": -33.4863985,
+      "lng": -70.6191824,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253295179,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253295184",
+      "canonicalName": "Rodrigo de Araya",
+      "lat": -33.4778167,
+      "lng": -70.6222636,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253295184,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_253360557",
+      "canonicalName": "Parque O'Higgins",
+      "lat": -33.4608472,
+      "lng": -70.6568466,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 253360557,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_254343697",
+      "canonicalName": "Quinta Normal",
+      "lat": -33.440368,
+      "lng": -70.6802912,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 254343697,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256372838",
+      "canonicalName": "Los Orientales",
+      "lat": -33.4626181,
+      "lng": -70.5739242,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256372838,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256372848",
+      "canonicalName": "Grecia",
+      "lat": -33.4695344,
+      "lng": -70.5765034,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256372848,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256373484",
+      "canonicalName": "Los Presidentes",
+      "lat": -33.479837,
+      "lng": -70.5786662,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256373484,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256374109",
+      "canonicalName": "Quilín",
+      "lat": -33.4882637,
+      "lng": -70.5804178,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256374109,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256374120",
+      "canonicalName": "Las Torres",
+      "lat": -33.499108,
+      "lng": -70.5865459,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256374120,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256374127",
+      "canonicalName": "Macul",
+      "lat": -33.5092379,
+      "lng": -70.5900473,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256374127,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256377241",
+      "canonicalName": "Rojas Magallanes",
+      "lat": -33.5361069,
+      "lng": -70.5926966,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256377241,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256377430",
+      "canonicalName": "Trinidad",
+      "lat": -33.5462943,
+      "lng": -70.5881027,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256377430,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256377970",
+      "canonicalName": "Los Quillayes",
+      "lat": -33.5612253,
+      "lng": -70.5852697,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256377970,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256378408",
+      "canonicalName": "Elisa Correa",
+      "lat": -33.5692937,
+      "lng": -70.5838076,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256378408,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256378595",
+      "canonicalName": "Hospital Sótero del Río",
+      "lat": -33.5768981,
+      "lng": -70.582317,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256378595,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256379524",
+      "canonicalName": "Protectora de la Infancia",
+      "lat": -33.5895738,
+      "lng": -70.579833,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256379524,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_256999811",
+      "canonicalName": "Bellavista de La Florida",
+      "lat": -33.5195217,
+      "lng": -70.6000253,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 256999811,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_265684316",
+      "canonicalName": "Cementerios",
+      "lat": -33.4139806,
+      "lng": -70.643597,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 265684316,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_265684322",
+      "canonicalName": "Zapadores",
+      "lat": -33.3909444,
+      "lng": -70.6424385,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 265684322,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_267077543",
+      "canonicalName": "Dorsal",
+      "lat": -33.3969616,
+      "lng": -70.6427404,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 267077543,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_267078399",
+      "canonicalName": "Vespucio Norte",
+      "lat": -33.3807538,
+      "lng": -70.6463404,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 267078399,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_2776463407",
+      "canonicalName": "Cerrillos",
+      "lat": -33.4834342,
+      "lng": -70.6955562,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 2776463407,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699361",
+      "canonicalName": "El Llano",
+      "lat": -33.4826014,
+      "lng": -70.6493814,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699361,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699379",
+      "canonicalName": "San Miguel",
+      "lat": -33.4887157,
+      "lng": -70.6510725,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699379,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699645",
+      "canonicalName": "Lo Vial",
+      "lat": -33.4968286,
+      "lng": -70.6530148,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699645,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699773",
+      "canonicalName": "Departamental",
+      "lat": -33.5024398,
+      "lng": -70.6546333,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699773,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699834",
+      "canonicalName": "Ciudad del Niño",
+      "lat": -33.5095432,
+      "lng": -70.6566453,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699834,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699842",
+      "canonicalName": "Lo Ovalle",
+      "lat": -33.5172701,
+      "lng": -70.6588205,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699842,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301699913",
+      "canonicalName": "El Parrón",
+      "lat": -33.5264317,
+      "lng": -70.6614044,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301699913,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301703081",
+      "canonicalName": "Santa Julia",
+      "lat": -33.5311022,
+      "lng": -70.6055361,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301703081,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301703223",
+      "canonicalName": "La Granja",
+      "lat": -33.5411298,
+      "lng": -70.616047,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301703223,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301703484",
+      "canonicalName": "Santa Rosa",
+      "lat": -33.5423878,
+      "lng": -70.6341267,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301703484,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_301704116",
+      "canonicalName": "San Ramón",
+      "lat": -33.5412286,
+      "lng": -70.6431272,
+      "lines": [
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 301704116,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_3391796062",
+      "canonicalName": "La Moneda",
+      "lat": -33.4448711,
+      "lng": -70.6548709,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 3391796062,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_3587889955",
+      "canonicalName": "Plaza de Maipú",
+      "lat": -33.5101997,
+      "lng": -70.7570009,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 3587889955,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_3670590083",
+      "canonicalName": "Lo Valledor",
+      "lat": -33.4784048,
+      "lng": -70.6809001,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 3670590083,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_390998417",
+      "canonicalName": "Manquehue",
+      "lat": -33.4094637,
+      "lng": -70.5697326,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 390998417,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_390998425",
+      "canonicalName": "Hernando de Magallanes",
+      "lat": -33.4079352,
+      "lng": -70.5558454,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 390998425,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_390998430",
+      "canonicalName": "Los Dominicos",
+      "lat": -33.4078854,
+      "lng": -70.5449939,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 390998430,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_391007642",
+      "canonicalName": "Barrancas",
+      "lat": -33.4529813,
+      "lng": -70.739037,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 391007642,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_391008466",
+      "canonicalName": "Laguna Sur",
+      "lat": -33.4621633,
+      "lng": -70.7379067,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 391008466,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_3932022758",
+      "canonicalName": "Estadio Nacional",
+      "lat": -33.4623809,
+      "lng": -70.6062176,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 3932022758,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4519746485",
+      "canonicalName": "Neptuno",
+      "lat": -33.4515804,
+      "lng": -70.7226828,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4519746485,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4519756994",
+      "canonicalName": "Franklin",
+      "lat": -33.4766603,
+      "lng": -70.6494774,
+      "lines": [
+        "L2",
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4519756994,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530413430",
+      "canonicalName": "El Bosque",
+      "lat": -33.5465722,
+      "lng": -70.6667515,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530413430,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530419351",
+      "canonicalName": "Observatorio",
+      "lat": -33.560404,
+      "lng": -70.6705486,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530419351,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530419352",
+      "canonicalName": "Copa Lo Martínez",
+      "lat": -33.5706669,
+      "lng": -70.6733824,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530419352,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530419353",
+      "canonicalName": "Hospital El Pino",
+      "lat": -33.5828788,
+      "lng": -70.6768121,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530419353,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530436046",
+      "canonicalName": "Ferrocarril",
+      "lat": -33.3654667,
+      "lng": -70.7055375,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530436046,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530436047",
+      "canonicalName": "Lo Cruzat",
+      "lat": -33.3668342,
+      "lng": -70.719772,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530436047,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4530436048",
+      "canonicalName": "Plaza Quilicura",
+      "lat": -33.3657194,
+      "lng": -70.7288942,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4530436048,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4550281347",
+      "canonicalName": "Parque Almagro",
+      "lat": -33.4513929,
+      "lng": -70.6505616,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4550281347,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_4593692288",
+      "canonicalName": "San Joaquín",
+      "lat": -33.4993359,
+      "lng": -70.6158257,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 4593692288,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_463084774",
+      "canonicalName": "Las Parcelas",
+      "lat": -33.4752719,
+      "lng": -70.7399789,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 463084774,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_463084780",
+      "canonicalName": "Monte Tabor",
+      "lat": -33.4822861,
+      "lng": -70.7454383,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 463084780,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_463165229",
+      "canonicalName": "Las Mercedes",
+      "lat": -33.6013816,
+      "lng": -70.5774783,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 463165229,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_470378182",
+      "canonicalName": "San José de la Estrella",
+      "lat": -33.5538213,
+      "lng": -70.5865567,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 470378182,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_475497992",
+      "canonicalName": "Parque Bustamante",
+      "lat": -33.4428037,
+      "lng": -70.6319594,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 475497992,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_475498004",
+      "canonicalName": "Gruta de Lourdes",
+      "lat": -33.438011,
+      "lng": -70.6910279,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 475498004,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_475498009",
+      "canonicalName": "Blanqueado",
+      "lat": -33.4413309,
+      "lng": -70.7066515,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 475498009,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_475498017",
+      "canonicalName": "Pudahuel",
+      "lat": -33.4448632,
+      "lng": -70.7411438,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 475498017,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_476909750",
+      "canonicalName": "Lo Prado",
+      "lat": -33.4434094,
+      "lng": -70.7167535,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 476909750,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_476917797",
+      "canonicalName": "Santiago Bueras",
+      "lat": -33.4962414,
+      "lng": -70.7574349,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 476917797,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_477827069",
+      "canonicalName": "Santa Ana",
+      "lat": -33.4382499,
+      "lng": -70.6598961,
+      "lines": [
+        "L2",
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 477827069,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_491641302",
+      "canonicalName": "Plaza de Puente Alto",
+      "lat": -33.6095235,
+      "lng": -70.5758419,
+      "lines": [
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 491641302,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_520459156",
+      "canonicalName": "Salvador",
+      "lat": -33.4327195,
+      "lng": -70.6260885,
+      "lines": [
+        "L1"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 520459156,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_5227884069",
+      "canonicalName": "Universidad de Chile",
+      "lat": -33.4438532,
+      "lng": -70.6506708,
+      "lines": [
+        "L1",
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 5227884069,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_5227884071",
+      "canonicalName": "Los Leones",
+      "lat": -33.422019,
+      "lng": -70.6085607,
+      "lines": [
+        "L1",
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 5227884071,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_549216801",
+      "canonicalName": "Del Sol",
+      "lat": -33.4902363,
+      "lng": -70.7531153,
+      "lines": [
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 549216801,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_5564321725",
+      "canonicalName": "La Cisterna",
+      "lat": -33.5373498,
+      "lng": -70.6643328,
+      "lines": [
+        "L2",
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 5564321725,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_601268662",
+      "canonicalName": "Presidente Pedro Aguirre Cerda",
+      "lat": -33.4786906,
+      "lng": -70.6647874,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 601268662,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_601280944",
+      "canonicalName": "Bío Bío",
+      "lat": -33.4766072,
+      "lng": -70.6421784,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 601280944,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_601294862",
+      "canonicalName": "Inés de Suárez",
+      "lat": -33.438721,
+      "lng": -70.6073371,
+      "lines": [
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 601294862,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_615092336",
+      "canonicalName": "Ñuble",
+      "lat": -33.4673629,
+      "lng": -70.6247567,
+      "lines": [
+        "L5",
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 615092336,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531275",
+      "canonicalName": "Matta",
+      "lat": -33.4582698,
+      "lng": -70.6430769,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531275,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531279",
+      "canonicalName": "Hospitales",
+      "lat": -33.4176739,
+      "lng": -70.6564558,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531279,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531280",
+      "canonicalName": "Plaza Chacabuco",
+      "lat": -33.4067715,
+      "lng": -70.6609686,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531280,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531283",
+      "canonicalName": "Conchalí",
+      "lat": -33.3978904,
+      "lng": -70.6695999,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531283,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531486",
+      "canonicalName": "Vivaceta",
+      "lat": -33.3853813,
+      "lng": -70.6796401,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531486,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6228531487",
+      "canonicalName": "Cardenal Caro",
+      "lat": -33.3732586,
+      "lng": -70.6863362,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6228531487,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6231367141",
+      "canonicalName": "Plaza de Armas",
+      "lat": -33.4374154,
+      "lng": -70.6512777,
+      "lines": [
+        "L3",
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6231367141,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6506316370",
+      "canonicalName": "Puente Cal y Canto",
+      "lat": -33.4328384,
+      "lng": -70.6530774,
+      "lines": [
+        "L2",
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6506316370,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6506316374",
+      "canonicalName": "Irarrázaval",
+      "lat": -33.4550535,
+      "lng": -70.6283154,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6506316374,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6506316376",
+      "canonicalName": "Ñuñoa",
+      "lat": -33.4541894,
+      "lng": -70.604972,
+      "lines": [
+        "L3",
+        "L6"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6506316376,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6506316379",
+      "canonicalName": "Plaza Egaña",
+      "lat": -33.4534937,
+      "lng": -70.570823,
+      "lines": [
+        "L3",
+        "L4"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6506316379,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6512675039",
+      "canonicalName": "Fernando Castillo Velasco",
+      "lat": -33.4521007,
+      "lng": -70.558107,
+      "lines": [
+        "L3"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6512675039,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6514737770",
+      "canonicalName": "Vicente Valdés",
+      "lat": -33.5264186,
+      "lng": -70.5967924,
+      "lines": [
+        "L4",
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6514737770,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_6514765510",
+      "canonicalName": "Vicuña Mackenna",
+      "lat": -33.5197638,
+      "lng": -70.5962095,
+      "lines": [
+        "L4",
+        "L4A"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 6514765510,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_668141380",
+      "canonicalName": "San Pablo",
+      "lat": -33.4442204,
+      "lng": -70.7232488,
+      "lines": [
+        "L1",
+        "L5"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 668141380,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_944490419",
+      "canonicalName": "Patronato",
+      "lat": -33.4297317,
+      "lng": -70.6471183,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 944490419,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_944490442",
+      "canonicalName": "Cerro Blanco",
+      "lat": -33.4227505,
+      "lng": -70.6450582,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 944490442,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    },
+    {
+      "stationId": "METRO_OSM_944490452",
+      "canonicalName": "Einstein",
+      "lat": -33.4059459,
+      "lng": -70.6431738,
+      "lines": [
+        "L2"
+      ],
+      "accessibility": "UNKNOWN",
+      "provenance": "openstreetmap",
+      "provenanceSource": "OpenStreetMap Overpass API — network=Metro de Santiago route=subway relations + railway=station station=subway nodes (ODbL). Coordinates from OSM nodes; segment travel times unresolved.",
+      "osmNodeId": 944490452,
+      "verificationState": "NETWORK_TOPOLOGY_VERIFIED"
+    }
+  ]
+}
