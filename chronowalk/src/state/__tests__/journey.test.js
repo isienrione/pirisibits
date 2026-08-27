@@ -98,11 +98,12 @@ describe('journey state machine', () => {
     expect(sequence).toContain('w04')
   })
 
-  it('enc_circus is not in path B (Palatine flows directly to Titus)', () => {
+  it('enc_circus is on path B after Palatine; Path A still omits it', () => {
     const manifest = loadRomeManifest()
     const pathB = buildEffectiveSequence(manifest, 'b', [])
-    expect(pathB).not.toContain('enc_circus')
-    expect(pathB[pathB.indexOf('w04') + 1]).toBe('t03')
+    expect(pathB).toContain('enc_circus')
+    expect(pathB[pathB.indexOf('w04') + 1]).toBe('enc_circus')
+    expect(pathB[pathB.indexOf('enc_circus') + 1]).toBe('t03')
     expect(pathB[pathB.indexOf('t03') + 1]).toBe('w03')
     expect(pathB.slice(pathB.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
 

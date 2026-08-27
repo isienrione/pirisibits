@@ -552,8 +552,8 @@ export const enMessages = Object.freeze({
   'onboarding.pace.heroic.included':
     'Colosseum · Forum · Pantheon · historic center · Via Appia',
   'onboarding.pace.central.description':
-    'Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.',
-  'onboarding.pace.central.included': 'Pantheon · piazzas · fountains · the Tiber',
+    'Eight centro stops around the Pantheon (exterior + interior counted as one place), plus the Via Appia encore: squares, fountains, streets, and monuments in front of you.',
+  'onboarding.pace.central.included': 'Pantheon · piazzas · fountains · Via Appia encore',
   'onboarding.pace.classic.description':
     'Twelve stops through Rome’s ancient core: Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Forum, and Capitoline Hill.',
   'onboarding.pace.classic.included':

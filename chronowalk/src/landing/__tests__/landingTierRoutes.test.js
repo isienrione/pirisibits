@@ -3,6 +3,7 @@ import {
   buildBoundsFromStops,
   buildRoutePathD,
   getLandingTierMapBounds,
+  getLandingTierMapStops,
   getLandingTierRouteStops,
   LANDING_TIER_ROUTES,
   projectRouteStops,
@@ -11,7 +12,9 @@ import {
 
 describe('landingTierRoutes', () => {
   it('defines ordered routes for all landing tiers', () => {
-    expect(LANDING_TIER_ROUTES['rome-central']).toHaveLength(8)
+    // 8 centro kebabs (Pantheon once) + Via Appia encore — not unlock authority.
+    expect(LANDING_TIER_ROUTES['rome-central']).toHaveLength(9)
+    expect(LANDING_TIER_ROUTES['rome-central']).toContain('appian-way')
     expect(LANDING_TIER_ROUTES['rome-essential']).toHaveLength(12)
     expect(LANDING_TIER_ROUTES['rome-complete'].length).toBeGreaterThan(20)
   })
@@ -39,9 +42,9 @@ describe('landingTierRoutes', () => {
     }
   })
 
-  it('projects stops inside each tier map frame', () => {
+  it('projects map stops inside each tier map frame', () => {
     for (const tierId of ['rome-central', 'rome-essential', 'rome-complete']) {
-      const stops = getLandingTierRouteStops(tierId)
+      const stops = getLandingTierMapStops(tierId)
       const bounds = getLandingTierMapBounds(tierId)
       const points = projectRouteStops(stops, { bounds, padding: 7 })
       points.forEach((point) => {
@@ -52,6 +55,12 @@ describe('landingTierRoutes', () => {
       })
       expect(buildRoutePathD(points).startsWith('M ')).toBe(true)
     }
+  })
+
+  it('keeps Historica map on centro cluster while inventory lists Appia encore', () => {
+    expect(getLandingTierRouteStops('rome-central').map((s) => s.id)).toContain('appian-way')
+    expect(getLandingTierMapStops('rome-central').map((s) => s.id)).not.toContain('appian-way')
+    expect(getLandingTierMapStops('rome-central')).toHaveLength(8)
   })
 
   it('zooms central and ancient tiers tighter than complete', () => {
