@@ -2,6 +2,8 @@
 
 **Read this every time** you add or materially change a Rome stop, a purchasable package, stop media, pricing, or (eventually) a new city.
 
+For Day-1 Rome scope (hero vs discovery vs reveal, Near Me, non-goals), see **[`MAP_PRODUCT_CONTRACT.md`](./MAP_PRODUCT_CONTRACT.md)** first.
+
 Production deploys from the **`figma`** branch to **chronowalk.com** (Cloudflare Pages). Landing copy and package IDs on `figma` are what travelers see.
 
 Do **not** edit `src/landing/archive/` unless restoring a dated baseline.
