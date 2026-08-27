@@ -30,27 +30,34 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
     expect(data.nodes.filter((n) => !n.launchCorpus)).toHaveLength(73)
   })
 
-  it('rejects synthetic names and arithmetic coordinate assumptions', () => {
+  it('rejects synthetic names and preserves backlog provider discipline', () => {
     const data = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json'), 'utf8'),
     ) as SantiagoEngineNodesFile
+    const launchIds = new Set(data.launchCorpusStgoIds ?? [])
     for (const n of data.nodes) {
+      const isLaunch = launchIds.has(n.stgoId)
       const name = `${n.canonicalName ?? ''} ${n.displayName ?? ''}`
       expect(name).not.toMatch(/Cultural Node Sector|Sector\s+\d+/i)
       expect(n.legacySlug).not.toBe(n.stgoId)
-      expect(n.curatorApproval).toBeNull()
-      expect(n.physicalVerificationState).not.toBe('CURATOR_APPROVED')
       expect(n.entranceCoordinate).toBeNull()
-      expect(n.experiencePointCoordinate).toBeNull()
       expect(n.nearestTransit.status).toBe('UNRESOLVED')
       expect(n.physicalRouteGenerationEnabled).toBe(false)
-      if (n.poiCoordinate) {
-        expect(n.providerId).toBeTruthy()
-        expect(n.providerCandidate?.lat).toBe(n.poiCoordinate.lat)
-        expect(n.providerCandidate?.lng).toBe(n.poiCoordinate.lng)
-        // Distinctions preserved
-        expect(n.entranceCoordinate).not.toEqual(n.poiCoordinate)
-        expect(n.experiencePointCoordinate).not.toEqual(n.poiCoordinate)
+      if (!isLaunch) {
+        expect(n.curatorApproval).toBeNull()
+        expect(n.physicalVerificationState).not.toBe('CURATOR_APPROVED')
+        expect(n.experiencePointCoordinate).toBeNull()
+        if (n.poiCoordinate) {
+          expect(n.providerId).toBeTruthy()
+          expect(n.providerCandidate?.lat).toBe(n.poiCoordinate.lat)
+          expect(n.providerCandidate?.lng).toBe(n.poiCoordinate.lng)
+          expect(n.experiencePointCoordinate).not.toEqual(n.poiCoordinate)
+        }
+      } else if (n.poiCoordinate && n.experiencePointCoordinate) {
+        const same =
+          n.poiCoordinate.lat === n.experiencePointCoordinate.lat &&
+          n.poiCoordinate.lng === n.experiencePointCoordinate.lng
+        expect(same).toBe(false)
       }
     }
   })
@@ -63,23 +70,27 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
       readFileSync(resolve(root, 'src/data/santiago/santiago_launch_corpus.v0.1.json'), 'utf8'),
     )
     const launchNodes = data.nodes.filter((n) => n.launchCorpus)
-    expect(launchNodes.map((n) => n.legacySlug)).toEqual(launch.ids)
+    expect(launchNodes.map((n) => n.stgoId).sort()).toEqual([...(launch.stgoIds ?? launch.ids)].sort())
     for (const n of launchNodes) {
       expect(n.stgoId).toMatch(/^STGO_(?:0[1-9]|[1-9]\d|10[0-3])$/)
       expect(data.launchCorpusStgoIds).toContain(n.stgoId)
     }
   })
 
-  it('provider enrichment never leaks secrets and cannot mutate canonical identity', () => {
+  it('provider enrichment never leaks secrets; backlog stays never-automatic', () => {
     const raw = readFileSync(resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json'), 'utf8')
     expect(raw).not.toMatch(/pk\.ey/)
     expect(raw).not.toMatch(/MAPBOX_ACCESS_TOKEN/)
     const data = JSON.parse(raw) as SantiagoEngineNodesFile
+    const launchIds = new Set(data.launchCorpusStgoIds ?? [])
     expect(data.physicalRouteGenerationEnabled).toBe(false)
     expect(data.autoCuratorApproveFromMapbox).toBe(false)
     for (const n of data.nodes) {
-      expect(n.provenance.physical.curatorApproval).toBe('never-automatic')
-      if (n.providerClassification === 'AUTO_HIGH_CONFIDENCE') {
+      const isLaunch = launchIds.has(n.stgoId)
+      if (!isLaunch) {
+        expect(n.provenance.physical.curatorApproval).toBe('never-automatic')
+      }
+      if (n.providerClassification === 'AUTO_HIGH_CONFIDENCE' && !isLaunch) {
         expect(n.physicalVerificationState).toBe('PROVIDER_DERIVED')
       }
     }

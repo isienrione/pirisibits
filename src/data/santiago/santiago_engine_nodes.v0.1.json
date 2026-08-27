@@ -1,7 +1,7 @@
 {
   "schemaVersion": "santiago-engine-nodes.v0.1",
   "cityId": "santiago",
-  "gate": "1B.2",
+  "gate": "1B.2A",
   "nodeCount": 103,
   "launchCorpusCount": 30,
   "backlogCount": 73,
@@ -18,16 +18,9 @@
     "STGO_05",
     "STGO_06",
     "STGO_07",
-    "STGO_08",
-    "STGO_09",
     "STGO_10",
     "STGO_11",
-    "STGO_12",
-    "STGO_13",
-    "STGO_14",
-    "STGO_15",
     "STGO_16",
-    "STGO_17",
     "STGO_18",
     "STGO_19",
     "STGO_20",
@@ -40,14 +33,21 @@
     "STGO_27",
     "STGO_28",
     "STGO_29",
+    "STGO_32",
+    "STGO_33",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92",
     "STGO_30"
   ],
   "nodes": [
     {
       "stgoId": "STGO_01",
       "legacySlug": "la-moneda",
-      "canonicalName": "La Moneda",
-      "displayName": "La Moneda",
+      "canonicalName": "Plaza de Armas",
+      "displayName": "Plaza de Armas",
       "aliases": [],
       "commune": null,
       "neighborhood": "Centro Cívico",
@@ -64,11 +64,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.443068,
-        "lng": -70.662296
+        "lat": -33.4378234,
+        "lng": -70.6505019
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4378234,
+        "lng": -70.6530715
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -76,7 +79,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "la-moneda",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -91,8 +94,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -205,14 +210,85 @@
       ],
       "selectionReason": "Plausible hit (relevance=0.617, overlap=1.00) — curator review",
       "providerId": "address.4299263020464290",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4299263020464290",
+          "placeName": "Moneda, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Moneda",
+          "relevance": 0.617143,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.662296,
+          "lat": -33.443068,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.443068,
+          "lng": -70.662296
+        },
+        "capturedAt": "2026-08-27T05:17:00.698710+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Plaza de Armas",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650404,3a,75y,84.8h,84.77t/data=!3m8!1e1!3m6!1sCIHM0ogKEICAgIDEiKuPGw!2e10!3e11!6shttps://lh3.googleusercontent.com/gpms-cs-s/AFP8RcP6CXvzNZfKZwPd_2Nl2EmleIjZ_Z2ZNfkT2cXJdEofk-EVCMphLyAFxy1wWcwCI_Kd4TWvMfssLhMYjrzEg6o35Q2Fqs9FpuA5e5R-9RLLh7GnVJmOwL62awATwyNq1i9umQoS=w900-h600-k-no-pi5.22751106217234-ya84.80388182831926-ro0-fo100!7i8192!8i4096!4m14!1m7!3m6!1s0x9662c5a390957307:0xef87ffe6bed7c7!2sPlaza+de+Armas+de+Santiago!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2!3m5!1s0x9662c5a390957307:0xef87ffe6bed7c7!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650404,3a,75y,84.8h,84.77t/data=!3m8!1e1!3m6!1sCIHM0ogKEICAgIDEiKuPGw!2e10!3e11!6shttps://lh3.googleusercontent.com/gpms-cs-s/AFP8RcP6CXvzNZfKZwPd_2Nl2EmleIjZ_Z2ZNfkT2cXJdEofk-EVCMphLyAFxy1wWcwCI_Kd4TWvMfssLhMYjrzEg6o35Q2Fqs9FpuA5e5R-9RLLh7GnVJmOwL62awATwyNq1i9umQoS=w900-h600-k-no-pi5.22751106217234-ya84.80388182831926-ro0-fo100!7i8192!8i4096!4m14!1m7!3m6!1s0x9662c5a390957307:0xef87ffe6bed7c7!2sPlaza+de+Armas+de+Santiago!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2!3m5!1s0x9662c5a390957307:0xef87ffe6bed7c7!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "very close but better official coordinates @-33.4378234,-70.6530715,17z",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 1240.0,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Plaza de Armas",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4378234,
+            "lng": -70.6505019,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Plaza de Armas observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4378234,
+            "lng": -70.6530715,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_02",
       "legacySlug": "morande-80",
-      "canonicalName": "Morandé 80",
-      "displayName": "Morandé 80",
+      "canonicalName": "Catedral Metropolitana",
+      "displayName": "Catedral Metropolitana",
       "aliases": [],
       "commune": null,
       "neighborhood": "Centro Cívico",
@@ -228,12 +304,12 @@
       "editorialRole": "pocket",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": {
-        "lat": -33.442718,
-        "lng": -70.653353
-      },
+      "poiCoordinate": null,
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4373075,
+        "lng": -70.6510237
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -241,7 +317,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "morande-80",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -256,8 +332,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -338,14 +416,72 @@
       ],
       "selectionReason": "Plausible hit (relevance=1.000, overlap=1.00) — curator review",
       "providerId": "address.5163520634616018",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.5163520634616018",
+          "placeName": "Morandé 80, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Morandé",
+          "relevance": 1,
+          "accuracy": "rooftop",
+          "category": null,
+          "lng": -70.653353,
+          "lat": -33.442718,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.442718,
+          "lng": -70.653353
+        },
+        "capturedAt": "2026-08-27T05:17:00.698753+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Catedral Metropolitana",
+        "googleMapsUrls": [
+          "https://maps.app.goo.gl/kKsyudDbwBpZVSYS8"
+        ],
+        "notes": "",
+        "rawFeedbackText": "google maps pin is correct but the coordinates specified are not. The correct ones of the street view point are -33.4373075,-70.6510237,3a,75y,229.35h,117.23t/",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_experience",
+          "label": "Catedral Metropolitana observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4373075,
+            "lng": -70.6510237,
+            "source": "founder_text",
+            "role": "explicit_pair"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_03",
       "legacySlug": "londres-38",
-      "canonicalName": "Londres 38",
-      "displayName": "Londres 38",
+      "canonicalName": "Palacio de La Moneda",
+      "displayName": "Palacio de La Moneda",
       "aliases": [],
       "commune": null,
       "neighborhood": "París-Londres",
@@ -361,12 +497,12 @@
       "editorialRole": "pocket",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": {
-        "lat": -33.444208,
-        "lng": -70.648025
-      },
+      "poiCoordinate": null,
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4439646,
+        "lng": -70.6536703
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -374,7 +510,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "londres-38",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -389,8 +525,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -503,14 +641,72 @@
       ],
       "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
       "providerId": "address.4154915140809224",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4154915140809224",
+          "placeName": "Londres 38, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Londres",
+          "relevance": 1,
+          "accuracy": "rooftop",
+          "category": null,
+          "lng": -70.648025,
+          "lat": -33.444208,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.444208,
+          "lng": -70.648025
+        },
+        "capturedAt": "2026-08-27T05:17:00.698769+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Palacio de La Moneda",
+        "googleMapsUrls": [
+          "https://maps.app.goo.gl/sANBtjaAWVUzK6m2A"
+        ],
+        "notes": "",
+        "rawFeedbackText": "Wrong coordinates, Correct ones and street view are -33.4439646,-70.6536703\nand 3a,90y,0.31h,72.77t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_experience",
+          "label": "Palacio de La Moneda observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4439646,
+            "lng": -70.6536703,
+            "source": "founder_text",
+            "role": "explicit_pair"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_04",
       "legacySlug": "plaza-de-armas",
-      "canonicalName": "Plaza de Armas",
-      "displayName": "Plaza de Armas",
+      "canonicalName": "Morandé 80 (President's Door)",
+      "displayName": "Morandé 80 (President's Door)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -526,12 +722,12 @@
       "editorialRole": "anchor",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": {
-        "lat": -33.438084,
-        "lng": -70.651179
-      },
+      "poiCoordinate": null,
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4425566,
+        "lng": -70.6532628
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -539,7 +735,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "plaza-de-armas",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -554,8 +750,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -668,14 +866,72 @@
       ],
       "selectionReason": "Plausible hit (relevance=0.797, overlap=1.00) — curator review",
       "providerId": "address.4047443208197870",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4047443208197870",
+          "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 0.797037,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651179,
+          "lat": -33.438084,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.438084,
+          "lng": -70.651179
+        },
+        "capturedAt": "2026-08-27T05:17:00.698781+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Morandé 80 (President's Door)",
+        "googleMapsUrls": [
+          "https://maps.app.goo.gl/MWhrip38taNRYoNW7"
+        ],
+        "notes": "",
+        "rawFeedbackText": "close, but wrong.. Correct coordinates are formally **33°26'33.8\"S 70°39'12.1\"W\nand specific street view point @-33.4425566,-70.6532628,3a,82.4y,245.95h,91t/**",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_experience",
+          "label": "Morandé 80 (President's Door) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4425566,
+            "lng": -70.6532628,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_05",
       "legacySlug": "pasaje-phillips",
-      "canonicalName": "Pasaje Phillips",
-      "displayName": "Pasaje Phillips",
+      "canonicalName": "Cerro Santa Lucía & Terraza Neptuno",
+      "displayName": "Cerro Santa Lucía & Terraza Neptuno",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -692,11 +948,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.437702,
-        "lng": -70.649467
+        "lat": -33.4402778,
+        "lng": -70.6433333
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4418503,
+        "lng": -70.6473047
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -704,7 +963,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "pasaje-phillips",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -719,8 +978,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "PARTIAL_REVIEW_REQUIRED",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -833,14 +1094,112 @@
       ],
       "selectionReason": "kind=micro requires curator confirmation (overlap=1.00)",
       "providerId": "address.8013703090801366",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8013703090801366",
+          "placeName": "Paseo Phillips, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Paseo Phillips",
+          "relevance": 0.76,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.649467,
+          "lat": -33.437702,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.437702,
+          "lng": -70.649467
+        },
+        "capturedAt": "2026-08-27T05:17:00.698791+00:00"
+      },
+      "launchPhysicalReadiness": "PARTIAL_REVIEW_REQUIRED",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Cerro Santa Lucía & Terraza Neptuno",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/data=!3m1!4b1!4m6!3m5!1s0x9662c59f3b42ac29:0x9f9c852a64743e83!8m2!3d-33.4402778!4d-70.6433333!16zL20vMDRqOTNf?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/data=!3m1!4b1!4m6!3m5!1s0x9662c59f3b42ac29:0x9f9c852a64743e83!8m2!3d-33.4402778!4d-70.6433333!16zL20vMDRqOTNf?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "Cerro Santa Lucia @-33.4402705,-70.6844474,13z\n\nTerraza Neptuno\n@-33.4418503,-70.6473047,16.17z\n\nCastillo HIdalgo\n@-33.4392,-70.6431626,3a,75y,248.86h,80.64t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": {
+          "founderAtCoordinate": {
+            "lat": -33.4402705,
+            "lng": -70.6844474,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "linkedPlaceCoordinate": {
+            "lat": -33.4402778,
+            "lng": -70.6433333,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "distanceMeters": 3814.9,
+          "resolution": "Use linked Google Maps place for POI; retain founder @ coordinate as conflicting evidence pending confirmation."
+        },
+        "providerDiffMeters": 637.1,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Cerro POI coordinate conflict flagged; sub-points preserved separately.",
+        "uiColor": "YELLOW"
+      },
+      "physicalPoints": [
+        {
+          "id": "cerro_poi",
+          "label": "Cerro Santa Lucía (linked place)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4402778,
+            "lng": -70.6433333,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "terraza_neptuno",
+          "label": "Terraza Neptuno",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4418503,
+            "lng": -70.6473047,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "castillo_hidalgo",
+          "label": "Castillo Hidalgo",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4392,
+            "lng": -70.6431626,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": false
     },
     {
       "stgoId": "STGO_06",
       "legacySlug": "catedral",
-      "canonicalName": "Catedral Metropolitana",
-      "displayName": "Catedral Metropolitana",
+      "canonicalName": "Barrio París-Londres",
+      "displayName": "Barrio París-Londres",
       "aliases": [
         "Catedral Metropolitana de"
       ],
@@ -858,9 +1217,15 @@
       "editorialRole": "micro",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4446231,
+        "lng": -70.6484288
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4446332,
+        "lng": -70.6483784
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -868,7 +1233,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "catedral",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -883,8 +1248,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -997,14 +1364,82 @@
       ],
       "selectionReason": "Street/address hit with low name overlap (0.00)",
       "providerId": "address.4047443208197870",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4047443208197870",
+          "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651179,
+          "lat": -33.438084,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698806+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Barrio París-Londres",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50023873003:0xf057d2270e1d4126!8m2!3d-33.4446231!4d-70.6484288!16s/g/11wwn__db7?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50023873003:0xf057d2270e1d4126!8m2!3d-33.4446231!4d-70.6484288!16s/g/11wwn__db7?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4446332,-70.6483784,3a,75y,268.84h,90t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 770.6,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Barrio París-Londres",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4446231,
+            "lng": -70.6484288,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Barrio París-Londres observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4446332,
+            "lng": -70.6483784,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_07",
       "legacySlug": "merced",
-      "canonicalName": "Basílica de la Merced",
-      "displayName": "Basílica de la Merced",
+      "canonicalName": "Londres 38 Memorial",
+      "displayName": "Londres 38 Memorial",
       "aliases": [],
       "commune": null,
       "neighborhood": "Merced",
@@ -1020,9 +1455,15 @@
       "editorialRole": "micro",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4443106,
+        "lng": -70.6480764
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4442832,
+        "lng": -70.6482238
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -1030,7 +1471,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "merced",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -1045,8 +1486,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -1127,8 +1570,76 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "region.50223",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.481481,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698818+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Londres 38 Memorial",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a0612b558b:0x8663fd43bf2755e5!8m2!3d-33.4443106!4d-70.6480764!16s/g/120_rrr_?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a0612b558b:0x8663fd43bf2755e5!8m2!3d-33.4443106!4d-70.6480764!16s/g/120_rrr_?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4442832,-70.6482238,3a,87y,134.33h,81.01t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 785.8,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Londres 38 Memorial",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4443106,
+            "lng": -70.6480764,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Londres 38 Memorial observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4442832,
+            "lng": -70.6482238,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_08",
@@ -1186,8 +1697,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 8,
       "geocodeQuery": "Cerro Santa Lucía Santiago Centro Chile",
       "queryUsed": "Cerro Santa Lucía Santiago Centro Chile",
@@ -1351,8 +1862,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 9,
       "geocodeQuery": "Barrio Lastarria Santiago Centro Chile",
       "queryUsed": "Barrio Lastarria Santiago Centro Chile",
@@ -1463,8 +1974,8 @@
     {
       "stgoId": "STGO_10",
       "legacySlug": "parque-forestal",
-      "canonicalName": "Parque Forestal",
-      "displayName": "Parque Forestal",
+      "canonicalName": "Palacio Pereira",
+      "displayName": "Palacio Pereira",
       "aliases": [],
       "commune": null,
       "neighborhood": "Forestal",
@@ -1481,11 +1992,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.465247,
-        "lng": -70.692707
+        "lat": -33.440218,
+        "lng": -70.6582542
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4403937,
+        "lng": -70.6582743
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -1493,7 +2007,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "parque-forestal",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -1508,8 +2022,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -1622,14 +2138,85 @@
       ],
       "selectionReason": "kind=micro requires curator confirmation (overlap=0.50)",
       "providerId": "address.8138766845354862",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8138766845354862",
+          "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Parque",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.692707,
+          "lat": -33.465247,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.465247,
+          "lng": -70.692707
+        },
+        "capturedAt": "2026-08-27T05:17:00.698832+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Palacio Pereira",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5af680c627f:0x120948f2d87f1c7b!8m2!3d-33.440218!4d-70.6582542!16s/g/123b43x2?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5af680c627f:0x120948f2d87f1c7b!8m2!3d-33.440218!4d-70.6582542!16s/g/123b43x2?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4403937,-70.6582743,3a,90y,342.42h,97.37t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 4238.2,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Palacio Pereira",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.440218,
+            "lng": -70.6582542,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Palacio Pereira observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4403937,
+            "lng": -70.6582743,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_11",
       "legacySlug": "gam",
-      "canonicalName": "Centro Cultural Gabriela Mistral (GAM)",
-      "displayName": "Centro Cultural Gabriela Mistral (GAM)",
+      "canonicalName": "Barrio Yungay & Plaza Roto Chileno",
+      "displayName": "Barrio Yungay & Plaza Roto Chileno",
       "aliases": [
         "Centro Cultural Gabriela Mistral GAM",
         "Centro Gabriela Mistral"
@@ -1648,9 +2235,15 @@
       "editorialRole": "pocket",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4429112,
+        "lng": -70.6731231
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4374962,
+        "lng": -70.674057
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -1658,7 +2251,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "gam",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -1673,8 +2266,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -1787,8 +2382,76 @@
       ],
       "selectionReason": "Street/address hit with low name overlap (0.00)",
       "providerId": "address.6142274157693902",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.6142274157693902",
+          "placeName": "Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.704224,
+          "lat": -33.457471,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698842+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Barrio Yungay & Plaza Roto Chileno",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/data=!4m15!1m8!3m7!1s0x9662c453c5de7955:0x4eb2d5b924112c2e!2sBarrio+Yungay,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4429112!4d-70.6731231!16s/m/0zthydz!3m5!1s0x9662c44deb081c75:0xd4c005f7882e809a!8m2!3d-33.4374962!4d-70.674057!16s/m/0nfwmc7?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/data=!4m15!1m8!3m7!1s0x9662c453c5de7955:0x4eb2d5b924112c2e!2sBarrio+Yungay,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4429112!4d-70.6731231!16s/m/0zthydz!3m5!1s0x9662c44deb081c75:0xd4c005f7882e809a!8m2!3d-33.4374962!4d-70.674057!16s/m/0nfwmc7?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4374962,-70.674057,17z",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 3308.6,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Barrio Yungay & Plaza Roto Chileno",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4429112,
+            "lng": -70.6731231,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Barrio Yungay & Plaza Roto Chileno observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4374962,
+            "lng": -70.674057,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_12",
@@ -1846,8 +2509,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 12,
       "geocodeQuery": "Barrio Bellavista Recoleta Santiago Chile",
       "queryUsed": "Barrio Bellavista Recoleta Santiago Chile",
@@ -2010,8 +2673,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 13,
       "geocodeQuery": "Museo La Chascona Fernando Márquez de la Plata Bellavista Santiago",
       "queryUsed": "Museo La Chascona Fernando Márquez de la Plata Bellavista Santiago",
@@ -2175,8 +2838,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 14,
       "geocodeQuery": "Cerro San Cristóbal Parque Metropolitano Recoleta Santiago Chile",
       "queryUsed": "Cerro San Cristóbal Parque Metropolitano Recoleta Santiago Chile",
@@ -2342,8 +3005,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 15,
       "geocodeQuery": "Mercado Central Ismael Valdés Vergara Santiago Chile",
       "queryUsed": "Mercado Central Ismael Valdés Vergara Santiago Chile",
@@ -2454,8 +3117,8 @@
     {
       "stgoId": "STGO_16",
       "legacySlug": "museo-memoria",
-      "canonicalName": "Museo de la Memoria y los Derechos Humanos",
-      "displayName": "Museo de la Memoria y los Derechos Humanos",
+      "canonicalName": "Pasaje Matte & Hidden Ballroom",
+      "displayName": "Pasaje Matte & Hidden Ballroom",
       "aliases": [
         "Museo de la Memoria"
       ],
@@ -2475,7 +3138,10 @@
       "chronoWorth": null,
       "poiCoordinate": null,
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4391071,
+        "lng": -70.6510578
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -2483,7 +3149,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "museo-memoria",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -2498,8 +3164,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -2612,8 +3280,63 @@
       ],
       "selectionReason": "Street/address hit with low name overlap (0.00)",
       "providerId": "address.7299995796910398",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.7299995796910398",
+          "placeName": "Matucana, Quinta Normal, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Matucana",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.680066,
+          "lat": -33.43858,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698852+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Pasaje Matte & Hidden Ballroom",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Comunidad+Edificio+Argentina+Pasaje+Matte/data=!4m2!3m1!1s0x0:0x761854167ce82dfe?sa=X&ved=1t:2428&ictx=111"
+        ],
+        "notes": "",
+        "rawFeedbackText": "pasaje matte (comunidad edificio argentina ) @-33.4391071,-70.6510578,3a,75y,85.02h,86.58t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_experience",
+          "label": "Pasaje Matte & Hidden Ballroom observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4391071,
+            "lng": -70.6510578,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_17",
@@ -2671,8 +3394,8 @@
           "status": "present"
         }
       },
-      "launchCorpus": true,
-      "fieldPriority": "LAUNCH",
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
       "verificationPriority": 17,
       "geocodeQuery": "Barrio Yungay Quinta Normal Santiago Chile",
       "queryUsed": "Barrio Yungay Quinta Normal Santiago Chile",
@@ -2783,8 +3506,8 @@
     {
       "stgoId": "STGO_18",
       "legacySlug": "barrio-brasil",
-      "canonicalName": "Barrio Brasil",
-      "displayName": "Barrio Brasil",
+      "canonicalName": "Edificio Palacio Ariztía (Flat-Iron)",
+      "displayName": "Edificio Palacio Ariztía (Flat-Iron)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Brasil",
@@ -2801,11 +3524,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.438654,
-        "lng": -70.66463
+        "lat": -33.4421039,
+        "lng": -70.6515891
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4425828,
+        "lng": -70.6511804
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -2813,7 +3539,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "barrio-brasil",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -2828,8 +3554,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -2942,14 +3670,85 @@
       ],
       "selectionReason": "kind=micro requires curator confirmation (overlap=1.00)",
       "providerId": "address.4257186093548864",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4257186093548864",
+          "placeName": "Avenida Brasil, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Avenida Brasil",
+          "relevance": 0.693333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.66463,
+          "lat": -33.438654,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.438654,
+          "lng": -70.66463
+        },
+        "capturedAt": "2026-08-27T05:17:00.698862+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Edificio Palacio Ariztía (Flat-Iron)",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/data=!4m10!1m2!2m1!1sedificio+ariztia!3m6!1s0x9662c5a6caf6c237:0x1da2223bf8246a0f!8m2!3d-33.4421039!4d-70.6515891!15sChBlZGlmaWNpbyBhcml6dGlhkgEWY2l0eV9nb3Zlcm5tZW50X29mZmljZeABAA!16s/g/11g6jrmx4v?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/data=!4m10!1m2!2m1!1sedificio+ariztia!3m6!1s0x9662c5a6caf6c237:0x1da2223bf8246a0f!8m2!3d-33.4421039!4d-70.6515891!15sChBlZGlmaWNpbyBhcml6dGlhkgEWY2l0eV9nb3Zlcm5tZW50X29mZmljZeABAA!16s/g/11g6jrmx4v?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4425828,-70.6511804,3a,75y,113.69h,117.01t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 1269.4,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Edificio Palacio Ariztía (Flat-Iron)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4421039,
+            "lng": -70.6515891,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Edificio Palacio Ariztía (Flat-Iron) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4425828,
+            "lng": -70.6511804,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_19",
       "legacySlug": "barrio-italia",
-      "canonicalName": "Barrio Italia",
-      "displayName": "Barrio Italia",
+      "canonicalName": "Seguro Obrero Bullet Scars (Correo)",
+      "displayName": "Seguro Obrero Bullet Scars (Correo)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Italia",
@@ -2966,11 +3765,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.45295,
-        "lng": -70.583834
+        "lat": -33.4419417,
+        "lng": -70.6531766
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4419727,
+        "lng": -70.6533529
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -2978,7 +3780,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "barrio-italia",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -2993,8 +3795,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -3107,14 +3911,85 @@
       ],
       "selectionReason": "Plausible hit (relevance=0.800, overlap=1.00) — curator review",
       "providerId": "address.54831404296606",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.54831404296606",
+          "placeName": "Italia, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Italia",
+          "relevance": 0.8,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.583834,
+          "lat": -33.45295,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.45295,
+          "lng": -70.583834
+        },
+        "capturedAt": "2026-08-27T05:17:00.698873+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Seguro Obrero Bullet Scars (Correo)",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Workers'+Insurance+Building/@-33.4419727,-70.6533529,3a,75y,72.52h,94.63t/data=!3m7!1e1!3m5!1s8qa_dmoQu0wYOrOc4ROOXw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-4.6251837990922695&panoid=8qa_dmoQu0wYOrOc4ROOXw&yaw=72.51897593768821!7i16384!8i8192!4m9!3m8!1s0x9662c5a3c3d21bef:0xeca5df680e75fac3!8m2!3d-33.4419417!4d-70.6531766!10e5!14m1!1BCgIgARICCAI!16s/g/11b5v43nnd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Workers'+Insurance+Building/@-33.4419727,-70.6533529,3a,75y,72.52h,94.63t/data=!3m7!1e1!3m5!1s8qa_dmoQu0wYOrOc4ROOXw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-4.6251837990922695&panoid=8qa_dmoQu0wYOrOc4ROOXw&yaw=72.51897593768821!7i16384!8i8192!4m9!3m8!1s0x9662c5a3c3d21bef:0xeca5df680e75fac3!8m2!3d-33.4419417!4d-70.6531766!10e5!14m1!1BCgIgARICCAI!16s/g/11b5v43nnd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4419727,-70.6533529,3a,90y,84.39h,86.75t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 6549.0,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Seguro Obrero Bullet Scars (Correo)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4419417,
+            "lng": -70.6531766,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Seguro Obrero Bullet Scars (Correo) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4419727,
+            "lng": -70.6533529,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_20",
       "legacySlug": "san-francisco",
-      "canonicalName": "Iglesia de San Francisco",
-      "displayName": "Iglesia de San Francisco",
+      "canonicalName": "La Piojera",
+      "displayName": "La Piojera",
       "aliases": [
         "Iglesia San Francisco"
       ],
@@ -3132,9 +4007,15 @@
       "editorialRole": "micro",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4335938,
+        "lng": -70.6521378
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4334303,
+        "lng": -70.6521616
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -3142,7 +4023,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "san-francisco",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -3157,8 +4038,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -3239,14 +4122,82 @@
       ],
       "selectionReason": "Street/address hit with low name overlap (0.00)",
       "providerId": "address.6142274157693902",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.6142274157693902",
+          "placeName": "Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.704224,
+          "lat": -33.457471,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698883+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "La Piojera",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bb65f8aa49:0x39b476e51989c180!8m2!3d-33.4335938!4d-70.6521378!16s/g/1211qy72?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bb65f8aa49:0x39b476e51989c180!8m2!3d-33.4335938!4d-70.6521378!16s/g/1211qy72?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4334303,-70.6521616,3a,75y,177.12h,82.63t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5514.0,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "La Piojera",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4335938,
+            "lng": -70.6521378,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "La Piojera observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4334303,
+            "lng": -70.6521616,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_21",
       "legacySlug": "palacio-pereira",
-      "canonicalName": "Palacio Pereira",
-      "displayName": "Palacio Pereira",
+      "canonicalName": "Confitería Torres (1879)",
+      "displayName": "Confitería Torres (1879)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Barrio Cívico",
@@ -3262,9 +4213,15 @@
       "editorialRole": "micro",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4459733,
+        "lng": -70.6579077
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4458744,
+        "lng": -70.6579168
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -3272,7 +4229,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": "palacio-pereira",
       "legacyMappingStatus": "resolved",
       "provenance": {
@@ -3287,8 +4244,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -3401,14 +4360,82 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.2996132911434942",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.2996132911434942",
+          "placeName": "Huérfanos, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Huérfanos",
+          "relevance": 0.777778,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.695421,
+          "lat": -33.443744,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698892+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Confitería Torres (1879)",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,75y,201.52h,93.39t/data=!3m7!1e1!3m5!1sZzDvLSlRkq_0QbqFhqSNhA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-3.3866785211263846&panoid=ZzDvLSlRkq_0QbqFhqSNhA&yaw=201.5177428070729!7i16384!8i8192!4m10!1m2!2m1!1sConfitería+Torres!3m6!1s0x9662c5a811c4ef3f:0x4496a2238df70ec1!8m2!3d-33.4459733!4d-70.6579077!15sChJDb25maXRlcsOtYSBUb3JyZXMiA4gBAVoUIhJjb25maXRlcsOtYSB0b3JyZXOSAQpyZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJZYUZwcFJsbG5FQUXgAQD6AQQIOBBF!16s/g/1ywqfmz8l?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,75y,201.52h,93.39t/data=!3m7!1e1!3m5!1sZzDvLSlRkq_0QbqFhqSNhA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-3.3866785211263846&panoid=ZzDvLSlRkq_0QbqFhqSNhA&yaw=201.5177428070729!7i16384!8i8192!4m10!1m2!2m1!1sConfitería+Torres!3m6!1s0x9662c5a811c4ef3f:0x4496a2238df70ec1!8m2!3d-33.4459733!4d-70.6579077!15sChJDb25maXRlcsOtYSBUb3JyZXMiA4gBAVoUIhJjb25maXRlcsOtYSB0b3JyZXOSAQpyZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJZYUZwcFJsbG5FQUXgAQD6AQQIOBBF!16s/g/1ywqfmz8l?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4458744,-70.6579168,3a,75y,201.52h,93.39t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 3489.4,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Confitería Torres (1879)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4459733,
+            "lng": -70.6579077,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Confitería Torres (1879) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4458744,
+            "lng": -70.6579168,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_22",
       "legacySlug": "ex-congreso",
-      "canonicalName": "Ex Congreso Nacional",
-      "displayName": "Ex Congreso Nacional",
+      "canonicalName": "Museo Chileno Arte Precolombino",
+      "displayName": "Museo Chileno Arte Precolombino",
       "aliases": [],
       "commune": null,
       "neighborhood": "Centro Cívico",
@@ -3425,11 +4452,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.47967,
-        "lng": -70.528776
+        "lat": -33.4386677,
+        "lng": -70.6523921
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4386084,
+        "lng": -70.6523455
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -3437,7 +4467,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -3451,8 +4481,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -3565,19 +4597,90 @@
       ],
       "selectionReason": "Plausible hit (relevance=0.659, overlap=0.50) — curator review",
       "providerId": "address.6622103295409666",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.6622103295409666",
+          "placeName": "Pasaje El Congreso, Peñalolén, Región Metropolitana de Santiago 7910000, Chile",
+          "text": "Pasaje El Congreso",
+          "relevance": 0.65855,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.528776,
+          "lat": -33.47967,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.47967,
+          "lng": -70.528776
+        },
+        "capturedAt": "2026-08-27T05:17:00.698902+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Museo Chileno Arte Precolombino",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.4386677,-70.6549724,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a46c29c7e7:0x441c0411745f7ac3!8m2!3d-33.4386677!4d-70.6523921!16s/m/04ygspw?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.4386677,-70.6549724,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a46c29c7e7:0x441c0411745f7ac3!8m2!3d-33.4386677!4d-70.6523921!16s/m/04ygspw?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4386084,-70.6523455,3a,90y,223.06h,82.94t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 12340.7,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Museo Chileno Arte Precolombino",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4386677,
+            "lng": -70.6523921,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Museo Chileno Arte Precolombino observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4386084,
+            "lng": -70.6523455,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_23",
       "legacySlug": "plaza-constitucion",
-      "canonicalName": "Plaza de la Constitución",
-      "displayName": "Plaza de la Constitución",
+      "canonicalName": "Inca Tambo Canal Dip (Puente/Stgo)",
+      "displayName": "Inca Tambo Canal Dip (Puente/Stgo)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Centro Cívico",
       "identityStatus": "RESOLVED",
-      "identityMissingSource": null,
+      "identityMissingSource": "Founder cannot identify POI concept; canonical Inca Tambo Canal Dip requires editorial research before physical promotion.",
       "themes": [
         "T1A",
         "T3"
@@ -3588,10 +4691,7 @@
       "editorialRole": "civic",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": {
-        "lat": -33.432677,
-        "lng": -70.634847
-      },
+      "poiCoordinate": null,
       "entranceCoordinate": null,
       "experiencePointCoordinate": null,
       "nearestTransit": {
@@ -3601,7 +4701,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "UNRESOLVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -3616,7 +4716,9 @@
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
           "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "selectionStatus": "UNRESOLVED_RESEARCH_REQUIRED",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -3730,13 +4832,56 @@
       "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
       "providerId": "address.1867968347677978",
       "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.1867968347677978",
+          "placeName": "Constitución, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+          "text": "Constitución",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.634847,
+          "lat": -33.432677,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.432677,
+          "lng": -70.634847
+        },
+        "capturedAt": "2026-08-27T05:17:00.698913+00:00"
+      },
+      "launchPhysicalReadiness": "UNRESOLVED_RESEARCH_REQUIRED",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Inca Tambo Canal Dip (Puente/Stgo)",
+        "googleMapsUrls": [],
+        "notes": "",
+        "rawFeedbackText": "i dont undesrtand what this POI , cant find it like its written",
+        "semanticWarning": null,
+        "researchBlocker": "Founder cannot identify POI concept; canonical Inca Tambo Canal Dip requires editorial research before physical promotion.",
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "RED"
+      },
+      "physicalPoints": [],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": false
     },
     {
       "stgoId": "STGO_24",
       "legacySlug": "museo-bellas-artes",
-      "canonicalName": "Museo Nacional de Bellas Artes",
-      "displayName": "Museo Nacional de Bellas Artes",
+      "canonicalName": "Barrio Lastarria Corridor",
+      "displayName": "Barrio Lastarria Corridor",
       "aliases": [],
       "commune": null,
       "neighborhood": "Parque Forestal",
@@ -3752,9 +4897,15 @@
       "editorialRole": "museum",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4382715,
+        "lng": -70.6410854
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4374383,
+        "lng": -70.641002
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -3762,7 +4913,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -3776,8 +4927,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -3890,14 +5043,82 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.8138766845354862",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8138766845354862",
+          "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Parque",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.692707,
+          "lat": -33.465247,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698922+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Barrio Lastarria Corridor",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-70.6410346,3a,84.7y,153.77h,90.72t/data=!3m7!1e1!3m5!1s9s_X0nc9uVcVU2FGL8LgeA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-0.7236172924506263&panoid=9s_X0nc9uVcVU2FGL8LgeA&yaw=153.7650451331805!7i16384!8i8192!4m15!1m8!3m7!1s0x96623debe2486905:0xa38ed010f5764604!2sLastarria,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4382715!4d-70.6410854!16s/g/11fk3y3kkd!3m5!1s0x9662c59940788e33:0xebab0b2b31a52a0a!8m2!3d-33.4376407!4d-70.6407791!16s/g/1n36gdyhs?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-70.6410346,3a,84.7y,153.77h,90.72t/data=!3m7!1e1!3m5!1s9s_X0nc9uVcVU2FGL8LgeA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-0.7236172924506263&panoid=9s_X0nc9uVcVU2FGL8LgeA&yaw=153.7650451331805!7i16384!8i8192!4m15!1m8!3m7!1s0x96623debe2486905:0xa38ed010f5764604!2sLastarria,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4382715!4d-70.6410854!16s/g/11fk3y3kkd!3m5!1s0x9662c59940788e33:0xebab0b2b31a52a0a!8m2!3d-33.4376407!4d-70.6407791!16s/g/1n36gdyhs?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4374383,-70.641002,3a,75y,172.8h,84.6t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5651.0,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Barrio Lastarria Corridor",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4382715,
+            "lng": -70.6410854,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Barrio Lastarria Corridor observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4374383,
+            "lng": -70.641002,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_25",
       "legacySlug": "estacion-mapocho",
-      "canonicalName": "Estación Mapocho",
-      "displayName": "Estación Mapocho",
+      "canonicalName": "GAM (Centro Gabriela Mistral)",
+      "displayName": "GAM (Centro Gabriela Mistral)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Mapocho",
@@ -3914,11 +5135,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.429529,
-        "lng": -70.698592
+        "lat": -33.4391942,
+        "lng": -70.6398448
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4391756,
+        "lng": -70.6398489
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -3926,7 +5150,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -3940,8 +5164,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4054,14 +5280,85 @@
       ],
       "selectionReason": "Plausible hit (relevance=0.611, overlap=0.50) — curator review",
       "providerId": "address.4536907542372822",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.4536907542372822",
+          "placeName": "Avenida Mapocho, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Avenida Mapocho",
+          "relevance": 0.611111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.698592,
+          "lat": -33.429529,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.429529,
+          "lng": -70.698592
+        },
+        "capturedAt": "2026-08-27T05:17:00.698935+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "GAM (Centro Gabriela Mistral)",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,-70.6425548,17z/data=!3m1!5s0x9662c59ea911f4bd:0x956fd84a83fd3d4!4m10!1m2!2m1!1sGAM!3m6!1s0x9662c59b6ee5a887:0x43a746bfa98d9592!8m2!3d-33.4391942!4d-70.6398448!15sCgNHQU1aBSIDZ2FtkgEPY3VsdHVyYWxfY2VudGVymgEkQ2hkRFNVaE5NRzluUzBWSlEwRm5TVU5TYTJGaFRtNW5SUkFC4AEA-gEECBEQQw!16s/m/0jwv0_6?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,-70.6425548,17z/data=!3m1!5s0x9662c59ea911f4bd:0x956fd84a83fd3d4!4m10!1m2!2m1!1sGAM!3m6!1s0x9662c59b6ee5a887:0x43a746bfa98d9592!8m2!3d-33.4391942!4d-70.6398448!15sCgNHQU1aBSIDZ2FtkgEPY3VsdHVyYWxfY2VudGVymgEkQ2hkRFNVaE5NRzluUzBWSlEwRm5TVU5TYTJGaFRtNW5SUkFC4AEA-gEECBEQQw!16s/m/0jwv0_6?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4391756,-70.6398489,3a,75y,127.28h,84.06t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5556.3,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "GAM (Centro Gabriela Mistral)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4391942,
+            "lng": -70.6398448,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "GAM (Centro Gabriela Mistral) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4391756,
+            "lng": -70.6398489,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_26",
       "legacySlug": "cementerio-general",
-      "canonicalName": "Cementerio General",
-      "displayName": "Cementerio General",
+      "canonicalName": "MNBA & Parque Forestal",
+      "displayName": "MNBA & Parque Forestal",
       "aliases": [],
       "commune": null,
       "neighborhood": "Recoleta",
@@ -4078,11 +5375,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.41401,
-        "lng": -70.645475
+        "lat": -33.4353053,
+        "lng": -70.6435365
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4354102,
+        "lng": -70.6430095
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -4090,7 +5390,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -4104,8 +5404,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4218,14 +5520,85 @@
       ],
       "selectionReason": "kind=memory requires curator confirmation (overlap=1.00)",
       "providerId": "address.2301276407279016",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.2301276407279016",
+          "placeName": "Cementerio General, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Cementerio General",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.645475,
+          "lat": -33.41401,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.41401,
+          "lng": -70.645475
+        },
+        "capturedAt": "2026-08-27T05:17:00.698948+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "MNBA & Parque Forestal",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.6461168,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c598506488df:0xc4261233e54747ba!8m2!3d-33.4353053!4d-70.6435365!16s/m/03cdgsj?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.6461168,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c598506488df:0xc4261233e54747ba!8m2!3d-33.4353053!4d-70.6435365!16s/m/03cdgsj?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4354102,-70.6430095,3a,75y,290.43h,85.51t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 2374.8,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "MNBA & Parque Forestal",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4353053,
+            "lng": -70.6435365,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "MNBA & Parque Forestal observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4354102,
+            "lng": -70.6430095,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_27",
       "legacySlug": "plaza-nunoa",
-      "canonicalName": "Plaza Ñuñoa",
-      "displayName": "Plaza Ñuñoa",
+      "canonicalName": "Taller Castillo Kulczewski",
+      "displayName": "Taller Castillo Kulczewski",
       "aliases": [],
       "commune": null,
       "neighborhood": "Ñuñoa",
@@ -4242,11 +5615,14 @@
       "tier": "launch",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.459415,
-        "lng": -70.59024
+        "lat": -33.4380109,
+        "lng": -70.6390334
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4379605,
+        "lng": -70.6390723
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -4254,7 +5630,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "PROVIDER_DERIVED",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -4268,8 +5644,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "AUTO_HIGH_CONFIDENCE"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4382,14 +5760,85 @@
       ],
       "selectionReason": "High-confidence provider selection relevance=0.911 overlap=1.00",
       "providerId": "locality.15649327",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "locality.15649327",
+          "placeName": "Plaza Ñuñoa, Ñuñoa, Región Metropolitana de Santiago, Chile",
+          "text": "Plaza Ñuñoa",
+          "relevance": 0.911111,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.59024,
+          "lat": -33.459415,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "AUTO_HIGH_CONFIDENCE",
+        "poiCoordinate": {
+          "lat": -33.459415,
+          "lng": -70.59024
+        },
+        "capturedAt": "2026-08-27T05:17:00.698958+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Taller Castillo Kulczewski",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-70.6416137,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59ebf03174b:0x476636f0e295ebb3!8m2!3d-33.4380109!4d-70.6390334!16s/g/11gn1xc534?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-70.6416137,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59ebf03174b:0x476636f0e295ebb3!8m2!3d-33.4380109!4d-70.6390334!16s/g/11gn1xc534?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4379605,-70.6390723,3a,23.9y,104.96h,129.36t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5114.5,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Taller Castillo Kulczewski",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4380109,
+            "lng": -70.6390334,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Taller Castillo Kulczewski observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4379605,
+            "lng": -70.6390723,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_28",
       "legacySlug": "villa-grimaldi",
-      "canonicalName": "Villa Grimaldi",
-      "displayName": "Villa Grimaldi",
+      "canonicalName": "Bocanáriz & Chipe Libre",
+      "displayName": "Bocanáriz & Chipe Libre",
       "aliases": [],
       "commune": null,
       "neighborhood": "Peñalolén",
@@ -4405,9 +5854,15 @@
       "editorialRole": "memory",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4384002,
+        "lng": -70.6413193
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4383804,
+        "lng": -70.6410837
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -4415,7 +5870,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -4429,8 +5884,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4543,14 +6000,82 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.3707338359190468",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.3707338359190468",
+          "placeName": "La Paz, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "La Paz",
+          "relevance": 0.753086,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651142,
+          "lat": -33.426111,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698968+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Bocanáriz & Chipe Libre",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.44h,90t/data=!3m7!1e1!3m5!1sy2ChLlLIbfJHxAASReSudw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=0&panoid=y2ChLlLIbfJHxAASReSudw&yaw=263.4448!7i16384!8i8192!4m14!1m7!3m6!1s0x9662c59940a7c1e7:0x92f1a277401b023d!2sBocanáriz!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p!3m5!1s0x9662c59940a7c1e7:0x92f1a277401b023d!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.44h,90t/data=!3m7!1e1!3m5!1sy2ChLlLIbfJHxAASReSudw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=0&panoid=y2ChLlLIbfJHxAASReSudw&yaw=263.4448!7i16384!8i8192!4m14!1m7!3m6!1s0x9662c59940a7c1e7:0x92f1a277401b023d!2sBocanáriz!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p!3m5!1s0x9662c59940a7c1e7:0x92f1a277401b023d!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4383804,-70.6410837,3a,75y,288.31h,89.58t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 1642.6,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Bocanáriz & Chipe Libre",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4384002,
+            "lng": -70.6413193,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Bocanáriz & Chipe Libre observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4383804,
+            "lng": -70.6410837,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_29",
       "legacySlug": "teatro-municipal",
-      "canonicalName": "Teatro Municipal",
-      "displayName": "Teatro Municipal",
+      "canonicalName": "La Chascona (Neruda House)",
+      "displayName": "La Chascona (Neruda House)",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -4566,9 +6091,15 @@
       "editorialRole": "culture",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4311212,
+        "lng": -70.6344175
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4311212,
+        "lng": -70.6369978
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -4576,7 +6107,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -4590,8 +6121,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4704,14 +6237,82 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.2321854749876724",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.2321854749876724",
+          "placeName": "Los Agustinos, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Los Agustinos",
+          "relevance": 0.72572,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.575205,
+          "lat": -33.442839,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698979+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "La Chascona (Neruda House)",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59017cb616d:0x4efb4711f2a9a116!8m2!3d-33.4311212!4d-70.6344175!16s/m/0pdp3jz?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59017cb616d:0x4efb4711f2a9a116!8m2!3d-33.4311212!4d-70.6344175!16s/m/0pdp3jz?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4311212,-70.6369978,17z",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5646.8,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "La Chascona (Neruda House)",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4311212,
+            "lng": -70.6344175,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "La Chascona (Neruda House) observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4311212,
+            "lng": -70.6369978,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_30",
       "legacySlug": "casa-de-los-diez",
-      "canonicalName": "Casa de los Diez",
-      "displayName": "Casa de los Diez",
+      "canonicalName": "Bellavista Mural Corridors",
+      "displayName": "Bellavista Mural Corridors",
       "aliases": [],
       "commune": null,
       "neighborhood": "Lastarria",
@@ -4727,9 +6328,15 @@
       "editorialRole": "architecture",
       "tier": "launch",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.432015,
+        "lng": -70.6383949
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4335418,
+        "lng": -70.6372758
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -4737,7 +6344,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -4751,8 +6358,10 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
@@ -4865,8 +6474,76 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.7568457330893310",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.7568457330893310",
+          "placeName": "Pasaje 10, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Pasaje 10",
+          "relevance": 0.705556,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.694164,
+          "lat": -33.415952,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.698989+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Bellavista Mural Corridors",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropolitan+Region/@-33.4320128,-70.6590375,14z/data=!3m1!4b1!4m10!1m2!2m1!1sbarrio+bellavista!3m6!1s0x9662c5908a224009:0x73c003ec5d9074c3!8m2!3d-33.432015!4d-70.6383949!15sChFiYXJyaW8gYmVsbGF2aXN0YZIBDG5laWdoYm9yaG9vZOABAA!16s/g/11byl029hq?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropolitan+Region/@-33.4320128,-70.6590375,14z/data=!3m1!4b1!4m10!1m2!2m1!1sbarrio+bellavista!3m6!1s0x9662c5908a224009:0x73c003ec5d9074c3!8m2!3d-33.432015!4d-70.6383949!15sChFiYXJyaW8gYmVsbGF2aXN0YZIBDG5laWdoYm9yaG9vZOABAA!16s/g/11byl029hq?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4335418,-70.6372758,3a,63.6y,300.39h,84.75t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 5475.2,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Bellavista Mural Corridors",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.432015,
+            "lng": -70.6383949,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Bellavista Mural Corridors observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4335418,
+            "lng": -70.6372758,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_31",
@@ -5035,8 +6712,8 @@
     {
       "stgoId": "STGO_32",
       "legacySlug": "plaza-bulnes",
-      "canonicalName": "Plaza Bulnes",
-      "displayName": "Plaza Bulnes",
+      "canonicalName": "Cerro San Cristóbal Funicular / Hill complex",
+      "displayName": "Cerro San Cristóbal Funicular / Hill complex",
       "aliases": [],
       "commune": null,
       "neighborhood": "Centro Cívico",
@@ -5052,9 +6729,15 @@
       "editorialRole": "plaza",
       "tier": "expansion",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4202404,
+        "lng": -70.6313749
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4295677,
+        "lng": -70.63743
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -5062,7 +6745,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -5076,16 +6759,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 132,
       "geocodeQuery": "Plaza Bulnes Santiago",
       "queryUsed": "Plaza Bulnes Santiago",
@@ -5190,14 +6875,143 @@
       ],
       "selectionReason": "Shared identical provider pin (-33.40399, -70.62871) across 5 nodes — likely city/plaza collapse; curator must disambiguate",
       "providerId": "address.3002112095548218",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.3002112095548218",
+          "placeName": "Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Plaza",
+          "relevance": 0.759259,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.628713,
+          "lat": -33.403989,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.699000+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Cerro San Cristóbal Funicular / Hill complex",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15z/data=!3m1!4b1!4m6!3m5!1s0x9662c5f2c4b10d51:0xf5ed6089dea23c83!8m2!3d-33.4202404!4d-70.6313749!16zL20vMDZzbGs1?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15z/data=!3m1!4b1!4m6!3m5!1s0x9662c5f2c4b10d51:0xf5ed6089dea23c83!8m2!3d-33.4202404!4d-70.6313749!16zL20vMDZzbGs1?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "Funicular @-33.4295677,-70.63743,16.7z\nAcceso Carlos reed @-33.4261818,-70.626117,18.08z\nTeleferico , entrada pedro de valdivia @-33.4156103,-70.6175375,17.54z",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 1823.9,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "hill_poi",
+          "label": "Cerro San Cristóbal",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4202404,
+            "lng": -70.6313749,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "funicular",
+          "label": "Funicular",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4295677,
+            "lng": -70.63743,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "acceso_carlos_reed",
+          "label": "Acceso Carlos reed",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4261818,
+            "lng": -70.626117,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "teleferico_pedro_de_valdivia",
+          "label": "Teleferico , entrada pedro de valdivia",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4156103,
+            "lng": -70.6175375,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [
+        {
+          "id": "funicular",
+          "label": "Funicular",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4295677,
+            "lng": -70.63743,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "acceso_carlos_reed",
+          "label": "Acceso Carlos reed",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4261818,
+            "lng": -70.626117,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "teleferico_pedro_de_valdivia",
+          "label": "Teleferico , entrada pedro de valdivia",
+          "role": "access",
+          "coordinate": {
+            "lat": -33.4156103,
+            "lng": -70.6175375,
+            "source": "founder_at",
+            "role": "labeled"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_33",
       "legacySlug": "iglesia-de-san-agustin",
-      "canonicalName": "Iglesia de San Agustín",
-      "displayName": "Iglesia de San Agustín",
+      "canonicalName": "Kulczewski Funicular Gargoyle",
+      "displayName": "Kulczewski Funicular Gargoyle",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -5213,12 +7027,12 @@
       "editorialRole": "micro",
       "tier": "expansion",
       "chronoWorth": null,
-      "poiCoordinate": {
-        "lat": -33.474377,
-        "lng": -70.669806
-      },
+      "poiCoordinate": null,
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4368473,
+        "lng": -70.6364354
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -5241,15 +7055,17 @@
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
           "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "selectionStatus": "NEEDS_SEMANTIC_REVIEW",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 133,
       "geocodeQuery": "Iglesia de San Agustín Santiago Chile",
       "queryUsed": "Iglesia de San Agustín Santiago Chile",
@@ -5355,13 +7171,73 @@
       "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
       "providerId": "address.8860703790511188",
       "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8860703790511188",
+          "placeName": "San Agustín, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "San Agustín",
+          "relevance": 0.722963,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.669806,
+          "lat": -33.474377,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.474377,
+          "lng": -70.669806
+        },
+        "capturedAt": "2026-08-27T05:17:00.699010+00:00"
+      },
+      "launchPhysicalReadiness": "NEEDS_SEMANTIC_REVIEW",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Kulczewski Funicular Gargoyle",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=8.115650956896644&panoid=3VJbWxYDWGtY9x_wRVxMuw&yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=8.115650956896644&panoid=3VJbWxYDWGtY9x_wRVxMuw&yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "its lvciano K hotel today",
+        "rawFeedbackText": "@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t",
+        "semanticWarning": "its lvciano K hotel today",
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": null,
+        "curatorOverrideProvider": false,
+        "overrideReason": null,
+        "uiColor": "RED"
+      },
+      "physicalPoints": [
+        {
+          "id": "founder_street_view",
+          "label": "Founder Street View (Hotel Luciano K)",
+          "role": "experience_candidate",
+          "coordinate": {
+            "lat": -33.4368473,
+            "lng": -70.6364354,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED",
+          "notes": "its lvciano K hotel today"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": false
     },
     {
       "stgoId": "STGO_34",
       "legacySlug": "iglesia-de-santo-domingo",
-      "canonicalName": "Iglesia de Santo Domingo",
-      "displayName": "Iglesia de Santo Domingo",
+      "canonicalName": "La Vega Central",
+      "displayName": "La Vega Central",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -5378,11 +7254,14 @@
       "tier": "expansion",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.438128,
-        "lng": -70.675513
+        "lat": -33.4300652,
+        "lng": -70.6495745
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4307788,
+        "lng": -70.6490827
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -5390,7 +7269,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -5404,16 +7283,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 134,
       "geocodeQuery": "Iglesia de Santo Domingo Santiago",
       "queryUsed": "Iglesia de Santo Domingo Santiago",
@@ -5518,14 +7399,85 @@
       ],
       "selectionReason": "kind=micro requires curator confirmation (overlap=0.67)",
       "providerId": "address.8744143949020648",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8744143949020648",
+          "placeName": "Santo Domingo, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Santo Domingo",
+          "relevance": 0.647037,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.675513,
+          "lat": -33.438128,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.438128,
+          "lng": -70.675513
+        },
+        "capturedAt": "2026-08-27T05:17:00.699019+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "La Vega Central",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521548,17z/data=!3m1!4b1!4m11!3m10!1s0x9662c5be64184569:0x89553bf87c2db350!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4300652!4d-70.6495745!16s/m/0n_8q09?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521548,17z/data=!3m1!4b1!4m11!3m10!1s0x9662c5be64184569:0x89553bf87c2db350!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4300652!4d-70.6495745!16s/m/0n_8q09?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4307788,-70.6490827,3a,90y,14.1h,77.29t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 2568.5,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "La Vega Central",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4300652,
+            "lng": -70.6495745,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "La Vega Central observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4307788,
+            "lng": -70.6490827,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_35",
       "legacySlug": "iglesia-de-san-saturnino",
-      "canonicalName": "Iglesia de San Saturnino",
-      "displayName": "Iglesia de San Saturnino",
+      "canonicalName": "Mercado Tirso de Molina",
+      "displayName": "Mercado Tirso de Molina",
       "aliases": [],
       "commune": null,
       "neighborhood": "Yungay",
@@ -5542,11 +7494,14 @@
       "tier": "expansion",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.43496,
-        "lng": -70.67008
+        "lat": -33.4318177,
+        "lng": -70.65046
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4317446,
+        "lng": -70.6511075
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -5554,7 +7509,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -5568,16 +7523,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 135,
       "geocodeQuery": "Iglesia de San Saturnino Yungay",
       "queryUsed": "Iglesia de San Saturnino Yungay",
@@ -5682,8 +7639,79 @@
       ],
       "selectionReason": "kind=micro requires curator confirmation (overlap=0.50)",
       "providerId": "locality.19532335",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "locality.19532335",
+          "placeName": "San Saturnino, Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "San Saturnino",
+          "relevance": 0.455556,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.67008,
+          "lat": -33.43496,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.43496,
+          "lng": -70.67008
+        },
+        "capturedAt": "2026-08-27T05:17:00.699030+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Mercado Tirso de Molina",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.6530403,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bc65b2e8b1:0x809d0eb626421136!8m2!3d-33.4318177!4d-70.65046!16s/g/11b8v9jhm3?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.6530403,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bc65b2e8b1:0x809d0eb626421136!8m2!3d-33.4318177!4d-70.65046!16s/g/11b8v9jhm3?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4317446,-70.6511075,3a,75y,136.4h,87.59t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 1853.9,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Mercado Tirso de Molina",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4318177,
+            "lng": -70.65046,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Mercado Tirso de Molina observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4317446,
+            "lng": -70.6511075,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_36",
@@ -7645,8 +9673,8 @@
     {
       "stgoId": "STGO_48",
       "legacySlug": "patio-bellavista",
-      "canonicalName": "Patio Bellavista",
-      "displayName": "Patio Bellavista",
+      "canonicalName": "Museo de la Memoria y DDHH",
+      "displayName": "Museo de la Memoria y DDHH",
       "aliases": [],
       "commune": null,
       "neighborhood": "Bellavista",
@@ -7663,11 +9691,14 @@
       "tier": "expansion",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.433632,
-        "lng": -70.641962
+        "lat": -33.4399195,
+        "lng": -70.6794885
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4402446,
+        "lng": -70.6792068
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -7675,7 +9706,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -7689,16 +9720,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 148,
       "geocodeQuery": "Patio Bellavista Santiago",
       "queryUsed": "Patio Bellavista Santiago",
@@ -7803,8 +9836,79 @@
       ],
       "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
       "providerId": "address.8020030614266190",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.8020030614266190",
+          "placeName": "Bellavista, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Bellavista",
+          "relevance": 0.759259,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.641962,
+          "lat": -33.433632,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.433632,
+          "lng": -70.641962
+        },
+        "capturedAt": "2026-08-27T05:17:00.699043+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Museo de la Memoria y DDHH",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c45020555555:0xc3a0578158ca8903!8m2!3d-33.4399195!4d-70.6794885!16s/g/11gd67y209?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c45020555555:0xc3a0578158ca8903!8m2!3d-33.4399195!4d-70.6794885!16s/g/11gd67y209?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4402446,-70.6792068,3a,75y,350.88h,84.11t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 3551.6,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Museo de la Memoria y DDHH",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4399195,
+            "lng": -70.6794885,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Museo de la Memoria y DDHH observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4402446,
+            "lng": -70.6792068,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_49",
@@ -14327,8 +16431,8 @@
     {
       "stgoId": "STGO_91",
       "legacySlug": "torre-entel",
-      "canonicalName": "Torre Entel",
-      "displayName": "Torre Entel",
+      "canonicalName": "Patronato Textile & Culture Corridor",
+      "displayName": "Patronato Textile & Culture Corridor",
       "aliases": [],
       "commune": null,
       "neighborhood": "Santiago Centro",
@@ -14344,9 +16448,15 @@
       "editorialRole": "architecture",
       "tier": "expansion",
       "chronoWorth": null,
-      "poiCoordinate": null,
+      "poiCoordinate": {
+        "lat": -33.4287589,
+        "lng": -70.6439634
+      },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4299694,
+        "lng": -70.6443207
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -14354,7 +16464,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "SUSPICIOUS",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -14368,16 +16478,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "SUSPICIOUS"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 191,
       "geocodeQuery": "Torre Entel Santiago",
       "queryUsed": "Torre Entel Santiago",
@@ -14482,14 +16594,82 @@
       ],
       "selectionReason": "Low name overlap (0.00) with provider place_name",
       "providerId": "address.5555462923464898",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.5555462923464898",
+          "placeName": "Santiago Downtown, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Santiago Downtown",
+          "relevance": 0.425926,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.656809,
+          "lat": -33.444098,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "SUSPICIOUS",
+        "poiCoordinate": null,
+        "capturedAt": "2026-08-27T05:17:00.699059+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Patronato Textile & Culture Corridor",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Region/@-33.4294151,-70.6503537,15.57z/data=!4m15!1m8!3m7!1s0x96621baaf050fc95:0x9a55299416c4ebb9!2sPatronato,+Recoleta,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l!3m5!1s0x96621baaf050fc95:0x9a55299416c4ebb9!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Region/@-33.4294151,-70.6503537,15.57z/data=!4m15!1m8!3m7!1s0x96621baaf050fc95:0x9a55299416c4ebb9!2sPatronato,+Recoleta,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l!3m5!1s0x96621baaf050fc95:0x9a55299416c4ebb9!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4299694,-70.6443207,3a,75y,354.16h,79.44t/",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 2080.9,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Patronato Textile & Culture Corridor",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4287589,
+            "lng": -70.6439634,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Patronato Textile & Culture Corridor observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4299694,
+            "lng": -70.6443207,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_92",
       "legacySlug": "plaza-vicuna",
-      "canonicalName": "Plaza Vicuña Mackenna",
-      "displayName": "Plaza Vicuña Mackenna",
+      "canonicalName": "Paseo Bandera Urban Art Corridor",
+      "displayName": "Paseo Bandera Urban Art Corridor",
       "aliases": [],
       "commune": null,
       "neighborhood": "Alameda",
@@ -14506,11 +16686,14 @@
       "tier": "expansion",
       "chronoWorth": null,
       "poiCoordinate": {
-        "lat": -33.47253,
-        "lng": -70.623757
+        "lat": -33.4386243,
+        "lng": -70.6524805
       },
       "entranceCoordinate": null,
-      "experiencePointCoordinate": null,
+      "experiencePointCoordinate": {
+        "lat": -33.4409812,
+        "lng": -70.6521349
+      },
       "nearestTransit": {
         "stationName": null,
         "line": null,
@@ -14518,7 +16701,7 @@
         "status": "UNRESOLVED"
       },
       "geographicIsland": null,
-      "physicalVerificationState": "NEEDS_CURATOR_REVIEW",
+      "physicalVerificationState": "CURATOR_APPROVED",
       "legacyContentId": null,
       "legacyMappingStatus": "proposed",
       "provenance": {
@@ -14532,16 +16715,18 @@
         "physical": {
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
-          "curatorApproval": "never-automatic",
-          "selectionStatus": "NEEDS_CURATOR_REVIEW"
+          "curatorApproval": "CURATOR_APPROVED",
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.2A",
+          "humanCurationSource": "founder-google-maps-review"
         },
         "editorial": {
           "source": "gate-1b1-identity-seed",
           "status": "partial"
         }
       },
-      "launchCorpus": false,
-      "fieldPriority": "BACKLOG",
+      "launchCorpus": true,
+      "fieldPriority": "LAUNCH",
       "verificationPriority": 192,
       "geocodeQuery": "Plaza Vicuña Mackenna Santiago",
       "queryUsed": "Plaza Vicuña Mackenna Santiago",
@@ -14646,8 +16831,79 @@
       ],
       "selectionReason": "Provider hit needs curator review (relevance=0.796, overlap=0.67)",
       "providerId": "address.5484888706317358",
-      "curatorApproval": null,
-      "physicalRouteGenerationEnabled": false
+      "curatorApproval": "CURATOR_APPROVED",
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "providerCandidate": {
+          "provider": "mapbox",
+          "providerId": "address.5484888706317358",
+          "placeName": "Avenida Vicuña Mackenna, San Joaquín, Región Metropolitana de Santiago 8940000, Chile",
+          "text": "Avenida Vicuña Mackenna",
+          "relevance": 0.796296,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.623757,
+          "lat": -33.47253,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        "providerClassification": "NEEDS_CURATOR_REVIEW",
+        "poiCoordinate": {
+          "lat": -33.47253,
+          "lng": -70.623757
+        },
+        "capturedAt": "2026-08-27T05:17:00.699070+00:00"
+      },
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
+      "curatorCuration": {
+        "gate": "1B.2A",
+        "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
+        "founderPlaceName": "Paseo Bandera Urban Art Corridor",
+        "googleMapsUrls": [
+          "https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4386243,-70.6550608,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a48a2bf90f:0xa67306bd512f5c79!8m2!3d-33.4386243!4d-70.6524805!16s/g/121yh8tt?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==",
+          "https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4386243,-70.6550608,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a48a2bf90f:0xa67306bd512f5c79!8m2!3d-33.4386243!4d-70.6524805!16s/g/121yh8tt?entry=ttu&g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw=="
+        ],
+        "notes": "",
+        "rawFeedbackText": "@-33.4409812,-70.6521349,3a,75y,355.77h,76.43t",
+        "semanticWarning": null,
+        "researchBlocker": null,
+        "coordinateConflict": null,
+        "providerDiffMeters": 4616.8,
+        "curatorOverrideProvider": true,
+        "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
+        "uiColor": "GREEN"
+      },
+      "physicalPoints": [
+        {
+          "id": "curator_poi",
+          "label": "Paseo Bandera Urban Art Corridor",
+          "role": "poi",
+          "coordinate": {
+            "lat": -33.4386243,
+            "lng": -70.6524805,
+            "source": "google_maps_place",
+            "role": "poi_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        },
+        {
+          "id": "curator_experience",
+          "label": "Paseo Bandera Urban Art Corridor observation",
+          "role": "experience_point",
+          "coordinate": {
+            "lat": -33.4409812,
+            "lng": -70.6521349,
+            "source": "founder_street_view",
+            "role": "experience_candidate"
+          },
+          "provenance": "CURATOR_APPROVED"
+        }
+      ],
+      "accessPoints": [],
+      "physicalRouteGenerationEligible": true
     },
     {
       "stgoId": "STGO_93",
@@ -16439,19 +18695,17 @@
     }
   ],
   "counts": {
-    "identityResolved": 101,
-    "identityUnresolved": 2,
     "launch": 30,
     "backlog": 73,
-    "AUTO_HIGH_CONFIDENCE": 7,
-    "NEEDS_CURATOR_REVIEW": 55,
-    "SUSPICIOUS": 39,
-    "NO_RESULT": 2,
-    "CURATOR_APPROVED": 0,
-    "entranceResolved": 0,
-    "experiencePointResolved": 0,
-    "legacyResolved": 21,
-    "legacyProposed": 80,
-    "legacyUnresolved": 2
-  }
+    "curatorApprovedPoi": 24,
+    "curatorApprovedExperience": 29,
+    "accessPoints": 3,
+    "readyForEdgeGeneration": 27,
+    "partialReviewRequired": 1,
+    "blocked": 2,
+    "providerOverrides": 24,
+    "backlogCuratorApproved": 0,
+    "fieldVerified": 0
+  },
+  "humanCurationPolicy": "Founder Google Maps / Street View review = CURATOR_APPROVED, not FIELD_VERIFIED."
 }

@@ -59,6 +59,36 @@ export type ProviderCandidate = {
   looksPenalizedCommune: boolean
 }
 
+export type LaunchPhysicalReadiness =
+  | 'READY_FOR_EDGE_GENERATION'
+  | 'PARTIAL_REVIEW_REQUIRED'
+  | 'UNRESOLVED_RESEARCH_REQUIRED'
+  | 'NEEDS_SEMANTIC_REVIEW'
+
+export type PhysicalPoint = {
+  id: string
+  label: string
+  role: string
+  coordinate: LatLng | null
+  provenance: 'CURATOR_APPROVED' | 'PROVIDER_DERIVED' | null
+  notes?: string | null
+}
+
+export type CuratorCurationBlock = {
+  gate: string
+  source: string
+  founderPlaceName: string
+  googleMapsUrls: string[]
+  notes?: string | null
+  providerDiffMeters?: number | null
+  curatorOverrideProvider?: boolean
+  overrideReason?: string | null
+  uiColor?: 'GREEN' | 'YELLOW' | 'RED'
+  semanticWarning?: string | null
+  researchBlocker?: string | null
+  coordinateConflict?: Record<string, unknown> | null
+}
+
 export type ProvenanceBlock = {
   identity: {
     status: IdentityResolutionStatus
@@ -68,8 +98,10 @@ export type ProvenanceBlock = {
   physical: {
     provider: 'mapbox' | null
     coordinatePolicy: string
-    curatorApproval: 'never-automatic' | null
+    curatorApproval: 'never-automatic' | 'CURATOR_APPROVED' | null
     selectionStatus: string | null
+    humanCurationGate?: string | null
+    humanCurationSource?: string | null
   }
   editorial: {
     source: string | null
@@ -130,15 +162,22 @@ export type SantiagoEngineNode = {
   candidates: ProviderCandidate[]
   selectionReason: string | null
   providerId: string | null
-  curatorApproval: null
-  /** Hard rule mirror — must remain false/null in generated data. */
+  /** Human curator approval from Gate 1B.2A founder review; never automatic from Mapbox. */
+  curatorApproval: 'CURATOR_APPROVED' | null
+  launchPhysicalReadiness?: LaunchPhysicalReadiness | null
+  physicalPoints?: PhysicalPoint[]
+  accessPoints?: PhysicalPoint[]
+  providerAudit?: Record<string, unknown> | null
+  curatorCuration?: CuratorCurationBlock | null
+  physicalRouteGenerationEligible?: boolean
+  /** Hard rule mirror — must remain false in generated data. */
   physicalRouteGenerationEnabled: false
 }
 
 export type SantiagoEngineNodesFile = {
   schemaVersion: 'santiago-engine-nodes.v0.1'
   cityId: 'santiago'
-  gate: '1B.2'
+  gate: '1B.2' | '1B.2A'
   nodeCount: 103
   launchCorpusCount: 30
   backlogCount: 73
@@ -147,6 +186,7 @@ export type SantiagoEngineNodesFile = {
   coordinatePolicy: string
   experiencePointPolicy: string
   transitPolicy: string
+  humanCurationPolicy?: string
   launchCorpusStgoIds: string[]
   nodes: SantiagoEngineNode[]
   counts: Record<string, number>

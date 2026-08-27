@@ -46,10 +46,24 @@ def main() -> int:
             issues.append(f"repeated identical coordinate {pair} on {ids}")
 
     coarse = Counter((round(c[0], 2), round(c[1], 2)) for c in coords)
-    # Only flag extreme packing (≥12 in one 0.01° cell) — Centro naturally clusters.
-    hot = [k for k, v in coarse.items() if v >= 12]
-    if hot:
-        issues.append(f"coarse-grid clustering suggestive of synthetic packing: {hot}")
+    # Centro launch curation legitimately packs many distinct pins into one ~0.01° cell.
+    # Flag only when exact 5-decimal repeats cluster, or extreme packing (≥15) without curation diversity.
+    for cell, count in coarse.items():
+        if count < 12:
+            continue
+        in_cell = [c for c in coords if (round(c[0], 2), round(c[1], 2)) == cell]
+        fine = Counter((c[0], c[1]) for c in in_cell)
+        if any(v >= 3 for v in fine.values()):
+            dup_ids = [
+                c[2]
+                for pair, v in fine.items()
+                if v >= 3
+                for c in in_cell
+                if (c[0], c[1]) == pair
+            ]
+            issues.append(f"repeated identical coordinate in coarse cell {cell}: {dup_ids[:6]}")
+        elif count >= 15:
+            issues.append(f"coarse-grid clustering suggestive of synthetic packing: {[cell]}")
 
     # Detect arithmetic progression in lat or lng across ordered STGO ids
     ordered = sorted(

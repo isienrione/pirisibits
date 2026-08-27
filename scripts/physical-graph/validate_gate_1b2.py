@@ -30,6 +30,7 @@ def main() -> int:
 
     data = json.loads(ENGINE.read_text(encoding="utf-8"))
     launch = json.loads(LAUNCH.read_text(encoding="utf-8"))
+    launch_stgo_ids = list(data.get("launchCorpusStgoIds") or launch.get("stgoIds") or launch.get("ids") or [])
     nodes = data.get("nodes") or []
 
     if data.get("nodeCount") != 103 or len(nodes) != 103:
@@ -48,11 +49,16 @@ def main() -> int:
         fail(errors, f"backlog size != 73 ({len(backlog)})")
 
     launch_slugs = [n["legacySlug"] for n in launch_nodes]
-    if launch_slugs != launch.get("ids"):
-        fail(errors, "launch legacySlug order diverges from locked launch corpus")
+    if launch_stgo_ids and sorted(n["stgoId"] for n in launch_nodes) != sorted(launch_stgo_ids):
+        fail(errors, "launch corpus STGO IDs diverge from launch corpus file")
+    elif not launch_stgo_ids and launch_slugs != launch.get("ids"):
+        fail(errors, "proposed node order/ids diverge from locked launch corpus")
+
+    human_launch_ids = set(launch_stgo_ids or [n["stgoId"] for n in launch_nodes])
 
     for n in nodes:
         sid = n.get("stgoId")
+        is_launch = sid in human_launch_ids
         # legacy never primary key
         if n.get("legacySlug") == sid:
             fail(errors, f"{sid}: legacySlug equals canonical id")
@@ -67,12 +73,21 @@ def main() -> int:
         if n.get("identityStatus") == "UNRESOLVED" and n.get("canonicalName") is not None:
             fail(errors, f"{sid}: unresolved identity must not invent canonicalName")
 
-        # no auto curator approve
-        if n.get("curatorApproval") is not None:
-            fail(errors, f"{sid}: curatorApproval must remain null (never automatic)")
-        if n.get("physicalVerificationState") == "CURATOR_APPROVED":
-            fail(errors, f"{sid}: physicalVerificationState CURATOR_APPROVED forbidden without human gate")
-        if n.get("providerClassification") == "AUTO_HIGH_CONFIDENCE":
+        # no auto curator approve from provider
+        if n.get("curatorApproval") == "CURATOR_APPROVED" and not is_launch:
+            fail(errors, f"{sid}: backlog node must not be CURATOR_APPROVED")
+        if n.get("curatorApproval") == "CURATOR_APPROVED" and is_launch and not n.get("curatorCuration"):
+            fail(errors, f"{sid}: CURATOR_APPROVED launch node missing human curation evidence")
+        if n.get("curatorApproval") not in (None, "CURATOR_APPROVED"):
+            fail(errors, f"{sid}: invalid curatorApproval value")
+        if n.get("physicalVerificationState") == "FIELD_VERIFIED":
+            fail(errors, f"{sid}: FIELD_VERIFIED forbidden without on-site inspection")
+        if (
+            not is_launch
+            and n.get("physicalVerificationState") == "CURATOR_APPROVED"
+        ):
+            fail(errors, f"{sid}: backlog CURATOR_APPROVED forbidden")
+        if n.get("providerClassification") == "AUTO_HIGH_CONFIDENCE" and not is_launch:
             if n.get("physicalVerificationState") not in {"PROVIDER_DERIVED", "NEEDS_CURATOR_REVIEW"}:
                 fail(errors, f"{sid}: high-confidence must stay PROVIDER_DERIVED (not curator)")
 
@@ -87,8 +102,8 @@ def main() -> int:
             fail(errors, f"{sid}: experiencePointCoordinate must not be auto-copied from poiCoordinate")
         if entrance is not None:
             fail(errors, f"{sid}: entranceCoordinate unexpectedly set (Gate 1B.2 keeps null)")
-        if xp is not None:
-            fail(errors, f"{sid}: experiencePointCoordinate unexpectedly set (Gate 1B.2 keeps null)")
+        if xp is not None and not is_launch:
+            fail(errors, f"{sid}: experiencePointCoordinate unexpectedly set on backlog node")
 
         transit = n.get("nearestTransit") or {}
         if transit.get("status") != "UNRESOLVED":
@@ -102,17 +117,21 @@ def main() -> int:
             if lat is None or lng is None or (isinstance(lat, float) and math.isnan(lat)):
                 fail(errors, f"{sid}: invalid poiCoordinate")
             cand = n.get("providerCandidate") or {}
-            if cand.get("lat") != lat or cand.get("lng") != lng:
-                fail(errors, f"{sid}: poiCoordinate mutated away from provider candidate")
-            if not n.get("providerId"):
-                fail(errors, f"{sid}: coordinate without providerId")
+            if not is_launch and (cand.get("lat") != lat or cand.get("lng") != lng):
+                fail(errors, f"{sid}: backlog poiCoordinate mutated away from provider candidate")
+            if not is_launch and not n.get("providerId"):
+                fail(errors, f"{sid}: backlog coordinate without providerId")
 
         # provenance
         prov = n.get("provenance") or {}
         if not prov.get("identity") or not prov.get("physical"):
             fail(errors, f"{sid}: provenance missing identity/physical blocks")
-        if (prov.get("physical") or {}).get("curatorApproval") != "never-automatic":
-            fail(errors, f"{sid}: provenance must record never-automatic curatorApproval")
+        phys_curator = (prov.get("physical") or {}).get("curatorApproval")
+        if is_launch:
+            if phys_curator not in ("CURATOR_APPROVED", "never-automatic"):
+                fail(errors, f"{sid}: launch provenance curatorApproval invalid")
+        elif phys_curator != "never-automatic":
+            fail(errors, f"{sid}: backlog provenance must record never-automatic curatorApproval")
 
         if n.get("physicalRouteGenerationEnabled") is not False:
             fail(errors, f"{sid}: physicalRouteGenerationEnabled must be false")
