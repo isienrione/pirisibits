@@ -14,3 +14,10 @@ export const AUTO_CURATOR_APPROVE_FROM_MAPBOX = false
  * traveler-facing route generation.
  */
 export const MULTIMODAL_PHYSICAL_GRAPH_READY = true
+
+/**
+ * Gate 1B.5 — Santiago physical graph V0.1 freeze.
+ * True only after Gate 1B.5 closure validators pass. Does NOT enable traveler
+ * route generation (`PHYSICAL_ROUTE_GENERATION_ENABLED` remains false).
+ */
+export const PHYSICAL_LAYER_V0_1_READY = true

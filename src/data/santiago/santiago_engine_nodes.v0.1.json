@@ -282,7 +282,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4378234,
+          "lng": -70.6530715
+        }
+      }
     },
     {
       "stgoId": "STGO_02",
@@ -475,7 +485,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4373075,
+          "lng": -70.6510237
+        }
+      }
     },
     {
       "stgoId": "STGO_03",
@@ -700,7 +720,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4439646,
+          "lng": -70.6536703
+        }
+      }
     },
     {
       "stgoId": "STGO_04",
@@ -925,7 +955,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425566,
+          "lng": -70.6532628
+        }
+      }
     },
     {
       "stgoId": "STGO_05",
@@ -979,9 +1019,10 @@
           "provider": "mapbox",
           "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
           "curatorApproval": "CURATOR_APPROVED",
-          "selectionStatus": "PARTIAL_REVIEW_REQUIRED",
-          "humanCurationGate": "1B.2A",
-          "humanCurationSource": "founder-google-maps-review"
+          "selectionStatus": "READY_FOR_EDGE_GENERATION",
+          "humanCurationGate": "1B.5",
+          "humanCurationSource": "founder-google-maps-review",
+          "runtimeEndpoint": "terraza_neptuno"
         },
         "editorial": {
           "source": "src/data/pois.ts",
@@ -1120,7 +1161,7 @@
         },
         "capturedAt": "2026-08-27T05:17:00.698791+00:00"
       },
-      "launchPhysicalReadiness": "PARTIAL_REVIEW_REQUIRED",
+      "launchPhysicalReadiness": "READY_FOR_EDGE_GENERATION",
       "curatorCuration": {
         "gate": "1B.2A",
         "source": "CHRONOWALK_LAUNCH30_CURATOR_FEEDBACK_CLEANED.md",
@@ -1147,12 +1188,16 @@
             "role": "poi_candidate"
           },
           "distanceMeters": 3814.9,
-          "resolution": "Use linked Google Maps place for POI; retain founder @ coordinate as conflicting evidence pending confirmation."
+          "resolution": "Use linked Google Maps place for POI; retain founder @ coordinate as conflicting evidence pending confirmation.",
+          "launchResolution": "Runtime uses Terraza Neptuno; conflicting founder @ zoom retained as non-runtime evidence",
+          "resolvedAt": "2026-08-27T06:42:12.123726+00:00"
         },
         "providerDiffMeters": 637.1,
         "curatorOverrideProvider": true,
         "overrideReason": "Cerro POI coordinate conflict flagged; sub-points preserved separately.",
-        "uiColor": "YELLOW"
+        "uiColor": "YELLOW",
+        "gate1b5Disposition": "READY_FOR_EDGE_GENERATION",
+        "runtimeEndpoint": "terraza_neptuno"
       },
       "physicalPoints": [
         {
@@ -1193,7 +1238,18 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": false
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Gate 1B.5: complex POI remains Cerro Santa Lucía; launch runtime endpoint = founder-curated Terraza Neptuno experience point. Broad hill @ conflict retained as QA evidence only.",
+      "runtimePhysicalEndpoint": {
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "note": "Traveler-facing endpoint for launch routing; not hill centroid"
+      }
     },
     {
       "stgoId": "STGO_06",
@@ -1433,7 +1489,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4446332,
+          "lng": -70.6483784
+        }
+      }
     },
     {
       "stgoId": "STGO_07",
@@ -1639,7 +1705,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4442832,
+          "lng": -70.6482238
+        }
+      }
     },
     {
       "stgoId": "STGO_08",
@@ -2210,7 +2286,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4403937,
+          "lng": -70.6582743
+        }
+      }
     },
     {
       "stgoId": "STGO_11",
@@ -2451,7 +2537,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4374962,
+          "lng": -70.674057
+        }
+      }
     },
     {
       "stgoId": "STGO_12",
@@ -3336,7 +3432,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391071,
+          "lng": -70.6510578
+        }
+      }
     },
     {
       "stgoId": "STGO_17",
@@ -3742,7 +3848,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425828,
+          "lng": -70.6511804
+        }
+      }
     },
     {
       "stgoId": "STGO_19",
@@ -3983,7 +4099,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4419727,
+          "lng": -70.6533529
+        }
+      }
     },
     {
       "stgoId": "STGO_20",
@@ -4191,7 +4317,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4334303,
+          "lng": -70.6521616
+        }
+      }
     },
     {
       "stgoId": "STGO_21",
@@ -4429,7 +4565,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4458744,
+          "lng": -70.6579168
+        }
+      }
     },
     {
       "stgoId": "STGO_22",
@@ -4669,7 +4815,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4386084,
+          "lng": -70.6523455
+        }
+      }
     },
     {
       "stgoId": "STGO_23",
@@ -4866,16 +5022,19 @@
         "notes": "",
         "rawFeedbackText": "i dont undesrtand what this POI , cant find it like its written",
         "semanticWarning": null,
-        "researchBlocker": "Founder cannot identify POI concept; canonical Inca Tambo Canal Dip requires editorial research before physical promotion.",
+        "researchBlocker": "EXCLUDED_FROM_LAUNCH_RUNTIME / RESEARCH_REQUIRED: founder cannot identify POI concept; no authoritative repository evidence clarifies Inca Tambo Canal Dip.",
         "coordinateConflict": null,
         "providerDiffMeters": null,
         "curatorOverrideProvider": false,
         "overrideReason": null,
-        "uiColor": "RED"
+        "uiColor": "RED",
+        "gate1b5Disposition": "EXCLUDED_FROM_LAUNCH_RUNTIME"
       },
       "physicalPoints": [],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": false
+      "physicalRouteGenerationEligible": false,
+      "launchRuntimeDisposition": "RUNTIME_EXCLUDED_RESEARCH",
+      "launchRuntimeDispositionReason": "EXCLUDED_FROM_LAUNCH_RUNTIME / RESEARCH_REQUIRED: founder cannot identify POI concept; no authoritative repository evidence clarifies Inca Tambo Canal Dip."
     },
     {
       "stgoId": "STGO_24",
@@ -5112,7 +5271,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4374383,
+          "lng": -70.641002
+        }
+      }
     },
     {
       "stgoId": "STGO_25",
@@ -5352,7 +5521,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391756,
+          "lng": -70.6398489
+        }
+      }
     },
     {
       "stgoId": "STGO_26",
@@ -5592,7 +5771,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4354102,
+          "lng": -70.6430095
+        }
+      }
     },
     {
       "stgoId": "STGO_27",
@@ -5832,7 +6021,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4379605,
+          "lng": -70.6390723
+        }
+      }
     },
     {
       "stgoId": "STGO_28",
@@ -6069,7 +6268,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4383804,
+          "lng": -70.6410837
+        }
+      }
     },
     {
       "stgoId": "STGO_29",
@@ -6306,7 +6515,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4311212,
+          "lng": -70.6369978
+        }
+      }
     },
     {
       "stgoId": "STGO_30",
@@ -6543,7 +6762,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4335418,
+          "lng": -70.6372758
+        }
+      }
     },
     {
       "stgoId": "STGO_31",
@@ -7005,7 +7234,75 @@
           "provenance": "CURATOR_APPROVED"
         }
       ],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_STAGED",
+      "launchRuntimeDispositionReason": "RUNTIME_STAGED: launch endpoint = funicular base. Reaching STGO_32 does NOT imply summit. Ascent transport inactive/unresolved.",
+      "runtimePhysicalEndpoint": {
+        "pointId": "funicular",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4295677,
+          "lng": -70.63743
+        },
+        "note": "Funicular base/access — not summit"
+      },
+      "sanCristobalStaging": {
+        "stgoId": "STGO_32",
+        "displayName": "Cerro San Cristóbal Funicular / Hill complex",
+        "routingEndpoint": "funicular",
+        "summitImplied": false,
+        "ascentTransport": "UNRESOLVED_INACTIVE",
+        "stages": [
+          {
+            "id": "hill_concept_poi",
+            "coordinate": {
+              "lat": -33.4202404,
+              "lng": -70.6313749,
+              "source": "google_maps_place",
+              "role": "poi_candidate"
+            },
+            "status": "CONCEPT_ONLY"
+          },
+          {
+            "id": "funicular_base",
+            "coordinate": {
+              "lat": -33.4295677,
+              "lng": -70.63743
+            },
+            "status": "ACTIVE_ROUTING_ENDPOINT"
+          },
+          {
+            "id": "acceso_carlos_reed",
+            "coordinate": {
+              "lat": -33.4261818,
+              "lng": -70.626117,
+              "source": "founder_at",
+              "role": "labeled"
+            },
+            "status": "ACCESS_PRESERVED_NOT_COLLAPSED"
+          },
+          {
+            "id": "teleferico_pedro_de_valdivia",
+            "coordinate": {
+              "lat": -33.4156103,
+              "lng": -70.6175375,
+              "source": "founder_at",
+              "role": "labeled"
+            },
+            "status": "ACCESS_PRESERVED_NOT_COLLAPSED"
+          },
+          {
+            "id": "ascent_transport",
+            "status": "UNRESOLVED_INACTIVE",
+            "note": "No trustworthy funicular duration/provider segment in Gate 1B.5"
+          },
+          {
+            "id": "upper_experience",
+            "status": "UNRESOLVED",
+            "note": "Arrival at funicular base ≠ summit"
+          }
+        ]
+      }
     },
     {
       "stgoId": "STGO_33",
@@ -7207,13 +7504,14 @@
         ],
         "notes": "its lvciano K hotel today",
         "rawFeedbackText": "@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t",
-        "semanticWarning": "its lvciano K hotel today",
+        "semanticWarning": "EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO_27 already covers Casa-Taller Kulczewski. No repository evidence resolves gargoyle vs hotel semantics.",
         "researchBlocker": null,
         "coordinateConflict": null,
         "providerDiffMeters": null,
         "curatorOverrideProvider": false,
         "overrideReason": null,
-        "uiColor": "RED"
+        "uiColor": "RED",
+        "gate1b5Disposition": "EXCLUDED_FROM_LAUNCH_RUNTIME"
       },
       "physicalPoints": [
         {
@@ -7231,7 +7529,9 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": false
+      "physicalRouteGenerationEligible": false,
+      "launchRuntimeDisposition": "RUNTIME_EXCLUDED_SEMANTIC",
+      "launchRuntimeDispositionReason": "EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO_27 already covers Casa-Taller Kulczewski. No repository evidence resolves gargoyle vs hotel semantics."
     },
     {
       "stgoId": "STGO_34",
@@ -7471,7 +7771,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4307788,
+          "lng": -70.6490827
+        }
+      }
     },
     {
       "stgoId": "STGO_35",
@@ -7711,7 +8021,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4317446,
+          "lng": -70.6511075
+        }
+      }
     },
     {
       "stgoId": "STGO_36",
@@ -9908,7 +10228,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4402446,
+          "lng": -70.6792068
+        }
+      }
     },
     {
       "stgoId": "STGO_49",
@@ -16663,7 +16993,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4299694,
+          "lng": -70.6443207
+        }
+      }
     },
     {
       "stgoId": "STGO_92",
@@ -16903,7 +17243,17 @@
         }
       ],
       "accessPoints": [],
-      "physicalRouteGenerationEligible": true
+      "physicalRouteGenerationEligible": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "launchRuntimeDispositionReason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimePhysicalEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4409812,
+          "lng": -70.6521349
+        }
+      }
     },
     {
       "stgoId": "STGO_93",
@@ -18700,12 +19050,18 @@
     "curatorApprovedPoi": 24,
     "curatorApprovedExperience": 29,
     "accessPoints": 3,
-    "readyForEdgeGeneration": 27,
-    "partialReviewRequired": 1,
+    "readyForEdgeGeneration": 28,
+    "partialReviewRequired": 0,
     "blocked": 2,
     "providerOverrides": 24,
     "backlogCuratorApproved": 0,
-    "fieldVerified": 0
+    "fieldVerified": 0,
+    "runtimeReady": 27,
+    "runtimeStaged": 1,
+    "runtimeExcluded": 2,
+    "physicalLayerGate": "1B.5"
   },
-  "humanCurationPolicy": "Founder Google Maps / Street View review = CURATOR_APPROVED, not FIELD_VERIFIED."
+  "humanCurationPolicy": "Founder Google Maps / Street View review = CURATOR_APPROVED, not FIELD_VERIFIED.",
+  "physicalLayerGate": "1B.5",
+  "physicalLayerV01Ready": true
 }

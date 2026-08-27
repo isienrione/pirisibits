@@ -1,0 +1,918 @@
+{
+  "schemaVersion": "santiago-physical-layer-e2e-qa.v0.1",
+  "gate": "1B.5",
+  "routes": [
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_02",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_01",
+          "to": "STGO_02",
+          "edgeId": "SPARSE|WALK|STGO_01|experience|STGO_02|experience",
+          "physicalDurationSeconds": 209.7,
+          "physicalDistanceMeters": 229.6,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 209.7,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 209.7,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 209.7,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 0.0,
+      "generalizedCost": 209.7,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Plaza de Armas → Catedral",
+      "originName": "Plaza de Armas",
+      "destinationName": "Catedral Metropolitana",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 209.7,
+        "totalDistanceMeters": 229.6,
+        "generalizedCost": 209.7,
+        "nodes": [
+          "STGO_01",
+          "STGO_02"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_LOWER_OR_EQUAL_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_03",
+      "destination": "STGO_07",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_03",
+          "to": "STGO_07",
+          "edgeId": "SPARSE|WALK|STGO_03|experience|STGO_07|experience",
+          "physicalDurationSeconds": 538.3,
+          "physicalDistanceMeters": 730.8,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 547.045,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 538.3,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 538.3,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 8.7,
+      "generalizedCost": 547.0,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "La Moneda → Londres 38",
+      "originName": "Palacio de La Moneda",
+      "destinationName": "Londres 38 Memorial",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 538.3,
+        "totalDistanceMeters": 730.8,
+        "generalizedCost": 547.0,
+        "nodes": [
+          "STGO_03",
+          "STGO_07"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_LOWER_OR_EQUAL_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_24",
+      "destination": "STGO_25",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_24",
+          "to": "STGO_25",
+          "edgeId": "SPARSE|WALK|STGO_24|experience|STGO_25|experience",
+          "physicalDurationSeconds": 315.9,
+          "physicalDistanceMeters": 359.7,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 315.9,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 315.9,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 315.9,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 0.0,
+      "generalizedCost": 315.9,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Lastarria → GAM",
+      "originName": "Barrio Lastarria Corridor",
+      "destinationName": "GAM (Centro Gabriela Mistral)",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 315.9,
+        "totalDistanceMeters": 359.7,
+        "generalizedCost": 315.9,
+        "nodes": [
+          "STGO_24",
+          "STGO_25"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_LOWER_OR_EQUAL_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_29",
+      "destination": "STGO_32",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_29",
+          "to": "STGO_32",
+          "edgeId": "SPARSE|WALK|STGO_29|experience|STGO_32|funicular",
+          "physicalDurationSeconds": 118.0,
+          "physicalDistanceMeters": 177.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 118.0,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 118.0,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 118.0,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 0.0,
+      "generalizedCost": 118.0,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "La Chascona → San Cristóbal funicular",
+      "originName": "La Chascona (Neruda House)",
+      "destinationName": "Cerro San Cristóbal Funicular / Hill complex",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 118.0,
+        "totalDistanceMeters": 177.1,
+        "generalizedCost": 118.0,
+        "nodes": [
+          "STGO_29",
+          "STGO_32"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_LOWER_OR_EQUAL_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_34",
+      "destination": "STGO_35",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_34",
+          "to": "STGO_35",
+          "edgeId": "SPARSE|WALK|STGO_34|experience|STGO_35|experience",
+          "physicalDurationSeconds": 197.2,
+          "physicalDistanceMeters": 298.9,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 197.2,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 197.2,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 197.2,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 0.0,
+      "generalizedCost": 197.2,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "La Vega → Tirso de Molina",
+      "originName": "La Vega Central",
+      "destinationName": "Mercado Tirso de Molina",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 197.2,
+        "totalDistanceMeters": 298.9,
+        "generalizedCost": 197.2,
+        "nodes": [
+          "STGO_34",
+          "STGO_35"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_LOWER_OR_EQUAL_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_24",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_01",
+          "to": "STGO_22",
+          "edgeId": "SPARSE|WALK|STGO_01|experience|STGO_22|experience",
+          "physicalDurationSeconds": 203.0,
+          "physicalDistanceMeters": 216.2,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 203.0,
+          "unverified": false
+        },
+        {
+          "mode": "WALK",
+          "from": "STGO_22",
+          "to": "STGO_24",
+          "edgeId": "SPARSE|WALK|STGO_22|experience|STGO_24|experience",
+          "physicalDurationSeconds": 814.1,
+          "physicalDistanceMeters": 1093.9,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 864.2149999999999,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 1017.1,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 1017.1,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 50.1,
+      "generalizedCost": 1067.2,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Plaza de Armas → Lastarria",
+      "originName": "Plaza de Armas",
+      "destinationName": "Barrio Lastarria Corridor",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1006.4,
+        "totalDistanceMeters": 1311.0,
+        "generalizedCost": 1085.4,
+        "nodes": [
+          "STGO_01",
+          "STGO_24"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_ONLY_BEST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_48",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_01",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "POI_METRO_ACCESS|STGO_01|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": 195.9,
+          "physicalDistanceMeters": 211.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 615.9,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_AN-NA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_AN-NA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 99,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 99,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_AN-NA",
+          "to": "METRO_GTFS_RC",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_AN-NA|METRO_GTFS_RC",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 94,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 94,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_RC",
+          "to": "METRO_GTFS_QN",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_RC|METRO_GTFS_QN",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 110,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 110,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_QN",
+          "to": "STGO_48",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_QN|STGO_48",
+          "physicalDurationSeconds": 86.9,
+          "physicalDistanceMeters": 101.8,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 146.9,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 282.8,
+      "scheduledMetroRideDurationSeconds": 303,
+      "knownTotalPhysicalDurationSeconds": 585.8,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1065.8,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Centro → Museo de la Memoria",
+      "originName": "Plaza de Armas",
+      "destinationName": "Museo de la Memoria y DDHH",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1963.1,
+        "totalDistanceMeters": 2911.2,
+        "generalizedCost": 2113.6,
+        "nodes": [
+          "STGO_01",
+          "STGO_11",
+          "STGO_48"
+        ],
+        "legCount": 2
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_11",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_01",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "POI_METRO_ACCESS|STGO_01|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": 195.9,
+          "physicalDistanceMeters": 211.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 615.9,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_AN-NA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_AN-NA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 99,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 99,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_AN-NA",
+          "to": "METRO_GTFS_RC",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_AN-NA|METRO_GTFS_RC",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 94,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 94,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_RC",
+          "to": "STGO_11",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_RC|STGO_11",
+          "physicalDurationSeconds": 516.7,
+          "physicalDistanceMeters": 712.9,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 576.7,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 712.6,
+      "scheduledMetroRideDurationSeconds": 193,
+      "knownTotalPhysicalDurationSeconds": 905.6,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1385.6,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Centro → Yungay",
+      "originName": "Plaza de Armas",
+      "destinationName": "Barrio Yungay & Plaza Roto Chileno",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1482.5,
+        "totalDistanceMeters": 2168.6,
+        "generalizedCost": 1632.9,
+        "nodes": [
+          "STGO_01",
+          "STGO_11"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_27",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_01",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "POI_METRO_ACCESS|STGO_01|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": 195.9,
+          "physicalDistanceMeters": 211.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 615.9,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_BE",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_BE",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 76,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 76,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_BE",
+          "to": "STGO_27",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_BE|STGO_27",
+          "physicalDurationSeconds": 456.5,
+          "physicalDistanceMeters": 624.9,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 516.5,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 652.4,
+      "scheduledMetroRideDurationSeconds": 76,
+      "knownTotalPhysicalDurationSeconds": 728.4,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1208.4,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Centro → Taller Castillo Kulczewski",
+      "originName": "Plaza de Armas",
+      "destinationName": "Taller Castillo Kulczewski",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1214.8,
+        "totalDistanceMeters": 1604.8,
+        "generalizedCost": 1299.2,
+        "nodes": [
+          "STGO_01",
+          "STGO_28",
+          "STGO_27"
+        ],
+        "legCount": 2
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_05",
+      "legs": [
+        {
+          "mode": "WALK",
+          "from": "STGO_01",
+          "to": "STGO_22",
+          "edgeId": "SPARSE|WALK|STGO_01|experience|STGO_22|experience",
+          "physicalDurationSeconds": 203.0,
+          "physicalDistanceMeters": 216.2,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 203.0,
+          "unverified": false
+        },
+        {
+          "mode": "WALK",
+          "from": "STGO_22",
+          "to": "STGO_16",
+          "edgeId": "SPARSE|WALK|STGO_22|experience|STGO_16|experience",
+          "physicalDurationSeconds": 159.0,
+          "physicalDistanceMeters": 187.6,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 159.0,
+          "unverified": false
+        },
+        {
+          "mode": "WALK",
+          "from": "STGO_16",
+          "to": "STGO_05",
+          "edgeId": "SPARSE|WALK|STGO_16|experience|STGO_05|terraza_neptuno",
+          "physicalDurationSeconds": 460.2,
+          "physicalDistanceMeters": 674.0,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 460.2,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 822.2,
+      "scheduledMetroRideDurationSeconds": 0,
+      "knownTotalPhysicalDurationSeconds": 822.2,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 0.0,
+      "generalizedCost": 822.2,
+      "metroLinesUsed": [],
+      "transfers": 0,
+      "modes": [
+        "WALK"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Centro → Cerro Santa Lucía (Terraza Neptuno)",
+      "originName": "Plaza de Armas",
+      "destinationName": "Cerro Santa Lucía & Terraza Neptuno",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 799.2,
+        "totalDistanceMeters": 1030.8,
+        "generalizedCost": 847.1,
+        "nodes": [
+          "STGO_01",
+          "STGO_05"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "WALK_ONLY_BEST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_48",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_01",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "POI_METRO_ACCESS|STGO_01|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": 195.9,
+          "physicalDistanceMeters": 211.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 615.9,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_AN-NA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_AN-NA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 99,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 99,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_AN-NA",
+          "to": "METRO_GTFS_RC",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_AN-NA|METRO_GTFS_RC",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 94,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 94,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_RC",
+          "to": "METRO_GTFS_QN",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_RC|METRO_GTFS_QN",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 110,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 110,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_QN",
+          "to": "STGO_48",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_QN|STGO_48",
+          "physicalDurationSeconds": 86.9,
+          "physicalDistanceMeters": 101.8,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 146.9,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 282.8,
+      "scheduledMetroRideDurationSeconds": 303,
+      "knownTotalPhysicalDurationSeconds": 585.8,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1065.8,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Multimodal: Centro → Museo de la Memoria",
+      "originName": "Plaza de Armas",
+      "destinationName": "Museo de la Memoria y DDHH",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1963.1,
+        "totalDistanceMeters": 2911.2,
+        "generalizedCost": 2113.6,
+        "nodes": [
+          "STGO_01",
+          "STGO_11",
+          "STGO_48"
+        ],
+        "legCount": 2
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_01",
+      "destination": "STGO_11",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_01",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "POI_METRO_ACCESS|STGO_01|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": 195.9,
+          "physicalDistanceMeters": 211.1,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 615.9,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_AN-NA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_AN-NA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 99,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 99,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_AN-NA",
+          "to": "METRO_GTFS_RC",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_AN-NA|METRO_GTFS_RC",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 94,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 94,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_RC",
+          "to": "STGO_11",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_RC|STGO_11",
+          "physicalDurationSeconds": 516.7,
+          "physicalDistanceMeters": 712.9,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 576.7,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 712.6,
+      "scheduledMetroRideDurationSeconds": 193,
+      "knownTotalPhysicalDurationSeconds": 905.6,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1385.6,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Multimodal: Centro → Yungay",
+      "originName": "Plaza de Armas",
+      "destinationName": "Barrio Yungay & Plaza Roto Chileno",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 1482.5,
+        "totalDistanceMeters": 2168.6,
+        "generalizedCost": 1632.9,
+        "nodes": [
+          "STGO_01",
+          "STGO_11"
+        ],
+        "legCount": 1
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    },
+    {
+      "connected": true,
+      "origin": "STGO_24",
+      "destination": "STGO_48",
+      "legs": [
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "STGO_24",
+          "to": "METRO_GTFS_BE",
+          "edgeId": "POI_METRO_ACCESS|STGO_24|METRO_GTFS_BE",
+          "physicalDurationSeconds": 324.2,
+          "physicalDistanceMeters": 436.5,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 744.2,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_BE",
+          "to": "METRO_GTFS_PZ-PZA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_BE|METRO_GTFS_PZ-PZA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 84,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 84,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_PZ-PZA",
+          "to": "METRO_GTFS_AN-NA",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_PZ-PZA|METRO_GTFS_AN-NA",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 99,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 99,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_AN-NA",
+          "to": "METRO_GTFS_RC",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_AN-NA|METRO_GTFS_RC",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 94,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 94,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "METRO_RIDE",
+          "from": "METRO_GTFS_RC",
+          "to": "METRO_GTFS_QN",
+          "edgeId": "METRO_RIDE|L5|METRO_GTFS_RC|METRO_GTFS_QN",
+          "physicalDurationSeconds": null,
+          "scheduledMetroDurationSeconds": 110,
+          "durationLabel": "SCHEDULED_GTFS_DURATION",
+          "generalizedCostSeconds": 110,
+          "lineId": "L5",
+          "unverified": false
+        },
+        {
+          "mode": "POI_METRO_ACCESS",
+          "from": "METRO_GTFS_QN",
+          "to": "STGO_48",
+          "edgeId": "POI_METRO_ACCESS|METRO_GTFS_QN|STGO_48",
+          "physicalDurationSeconds": 86.9,
+          "physicalDistanceMeters": 101.8,
+          "scheduledMetroDurationSeconds": null,
+          "generalizedCostSeconds": 146.9,
+          "lineId": null,
+          "unverified": false
+        }
+      ],
+      "walkingPhysicalDurationSeconds": 411.1,
+      "scheduledMetroRideDurationSeconds": 387,
+      "knownTotalPhysicalDurationSeconds": 798.1,
+      "estimatedWaitAndGeneralizedPenaltiesSeconds": 480.0,
+      "generalizedCost": 1278.1,
+      "metroLinesUsed": [
+        "L5"
+      ],
+      "transfers": 0,
+      "modes": [
+        "METRO_RIDE",
+        "POI_METRO_ACCESS"
+      ],
+      "unverifiedComponents": [],
+      "provenanceSummary": "Mapbox walk + DTPM GTFS scheduled Metro + engine-policy wait/transfer; no thematic scores",
+      "label": "Multimodal: Lastarria → Museo de la Memoria",
+      "originName": "Barrio Lastarria Corridor",
+      "destinationName": "Museo de la Memoria y DDHH",
+      "pedestrianOnlyAlternative": {
+        "connected": true,
+        "totalDurationSeconds": 2679.9,
+        "totalDistanceMeters": 3976.8,
+        "generalizedCost": 2866.7,
+        "nodes": [
+          "STGO_24",
+          "STGO_22",
+          "STGO_10",
+          "STGO_48"
+        ],
+        "legCount": 3
+      },
+      "excludedNodesEncountered": false,
+      "selectionReason": "MULTIMODAL_LOWER_GENERALIZED_COST"
+    }
+  ]
+}

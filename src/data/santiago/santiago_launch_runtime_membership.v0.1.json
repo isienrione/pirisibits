@@ -1,0 +1,524 @@
+{
+  "schemaVersion": "santiago-launch-runtime-membership.v0.1",
+  "gate": "1B.5",
+  "launchCorpusCount": 30,
+  "runtimeReadyCount": 27,
+  "runtimeStagedCount": 1,
+  "runtimeExcludedCount": 2,
+  "runtimeReadyIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92"
+  ],
+  "runtimeStagedIds": [
+    "STGO_32"
+  ],
+  "runtimeExcludedIds": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "runtimeRoutingIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_32",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92"
+  ],
+  "byDisposition": {
+    "RUNTIME_READY": [
+      "STGO_01",
+      "STGO_02",
+      "STGO_03",
+      "STGO_04",
+      "STGO_05",
+      "STGO_06",
+      "STGO_07",
+      "STGO_10",
+      "STGO_11",
+      "STGO_16",
+      "STGO_18",
+      "STGO_19",
+      "STGO_20",
+      "STGO_21",
+      "STGO_22",
+      "STGO_24",
+      "STGO_25",
+      "STGO_26",
+      "STGO_27",
+      "STGO_28",
+      "STGO_29",
+      "STGO_30",
+      "STGO_34",
+      "STGO_35",
+      "STGO_48",
+      "STGO_91",
+      "STGO_92"
+    ],
+    "RUNTIME_EXCLUDED_RESEARCH": [
+      "STGO_23"
+    ],
+    "RUNTIME_STAGED": [
+      "STGO_32"
+    ],
+    "RUNTIME_EXCLUDED_SEMANTIC": [
+      "STGO_33"
+    ]
+  },
+  "dispositions": [
+    {
+      "stgoId": "STGO_01",
+      "displayName": "Plaza de Armas",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4378234,
+          "lng": -70.6530715
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_02",
+      "displayName": "Catedral Metropolitana",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4373075,
+          "lng": -70.6510237
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_03",
+      "displayName": "Palacio de La Moneda",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4439646,
+          "lng": -70.6536703
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_04",
+      "displayName": "Morandé 80 (President's Door)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425566,
+          "lng": -70.6532628
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_05",
+      "displayName": "Cerro Santa Lucía & Terraza Neptuno",
+      "disposition": "RUNTIME_READY",
+      "reason": "Gate 1B.5: complex POI remains Cerro Santa Lucía; launch runtime endpoint = founder-curated Terraza Neptuno experience point. Broad hill @ conflict retained as QA evidence only.",
+      "runtimeEndpoint": {
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "note": "Traveler-facing endpoint for launch routing; not hill centroid"
+      }
+    },
+    {
+      "stgoId": "STGO_06",
+      "displayName": "Barrio París-Londres",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4446332,
+          "lng": -70.6483784
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_07",
+      "displayName": "Londres 38 Memorial",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4442832,
+          "lng": -70.6482238
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_10",
+      "displayName": "Palacio Pereira",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4403937,
+          "lng": -70.6582743
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_11",
+      "displayName": "Barrio Yungay & Plaza Roto Chileno",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4374962,
+          "lng": -70.674057
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_16",
+      "displayName": "Pasaje Matte & Hidden Ballroom",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391071,
+          "lng": -70.6510578
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_18",
+      "displayName": "Edificio Palacio Ariztía (Flat-Iron)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425828,
+          "lng": -70.6511804
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_19",
+      "displayName": "Seguro Obrero Bullet Scars (Correo)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4419727,
+          "lng": -70.6533529
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_20",
+      "displayName": "La Piojera",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4334303,
+          "lng": -70.6521616
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_21",
+      "displayName": "Confitería Torres (1879)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4458744,
+          "lng": -70.6579168
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_22",
+      "displayName": "Museo Chileno Arte Precolombino",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4386084,
+          "lng": -70.6523455
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_23",
+      "displayName": "Inca Tambo Canal Dip (Puente/Stgo)",
+      "disposition": "RUNTIME_EXCLUDED_RESEARCH",
+      "reason": "EXCLUDED_FROM_LAUNCH_RUNTIME / RESEARCH_REQUIRED: founder cannot identify POI concept; no authoritative repository evidence clarifies Inca Tambo Canal Dip.",
+      "runtimeEndpoint": null
+    },
+    {
+      "stgoId": "STGO_24",
+      "displayName": "Barrio Lastarria Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4374383,
+          "lng": -70.641002
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_25",
+      "displayName": "GAM (Centro Gabriela Mistral)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391756,
+          "lng": -70.6398489
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_26",
+      "displayName": "MNBA & Parque Forestal",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4354102,
+          "lng": -70.6430095
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_27",
+      "displayName": "Taller Castillo Kulczewski",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4379605,
+          "lng": -70.6390723
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_28",
+      "displayName": "Bocanáriz & Chipe Libre",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4383804,
+          "lng": -70.6410837
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_29",
+      "displayName": "La Chascona (Neruda House)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4311212,
+          "lng": -70.6369978
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_30",
+      "displayName": "Bellavista Mural Corridors",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4335418,
+          "lng": -70.6372758
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_32",
+      "displayName": "Cerro San Cristóbal Funicular / Hill complex",
+      "disposition": "RUNTIME_STAGED",
+      "reason": "RUNTIME_STAGED: launch endpoint = funicular base. Reaching STGO_32 does NOT imply summit. Ascent transport inactive/unresolved.",
+      "runtimeEndpoint": {
+        "pointId": "funicular",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4295677,
+          "lng": -70.63743
+        },
+        "note": "Funicular base/access — not summit"
+      }
+    },
+    {
+      "stgoId": "STGO_33",
+      "displayName": "Kulczewski Funicular Gargoyle",
+      "disposition": "RUNTIME_EXCLUDED_SEMANTIC",
+      "reason": "EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO_27 already covers Casa-Taller Kulczewski. No repository evidence resolves gargoyle vs hotel semantics.",
+      "runtimeEndpoint": null
+    },
+    {
+      "stgoId": "STGO_34",
+      "displayName": "La Vega Central",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4307788,
+          "lng": -70.6490827
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_35",
+      "displayName": "Mercado Tirso de Molina",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4317446,
+          "lng": -70.6511075
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_48",
+      "displayName": "Museo de la Memoria y DDHH",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4402446,
+          "lng": -70.6792068
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_91",
+      "displayName": "Patronato Textile & Culture Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4299694,
+          "lng": -70.6443207
+        }
+      }
+    },
+    {
+      "stgoId": "STGO_92",
+      "displayName": "Paseo Bandera Urban Art Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Curator-approved and edge-eligible from Gate 1B.2A/1B.3",
+      "runtimeEndpoint": {
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4409812,
+          "lng": -70.6521349
+        }
+      }
+    }
+  ]
+}

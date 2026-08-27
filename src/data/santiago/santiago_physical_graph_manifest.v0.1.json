@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "santiago-physical-graph-manifest.v0.1",
+  "gate": "1B.5",
+  "generatedAt": "2026-08-27T06:42:12.123726+00:00",
+  "physicalLayerV01Ready": true,
+  "physicalRouteGenerationEnabled": false,
+  "multimodalPhysicalGraphReady": true,
+  "canonicalInventory": {
+    "path": "src/data/santiago/santiago_engine_nodes.v0.1.json",
+    "nodeCount": 103,
+    "launchCorpus": 30,
+    "backlog": 73
+  },
+  "launchRuntimeMembership": "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
+  "artifacts": {
+    "providerWalkEdges": "src/data/santiago/santiago_physical_edges.v0.1.json",
+    "stgo05WalkExtension": "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json",
+    "sparseWalkAdjacency": "src/data/santiago/santiago_pedestrian_adjacency.v0.2.json",
+    "metroStations": "src/data/santiago/transit/santiago_metro_stations.v0.2.json",
+    "metroLines": "src/data/santiago/transit/santiago_metro_lines.v0.2.json",
+    "scheduledMetroTimes": "src/data/santiago/transit/santiago_metro_scheduled_times.v0.1.json",
+    "gtfsProvenance": "src/data/santiago/transit/santiago_gtfs_feed_provenance.v0.1.json",
+    "multimodalGraph": "src/data/santiago/santiago_multimodal_graph.v0.3.json",
+    "frictionAudit": "src/data/santiago/qa/santiago_physical_friction_audit.v0.1.json",
+    "e2eQa": "src/data/santiago/qa/santiago_physical_layer_e2e_qa.v0.1.json"
+  },
+  "runtimeReadyIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92"
+  ],
+  "runtimeStagedIds": [
+    "STGO_32"
+  ],
+  "runtimeExcludedIds": [
+    "STGO_23",
+    "STGO_33"
+  ],
+  "featureFlags": {
+    "PHYSICAL_ROUTE_GENERATION_ENABLED": false,
+    "MULTIMODAL_PHYSICAL_GRAPH_READY": true,
+    "PHYSICAL_LAYER_V0_1_READY": true
+  },
+  "knownLimitations": {
+    "launchBlocking": [],
+    "nonBlockingV01": [
+      "Realtime Metro duration absent",
+      "Physical interchange walk durations unknown (engine-policy penalty)",
+      "POI soft-friction fields UNKNOWN",
+      "POI hard accessibility UNKNOWN (Metro stations have GTFS wheelchair_boarding provenance)",
+      "STGO_32 funicular ascent inactive",
+      "STGO_23 and STGO_33 excluded from launch runtime",
+      "Backlog 73 nodes not physically edge-enriched",
+      "Future L7 not operational"
+    ]
+  },
+  "provenanceSummary": "Mapbox provider walks + founder curation + DTPM GTFS V166.20260704; no thematic/narrative scoring"
+}
