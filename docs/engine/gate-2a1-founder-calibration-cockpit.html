@@ -1151,8 +1151,13 @@ document.getElementById('guideModal').addEventListener('click', (e) => {
   if (e.target.id==='guideModal') e.currentTarget.classList.remove('open');
 });
 
-// Default selection: first Launch30 node
+// Default selection: first Launch30 node (optional ?stgoId= deep link from Route Lab)
 currentId = (SOURCE.launchCorpusIds && SOURCE.launchCorpusIds[0]) || SOURCE.records[0].stgoId;
+try {
+  const _p = new URLSearchParams(location.search);
+  const _jump = _p.get('stgoId');
+  if (_jump && sourceById[_jump]) currentId = _jump;
+} catch (e) {}
 document.getElementById('relMode').value = 'LAUNCH30';
 
 // Expose for validation hooks / manual QA in console

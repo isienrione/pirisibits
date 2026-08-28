@@ -26,7 +26,8 @@ function RootNavigator() {
     const root = segments[0];
     const inOnboarding = root === 'onboarding';
     const onWelcome = !root;
-    if (!hasCompletedOnboarding && !inOnboarding && !onWelcome) {
+    const inDev = root === 'dev';
+    if (!hasCompletedOnboarding && !inOnboarding && !onWelcome && !inDev) {
       router.replace('/onboarding/interests');
     }
   }, [hasCompletedOnboarding, segments]);
@@ -61,6 +62,7 @@ function RootNavigator() {
       <Stack.Screen name="mystery" />
       <Stack.Screen name="mystery-resolved" />
       <Stack.Screen name="end-of-day" />
+      <Stack.Screen name="dev/route-lab" options={{ title: 'Route Lab' }} />
     </Stack>
   );
 }

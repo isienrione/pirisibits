@@ -91,7 +91,10 @@
     "gate:2c:build": "npx --yes tsx scripts/engine/build_route_composer_fixtures_v0_1.ts",
     "gate:2c:validate": "python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py",
     "gate:2d:build": "npx --yes tsx scripts/engine/build_arc_reranker_fixtures_v0_1.ts",
-    "gate:2d:validate": "python3 scripts/engine/validate_gate_2d.py && python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py"
+    "gate:2d:validate": "python3 scripts/engine/validate_gate_2d.py && python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py",
+    "gate:2e:build": "npx --yes tsx scripts/engine/generate_gate_2e_route_lab.ts",
+    "gate:2e:serve": "npx --yes tsx scripts/engine/serve_route_lab_v0_1.ts",
+    "gate:2e:validate": "python3 scripts/engine/validate_gate_2e_route_lab.py && python3 scripts/engine/validate_gate_2d.py"
   },
   "private": true
 }

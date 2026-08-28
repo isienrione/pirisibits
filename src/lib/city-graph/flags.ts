@@ -57,3 +57,9 @@ export const ROUTE_COMPOSER_V0_1_PROVISIONAL_READY = true
  * Does NOT enable production traveler routing.
  */
 export const ARC_QUALITY_V0_1_PROVISIONAL_READY = true
+
+/**
+ * Gate 2E — Santiago Route Lab dev/editorial tool readiness.
+ * Does NOT enable production traveler routing.
+ */
+export const ROUTE_LAB_V0_1_READY = true
