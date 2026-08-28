@@ -89,7 +89,9 @@
     "gate:2b:build": "npx --yes tsx scripts/engine/build_santiago_narrative_graph_v0_1.ts",
     "gate:2b:validate": "python3 scripts/engine/validate_gate_2b.py && python3 scripts/engine/validate_gate_2a1r.py && python3 scripts/physical-graph/validate_gate_1b5.py",
     "gate:2c:build": "npx --yes tsx scripts/engine/build_route_composer_fixtures_v0_1.ts",
-    "gate:2c:validate": "python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py"
+    "gate:2c:validate": "python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py",
+    "gate:2d:build": "npx --yes tsx scripts/engine/build_arc_reranker_fixtures_v0_1.ts",
+    "gate:2d:validate": "python3 scripts/engine/validate_gate_2d.py && python3 scripts/engine/validate_gate_2c.py && python3 scripts/engine/validate_gate_2b.py && python3 scripts/physical-graph/validate_gate_1b5.py"
   },
   "private": true
 }

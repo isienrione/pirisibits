@@ -51,3 +51,9 @@ export const NARRATIVE_GRAPH_V0_1_PROPOSED_READY = true
  * Does NOT enable production traveler routing (`PHYSICAL_ROUTE_GENERATION_ENABLED` remains false).
  */
 export const ROUTE_COMPOSER_V0_1_PROVISIONAL_READY = true
+
+/**
+ * Gate 2D — provisional ArcQuality + route reranker readiness.
+ * Does NOT enable production traveler routing.
+ */
+export const ARC_QUALITY_V0_1_PROVISIONAL_READY = true

@@ -21,6 +21,17 @@ export { loadLaunch30NarrativeGraph, narrativeEdgesFrom, runtimeEligibleEdges } 
 export { buildLaunch30NarrativeGraph } from '@/src/engine/narrative/propose-narrative-edges'
 
 export { composeProvisionalRoutes } from '@/src/engine/routes/route-composer'
+export { computeArcQuality, tryComputeArcQuality, validateRouteCandidateForArcQuality } from '@/src/engine/routes/arc-quality'
+export {
+  ARC_QUALITY_POSITIVE_WEIGHTS,
+  ARC_QUALITY_PENALTY_WEIGHTS,
+  RERANK_BLEND_WEIGHTS,
+  ARC_QUALITY_GATE,
+} from '@/src/engine/routes/arc-quality-config'
+export { rerankRouteCandidates, composeAndRerankProvisionalRoutes } from '@/src/engine/routes/route-reranker'
+export { inferRoutePositionRoles } from '@/src/engine/routes/route-position-role'
+export { summarizeRouteShape } from '@/src/engine/routes/route-shape'
+export { computeRouteQualityDiagnostics } from '@/src/engine/routes/route-quality-diagnostics'
 export { normalizeRouteRequest, hashRouteRequest, serializeRouteRequest } from '@/src/engine/routes/route-request'
 export {
   stopOverlap,

@@ -114,7 +114,7 @@ export function composeProvisionalRoutes(
       'PHYSICAL_ROUTE_GENERATION_ENABLED remains false (composer is Lab/dev only).',
       'STGO_104 excluded from physical routes while PHYSICAL_PENDING_EDGE_ENRICHMENT.',
       'Dwell times may be AI_PROPOSED_UNVERIFIED assumptions.',
-      'Gate 2D ArcQuality reranker not started.',
+      'Gate 2D ArcQuality reranker available via rerankRouteCandidates().',
     ],
   }
 }
