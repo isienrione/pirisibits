@@ -857,6 +857,34 @@ FinalRouteScore = blend(ComposerScore, ArcQualityScore; rerankBlendVersion)
 
 ---
 
+## W. Lane arbitration (Gate 2E.2E — added final stage)
+
+This section is an additive final stage. It does not rewrite prior historical sections of this contract.
+
+```
+HARD FEASIBILITY
+→ V0.2 SCORING
+→ LANE-SPECIFIC SEARCH (SIGNATURE / DISCOVERY / FLOW)
+→ one strong candidate per lane
+→ ARCQUALITY (route-level)
+→ LANE-NEUTRAL ARBITRATION
+→ recommended route + optional alternatives
+```
+
+**Lane ComposerScore is within-objective search quality, not a universal cross-lane utility.**
+
+Final recommendation uses a **lane-neutral common route feature vector** computed identically for every candidate, plus a modest traveler/request **LanePrior**. Raw lane ComposerScore is excluded from `RouteChoiceScore`.
+
+Canonical implementation:
+
+- `src/engine/routes/v0.2/arbitration/`
+- ADR: `docs/engine/decisions/ADR-002-lane-composer-scores-are-not-cross-lane-utilities.md`
+- Gate report: `docs/engine/GATE_2E_2E_LANE_ARBITRATION_V0_2.md`
+
+Flags: `ROUTE_ARBITRATION_V0_2_PARALLEL_READY=true`. Production cut-over remains unauthorized (`ROUTE_ARBITRATION_V0_2_PRODUCTION=false`, `PHYSICAL_ROUTE_GENERATION_ENABLED=false`).
+
+---
+
 ## Document control
 
 | Field | Value |

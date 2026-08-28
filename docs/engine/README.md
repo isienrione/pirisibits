@@ -10,7 +10,7 @@ Canonical hierarchy for Santiago engine design, gates, and forward-looking contr
 |---|---|---|---|
 | 1 | [ENGINE_V0_1_IMPLEMENTATION_CONTRACT.md](./ENGINE_V0_1_IMPLEMENTATION_CONTRACT.md) | **CANONICAL (V0.1 runtime)** | Staged pipeline, NodeUtility, eligibility, V0.1 value separation |
 | 2 | Physical Graph V0.1 | **FROZEN (Gate 1B.5)** | Artifacts under `src/data/santiago/santiago_physical_*.v0.1.json`; no standalone contract markdown yet |
-| 3 | **[ENGINE_SCORING_AND_COMPOSITION_V0_2.md](./ENGINE_SCORING_AND_COMPOSITION_V0_2.md)** | **CANONICAL (forward-looking design)** | Scoring layers, MarginalRouteValue, multi-lane composer, explainability — **NOT IMPLEMENTED** |
+| 3 | **[ENGINE_SCORING_AND_COMPOSITION_V0_2.md](./ENGINE_SCORING_AND_COMPOSITION_V0_2.md)** | **CANONICAL (forward-looking design)** | Scoring layers, MarginalRouteValue, multi-lane composer, lane arbitration — **NOT IMPLEMENTED** as production runtime (parallel V0.2 modules only) |
 
 > **Important:** V0.1 runtime behavior is defined by (1) and gate reports below. Document (3) is the **canonical forward-looking scoring contract** for the next iteration. Do not describe V0.1 runtime as V0.2.
 
@@ -35,6 +35,7 @@ Canonical hierarchy for Santiago engine design, gates, and forward-looking contr
 | 2C Route composer | [GATE_2C_ROUTE_COMPOSER_V0_1.md](./GATE_2C_ROUTE_COMPOSER_V0_1.md) |
 | 2D ArcQuality + reranker | [GATE_2D_ARCQUALITY_RERANKER_V0_1.md](./GATE_2D_ARCQUALITY_RERANKER_V0_1.md) |
 | 2E Route Lab | [GATE_2E_ROUTE_LAB_V0_1.md](./GATE_2E_ROUTE_LAB_V0_1.md) |
+| 2E.2E Lane arbitration V0.2 | [GATE_2E_2E_LANE_ARBITRATION_V0_2.md](./GATE_2E_2E_LANE_ARBITRATION_V0_2.md) |
 
 ---
 
@@ -43,6 +44,7 @@ Canonical hierarchy for Santiago engine design, gates, and forward-looking contr
 | ADR | Title |
 |---|---|
 | [ADR-001](./decisions/ADR-001-separate-static-traveler-and-marginal-route-value.md) | Separate intrinsic worth, traveler match, and marginal route value |
+| [ADR-002](./decisions/ADR-002-lane-composer-scores-are-not-cross-lane-utilities.md) | Lane ComposerScores are within-objective search scores, not cross-lane utilities |
 
 ---
 
@@ -76,5 +78,10 @@ Canonical hierarchy for Santiago engine design, gates, and forward-looking contr
 | `ARC_QUALITY_V0_1_PROVISIONAL_READY` | `true` |
 | `ROUTE_LAB_V0_1_READY` | `true` |
 | `ROUTE_LAB_GEOGRAPHIC_QA_READY` | `true` |
+| `SCORING_MODEL_V0_2_PARALLEL_READY` | `true` |
+| `ROUTE_ARBITRATION_V0_2_PARALLEL_READY` | `true` |
+| `ROUTE_ARBITRATION_V0_2_PRODUCTION` | `false` |
+| `ROUTE_COMPOSER_V0_2_PRODUCTION` | `false` |
+| `ARCQUALITY_V0_2_PRODUCTION` | `false` |
 
-No V0.2 scoring implementation flag exists until a future implementation gate explicitly adds one.
+V0.2 parallel modules are diagnostic only. Do not cut over production routing.

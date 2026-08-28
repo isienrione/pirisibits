@@ -1,0 +1,1021 @@
+{
+  "composerDist": {
+    "SIGNATURE": {
+      "n": 18,
+      "mean": 73.1,
+      "median": 73.2,
+      "stdev": 2.52,
+      "min": 68.8,
+      "max": 78.3
+    },
+    "DISCOVERY": {
+      "n": 18,
+      "mean": 68.6,
+      "median": 68.9,
+      "stdev": 2.29,
+      "min": 64.9,
+      "max": 73.5
+    },
+    "FLOW": {
+      "n": 18,
+      "mean": 75.7,
+      "median": 75.6,
+      "stdev": 2.02,
+      "min": 72.3,
+      "max": 80.4
+    }
+  },
+  "featureAverages": {
+    "travelerMatchRoute": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 58.3,
+        "median": 60.4,
+        "stdev": 10.5,
+        "min": 38.9,
+        "max": 79.7
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 60.1,
+        "median": 63.4,
+        "stdev": 8.11,
+        "min": 40.1,
+        "max": 72.1
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 55.9,
+        "median": 60.4,
+        "stdev": 10.75,
+        "min": 32.3,
+        "max": 67.6
+      }
+    },
+    "arcQuality": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 54.6,
+        "median": 54,
+        "stdev": 2.81,
+        "min": 48,
+        "max": 59
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 55.7,
+        "median": 54.5,
+        "stdev": 2.35,
+        "min": 53,
+        "max": 61
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 54.1,
+        "median": 54,
+        "stdev": 2.85,
+        "min": 48,
+        "max": 62
+      }
+    },
+    "routeMarginalValue": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 50.3,
+        "median": 45.7,
+        "stdev": 12.05,
+        "min": 32.4,
+        "max": 74.5
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 53,
+        "median": 54.4,
+        "stdev": 10.94,
+        "min": 40.7,
+        "max": 76.2
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 51.5,
+        "median": 46.3,
+        "stdev": 10.69,
+        "min": 41,
+        "max": 73.3
+      }
+    },
+    "physicalEfficiency": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 82.6,
+        "median": 82.1,
+        "stdev": 2.31,
+        "min": 76.6,
+        "max": 87.3
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 82,
+        "median": 82.1,
+        "stdev": 3.33,
+        "min": 76.8,
+        "max": 90.7
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 83.7,
+        "median": 82.7,
+        "stdev": 3.45,
+        "min": 75.5,
+        "max": 91.4
+      }
+    },
+    "structuralFit": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 60.1,
+        "median": 62.1,
+        "stdev": 3.37,
+        "min": 50.4,
+        "max": 63.8
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 60.2,
+        "median": 61.8,
+        "stdev": 3,
+        "min": 51,
+        "max": 64
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 60.1,
+        "median": 61.7,
+        "stdev": 2.63,
+        "min": 53.5,
+        "max": 62.2
+      }
+    },
+    "discoveryFit": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 56.4,
+        "median": 55.2,
+        "stdev": 7.24,
+        "min": 38.6,
+        "max": 68.4
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 59.4,
+        "median": 59.9,
+        "stdev": 5.76,
+        "min": 50.6,
+        "max": 70.6
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 58.1,
+        "median": 55.8,
+        "stdev": 5.58,
+        "min": 48.6,
+        "max": 67.3
+      }
+    },
+    "timeFit": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 100,
+        "median": 100,
+        "stdev": 0,
+        "min": 100,
+        "max": 100
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 100,
+        "median": 100,
+        "stdev": 0,
+        "min": 100,
+        "max": 100
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 100,
+        "median": 100,
+        "stdev": 0,
+        "min": 100,
+        "max": 100
+      }
+    },
+    "lanePrior": {
+      "SIGNATURE": {
+        "n": 18,
+        "mean": 70.5,
+        "median": 77.4,
+        "stdev": 11.67,
+        "min": 51.5,
+        "max": 83.4
+      },
+      "DISCOVERY": {
+        "n": 18,
+        "mean": 59.2,
+        "median": 49.6,
+        "stdev": 13.62,
+        "min": 44,
+        "max": 82.1
+      },
+      "FLOW": {
+        "n": 18,
+        "mean": 61.5,
+        "median": 61.5,
+        "stdev": 2.5,
+        "min": 58,
+        "max": 65.9
+      }
+    }
+  },
+  "comparability": {
+    "comparable": false,
+    "reason": "Lane mean ComposerScores differ by 7.1 points; objectives are different surfaces."
+  },
+  "recommendedLaneDistribution": {
+    "SIGNATURE": 8,
+    "DISCOVERY": 9,
+    "FLOW": 1
+  },
+  "b0LaneDistribution": {
+    "FLOW": 18
+  },
+  "winners": {
+    "F1": "SIGNATURE",
+    "F2": "SIGNATURE",
+    "F3": "SIGNATURE",
+    "F4": "SIGNATURE",
+    "F5": "DISCOVERY",
+    "F6": "DISCOVERY",
+    "F7": "DISCOVERY",
+    "F8": "DISCOVERY",
+    "F9": "DISCOVERY",
+    "F10": "SIGNATURE",
+    "F11": "DISCOVERY",
+    "F12": "DISCOVERY",
+    "F13": "SIGNATURE",
+    "F14": "DISCOVERY",
+    "F15": "FLOW",
+    "F16": "DISCOVERY",
+    "F17": "SIGNATURE",
+    "F18": "SIGNATURE"
+  },
+  "b0": {
+    "F1": "FLOW",
+    "F2": "FLOW",
+    "F3": "FLOW",
+    "F4": "FLOW",
+    "F5": "FLOW",
+    "F6": "FLOW",
+    "F7": "FLOW",
+    "F8": "FLOW",
+    "F9": "FLOW",
+    "F10": "FLOW",
+    "F11": "FLOW",
+    "F12": "FLOW",
+    "F13": "FLOW",
+    "F14": "FLOW",
+    "F15": "FLOW",
+    "F16": "FLOW",
+    "F17": "FLOW",
+    "F18": "FLOW"
+  },
+  "watch": {
+    "F1": {
+      "id": "F1",
+      "recommendedLane": "SIGNATURE",
+      "recommendedRouteId": "v02_SIGNATURE_6f86f1dc_STGO_01-STGO_02-STGO_18-STGO_03",
+      "confidence": "CLOSE_CALL",
+      "margin": 0.3,
+      "whyWon": "Recommended because it gives this Essentials-first / Coleccionista the strongest combination of physical ease and traveler match while keeping a smoother physical route. Originating lane: SIGNATURE (provenance only; labels use observed character). RouteChoiceScore 66.8.",
+      "whyOthersLost": [
+        "The DISCOVERY-lane candidate (More discoveries) is stronger on marginal value (45.8 vs 32.4) but loses overall (RouteChoiceScore 66.5 vs 66.8).",
+        "The FLOW-lane candidate (Smoother walk) trails on traveler match (66.3 vs 79.7) with RouteChoiceScore 66."
+      ],
+      "alternatives": [
+        {
+          "lane": "DISCOVERY",
+          "label": "MORE_DISCOVERIES",
+          "choice": 66.5
+        },
+        {
+          "lane": "FLOW",
+          "label": "SMOOTHER_WALK",
+          "choice": 66
+        }
+      ],
+      "constraintDominated": false,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_18",
+            "STGO_03"
+          ],
+          "composerScore": 76,
+          "choice": 66.8,
+          "coverage": 1,
+          "travelerMatchRoute": 79.7,
+          "arcQuality": 49,
+          "routeMarginalValue": 32.4,
+          "physicalEfficiency": 82.6,
+          "structuralFit": 63.6,
+          "discoveryFit": 43.5,
+          "timeFit": 100,
+          "lanePrior": 79.8,
+          "character": {
+            "essentiality": 73.5,
+            "discovery": 43.5,
+            "physicalEase": 82.6,
+            "narrativeDepth": 64,
+            "travelerMatch": 79.7
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_03"
+          ],
+          "composerScore": 71.8,
+          "choice": 66.5,
+          "coverage": 1,
+          "travelerMatchRoute": 72.1,
+          "arcQuality": 56,
+          "routeMarginalValue": 45.8,
+          "physicalEfficiency": 82.6,
+          "structuralFit": 64,
+          "discoveryFit": 55.2,
+          "timeFit": 100,
+          "lanePrior": 49.6,
+          "character": {
+            "essentiality": 70.2,
+            "discovery": 55.2,
+            "physicalEase": 82.6,
+            "narrativeDepth": 55,
+            "travelerMatch": 72.1
+          },
+          "label": "MORE_DISCOVERIES"
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_16",
+            "STGO_02"
+          ],
+          "composerScore": 78.5,
+          "choice": 66,
+          "coverage": 1,
+          "travelerMatchRoute": 66.3,
+          "arcQuality": 57,
+          "routeMarginalValue": 43.1,
+          "physicalEfficiency": 91.4,
+          "structuralFit": 62.2,
+          "discoveryFit": 48.6,
+          "timeFit": 100,
+          "lanePrior": 61.5,
+          "character": {
+            "essentiality": 72.7,
+            "discovery": 48.6,
+            "physicalEase": 91.4,
+            "narrativeDepth": 65.5,
+            "travelerMatch": 66.3
+          },
+          "label": "SMOOTHER_WALK"
+        }
+      ]
+    },
+    "F2": {
+      "id": "F2",
+      "recommendedLane": "SIGNATURE",
+      "recommendedRouteId": "v02_SIGNATURE_f01a66c4_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "confidence": "CONSTRAINT_DOMINATED",
+      "margin": null,
+      "whyWon": "Recommended because it gives this Essentials-first / Coleccionista the strongest combination of physical ease and traveler match while keeping a smoother physical route. Originating lane: SIGNATURE (provenance only; labels use observed character). RouteChoiceScore 64.1.",
+      "whyOthersLost": [
+        "2 near-duplicate candidate(s) were not presented as alternatives."
+      ],
+      "alternatives": [],
+      "constraintDominated": true,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_02",
+            "STGO_16",
+            "STGO_18",
+            "STGO_19",
+            "STGO_03"
+          ],
+          "composerScore": 74.9,
+          "choice": 64.1,
+          "coverage": 1,
+          "travelerMatchRoute": 63.4,
+          "arcQuality": 54,
+          "routeMarginalValue": 41.7,
+          "physicalEfficiency": 82.1,
+          "structuralFit": 62.1,
+          "discoveryFit": 53.9,
+          "timeFit": 100,
+          "lanePrior": 79.8,
+          "character": {
+            "essentiality": 69.2,
+            "discovery": 53.9,
+            "physicalEase": 82.1,
+            "narrativeDepth": 55,
+            "travelerMatch": 63.4
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_02",
+            "STGO_16",
+            "STGO_18",
+            "STGO_19",
+            "STGO_03"
+          ],
+          "composerScore": 69.6,
+          "choice": 62.6,
+          "coverage": 1,
+          "travelerMatchRoute": 63.4,
+          "arcQuality": 54,
+          "routeMarginalValue": 41.7,
+          "physicalEfficiency": 82.1,
+          "structuralFit": 62.1,
+          "discoveryFit": 53.9,
+          "timeFit": 100,
+          "lanePrior": 49.6,
+          "character": {
+            "essentiality": 69.2,
+            "discovery": 53.9,
+            "physicalEase": 82.1,
+            "narrativeDepth": 55,
+            "travelerMatch": 63.4
+          },
+          "label": null
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_02",
+            "STGO_16",
+            "STGO_18",
+            "STGO_19",
+            "STGO_03"
+          ],
+          "composerScore": 77,
+          "choice": 63.2,
+          "coverage": 1,
+          "travelerMatchRoute": 63.4,
+          "arcQuality": 54,
+          "routeMarginalValue": 41.7,
+          "physicalEfficiency": 82.1,
+          "structuralFit": 62.1,
+          "discoveryFit": 53.9,
+          "timeFit": 100,
+          "lanePrior": 61.5,
+          "character": {
+            "essentiality": 69.2,
+            "discovery": 53.9,
+            "physicalEase": 82.1,
+            "narrativeDepth": 55,
+            "travelerMatch": 63.4
+          },
+          "label": null
+        }
+      ]
+    },
+    "F6": {
+      "id": "F6",
+      "recommendedLane": "DISCOVERY",
+      "recommendedRouteId": "v02_DISCOVERY_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91",
+      "confidence": "MODERATE",
+      "margin": 3.2,
+      "whyWon": "Recommended because it gives this thematic traveler the strongest combination of traveler match and physical ease while keeping a smoother physical route. Originating lane: DISCOVERY (provenance only; labels use observed character). RouteChoiceScore 66.7.",
+      "whyOthersLost": [
+        "The SIGNATURE-lane candidate (More essentials) trails on traveler match (55.3 vs 61.5) with RouteChoiceScore 63.5.",
+        "The FLOW-lane candidate (More discoveries) trails on arc quality (48 vs 60) with RouteChoiceScore 62.5."
+      ],
+      "alternatives": [
+        {
+          "lane": "SIGNATURE",
+          "label": "MORE_ESSENTIALS",
+          "choice": 63.5
+        },
+        {
+          "lane": "FLOW",
+          "label": "MORE_DISCOVERIES",
+          "choice": 62.5
+        }
+      ],
+      "constraintDominated": false,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_20",
+            "STGO_35",
+            "STGO_34"
+          ],
+          "composerScore": 71.4,
+          "choice": 63.5,
+          "coverage": 1,
+          "travelerMatchRoute": 55.3,
+          "arcQuality": 54,
+          "routeMarginalValue": 65.8,
+          "physicalEfficiency": 85.1,
+          "structuralFit": 50.4,
+          "discoveryFit": 58,
+          "timeFit": 100,
+          "lanePrior": 59.3,
+          "character": {
+            "essentiality": 66.6,
+            "discovery": 58,
+            "physicalEase": 85.1,
+            "narrativeDepth": 61.4,
+            "travelerMatch": 55.3
+          },
+          "label": "MORE_ESSENTIALS"
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_20",
+            "STGO_35",
+            "STGO_34",
+            "STGO_91"
+          ],
+          "composerScore": 69.1,
+          "choice": 66.7,
+          "coverage": 1,
+          "travelerMatchRoute": 61.5,
+          "arcQuality": 60,
+          "routeMarginalValue": 64.1,
+          "physicalEfficiency": 82.5,
+          "structuralFit": 51,
+          "discoveryFit": 59.9,
+          "timeFit": 100,
+          "lanePrior": 72.3,
+          "character": {
+            "essentiality": 61.2,
+            "discovery": 59.9,
+            "physicalEase": 82.5,
+            "narrativeDepth": 61.4,
+            "travelerMatch": 61.5
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_16",
+            "STGO_20",
+            "STGO_35",
+            "STGO_34"
+          ],
+          "composerScore": 74.2,
+          "choice": 62.5,
+          "coverage": 1,
+          "travelerMatchRoute": 54,
+          "arcQuality": 48,
+          "routeMarginalValue": 67.9,
+          "physicalEfficiency": 85.8,
+          "structuralFit": 53.5,
+          "discoveryFit": 63.2,
+          "timeFit": 100,
+          "lanePrior": 58,
+          "character": {
+            "essentiality": 64.7,
+            "discovery": 63.2,
+            "physicalEase": 85.8,
+            "narrativeDepth": 45.3,
+            "travelerMatch": 54
+          },
+          "label": "MORE_DISCOVERIES"
+        }
+      ]
+    },
+    "F8": {
+      "id": "F8",
+      "recommendedLane": "DISCOVERY",
+      "recommendedRouteId": "v02_DISCOVERY_8d7b3185_STGO_01-STGO_02-STGO_92-STGO_19-STGO_03-STGO_18-STGO_06",
+      "confidence": "CLOSE_CALL",
+      "margin": 1.8,
+      "whyWon": "Recommended because it gives this Discovery-forward / Detective the strongest combination of discovery value and physical ease while keeping a smoother physical route. Originating lane: DISCOVERY (provenance only; labels use observed character). RouteChoiceScore 62.4.",
+      "whyOthersLost": [
+        "The SIGNATURE-lane candidate (More essentials) trails on physical efficiency (79.8 vs 83.7) with RouteChoiceScore 60.6.",
+        "1 near-duplicate candidate(s) were not presented as alternatives."
+      ],
+      "alternatives": [
+        {
+          "lane": "SIGNATURE",
+          "label": "MORE_ESSENTIALS",
+          "choice": 60.6
+        }
+      ],
+      "constraintDominated": false,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_19",
+            "STGO_18",
+            "STGO_06",
+            "STGO_03"
+          ],
+          "composerScore": 68.8,
+          "choice": 60.6,
+          "coverage": 1,
+          "travelerMatchRoute": 38.9,
+          "arcQuality": 58,
+          "routeMarginalValue": 74.5,
+          "physicalEfficiency": 79.8,
+          "structuralFit": 57.4,
+          "discoveryFit": 68.4,
+          "timeFit": 100,
+          "lanePrior": 56.5,
+          "character": {
+            "essentiality": 69.7,
+            "discovery": 68.4,
+            "physicalEase": 79.8,
+            "narrativeDepth": 48.8,
+            "travelerMatch": 38.9
+          },
+          "label": "MORE_ESSENTIALS"
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_92",
+            "STGO_19",
+            "STGO_03",
+            "STGO_18",
+            "STGO_06"
+          ],
+          "composerScore": 64.9,
+          "choice": 62.4,
+          "coverage": 1,
+          "travelerMatchRoute": 40.1,
+          "arcQuality": 55,
+          "routeMarginalValue": 76.2,
+          "physicalEfficiency": 83.7,
+          "structuralFit": 58,
+          "discoveryFit": 70.6,
+          "timeFit": 100,
+          "lanePrior": 82.1,
+          "character": {
+            "essentiality": 65.1,
+            "discovery": 70.6,
+            "physicalEase": 83.7,
+            "narrativeDepth": 46.9,
+            "travelerMatch": 40.1
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_22",
+            "STGO_19",
+            "STGO_92",
+            "STGO_18",
+            "STGO_03"
+          ],
+          "composerScore": 72.3,
+          "choice": 58.5,
+          "coverage": 1,
+          "travelerMatchRoute": 32.3,
+          "arcQuality": 56,
+          "routeMarginalValue": 73.3,
+          "physicalEfficiency": 83.3,
+          "structuralFit": 56.7,
+          "discoveryFit": 67.3,
+          "timeFit": 100,
+          "lanePrior": 58.7,
+          "character": {
+            "essentiality": 67.4,
+            "discovery": 67.3,
+            "physicalEase": 83.3,
+            "narrativeDepth": 43.6,
+            "travelerMatch": 32.3
+          },
+          "label": null
+        }
+      ]
+    },
+    "F9": {
+      "id": "F9",
+      "recommendedLane": "DISCOVERY",
+      "recommendedRouteId": "v02_DISCOVERY_80542319_STGO_01-STGO_22-STGO_16-STGO_04-STGO_19-STGO_18-STGO_03",
+      "confidence": "CONSTRAINT_DOMINATED",
+      "margin": null,
+      "whyWon": "Recommended because it gives this Discovery-forward / Detective the strongest combination of discovery value and physical ease while keeping a smoother physical route. Originating lane: DISCOVERY (provenance only; labels use observed character). RouteChoiceScore 64.6.",
+      "whyOthersLost": [
+        "2 near-duplicate candidate(s) were not presented as alternatives."
+      ],
+      "alternatives": [],
+      "constraintDominated": true,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_16",
+            "STGO_04",
+            "STGO_19",
+            "STGO_18",
+            "STGO_03"
+          ],
+          "composerScore": 70.7,
+          "choice": 63.4,
+          "coverage": 1,
+          "travelerMatchRoute": 53.7,
+          "arcQuality": 54,
+          "routeMarginalValue": 63.3,
+          "physicalEfficiency": 84.2,
+          "structuralFit": 60.3,
+          "discoveryFit": 65.6,
+          "timeFit": 100,
+          "lanePrior": 56.5,
+          "character": {
+            "essentiality": 67.2,
+            "discovery": 65.6,
+            "physicalEase": 84.2,
+            "narrativeDepth": 70,
+            "travelerMatch": 53.7
+          },
+          "label": null
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_16",
+            "STGO_04",
+            "STGO_19",
+            "STGO_18",
+            "STGO_03"
+          ],
+          "composerScore": 66.5,
+          "choice": 64.6,
+          "coverage": 1,
+          "travelerMatchRoute": 53.7,
+          "arcQuality": 54,
+          "routeMarginalValue": 63.3,
+          "physicalEfficiency": 84.2,
+          "structuralFit": 60.3,
+          "discoveryFit": 65.6,
+          "timeFit": 100,
+          "lanePrior": 82.1,
+          "character": {
+            "essentiality": 67.2,
+            "discovery": 65.6,
+            "physicalEase": 84.2,
+            "narrativeDepth": 70,
+            "travelerMatch": 53.7
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_16",
+            "STGO_18",
+            "STGO_19",
+            "STGO_04",
+            "STGO_03"
+          ],
+          "composerScore": 74.5,
+          "choice": 62.3,
+          "coverage": 1,
+          "travelerMatchRoute": 50.3,
+          "arcQuality": 54,
+          "routeMarginalValue": 60.6,
+          "physicalEfficiency": 86.6,
+          "structuralFit": 60.3,
+          "discoveryFit": 64,
+          "timeFit": 100,
+          "lanePrior": 58.7,
+          "character": {
+            "essentiality": 67.2,
+            "discovery": 64,
+            "physicalEase": 86.6,
+            "narrativeDepth": 66.9,
+            "travelerMatch": 50.3
+          },
+          "label": null
+        }
+      ]
+    },
+    "F15": {
+      "id": "F15",
+      "recommendedLane": "FLOW",
+      "recommendedRouteId": "v02_FLOW_56c731cf_STGO_01-STGO_02-STGO_16",
+      "confidence": "CONSTRAINT_DOMINATED",
+      "margin": null,
+      "whyWon": "Recommended because it gives this Express traveler the strongest combination of physical ease and traveler match while keeping a smoother physical route. Originating lane: FLOW (provenance only; labels use observed character). RouteChoiceScore 66.",
+      "whyOthersLost": [
+        "1 near-duplicate candidate(s) were not presented as alternatives."
+      ],
+      "alternatives": [],
+      "constraintDominated": true,
+      "b0Winner": "FLOW",
+      "b1Winner": "FLOW",
+      "candidates": [
+        {
+          "lane": "SIGNATURE",
+          "stops": [
+            "STGO_01",
+            "STGO_22",
+            "STGO_02"
+          ],
+          "composerScore": 78.3,
+          "choice": 64.6,
+          "coverage": 1,
+          "travelerMatchRoute": 69,
+          "arcQuality": 48,
+          "routeMarginalValue": 35.5,
+          "physicalEfficiency": 87,
+          "structuralFit": 63.8,
+          "discoveryFit": 38.6,
+          "timeFit": 100,
+          "lanePrior": 83.4,
+          "character": {
+            "essentiality": 78.2,
+            "discovery": 38.6,
+            "physicalEase": 87,
+            "narrativeDepth": 65.5,
+            "travelerMatch": 69
+          },
+          "label": null
+        },
+        {
+          "lane": "DISCOVERY",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_16"
+          ],
+          "composerScore": 73.5,
+          "choice": 64.9,
+          "coverage": 1,
+          "travelerMatchRoute": 67.6,
+          "arcQuality": 56,
+          "routeMarginalValue": 41.5,
+          "physicalEfficiency": 90.7,
+          "structuralFit": 61.5,
+          "discoveryFit": 50.6,
+          "timeFit": 100,
+          "lanePrior": 44,
+          "character": {
+            "essentiality": 70,
+            "discovery": 50.6,
+            "physicalEase": 90.7,
+            "narrativeDepth": 65.5,
+            "travelerMatch": 67.6
+          },
+          "label": null
+        },
+        {
+          "lane": "FLOW",
+          "stops": [
+            "STGO_01",
+            "STGO_02",
+            "STGO_16"
+          ],
+          "composerScore": 80.4,
+          "choice": 66,
+          "coverage": 1,
+          "travelerMatchRoute": 67.6,
+          "arcQuality": 56,
+          "routeMarginalValue": 41.5,
+          "physicalEfficiency": 90.7,
+          "structuralFit": 61.5,
+          "discoveryFit": 50.6,
+          "timeFit": 100,
+          "lanePrior": 65.9,
+          "character": {
+            "essentiality": 70,
+            "discovery": 50.6,
+            "physicalEase": 90.7,
+            "narrativeDepth": 65.5,
+            "travelerMatch": 67.6
+          },
+          "label": "RECOMMENDED_FOR_YOU"
+        }
+      ]
+    }
+  },
+  "profileSummary": {
+    "BALANCED": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 58.5,
+      "essentiality": 69.2,
+      "physical": 82.1,
+      "travelerMatch": 71.2,
+      "choice": 66.3
+    },
+    "T1A": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 58.5,
+      "essentiality": 68.3,
+      "physical": 84,
+      "travelerMatch": 68,
+      "choice": 65.6
+    },
+    "T2": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 59.9,
+      "essentiality": 61.2,
+      "physical": 82.5,
+      "travelerMatch": 60.7,
+      "choice": 66.4
+    },
+    "T3": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 64,
+      "essentiality": 68.5,
+      "physical": 76.4,
+      "travelerMatch": 63.1,
+      "choice": 65.2
+    },
+    "D1": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 70.7,
+      "essentiality": 63.2,
+      "physical": 84.5,
+      "travelerMatch": 32.3,
+      "choice": 60.2
+    },
+    "D2": {
+      "lane": "DISCOVERY",
+      "discoveryFit": 65.6,
+      "essentiality": 67.2,
+      "physical": 84.2,
+      "travelerMatch": 53.7,
+      "choice": 64.6
+    },
+    "D3": {
+      "lane": "SIGNATURE",
+      "discoveryFit": 53.9,
+      "essentiality": 69.2,
+      "physical": 82.1,
+      "travelerMatch": 62.7,
+      "choice": 64.2
+    },
+    "M1": {
+      "lane": "SIGNATURE",
+      "discoveryFit": 58.5,
+      "essentiality": 69.2,
+      "physical": 82.1,
+      "travelerMatch": 76,
+      "choice": 68.5
+    }
+  }
+}
