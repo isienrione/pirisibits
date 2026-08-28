@@ -33,3 +33,15 @@ export const EDITORIAL_CALIBRATION_V0_1_PROPOSED_READY = true
 
 /** Remains false until founder-approved calibration is ingested. */
 export const EDITORIAL_CALIBRATION_CURATOR_APPROVED = false
+
+/**
+ * Gate 2B — engine may consume proposed editorial calibration for provisional
+ * narrative artifacts. Does NOT mean curator approval or traveler routing.
+ */
+export const ENGINE_USING_PROVISIONAL_EDITORIAL_CALIBRATION = true
+
+/**
+ * Gate 2B — provisional narrative graph / NarrativeEdgeScore readiness.
+ * Does NOT enable traveler route generation.
+ */
+export const NARRATIVE_GRAPH_V0_1_PROPOSED_READY = true

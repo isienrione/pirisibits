@@ -153,14 +153,12 @@ describe('Gate 2A node utility foundation', () => {
     }
   })
 
-  it('does not invoke route composition APIs or NarrativeEdgeScore', () => {
+  it('does not invoke route composition APIs in the candidate pool payload', () => {
     const pool = buildCandidatePool(nodes, TRAVELER_FIXTURES.F_discovery_forward)
     expect(pool.gate).toBe('2A')
     const blob = JSON.stringify(pool)
-    expect(blob).not.toMatch(/NarrativeEdgeScore/)
-    expect(blob).not.toMatch(/ArcState/)
-    expect(blob).not.toMatch(/ArcQuality/)
     expect(blob).not.toMatch(/optimizeItinerary/)
+    expect(blob).not.toMatch(/ArcQuality/)
   })
 
   it('does not raise utility from fabricated physical centrality fields', () => {

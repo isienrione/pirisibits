@@ -1,6 +1,7 @@
 /**
  * Gate 2A — Engine V0.1 node-utility / eligibility types.
- * Route/Arc/NarrativeEdge types are placeholders only — not operational.
+ * Gate 2B narrative types live under src/engine/narrative/ (provisional).
+ * Route composition remains non-operational until later gates.
  */
 
 import type { ModeCode, ThemeCode } from '@/src/lib/city-graph/types'
@@ -147,9 +148,7 @@ export type CandidatePool = {
   candidates: CandidatePoolItem[]
 }
 
-/** Placeholders — Gate 2B+ only. Must remain non-operational. */
-export type NarrativeEdgeScorePlaceholder = never
-export type ArcStatePlaceholder = never
+/** Placeholders — remaining future gates. Must remain non-operational here. */
 export type ArcQualityPlaceholder = never
 export type RouteCompositionPlaceholder = never
 
