@@ -23,9 +23,14 @@ import {
 } from '@/src/dev/route-lab/derivations'
 import { ROUTE_LAB_FIXTURES } from '@/src/dev/route-lab/fixtures'
 import { WATCH_GEO_FIXTURES } from '@/src/dev/route-lab/humanReview'
+import { buildFixtureV02StopIndex } from '@/src/dev/route-lab/scoringV02Embed'
 import { resolve } from 'node:path'
 
-function serializeOne(result: RouteLabRunResult, coordMap: ReturnType<typeof loadPoiCoordinates>) {
+function serializeOne(
+  result: RouteLabRunResult,
+  coordMap: ReturnType<typeof loadPoiCoordinates>,
+  root: string,
+) {
   const reranked = result.reranked.rerankedCandidates.map((r) => {
     const geoSegments = buildGeoSegmentsForRoute(r.candidate.orderedStops)
     const geoDiagnostics = computeGeographicQaIndicators({
@@ -61,6 +66,11 @@ function serializeOne(result: RouteLabRunResult, coordMap: ReturnType<typeof loa
       stopSequence: stopSequenceLabel(r.candidate.orderedStops),
       shapeAmbiguity: shapeAmb,
       timeBreakdown: timeBudgetBreakdown(r.candidate),
+      v02ScoringByStop: buildFixtureV02StopIndex(
+        result.composed.request,
+        r.candidate.orderedStops,
+        root,
+      ),
     }
   })
 
@@ -88,8 +98,9 @@ function serializeOne(result: RouteLabRunResult, coordMap: ReturnType<typeof loa
 }
 
 export function serializeRouteLabRun(result: RouteLabRunResult, root?: string) {
-  const coordMap = loadPoiCoordinates(root ?? resolve(__dirname, '../../..'))
-  return serializeOne(result, coordMap)
+  const r = root ?? resolve(__dirname, '../../..')
+  const coordMap = loadPoiCoordinates(r)
+  return serializeOne(result, coordMap, r)
 }
 
 export function buildRouteLabEmbedPayload(results: Record<string, RouteLabRunResult>, root?: string) {
@@ -97,7 +108,7 @@ export function buildRouteLabEmbedPayload(results: Record<string, RouteLabRunRes
   const coordMap = loadPoiCoordinates(r)
   const serialized: Record<string, ReturnType<typeof serializeOne>> = {}
   for (const [id, res] of Object.entries(results)) {
-    serialized[id] = serializeOne(res, coordMap)
+    serialized[id] = serializeOne(res, coordMap, r)
   }
   const coords: Record<string, { lat: number; lng: number; displayName: string | null }> = {}
   const first = Object.values(results)[0]

@@ -69,3 +69,11 @@ export const ROUTE_LAB_V0_1_READY = true
  * Observability only — does NOT enable production traveler routing.
  */
 export const ROUTE_LAB_GEOGRAPHIC_QA_READY = true
+
+/**
+ * Gate 2E.2A — parallel scoring model V0.2 foundations (diagnostic only, not production).
+ */
+export const SCORING_MODEL_V0_2_PARALLEL_READY = true
+
+/** Gate 2E.2A — proposed editorial dimensions artifact for 104 nodes. */
+export const EDITORIAL_DIMENSIONS_V0_2_PROPOSED_READY = true

@@ -436,14 +436,31 @@
     const sem = ctx.semantic;
     const role = entry.positionRoles.find(r => r.stgoId === s.stgoId);
     const idx = entry.candidate.orderedStops.findIndex(x => x.stgoId === s.stgoId);
+    const v02 = entry.v02ScoringByStop && entry.v02ScoringByStop[s.stgoId];
+    const v02Html = v02 && v02.v02 ? `
+      <div class="banner-win" style="background:#eff6ff;border-color:#93c5fd;color:#1e40af;font-size:.75rem">V0.2 PARALLEL SCORE — NOT USED FOR ROUTE SELECTION</div>
+      <details open><summary>V0.2 parallel scores</summary>
+        <div class="two-col">
+          <div><strong>V0.1 NodeUtility</strong><br>${v02.v01NodeUtility ?? '—'}</div>
+          <div><strong>V0.2 BaseNodeValue</strong><br>${v02.v02.baseNodeValue.score ?? 'UNAVAILABLE'}</div>
+        </div>
+        <div class="muted" style="margin-top:.35rem;font-size:.78rem">
+          IW ${v02.v02.intrinsicWorth.raw ?? '—'} · TM ${v02.v02.travelerMatch.score ?? '—'} ·
+          Role ${v02.v02.roleFit.primaryStructuralRole} (A${(v02.v02.roleFit.anchorFit??0).toFixed?.(2)||v02.v02.roleFit.anchorFit} P${(v02.v02.roleFit.pocketFit??0).toFixed?.(2)||v02.v02.roleFit.pocketFit} M${(v02.v02.roleFit.microRevealFit??0).toFixed?.(2)||v02.v02.roleFit.microRevealFit})
+        </div>
+        ${v02.v02.marginalRouteValue ? `<div class="muted" style="font-size:.78rem;margin-top:.25rem">MRV ${v02.v02.marginalRouteValue.score ?? '—'} · cov ${v02.v02.marginalRouteValue.coverage}</div>` : ''}
+        ${v02.v02.transitionValue ? `<div class="muted" style="font-size:.78rem">TV ${v02.v02.transitionValue.score ?? v02.v02.transitionValue.status} · cov ${v02.v02.transitionValue.coverage}</div>` : ''}
+        <p class="explain">${esc(v02.v02.baseNodeValue.explanation.plainLanguageExplanation)}</p>
+      </details>` : '';
     q('stopInspector').innerHTML = `
       <h3>${esc(s.name)} <span class="muted">${esc(s.stgoId)}</span></h3>
       <p class="muted">Stop #${idx+1} · role ${esc(role?.role)} · dwell ${s.estimatedDwellMin}m · move ${s.transitionTimeMin}m</p>
+      ${v02Html}
       <details open><summary>Identity</summary>
         <p>Commune: ${esc(sem?.commune || '—')} · Launch: ${sem?.launchCorpus ?? '—'}</p>
         <p><a href="/docs/engine/gate-2a1-founder-calibration-cockpit.html?stgoId=${encodeURIComponent(s.stgoId)}" target="_blank">Open in Curator ↗</a></p>
       </details>
-      <details><summary>Route fit</summary>
+      <details><summary>Route fit (V0.1)</summary>
         <p>Role: ${esc(role?.role)} — ${esc(role?.rationale || '')}</p>
         <p>NodeUtility ${s.nodeUtility}</p>
         <p>${esc(s.inclusionExplanation)}</p>
