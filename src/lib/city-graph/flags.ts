@@ -77,3 +77,18 @@ export const SCORING_MODEL_V0_2_PARALLEL_READY = true
 
 /** Gate 2E.2A — proposed editorial dimensions artifact for 104 nodes. */
 export const EDITORIAL_DIMENSIONS_V0_2_PROPOSED_READY = true
+
+/**
+ * Gate 2E.2E — lane-neutral route arbitration (parallel only).
+ * Does NOT enable production traveler routing.
+ */
+export const ROUTE_ARBITRATION_V0_2_PARALLEL_READY = true
+
+/** Never true in this gate. */
+export const ROUTE_ARBITRATION_V0_2_PRODUCTION = false
+
+/** Never true in this gate. */
+export const ROUTE_COMPOSER_V0_2_PRODUCTION = false
+
+/** Never true in this gate. */
+export const ARCQUALITY_V0_2_PRODUCTION = false

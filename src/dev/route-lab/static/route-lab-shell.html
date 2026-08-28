@@ -91,6 +91,7 @@ a{color:var(--win)}
     <button type="button" id="btnReset">RESET TO DEFAULT (F2)</button>
     <button type="button" id="btnExport">EXPORT ROUTE SNAPSHOT</button>
     <button type="button" id="btnReviewMatrix" class="secondary">REVIEW MATRIX</button>
+    <button type="button" id="btnChoicePolicy" class="secondary">CHOICE POLICY V0.2</button>
     <span id="watchBar"></span>
   </div>
   <div id="fixtureDesc" class="muted"></div>
@@ -142,6 +143,11 @@ a{color:var(--win)}
   <div id="reviewMatrixPanel" class="panel" style="display:none">
     <h2>Founder review matrix (F1 · F2 · F6 · F8 · F9 · F15 · F17)</h2>
     <div class="matrix-wrap"><table class="matrix" id="reviewMatrix"></table></div>
+  </div>
+  <div id="choicePolicyPanel" class="panel" style="display:none">
+    <h2>CHOICE POLICY V0.2</h2>
+    <p class="muted">Lane-neutral arbitration. ComposerScore is within-lane search quality, not a cross-lane utility. Parallel only — not production.</p>
+    <div id="choicePolicyHost"></div>
   </div>
 </div>
 <!--INJECT_DATA-->

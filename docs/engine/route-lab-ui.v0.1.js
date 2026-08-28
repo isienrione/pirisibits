@@ -19,6 +19,7 @@
     mapReady: false,
     mapboxOk: false,
     showReviewMatrix: false,
+    showChoicePolicy: false,
   };
 
   function q(id) { return document.getElementById(id); }
@@ -436,14 +437,31 @@
     const sem = ctx.semantic;
     const role = entry.positionRoles.find(r => r.stgoId === s.stgoId);
     const idx = entry.candidate.orderedStops.findIndex(x => x.stgoId === s.stgoId);
+    const v02 = entry.v02ScoringByStop && entry.v02ScoringByStop[s.stgoId];
+    const v02Html = v02 && v02.v02 ? `
+      <div class="banner-win" style="background:#eff6ff;border-color:#93c5fd;color:#1e40af;font-size:.75rem">V0.2 PARALLEL SCORE — NOT USED FOR ROUTE SELECTION</div>
+      <details open><summary>V0.2 parallel scores</summary>
+        <div class="two-col">
+          <div><strong>V0.1 NodeUtility</strong><br>${v02.v01NodeUtility ?? '—'}</div>
+          <div><strong>V0.2 BaseNodeValue</strong><br>${v02.v02.baseNodeValue.score ?? 'UNAVAILABLE'}</div>
+        </div>
+        <div class="muted" style="margin-top:.35rem;font-size:.78rem">
+          IW ${v02.v02.intrinsicWorth.raw ?? '—'} · TM ${v02.v02.travelerMatch.score ?? '—'} ·
+          Role ${v02.v02.roleFit.primaryStructuralRole} (A${(v02.v02.roleFit.anchorFit??0).toFixed?.(2)||v02.v02.roleFit.anchorFit} P${(v02.v02.roleFit.pocketFit??0).toFixed?.(2)||v02.v02.roleFit.pocketFit} M${(v02.v02.roleFit.microRevealFit??0).toFixed?.(2)||v02.v02.roleFit.microRevealFit})
+        </div>
+        ${v02.v02.marginalRouteValue ? `<div class="muted" style="font-size:.78rem;margin-top:.25rem">MRV ${v02.v02.marginalRouteValue.score ?? '—'} · cov ${v02.v02.marginalRouteValue.coverage}</div>` : ''}
+        ${v02.v02.transitionValue ? `<div class="muted" style="font-size:.78rem">TV ${v02.v02.transitionValue.score ?? v02.v02.transitionValue.status} · cov ${v02.v02.transitionValue.coverage}</div>` : ''}
+        <p class="explain">${esc(v02.v02.baseNodeValue.explanation.plainLanguageExplanation)}</p>
+      </details>` : '';
     q('stopInspector').innerHTML = `
       <h3>${esc(s.name)} <span class="muted">${esc(s.stgoId)}</span></h3>
       <p class="muted">Stop #${idx+1} · role ${esc(role?.role)} · dwell ${s.estimatedDwellMin}m · move ${s.transitionTimeMin}m</p>
+      ${v02Html}
       <details open><summary>Identity</summary>
         <p>Commune: ${esc(sem?.commune || '—')} · Launch: ${sem?.launchCorpus ?? '—'}</p>
         <p><a href="/docs/engine/gate-2a1-founder-calibration-cockpit.html?stgoId=${encodeURIComponent(s.stgoId)}" target="_blank">Open in Curator ↗</a></p>
       </details>
-      <details><summary>Route fit</summary>
+      <details><summary>Route fit (V0.1)</summary>
         <p>Role: ${esc(role?.role)} — ${esc(role?.rationale || '')}</p>
         <p>NodeUtility ${s.nodeUtility}</p>
         <p>${esc(s.inclusionExplanation)}</p>
@@ -513,6 +531,7 @@
     q('chkCompareCandidates').checked = state.compareCandidates;
     q('winnerOverlayMode').value = state.winnerOverlayMode;
     q('reviewMatrixPanel').style.display = state.showReviewMatrix ? 'block' : 'none';
+    if (q('choicePolicyPanel')) q('choicePolicyPanel').style.display = state.showChoicePolicy ? 'block' : 'none';
   }
 
   async function runLive() {
@@ -553,6 +572,55 @@
     a.click();
   }
 
+  function renderChoicePolicy(r) {
+    const host = q('choicePolicyHost');
+    if (!host) return;
+    const cp = r.choicePolicy;
+    if (!cp) {
+      host.innerHTML = '<p class="muted">Choice policy payload not embedded. Run npm run gate:2e:build after Gate 2E.2E generate, or use live serve.</p>';
+      return;
+    }
+    const rec = cp.recommended;
+    const alts = cp.alternatives || [];
+    const rows = (cp.allCandidates || []).map((c) => {
+      const win = rec && c.routeId === rec.routeId;
+      const f = c.features || {};
+      const num = (x) => (x && x.value != null ? x.value : '—');
+      return `<tr class="${win ? 'rating-GOOD' : ''}">
+        <td>${win ? '<span class="pill win">RECOMMENDED</span> ' : ''}${esc(c.originatingLane)}</td>
+        <td>${esc(c.userFacingLabel || '—')}</td>
+        <td>${num(f.travelerMatchRoute)}</td>
+        <td>${num(f.arcQuality)}</td>
+        <td>${num(f.routeMarginalValue)}</td>
+        <td>${num(f.discoveryFit)}</td>
+        <td>${num(f.structuralFit)}</td>
+        <td>${num(f.physicalEfficiency)}</td>
+        <td>${num(f.timeFit)}</td>
+        <td>${num(f.lanePrior)}</td>
+        <td><strong>${c.routeChoiceScore ?? '—'}</strong></td>
+        <td>${c.routeChoiceCoverage ?? '—'}</td>
+      </tr>`;
+    }).join('');
+    const lost = (cp.whyOthersLost || []).map((s) => `<li>${esc(s)}</li>`).join('');
+    host.innerHTML = `
+      <div class="banner-win">Recommended lane: ${esc(cp.recommendedLane || '—')} · confidence ${esc(cp.choiceConfidence || '—')}</div>
+      <div class="matrix-wrap"><table class="matrix">
+        <thead><tr>
+          <th>originating lane</th><th>user-facing character</th>
+          <th>TravelerMatchRoute</th><th>ArcQuality</th><th>RouteMarginalValue</th>
+          <th>DiscoveryFit</th><th>StructuralFit</th><th>PhysicalEfficiency</th>
+          <th>TimeFit</th><th>LanePrior</th><th>RouteChoiceScore</th><th>coverage</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+      <h3>WHY THIS ROUTE WON</h3>
+      <p>${esc(cp.whyWon || '')}</p>
+      <h3>WHY THE OTHERS DIDN'T</h3>
+      <ul>${lost || '<li class="muted">No alternatives presented.</li>'}</ul>
+      <p class="muted">Legacy B0–B4 blends are diagnostic only (LEGACY CROSS-LANE BLEND EXPERIMENT).</p>
+    `;
+  }
+
   async function render() {
     const r = currentResult();
     if (!r) return;
@@ -577,6 +645,7 @@
     renderTimeBar(entry);
     renderHumanReview(entry);
     if (state.showReviewMatrix) renderReviewMatrix();
+    if (state.showChoicePolicy) renderChoicePolicy(r);
     writeUrl();
   }
 
@@ -588,6 +657,7 @@
   q('chkCompareCandidates').onchange = e => { state.compareCandidates = e.target.checked; render(); };
   q('winnerOverlayMode').onchange = e => { state.winnerOverlayMode = e.target.value; render(); };
   q('btnReviewMatrix').onclick = () => { state.showReviewMatrix = !state.showReviewMatrix; render(); };
+  if (q('btnChoicePolicy')) q('btnChoicePolicy').onclick = () => { state.showChoicePolicy = !state.showChoicePolicy; render(); };
 
   DATA.fixtures.filter(f=>f.watchCase).forEach(f => {
     const b = document.createElement('button');
