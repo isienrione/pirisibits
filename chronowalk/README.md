@@ -60,6 +60,15 @@ npm run build
 npm run preview
 ```
 
+**iOS App Store shell (Capacitor, parallel to the PWA):** see [`docs/APP_STORE_DUAL_DISTRIBUTION.md`](docs/APP_STORE_DUAL_DISTRIBUTION.md) and [`docs/CAPACITOR_IOS.md`](docs/CAPACITOR_IOS.md).
+
+```bash
+npm run build:ios   # web build + sync into ios/
+npm run cap:ios     # open Xcode (Mac)
+```
+
+The Cloudflare/PWA `npm run build` path is unchanged.
+
 **Tests:**
 
 ```bash

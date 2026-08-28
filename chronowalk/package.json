@@ -7,6 +7,9 @@
     "dev": "vite",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
     "build": "npm run generate:pwa-assets && vite build",
+    "build:ios": "npm run build && npx cap sync ios",
+    "cap:sync": "npx cap sync",
+    "cap:ios": "npx cap open ios",
     "verify:pwa-routing": "node scripts/verify-pwa-routing.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -53,6 +56,13 @@
     "pretest": "npm run check:commerce-drift"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.5.0",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
     "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
