@@ -1,6 +1,6 @@
 /**
- * Engine public API — Gates 2A + 2B (provisional narrative).
- * Traveler route composition remains intentionally absent.
+ * Engine public API — Gates 2A + 2B + provisional 2C route composer.
+ * Production traveler routing remains disabled via flags.
  */
 
 export { THEME_CODES, MODE_CODES, THEME_LABELS, MODE_LABELS, DISCOVERY_POSTURE_LABELS, deriveThemeTags } from '@/src/engine/taxonomy'
@@ -20,6 +20,21 @@ export { computeArcSignals } from '@/src/engine/narrative/arc-signals'
 export { loadLaunch30NarrativeGraph, narrativeEdgesFrom, runtimeEligibleEdges } from '@/src/engine/narrative/narrative-loader'
 export { buildLaunch30NarrativeGraph } from '@/src/engine/narrative/propose-narrative-edges'
 
+export { composeProvisionalRoutes } from '@/src/engine/routes/route-composer'
+export { normalizeRouteRequest, hashRouteRequest, serializeRouteRequest } from '@/src/engine/routes/route-request'
+export {
+  stopOverlap,
+  orderedOverlap,
+  edgeOverlap,
+  routeSimilarity,
+  timeDifference,
+  scoreDifference,
+  themeCoverageDifference,
+  compositionDifference,
+} from '@/src/engine/routes/route-compare'
+export { ROUTE_SCORE_WEIGHTS, ROUTE_SEARCH_CONFIG } from '@/src/engine/routes/route-config'
+
 export type * from '@/src/engine/types'
 export type * from '@/src/engine/semanticTypes'
 export type * from '@/src/engine/narrative/narrative-types'
+export type * from '@/src/engine/routes/route-types'

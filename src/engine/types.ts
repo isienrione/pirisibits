@@ -150,6 +150,7 @@ export type CandidatePool = {
 
 /** Placeholders — remaining future gates. Must remain non-operational here. */
 export type ArcQualityPlaceholder = never
+/** @deprecated Gate 2C provides composeProvisionalRoutes; production routing still disabled. */
 export type RouteCompositionPlaceholder = never
 
 /** Engine-facing node slice (city-agnostic shape over Santiago JSON). */

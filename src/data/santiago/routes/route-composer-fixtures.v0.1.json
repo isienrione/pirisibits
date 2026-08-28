@@ -1,0 +1,1332 @@
+{
+  "schemaVersion": "santiago-route-composer-fixtures.v0.1",
+  "gate": "2C",
+  "status": "PROVISIONAL_FIXTURE_SUMMARY",
+  "calibrationApproved": false,
+  "physicalRouteGenerationEnabled": false,
+  "note": "Fixture summaries for Route Lab / QA — not authoritative production routes.",
+  "deterministicRepeatF2F18": true,
+  "fixtures": [
+    {
+      "id": "F1",
+      "label": "60 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "requestHash": "6f86f1dcd232df1592021b5d",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 155,
+        "beamStatesPruned": 109
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_03",
+        "STGO_18"
+      ],
+      "totalEstimatedMin": 55.4,
+      "budgetDeltaMin": -4.6,
+      "composition": {
+        "anchors": 2,
+        "pockets": 0,
+        "micros": 1,
+        "stops": 3
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 69.8,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_02",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.163,
+        "max": 0.207
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F2",
+      "label": "120 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 991,
+        "beamStatesPruned": 873
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "totalEstimatedMin": 116.3,
+      "budgetDeltaMin": -3.7,
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 68.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.306
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F3",
+      "label": "180 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "requestHash": "5b352d4cd44569f9711dbdac",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 1653,
+        "beamStatesPruned": 1469
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "totalEstimatedMin": 182.8,
+      "budgetDeltaMin": 2.8,
+      "composition": {
+        "anchors": 6,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 9
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 68.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_05",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_06",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_10",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.208,
+        "max": 0.31
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F4",
+      "label": "120 min WALK_METRO",
+      "candidatesReturned": 3,
+      "requestHash": "a1a65c4d5933a256a5effcf6",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 1674,
+        "beamStatesPruned": 1561
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_26"
+      ],
+      "totalEstimatedMin": 109.2,
+      "budgetDeltaMin": -10.8,
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": true,
+        "lineIds": [
+          "L3",
+          "L5"
+        ],
+        "transferCount": 0
+      },
+      "provisionalScore": 68.9,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_05",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.331
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F5",
+      "label": "120 min strong T1A",
+      "candidatesReturned": 3,
+      "requestHash": "95b952bd0168340dae640acd",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 947,
+        "beamStatesPruned": 829
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_24",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "totalEstimatedMin": 111.2,
+      "budgetDeltaMin": -8.8,
+      "composition": {
+        "anchors": 3,
+        "pockets": 1,
+        "micros": 1,
+        "stops": 5
+      },
+      "dominantThemes": [
+        "T3",
+        "T1A",
+        "T4"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 67.1,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_22",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_03",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.103,
+        "max": 0.25
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F6",
+      "label": "120 min strong T2 culinary",
+      "candidatesReturned": 3,
+      "requestHash": "b60f105a6dab521b54f1c48b",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 592,
+        "beamStatesPruned": 508
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34",
+        "STGO_91"
+      ],
+      "totalEstimatedMin": 117.2,
+      "budgetDeltaMin": -2.8,
+      "composition": {
+        "anchors": 2,
+        "pockets": 1,
+        "micros": 2,
+        "stops": 5
+      },
+      "dominantThemes": [
+        "T2"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 69.8,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_21",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_24",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_28",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.292,
+        "max": 0.295
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F7",
+      "label": "120 min strong T3 aesthetics",
+      "candidatesReturned": 3,
+      "requestHash": "f3d8e1096218c09d65f3f651",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 824,
+        "beamStatesPruned": 716
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "totalEstimatedMin": 123.8,
+      "budgetDeltaMin": 3.8,
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T3",
+        "T4"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 65.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.231,
+        "max": 0.283
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F8",
+      "label": "120 min D1 Flâneur",
+      "candidatesReturned": 3,
+      "requestHash": "8d7b318580af18e94c660700",
+      "diagnostics": {
+        "eligibleCandidateCount": 15,
+        "physicallyUsableCandidateCount": 15,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 738,
+        "beamStatesPruned": 607
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_92",
+        "STGO_06"
+      ],
+      "totalEstimatedMin": 107,
+      "budgetDeltaMin": -13,
+      "composition": {
+        "anchors": 2,
+        "pockets": 0,
+        "micros": 4,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T5",
+        "T6"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 58.6,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.376
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F9",
+      "label": "120 min D2 Detective",
+      "candidatesReturned": 3,
+      "requestHash": "805423198b119256cbc02848",
+      "diagnostics": {
+        "eligibleCandidateCount": 28,
+        "physicallyUsableCandidateCount": 28,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 1205,
+        "beamStatesPruned": 1073
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_03",
+        "STGO_19",
+        "STGO_04",
+        "STGO_10"
+      ],
+      "totalEstimatedMin": 106.5,
+      "budgetDeltaMin": -13.5,
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T3",
+        "T1B",
+        "T4"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 62.5,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_25",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_48",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_27",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.231,
+        "max": 0.294
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F10",
+      "label": "120 min M1 Express",
+      "candidatesReturned": 3,
+      "requestHash": "b72888c6976c7ba5dad23ba7",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 997,
+        "beamStatesPruned": 881
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "totalEstimatedMin": 116.3,
+      "budgetDeltaMin": -3.7,
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 69.2,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.306
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F11",
+      "label": "stepFreeRequired",
+      "candidatesReturned": 3,
+      "requestHash": "3d979ee280a4413af6befc4a",
+      "diagnostics": {
+        "eligibleCandidateCount": 14,
+        "physicallyUsableCandidateCount": 14,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 537,
+        "beamStatesPruned": 429
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_10"
+      ],
+      "totalEstimatedMin": 117,
+      "budgetDeltaMin": -3,
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 64.6,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_21",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_16",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_28",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.306,
+        "max": 0.38
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F12",
+      "label": "memorySitesOptIn=false",
+      "candidatesReturned": 3,
+      "requestHash": "d95108f3fe8f416b290b6c2b",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 849,
+        "beamStatesPruned": 738
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_28",
+        "STGO_27",
+        "STGO_24",
+        "STGO_29"
+      ],
+      "totalEstimatedMin": 113.3,
+      "budgetDeltaMin": -6.7,
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 1,
+        "stops": 5
+      },
+      "dominantThemes": [
+        "T3",
+        "T1A",
+        "T4"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 67.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_22",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_03",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.099,
+        "max": 0.227
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F13",
+      "label": "memorySitesOptIn=true",
+      "candidatesReturned": 3,
+      "requestHash": "c03969f184d2ea8361cdd26f",
+      "diagnostics": {
+        "eligibleCandidateCount": 28,
+        "physicallyUsableCandidateCount": 28,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 1181,
+        "beamStatesPruned": 1049
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_04",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_02"
+      ],
+      "totalEstimatedMin": 122.4,
+      "budgetDeltaMin": 2.4,
+      "composition": {
+        "anchors": 5,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 7
+      },
+      "dominantThemes": [
+        "T1A",
+        "T1B"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 67,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_25",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.351
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F14",
+      "label": "highComfort",
+      "candidatesReturned": 3,
+      "requestHash": "9230f196337736018e8c2946",
+      "diagnostics": {
+        "eligibleCandidateCount": 14,
+        "physicallyUsableCandidateCount": 14,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 539,
+        "beamStatesPruned": 431
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_10"
+      ],
+      "totalEstimatedMin": 117,
+      "budgetDeltaMin": -3,
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 64.3,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_21",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_28",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_16",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.306,
+        "max": 0.38
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F15",
+      "label": "tight time budget",
+      "candidatesReturned": 3,
+      "requestHash": "56c731cf4c9c0f2d9e1cff84",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 38,
+        "beamStatesPruned": 5
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_03"
+      ],
+      "totalEstimatedMin": 40,
+      "budgetDeltaMin": -5,
+      "composition": {
+        "anchors": 2,
+        "pockets": 0,
+        "micros": 0,
+        "stops": 2
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 72.2,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_02",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.229,
+        "max": 0.325
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F16",
+      "label": "start near STGO_33 physically supported (STGO_01 hub; 33 not start)",
+      "candidatesReturned": 3,
+      "requestHash": "77c30bdfd3450c9a707432db",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 845,
+        "beamStatesPruned": 737
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "totalEstimatedMin": 123.8,
+      "budgetDeltaMin": 3.8,
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T3",
+        "T4"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 65.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.158,
+        "max": 0.31
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F17",
+      "label": "STGO_104 excluded physical pending",
+      "candidatesReturned": 3,
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 991,
+        "beamStatesPruned": 873
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "totalEstimatedMin": 116.3,
+      "budgetDeltaMin": -3.7,
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 68.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.306
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    },
+    {
+      "id": "F18",
+      "label": "deterministic repeat of F2",
+      "candidatesReturned": 3,
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "diagnostics": {
+        "eligibleCandidateCount": 25,
+        "physicallyUsableCandidateCount": 25,
+        "editorialButPhysicalPending": [
+          "STGO_33",
+          "STGO_104"
+        ],
+        "beamStatesExpanded": 991,
+        "beamStatesPruned": 873
+      },
+      "topRouteStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "totalEstimatedMin": 116.3,
+      "budgetDeltaMin": -3.7,
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6
+      },
+      "dominantThemes": [
+        "T1A",
+        "T3"
+      ],
+      "transportUse": {
+        "used": false,
+        "lineIds": [],
+        "transferCount": 0
+      },
+      "provisionalScore": 68.4,
+      "primaryOmissionReasons": [
+        {
+          "stgoId": "STGO_104",
+          "reasonCode": "PHYSICAL_STATUS_PENDING"
+        },
+        {
+          "stgoId": "STGO_33",
+          "reasonCode": "PHYSICAL_INELIGIBLE"
+        },
+        {
+          "stgoId": "STGO_26",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_32",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        },
+        {
+          "stgoId": "STGO_29",
+          "reasonCode": "NOT_EXPANDED_IN_BEAM"
+        }
+      ],
+      "candidateSimilarityRange": {
+        "min": 0.25,
+        "max": 0.306
+      },
+      "flags": {
+        "overBudget": false,
+        "includesStgo104": false,
+        "includesL7": false,
+        "calibrationApproved": false
+      }
+    }
+  ]
+}

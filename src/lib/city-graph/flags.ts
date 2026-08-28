@@ -45,3 +45,9 @@ export const ENGINE_USING_PROVISIONAL_EDITORIAL_CALIBRATION = true
  * Does NOT enable traveler route generation.
  */
 export const NARRATIVE_GRAPH_V0_1_PROPOSED_READY = true
+
+/**
+ * Gate 2C — provisional route composer readiness for Route Lab / founder inspection.
+ * Does NOT enable production traveler routing (`PHYSICAL_ROUTE_GENERATION_ENABLED` remains false).
+ */
+export const ROUTE_COMPOSER_V0_1_PROVISIONAL_READY = true
