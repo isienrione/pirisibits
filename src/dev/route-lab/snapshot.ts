@@ -1,10 +1,16 @@
 /**
  * Gate 2E — route snapshot export builder.
+ * Gate 2E.1 — optional human review export (does not affect engine).
  */
 
 import type { RouteLabRunResult } from '@/src/dev/route-lab/runRouteLab'
+import type { HumanRouteReview } from '@/src/dev/route-lab/humanReview'
 
-export function buildRouteSnapshotExport(result: RouteLabRunResult, selectedRouteId: string | null): object {
+export function buildRouteSnapshotExport(
+  result: RouteLabRunResult,
+  selectedRouteId: string | null,
+  humanReview?: Partial<HumanRouteReview> | null,
+): object {
   const selected = result.reranked.rerankedCandidates.find((r) => r.candidate.routeId === selectedRouteId) ??
     result.reranked.rerankedCandidates[0]
 
@@ -45,6 +51,19 @@ export function buildRouteSnapshotExport(result: RouteLabRunResult, selectedRout
     omissions: selected?.candidate.omittedHighUtilityNodes ?? [],
     winnerChanged: result.reranked.winnerChanged,
     winnerChangeExplanation: result.reranked.winnerChangeExplanation,
+    ...(humanReview
+      ? {
+          humanReview: {
+            geography: humanReview.geography ?? '',
+            sequence: humanReview.sequence ?? '',
+            travelerFit: humanReview.travelerFit ?? '',
+            narrativeShape: humanReview.narrativeShape ?? '',
+            timeUse: humanReview.timeUse ?? '',
+            founderNote: humanReview.founderNote ?? '',
+          },
+          humanReviewAffectsEngine: false,
+        }
+      : {}),
   }
 }
 

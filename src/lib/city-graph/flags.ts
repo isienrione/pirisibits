@@ -63,3 +63,9 @@ export const ARC_QUALITY_V0_1_PROVISIONAL_READY = true
  * Does NOT enable production traveler routing.
  */
 export const ROUTE_LAB_V0_1_READY = true
+
+/**
+ * Gate 2E.1 — Route Lab geographic QA (basemap, canonical geometry, human review).
+ * Observability only — does NOT enable production traveler routing.
+ */
+export const ROUTE_LAB_GEOGRAPHIC_QA_READY = true

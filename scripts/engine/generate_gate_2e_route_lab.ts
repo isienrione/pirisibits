@@ -11,13 +11,15 @@ import { buildAllFixtureResults } from '../../src/dev/route-lab/runRouteLab'
 const ROOT = resolve(__dirname, '../..')
 const OUT_HTML = resolve(ROOT, 'docs/engine/gate-2e-route-lab.html')
 const OUT_JS = resolve(ROOT, 'docs/engine/route-lab-ui.v0.1.js')
+const OUT_MAP = resolve(ROOT, 'docs/engine/route-lab-map.v0.1.js')
 const SHELL = resolve(ROOT, 'src/dev/route-lab/static/route-lab-shell.html')
 const UI_SRC = resolve(ROOT, 'src/dev/route-lab/static/route-lab-ui.js')
+const MAP_SRC = resolve(ROOT, 'src/dev/route-lab/static/route-lab-map.js')
 
 function main() {
   console.log('Building Route Lab fixture payloads (F1–F18)…')
   const results = buildAllFixtureResults(ROOT)
-  const payload = buildRouteLabEmbedPayload(results)
+  const payload = buildRouteLabEmbedPayload(results, ROOT)
 
   let shell = readFileSync(SHELL, 'utf8')
   const inject = `<script>window.__ROUTE_LAB_DATA__ = ${JSON.stringify(payload)};</script>`
@@ -26,8 +28,21 @@ function main() {
   mkdirSync(resolve(ROOT, 'docs/engine'), { recursive: true })
   writeFileSync(OUT_HTML, shell, 'utf8')
   copyFileSync(UI_SRC, OUT_JS)
+  copyFileSync(MAP_SRC, OUT_MAP)
 
-  console.log(JSON.stringify({ html: 'docs/engine/gate-2e-route-lab.html', js: 'docs/engine/route-lab-ui.v0.1.js', fixtures: Object.keys(results).length }, null, 2))
+  console.log(
+    JSON.stringify(
+      {
+        html: 'docs/engine/gate-2e-route-lab.html',
+        js: 'docs/engine/route-lab-ui.v0.1.js',
+        map: 'docs/engine/route-lab-map.v0.1.js',
+        schema: payload.schemaVersion,
+        fixtures: Object.keys(results).length,
+      },
+      null,
+      2,
+    ),
+  )
 }
 
 main()

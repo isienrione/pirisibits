@@ -29,7 +29,7 @@ export type RouteLabRunResult = {
   stgo104Diagnostic: { presentInRoute: boolean; omissionReason: string | null }
 }
 
-const ROOT = resolve(__dirname, '../..')
+const ROOT = resolve(__dirname, '../../..')
 
 export function runRouteLab(
   input: RouteRequestInput,
@@ -122,6 +122,47 @@ export function loadGate2dFingerprintArtifact(root = ROOT): Record<string, strin
       out[row.id] = row.rerankedTopRouteId ?? ''
     }
     return out
+  } catch {
+    return null
+  }
+}
+
+/** Gate 2E.1 — full engine-output fingerprint for regression (observability must not change engine). */
+export function gate2e1EngineOutputFingerprint(root = ROOT): Record<string, string> {
+  const results = buildAllFixtureResults(root)
+  const out: Record<string, string> = {}
+  for (const [id, r] of Object.entries(results)) {
+    const payload = {
+      requestHash: r.composed.requestHash,
+      candidates: r.composed.candidates.map((c) => ({
+        routeId: c.routeId,
+        stops: c.orderedStops.map((s) => s.stgoId),
+        composerScore: c.provisionalRouteScore,
+        omissions: c.omittedHighUtilityNodes.map((o) => ({ id: o.stgoId, reason: o.reasonCode })),
+      })),
+      reranked: r.reranked.rerankedCandidates.map((x) => ({
+        routeId: x.candidate.routeId,
+        composerRank: x.originalComposerRank,
+        rerankedRank: x.rerankedRank,
+        composerScore: x.composerProvisionalScore,
+        arcQuality: x.arcQualityScore,
+        rerankedScore: x.rerankedScore,
+        arcNormalized: x.arcQuality.normalizedScore,
+      })),
+      winnerChanged: r.reranked.winnerChanged,
+      topComposer: r.reranked.topComposerRouteId,
+      topReranked: r.reranked.topRerankedRouteId,
+    }
+    out[id] = JSON.stringify(payload)
+  }
+  return out
+}
+
+export function loadGate2e1FingerprintBaseline(root = ROOT): Record<string, string> | null {
+  try {
+    const p = resolve(root, 'src/data/santiago/routes/gate-2e1-engine-fingerprint.v0.1.json')
+    const raw = JSON.parse(readFileSync(p, 'utf8'))
+    return raw.fingerprints ?? null
   } catch {
     return null
   }
