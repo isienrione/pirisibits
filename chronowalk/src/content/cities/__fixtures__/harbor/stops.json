@@ -1,0 +1,20 @@
+[
+  {
+    "stopId": "quay-north",
+    "cityId": "harbor",
+    "name": "North Quay",
+    "location": {
+      "lat": 44.1,
+      "lng": 9.2
+    }
+  },
+  {
+    "stopId": "lighthouse",
+    "cityId": "harbor",
+    "name": "Lighthouse",
+    "location": {
+      "lat": 44.11,
+      "lng": 9.21
+    }
+  }
+]

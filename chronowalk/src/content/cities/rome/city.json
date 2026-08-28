@@ -1,0 +1,45 @@
+{
+  "cityId": "rome",
+  "name": "Rome",
+  "defaultLocale": "en",
+  "accent": "--city-rome",
+  "priceFallbackCents": 1499,
+  "currency": "EUR",
+  "reflections": [
+    "You walked where senators argued and emperors passed - and Rome let you in.",
+    "The living city opened its piazzas, fountains, and evening light to you.",
+    "Twenty centuries folded into one walk. You crossed them on foot.",
+    "Some chapters remain ahead - Rome keeps a seat for your return."
+  ],
+  "beds": {
+    "antiquity": "bed_antiquity.mp3",
+    "centro": "bed_centro.mp3",
+    "river": "bed_river.mp3",
+    "underworld": "bed_underworld.mp3",
+    "pantheon_interior": "bed_pantheon_interior.mp3"
+  },
+  "system": {
+    "presence": "sfx_presence.mp3",
+    "longwalk": "t_longwalk.mp3",
+    "no_ticket": [
+      "alt_forum_1.mp3",
+      "alt_forum_2.mp3"
+    ],
+    "ui": {
+      "arrival": "ui_arrival_chime.mp3",
+      "arrival_unlocked": "ui_waypoint_unlocked.mp3",
+      "threshold": "ui_threshold_tone.mp3",
+      "phase_transition": "ui_phase_seam.mp3",
+      "completion": "ui_completion_tone.mp3"
+    },
+    "preview": "w17_ch1.mp3",
+    "threshold_ambience": {
+      "now": "ambience_now.mp3",
+      "then": "ambience_then.mp3"
+    },
+    "resume": {
+      "same_day": "resume_same_day.mp3",
+      "new_day": "resume_new_day.mp3"
+    }
+  }
+}

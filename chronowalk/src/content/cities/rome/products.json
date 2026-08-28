@@ -1,0 +1,23 @@
+[
+  {
+    "productId": "rome-eternal",
+    "cityId": "rome",
+    "name": "Rome Eternal",
+    "routeIds": [
+      "rome-eternal-main",
+      "rome-eternal-path-b"
+    ],
+    "marketing": {
+      "publicPlaceCount": 21,
+      "visitStopCount": 21,
+      "classicVisitStopCount": 12,
+      "storyStopCount": 21,
+      "actCount": 6,
+      "durationLabel": "your pace",
+      "ownershipLabel": "yours forever",
+      "distanceLabel": "~8 km walking",
+      "priceFallbackCents": 1499,
+      "currency": "EUR"
+    }
+  }
+]
