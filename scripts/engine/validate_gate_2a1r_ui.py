@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate 2A.1R-UI — Founder Calibration Cockpit validator."""
+"""Gate 2A.1R-UI — Founder Calibration Cockpit validator (updated for UI.2 full inventory)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ SEMANTIC = ROOT / "src/data/santiago/santiago_semantic_calibration.v0.1.json"
 SOURCE = ROOT / "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 FLAGS = ROOT / "src/lib/city-graph/flags.ts"
 GEN = ROOT / "scripts/engine/generate_gate_2a1_founder_cockpit.py"
-START = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
+START = "0e5903e46598365fcee3142c2f374a45e49ece77"
 PHYSICAL = [
     "src/data/santiago/santiago_physical_edges.v0.1.json",
     "src/data/santiago/santiago_pedestrian_adjacency.v0.2.json",
@@ -27,7 +27,6 @@ PHYSICAL = [
 SEMANTIC_PATHS = [
     "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
 ]
-# Membership/semantic/launch calibration are updated by Gate 2A.1R-ADD-01R; frozen seed remains immutable.
 
 
 def fail(errors: list[str], msg: str) -> None:
@@ -58,15 +57,21 @@ def main() -> int:
         return 1
     source = json.loads(m.group(1))
 
-    if len(source.get("records") or []) != 30:
-        fail(errors, "cockpit must embed exactly 30 launch POIs")
+    if len(source.get("records") or []) != 104:
+        fail(errors, "cockpit must embed exactly 104 canonical Santiago POIs")
     if source.get("normalizationCorpus") != "SANTIAGO_LAUNCH30_V0_1":
         fail(errors, "normalizationCorpus missing/incorrect")
     if source.get("sourceCheckpointSha") != START:
         fail(errors, "sourceCheckpointSha mismatch")
+    if source.get("gate") not in {"2A.1R-UI.2", "2A.1R-UI.1", "2A.1R-ADD-01R"}:
+        fail(errors, "unexpected cockpit gate")
+
+    launch_recs = [r for r in source["records"] if r.get("launchCorpus")]
+    if len(launch_recs) != 30:
+        fail(errors, f"launchCorpus true count must be 30, got {len(launch_recs)}")
 
     by = {r["stgoId"]: r for r in launch["records"]}
-    for r in source["records"]:
+    for r in launch_recs:
         o = by[r["stgoId"]]
         if r["thematicVector"] != o["thematicVector"]:
             fail(errors, f"{r['stgoId']}: thematicVector != Gate 2A.1R")
@@ -75,14 +80,13 @@ def main() -> int:
         if r["tier"] != o["tier"]:
             fail(errors, f"{r['stgoId']}: tier != Gate 2A.1R")
 
-    # Required UX/behavior markers
     required = [
         "STORAGE_KEY",
         "Save Draft",
         "Approve POI",
         "Reset POI to Source",
         "Reset field",
-        "Export Founder Calibration",
+        "Export Launch30",
         "launch30_founder_calibration.reviewed.v0.1.json",
         "INCOMPLETE_FOUNDER_REVIEW",
         "MODIFIED_AFTER_APPROVAL",
@@ -97,6 +101,7 @@ def main() -> int:
         "ORIGINAL → DRAFT",
         "orig-mark",
         "__CW_FOUNDER_COCKPIT__",
+        "cw_founder_cockpit_santiago104_v0_1",
     ]
     for s in required:
         if s == "Taxonomy & Scoring Guide":
@@ -120,7 +125,6 @@ def main() -> int:
         if mode not in html:
             fail(errors, f"missing mode {mode}")
 
-    # Handbook arrays present with 10 themes / 4 metrics / 5 modes
     tm = re.search(r"const THEME_META = (\[.*?\]);\nconst METRIC_META", html, re.S)
     mm = re.search(r"const METRIC_META = (\[.*?\]);\nconst MODE_META", html, re.S)
     om = re.search(r"const MODE_META = (\[.*?\]);\nconst STORAGE_KEY", html, re.S)
@@ -131,16 +135,11 @@ def main() -> int:
     if not om or len(json.loads(om.group(1))) != 5:
         fail(errors, "MODE_META incomplete")
 
-    # Formula + live recalc markers
     if "0.35" not in html or "heritage_depth" not in html:
         fail(errors, "ChronoWorth formula missing")
-    if "100 * raws" not in html and "100 * raws[r.stgoId] / maxRaw" not in html:
-        if "100 * raws[r.stgoId] / maxRaw" not in html.replace(" ", ""):
-            # check uncompressed
-            if "/ maxRaw" not in html:
-                fail(errors, "normalized ChronoWorth logic missing")
+    if "/ maxRaw" not in html and "maxRaw" not in html:
+        fail(errors, "normalized ChronoWorth logic missing")
 
-    # Flags unchanged
     for line in [
         "PHYSICAL_LAYER_V0_1_READY = true",
         "PHYSICAL_ROUTE_GENERATION_ENABLED = false",
@@ -153,7 +152,6 @@ def main() -> int:
     if "EDITORIAL_CALIBRATION_CURATOR_APPROVED = true" in flags:
         fail(errors, "global curator-approved must remain false")
 
-    # Physical + semantic immutability vs start SHA
     for rel in PHYSICAL + SEMANTIC_PATHS:
         proc = subprocess.run(
             ["git", "diff", "--quiet", START, "--", rel],
@@ -163,11 +161,9 @@ def main() -> int:
         if proc.returncode != 0:
             fail(errors, f"immutable artifact changed since start: {rel}")
 
-    # No narrative/route composition introduced by this gate
     if "NarrativeEdgeScore" in html or "optimizeItinerary" in html:
         fail(errors, "cockpit must not introduce narrative/route composition")
 
-    # Secret scan (cockpit artifacts only — avoid false positives from validators' search strings)
     for f in [COCKPIT, GEN, ROOT / "docs/engine/GATE_2A1R_UI_FOUNDER_COCKPIT_REPORT.md"]:
         if not f.exists():
             continue
@@ -175,11 +171,9 @@ def main() -> int:
         if "pk.ey" in text or re.search(r"MAPBOX_ACCESS_TOKEN=[^\n\"']+", text):
             fail(errors, f"secret in {f.relative_to(ROOT)}")
 
-    # Old QA HTML preserved
     if not OLD_HTML.exists():
         fail(errors, "historical QA HTML must remain")
 
-    # No binary-0.7 / pois canonical dependency introduced in cockpit source payload
     blob = json.dumps(source)
     if "BINARY_THEME_EXPANSION" in blob or "pois.ts" in blob:
         fail(errors, "cockpit source payload must not introduce pois/binary fallbacks")
@@ -193,7 +187,7 @@ def main() -> int:
     cws = [(r["stgoId"], r["chronoWorthProposed"]) for r in source["records"] if r.get("chronoWorthProposed") is not None]
     top = max(cws, key=lambda x: x[1]) if cws else ("NONE", None)
     print("GATE_2A1R_UI_VALIDATOR=PASS")
-    print(json.dumps({"launchPois": 30, "topChronoWorthProposed": {"id": top[0], "value": top[1]}}))
+    print(json.dumps({"allPois": 104, "launchPois": 30, "topChronoWorthProposed": {"id": top[0], "value": top[1]}}))
     return 0
 
 

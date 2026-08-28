@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Gate 2A.1R-UI — Generate Founder Calibration Cockpit.
+Gate 2A.1R-UI.2 — Generate Founder Calibration Cockpit (full Santiago inventory).
 
-Self-contained HTML/JS/CSS for Launch 30 curation.
-Does NOT mutate canonical semantic/source artifacts.
+Self-contained HTML/JS/CSS for all 104 canonical Santiago nodes.
+Default view: Launch 30. Does NOT mutate frozen source / physical edges.
 """
 
 from __future__ import annotations
@@ -13,11 +13,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json"
+SEMANTIC_PATH = ROOT / "src/data/santiago/santiago_semantic_calibration.v0.1.json"
+CORPUS_PATH = ROOT / "src/data/santiago/santiago_launch_corpus.v0.1.json"
+EXTENSIONS_PATH = ROOT / "src/data/santiago/source/santiago_founder_extensions.v0.1.json"
 SOURCE_DATASET = "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json"
 SEMANTIC = "src/data/santiago/santiago_semantic_calibration.v0.1.json"
-CHECKPOINT = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
+CHECKPOINT = "0e5903e46598365fcee3142c2f374a45e49ece77"
 OUT = ROOT / "docs/engine/gate-2a1-founder-calibration-cockpit.html"
-RATIONALES = ROOT / "src/data/santiago/curation/launch30_score_rationales.v0.1.json"
+RATIONALES = ROOT / "src/data/santiago/curation/santiago_score_rationales.v0.1.json"
+RATIONALES_LAUNCH30 = ROOT / "src/data/santiago/curation/launch30_score_rationales.v0.1.json"
 
 THEME_META = [
     ("T1A", "Civic, Military & Traditional Heritage",
@@ -201,6 +205,12 @@ def slim_record(r: dict) -> dict:
         "founderNodeBadges": r.get("founderNodeBadges") or [],
         "legacyAlias": r.get("legacyAlias"),
         "identityCorrection": r.get("identityCorrection"),
+        "commune": r.get("commune"),
+        "launchCorpus": bool(r.get("launchCorpus")),
+        "inventoryProvenance": r.get("inventoryProvenance") or (
+            "FOUNDER_EXTENSION" if r.get("stgoId") == "STGO_104" else "ORIGINAL_103_SEED"
+        ),
+        "derivedThemeTags": r.get("derivedThemeTags") or [],
         "requiresFounderCalibrationBeforeApproval": bool(
             ((r.get("sourceProvenance") or {}).get("requiresFounderCalibrationBeforeApproval"))
             or r.get("stgoId") == "STGO_104"
@@ -209,23 +219,52 @@ def slim_record(r: dict) -> dict:
 
 
 def main() -> int:
-    cal = json.loads(LAUNCH.read_text(encoding="utf-8"))
-    assert len(cal["records"]) == 30
+    sem = json.loads(SEMANTIC_PATH.read_text(encoding="utf-8"))
+    assert sem.get("recordCount") == 104 and len(sem["records"]) == 104
+    launch_doc = json.loads(LAUNCH.read_text(encoding="utf-8"))
+    assert len(launch_doc["records"]) == 30
+    corpus = json.loads(CORPUS_PATH.read_text(encoding="utf-8"))
+    launch_ids = set(corpus.get("ids") or corpus.get("stgoIds") or [])
+    assert len(launch_ids) == 30
+    assert "STGO_104" in launch_ids and "STGO_23" not in launch_ids
+
+    records = []
+    for r in sorted(sem["records"], key=lambda x: int(x["stgoId"].split("_")[1])):
+        rr = dict(r)
+        rr["launchCorpus"] = rr["stgoId"] in launch_ids
+        if rr["stgoId"] == "STGO_104":
+            rr["inventoryProvenance"] = "FOUNDER_EXTENSION"
+        else:
+            rr["inventoryProvenance"] = "ORIGINAL_103_SEED"
+        records.append(slim_record(rr))
+
     payload = {
-        "schemaVersion": "santiago-launch30-founder-cockpit.source.v0.1",
-        "gate": "2A.1R-ADD-01R",
+        "schemaVersion": "santiago-founder-cockpit.source.v0.1",
+        "gate": "2A.1R-UI.2",
         "sourceCheckpointSha": CHECKPOINT,
         "sourceDataset": SOURCE_DATASET,
         "canonicalSemanticArtifact": SEMANTIC,
         "launchCalibrationArtifact": str(LAUNCH.relative_to(ROOT)),
+        "founderExtensionsArtifact": str(EXTENSIONS_PATH.relative_to(ROOT)),
         "rationaleArtifact": str(RATIONALES.relative_to(ROOT)),
         "normalizationCorpus": "SANTIAGO_LAUNCH30_V0_1",
+        "normalizationCorpusAll": "SANTIAGO_ALL104_V0_1",
         "chronoWorthFormula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
-        "records": [slim_record(r) for r in sorted(cal["records"], key=lambda x: x["stgoId"])],
+        "inventoryCounts": {
+            "all": 104,
+            "launch30": 30,
+            "nonLaunch": 74,
+            "originalSeed": 103,
+            "founderExtensions": 1,
+        },
+        "launchCorpusIds": sorted(launch_ids, key=lambda s: int(s.split("_")[1])),
+        "defaultCorpusFilter": "LAUNCH30",
+        "records": records,
     }
     if not RATIONALES.exists():
-        raise SystemExit(f"missing rationales: {RATIONALES} — run build_launch30_score_rationales_v0_1.py first")
+        raise SystemExit(f"missing rationales: {RATIONALES} — run build_santiago_score_rationales_v0_1.py first")
     rationales = json.loads(RATIONALES.read_text(encoding="utf-8"))
+    assert len(rationales.get("records") or []) == 104
     theme_json = json.dumps(THEME_META, ensure_ascii=False)
     metric_json = json.dumps(METRIC_META, ensure_ascii=False)
     mode_json = json.dumps(MODE_META, ensure_ascii=False)
@@ -237,7 +276,7 @@ def main() -> int:
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ChronoWalk — Founder Calibration Cockpit (Launch 30)</title>
+<title>ChronoWalk — Founder Calibration Cockpit (Santiago 104)</title>
 <style>
 :root {{
   --ink:#1c1917; --muted:#78716c; --line:#e7e5e4; --bg:#f7f4ef; --panel:#fff;
@@ -317,27 +356,56 @@ th{{cursor:pointer;color:var(--muted);font-weight:600}}
 .badge.conf-low{{color:var(--warn);border-color:#fecaca;background:#fef2f2}}
 .plain{{margin:.35rem 0 0;font-size:.88rem}}
 .contrib-eq{{color:var(--muted);font-size:.78rem}}
+.corpus-bar{{gap:.35rem}}
+.corpus-btn{{background:#fff;border:1px solid var(--line)}}
+.corpus-btn.active{{background:var(--founder);color:#fff;border-color:var(--founder)}}
+.corpus-btn .count{{opacity:.85;font-variant-numeric:tabular-nums}}
+.priority{{color:var(--founder);font-weight:700;font-size:.75rem}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Founder Calibration Cockpit — Santiago Launch 30</h1>
-  <div class="sub">Gate 2A.1R-ADD-01R · Launch30 = 30 (Bolsa + restored STGO_33) · score rationales · localStorage · export for Gate 2A.2 ingest</div>
+  <h1>Founder Calibration Cockpit — Santiago</h1>
+  <div class="sub">Gate 2A.1R-UI.2 · Full inventory 104 · default Launch30 · localStorage migration · dual export · routing disabled</div>
+  <div class="toolbar corpus-bar" id="corpusBar">
+    <button type="button" class="corpus-btn active" data-corpus="LAUNCH30">Launch 30 <span class="count" id="countLaunch">30</span></button>
+    <button type="button" class="corpus-btn" data-corpus="NONLAUNCH">Non-launch / Backlog <span class="count" id="countNon">74</span></button>
+    <button type="button" class="corpus-btn" data-corpus="ALL104">All 104 <span class="count" id="countAll">104</span></button>
+    <span class="statusline">Seed <b id="countSeed">103</b> · Ext <b id="countExt">1</b></span>
+  </div>
   <div class="toolbar">
     <button id="prevBtn">← Prev</button>
     <button id="nextBtn">Next →</button>
-    <input type="search" id="search" placeholder="Search POI…" style="min-width:160px"/>
+    <input type="search" id="search" placeholder="Search ID / name / commune…" style="min-width:200px"/>
     <select id="filter">
-      <option value="ALL">ALL</option>
+      <option value="ALL">Review: ALL</option>
       <option value="UNREVIEWED">UNREVIEWED</option>
       <option value="MODIFIED">MODIFIED</option>
       <option value="APPROVED">APPROVED</option>
       <option value="NEEDS_RESEARCH">NEEDS RESEARCH</option>
+      <option value="UNKNOWN_INCOMPLETE">Unknown / incomplete</option>
+      <option value="ORIGINAL_SEED">Original 103 seed</option>
+      <option value="FOUNDER_EXTENSIONS">Founder extensions</option>
+      <option value="NEEDS_REVIEW">Needs review</option>
+    </select>
+    <select id="sortSel">
+      <option value="id">Sort: STGO ID</option>
+      <option value="name">Name</option>
+      <option value="raw">Raw ChronoWorth</option>
+      <option value="norm">Relative ChronoWorth</option>
+      <option value="appr">Review status</option>
+    </select>
+    <select id="relMode">
+      <option value="FILTER">Relative — current filter</option>
+      <option value="LAUNCH30">Relative — Launch30</option>
+      <option value="ALL104">Relative — All Santiago</option>
     </select>
     <button class="primary" id="saveBtn">Save Draft</button>
     <button class="primary" id="approveBtn">Approve POI</button>
     <button class="danger" id="resetPoiBtn">Reset POI to Source</button>
-    <button id="exportBtn">Export Founder Calibration</button>
+    <button id="exportBtn">Export Launch30</button>
+    <button id="exportAllBtn">Export Full Inventory</button>
+    <!-- Export Founder Calibration retained as Launch30 alias label for gate continuity -->
     <button class="ghost" id="guideBtn">Taxonomy & Scoring Guide</button>
     <span class="statusline" id="progress"></span>
     <span class="statusline" id="saveStatus"></span>
@@ -361,11 +429,19 @@ const RATIONALES = {rationales_json};
 const THEME_META = {theme_json};
 const METRIC_META = {metric_json};
 const MODE_META = {mode_json};
-const STORAGE_KEY = 'cw_founder_cockpit_launch30_v0_1_add01r';
+const STORAGE_KEY = 'cw_founder_cockpit_santiago104_v0_1';
+const LEGACY_STORAGE_KEYS = [
+  'cw_founder_cockpit_launch30_v0_1_add01r',
+  'cw_founder_cockpit_launch30_v0_1',
+];
 const THEMES = ['T1A','T1B','T2','T3','T4','T5','T6','T7','T8','T9'];
 const METRICS = ['anchor_density','heritage_depth','micro_reveal','polish'];
 const MODES = ['M1','M2','M3','M4','M5'];
 const TIERS = ['canonical_anchor','thematic_pocket','micro_reveal'];
+let corpusFilter = SOURCE.defaultCorpusFilter || 'LAUNCH30';
+let relMode = 'LAUNCH30'; // default while Launch30 filter active
+let listSortKey = 'id';
+let listSortDir = 1;
 
 function deepClone(x){{ return JSON.parse(JSON.stringify(x)); }}
 function clamp01(x){{ return Math.max(0, Math.min(1, Number(x)||0)); }}
@@ -414,32 +490,63 @@ function makeDraftFromSource(src){{
   }};
 }}
 
-function loadStore(){{
+function loadStoreRaw(key){{
   try {{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
     return JSON.parse(raw);
   }} catch {{ return null; }}
+}}
+
+function loadStore(){{
+  return loadStoreRaw(STORAGE_KEY);
 }}
 
 function defaultStore(){{
   const drafts = {{}};
   SOURCE.records.forEach(r => {{ drafts[r.stgoId] = makeDraftFromSource(r); }});
   return {{
-    schemaVersion: 'santiago-launch30-founder-cockpit.draft.v0.1',
+    schemaVersion: 'santiago-founder-cockpit.draft.v0.1',
     sourceCheckpointSha: SOURCE.sourceCheckpointSha,
     normalizationCorpus: SOURCE.normalizationCorpus,
     lastSavedAt: null,
     dirty: false,
+    migratedFrom: null,
     drafts,
   }};
 }}
 
+function migrateLegacyStore(){{
+  // Prefer newest legacy key with drafts; merge Launch30 edits into full inventory store.
+  let legacy = null;
+  let fromKey = null;
+  for (const k of LEGACY_STORAGE_KEYS) {{
+    const s = loadStoreRaw(k);
+    if (s && s.drafts && Object.keys(s.drafts).length) {{ legacy = s; fromKey = k; break; }}
+  }}
+  const store = defaultStore();
+  if (!legacy) return store;
+  Object.keys(legacy.drafts || {{}}).forEach(id => {{
+    if (store.drafts[id]) {{
+      const d = legacy.drafts[id];
+      store.drafts[id] = {{
+        ...store.drafts[id],
+        ...d,
+        founderChangeReasons: {{ ...(store.drafts[id].founderChangeReasons||{{}}), ...(d.founderChangeReasons||{{}}) }},
+      }};
+    }}
+  }});
+  store.lastSavedAt = legacy.lastSavedAt || null;
+  store.migratedFrom = fromKey;
+  store.dirty = true;
+  return store;
+}}
+
 let store = loadStore();
-if (!store || store.sourceCheckpointSha !== SOURCE.sourceCheckpointSha || !store.drafts) {{
-  store = defaultStore();
+if (!store || !store.drafts) {{
+  store = migrateLegacyStore();
+  try {{ localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }} catch {{}}
 }} else {{
-  // Ensure all 30 exist + migrate change-reason map
   SOURCE.records.forEach(r => {{
     if (!store.drafts[r.stgoId]) store.drafts[r.stgoId] = makeDraftFromSource(r);
     if (!store.drafts[r.stgoId].founderChangeReasons) store.drafts[r.stgoId].founderChangeReasons = {{}};
@@ -533,9 +640,15 @@ function liveChronoBreakdown(m){{
 function rationaleHTML(stgoId, field, changed){{
   const rat = getFieldRationale(stgoId, field);
   const reason = (store.drafts[stgoId].founderChangeReasons||{{}})[field] || '';
+  const src = sourceById[stgoId];
   let body = '';
   if (!rat) {{
-    body = `<p><i>No structured rationale record for ${{field}}.</i></p>`;
+    if (src && !src.launchCorpus) {{
+      body = `<p><i>Detailed rationale not yet generated for this non-launch node.</i></p>
+        <p class="cmp">Source score remains visible above. No historical explanation invented.</p>`;
+    }} else {{
+      body = `<p><i>No structured rationale record for ${{field}}.</i></p>`;
+    }}
   }} else {{
     const isAi = rat.rationaleClass === 'AI_PROPOSAL_RATIONALE' || /AI_PROPOSED/i.test(String(rat.provenance||''));
     body = `
@@ -593,13 +706,59 @@ function changedFields(id){{
   return out;
 }}
 
-function corpusScores(){{
+function unknownFieldCount(id){{
+  const d = store.drafts[id];
+  let n = 0;
+  THEMES.forEach(t => {{ if (isUnknown(d.thematicVector[t])) n++; }});
+  METRICS.forEach(m => {{ if (isUnknown(d.structuralMetrics[m])) n++; }});
+  if (isUnknown(d.tier) || d.tier == null) n++;
+  if (isUnknown(d.visitTimeMin)) n++;
+  MODES.forEach(m => {{ if (isUnknown(d.modes[m]?.value)) n++; }});
+  return n;
+}}
+
+function matchesCorpus(r){{
+  if (corpusFilter === 'LAUNCH30') return !!r.launchCorpus;
+  if (corpusFilter === 'NONLAUNCH') return !r.launchCorpus;
+  return true;
+}}
+
+function passesReviewFilter(r){{
+  const f = document.getElementById('filter').value;
+  const q = (document.getElementById('search').value||'').toLowerCase().trim();
+  const d = store.drafts[r.stgoId];
+  const ch = changedFields(r.stgoId);
+  if (!matchesCorpus(r)) return false;
+  if (q) {{
+    const hay = [r.stgoId, r.displayName, r.canonicalName, r.shortName, r.commune]
+      .filter(Boolean).join(' ').toLowerCase();
+    if (!hay.includes(q)) return false;
+  }}
+  if (f==='UNREVIEWED' && d.founderApproval !== 'UNREVIEWED') return false;
+  if (f==='MODIFIED' && !(ch.length>0 || d.founderApproval==='MODIFIED_AFTER_APPROVAL')) return false;
+  if (f==='APPROVED' && d.founderApproval !== 'APPROVED') return false;
+  if (f==='NEEDS_RESEARCH' && !d.needsResearch) return false;
+  if (f==='UNKNOWN_INCOMPLETE' && unknownFieldCount(r.stgoId) === 0) return false;
+  if (f==='ORIGINAL_SEED' && r.inventoryProvenance !== 'ORIGINAL_103_SEED') return false;
+  if (f==='FOUNDER_EXTENSIONS' && r.inventoryProvenance !== 'FOUNDER_EXTENSION') return false;
+  if (f==='NEEDS_REVIEW' && !(d.founderApproval==='UNREVIEWED' || d.needsResearch || unknownFieldCount(r.stgoId)>0)) return false;
+  return true;
+}}
+
+function corpusScores(normMode){{
+  const mode = normMode || relMode;
   const raws = {{}};
-  let maxRaw = 0;
   SOURCE.records.forEach(r => {{
     const d = store.drafts[r.stgoId];
-    const raw = rawChrono(d.structuralMetrics);
-    raws[r.stgoId] = raw;
+    raws[r.stgoId] = rawChrono(d.structuralMetrics);
+  }});
+  let basis;
+  if (mode === 'LAUNCH30') basis = new Set(SOURCE.launchCorpusIds);
+  else if (mode === 'ALL104') basis = new Set(SOURCE.records.map(r => r.stgoId));
+  else basis = new Set(SOURCE.records.filter(passesReviewFilter).map(r => r.stgoId)); // FILTER
+  let maxRaw = 0;
+  basis.forEach(id => {{
+    const raw = raws[id];
     if (raw != null && raw > maxRaw) maxRaw = raw;
   }});
   const norms = {{}};
@@ -607,7 +766,10 @@ function corpusScores(){{
     if (raws[r.stgoId] == null) norms[r.stgoId] = null;
     else norms[r.stgoId] = maxRaw > 0 ? (100 * raws[r.stgoId] / maxRaw) : 0;
   }});
-  return {{ raws, norms, maxRaw }};
+  const corpusLabel = mode === 'LAUNCH30' ? (SOURCE.normalizationCorpus || 'SANTIAGO_LAUNCH30_V0_1')
+    : mode === 'ALL104' ? (SOURCE.normalizationCorpusAll || 'SANTIAGO_ALL104_V0_1')
+    : ('CURRENT_FILTER_' + corpusFilter);
+  return {{ raws, norms, maxRaw, corpusLabel, basisSize: basis.size }};
 }}
 
 function markDirty(){{
@@ -669,33 +831,46 @@ function resetField(kind, key){{
 }}
 
 function filteredIds(){{
-  const q = (document.getElementById('search').value||'').toLowerCase();
-  const f = document.getElementById('filter').value;
-  return SOURCE.records.filter(r => {{
-    const d = store.drafts[r.stgoId];
-    const ch = changedFields(r.stgoId);
-    if (q && !(r.stgoId.toLowerCase().includes(q) || r.displayName.toLowerCase().includes(q))) return false;
-    if (f==='UNREVIEWED' && d.founderApproval !== 'UNREVIEWED') return false;
-    if (f==='MODIFIED' && !(ch.length>0 || d.founderApproval==='MODIFIED_AFTER_APPROVAL')) return false;
-    if (f==='APPROVED' && d.founderApproval !== 'APPROVED') return false;
-    if (f==='NEEDS_RESEARCH' && !d.needsResearch) return false;
-    return true;
-  }}).map(r => r.stgoId);
+  const {{raws, norms}} = corpusScores();
+  let rows = SOURCE.records.filter(passesReviewFilter);
+  const dir = listSortDir;
+  rows.sort((a,b) => {{
+    const da = store.drafts[a.stgoId], db = store.drafts[b.stgoId];
+    let av, bv;
+    if (listSortKey === 'name') {{ av = a.displayName||''; bv = b.displayName||''; }}
+    else if (listSortKey === 'raw') {{
+      av = raws[a.stgoId]; bv = raws[b.stgoId];
+      if (av == null && bv == null) return a.stgoId.localeCompare(b.stgoId);
+      if (av == null) return 1; if (bv == null) return -1;
+    }} else if (listSortKey === 'norm') {{
+      av = norms[a.stgoId]; bv = norms[b.stgoId];
+      if (av == null && bv == null) return a.stgoId.localeCompare(b.stgoId);
+      if (av == null) return 1; if (bv == null) return -1;
+    }} else if (listSortKey === 'appr') {{ av = da.founderApproval||''; bv = db.founderApproval||''; }}
+    else {{
+      av = parseInt(a.stgoId.split('_')[1],10); bv = parseInt(b.stgoId.split('_')[1],10);
+    }}
+    if (av < bv) return -1*dir; if (av > bv) return 1*dir; return a.stgoId.localeCompare(b.stgoId);
+  }});
+  return rows.map(r => r.stgoId);
 }}
 
 function renderList(){{
   const list = document.getElementById('list');
   list.innerHTML = '';
   const {{norms}} = corpusScores();
-  filteredIds().forEach(id => {{
+  const ids = filteredIds();
+  if (ids.length && !ids.includes(currentId)) currentId = ids[0];
+  ids.forEach(id => {{
     const r = sourceById[id];
     const d = store.drafts[id];
     const ch = changedFields(id);
     const b = document.createElement('button');
     b.className = 'item'+(id===currentId?' active':'')+(ch.length?' dirty':'');
     const rel = norms[id] == null ? 'CW n/a' : ('Rel '+Math.round(norms[id]));
-    b.innerHTML = `<div class="id">${{id}}</div><div class="name">${{r.displayName}}</div>
-      <div class="meta">${{d.tier || 'tier UNKNOWN'}} · ${{rel}} · ${{d.founderApproval}} · Δ${{ch.length}}</div>`;
+    const launchBadge = r.launchCorpus ? '<span class="priority">LAUNCH PRIORITY</span>' : 'BACKLOG';
+    b.innerHTML = `<div class="id">${{id}} ${{launchBadge}}</div><div class="name">${{r.displayName}}</div>
+      <div class="meta">${{d.tier || 'tier UNKNOWN'}} · ${{rel}} · ${{d.founderApproval}} · Δ${{ch.length}} · unk ${{unknownFieldCount(id)}}</div>`;
     b.onclick = () => {{ currentId = id; render(); }};
     list.appendChild(b);
   }});
@@ -726,11 +901,13 @@ function sliderHTML(label, kind, key, src01, draft01, provenanceBadge, stgoId){{
 function renderDetail(){{
   const src = sourceById[currentId];
   const d = store.drafts[currentId];
-  const {{raws, norms, maxRaw}} = corpusScores();
+  const {{raws, norms, maxRaw, corpusLabel}} = corpusScores();
   const raw = raws[currentId];
   const norm = norms[currentId];
   const ch = changedFields(currentId);
-  const topId = Object.keys(raws).sort((a,b)=>raws[b]-raws[a])[0];
+  const topId = Object.keys(raws)
+    .filter(id => raws[id] != null)
+    .sort((a,b) => raws[b] - raws[a] || a.localeCompare(b))[0];
   const themeSum = liveThematicSummary(d.thematicVector);
   const structSum = liveStructuralSummary(d.structuralMetrics);
   const cwBreak = liveChronoBreakdown(d.structuralMetrics);
@@ -779,7 +956,10 @@ function renderDetail(){{
       <span class="badge source">SOURCE IMMUTABLE</span>
     </div>
     <h2>${{src.displayName}}</h2>
-    <div>${{(src.founderNodeBadges||[]).map(b=>`<span class="badge founder">${{b.replace(/_/g,' ')}}</span>`).join('')}}
+    <div>
+      ${{src.launchCorpus?'<span class="badge ok">LAUNCH 30</span><span class="badge founder">CURRENT LAUNCH PRIORITY</span>':'<span class="badge">BACKLOG / NON-LAUNCH</span>'}}
+      <span class="badge source">${{src.inventoryProvenance==='FOUNDER_EXTENSION'?'FOUNDER EXTENSION':'ORIGINAL 103 SEED'}}</span>
+      ${{(src.founderNodeBadges||[]).map(b=>`<span class="badge founder">${{b.replace(/_/g,' ')}}</span>`).join('')}}
       ${{src.stgoId==='STGO_104'?'<span class="badge ai">NEW FOUNDER NODE</span><span class="badge warn">NOT IN ORIGINAL 103-NODE SEED</span>':''}}
       ${{src.stgoId==='STGO_33'?'<span class="badge founder">FOUNDER SEMANTIC CORRECTION</span><span class="badge">LEGACY NAME DEPRECATED</span>':''}}
       ${{src.legacyAlias?`<span class="badge">legacy: ${{src.legacyAlias.alias}}</span>`:''}}
@@ -799,8 +979,8 @@ function renderDetail(){{
       <div class="field">
         <div class="badge founder">RELATIVE ChronoWorth</div>
         <div class="big">${{norm==null?'UNAVAILABLE':(Math.round(norm)+' / 100')}}</div>
-        <div class="cmp">Corpus: <b>${{SOURCE.normalizationCorpus}}</b></div>
-        <div class="cmp">max raw in Launch30 = ${{round1(maxRaw)}} (${{topId}}) ⇒ relative max 100</div>
+        <div class="cmp">Comparison corpus: <b>${{corpusLabel}}</b> (mode ${{relMode}})</div>
+        <div class="cmp">max raw in corpus = ${{maxRaw?round1(maxRaw):'n/a'}} (${{topId||'—'}}) ⇒ relative max 100</div>
         <div class="cmp">Not globally comparable across future cities</div>
       </div>
     </div>
@@ -933,29 +1113,43 @@ function renderDetail(){{
 }}
 
 function renderOverview(){{
-  const {{raws, norms}} = corpusScores();
-  let rows = SOURCE.records.map(r => {{
-    const d = store.drafts[r.stgoId];
-    const ch = changedFields(r.stgoId);
-    return {{ id:r.stgoId, name:r.displayName, tier:d.tier, raw:raws[r.stgoId], norm:norms[r.stgoId], ch:ch.length, appr:d.founderApproval }};
+  const {{raws, norms, corpusLabel}} = corpusScores();
+  let rows = filteredIds().map(id => {{
+    const r = sourceById[id];
+    const d = store.drafts[id];
+    const ch = changedFields(id);
+    const topThemes = (r.derivedThemeTags||[]).slice(0,3).join(',') || '—';
+    return {{
+      id:r.stgoId, name:r.displayName, launch:r.launchCorpus?'LAUNCH30':'BACKLOG',
+      prov:r.inventoryProvenance==='FOUNDER_EXTENSION'?'EXT':'SEED',
+      raw:raws[id], norm:norms[id], ch:ch.length, appr:d.founderApproval,
+      themes: topThemes, unk: unknownFieldCount(id)
+    }};
   }});
   rows.sort((a,b) => {{
-    const av = a[sortKey==='name'?'name':sortKey==='tier'?'tier':sortKey==='raw'?'raw':sortKey==='ch'?'ch':sortKey==='appr'?'appr':'norm'];
-    const bv = b[sortKey==='name'?'name':sortKey==='tier'?'tier':sortKey==='raw'?'raw':sortKey==='ch'?'ch':sortKey==='appr'?'appr':'norm'];
+    let av=a[sortKey], bv=b[sortKey];
+    if (sortKey==='raw' || sortKey==='norm') {{
+      if (av == null && bv == null) return a.id.localeCompare(b.id);
+      if (av == null) return 1; if (bv == null) return -1;
+    }}
     if (av<bv) return -1*sortDir; if (av>bv) return 1*sortDir; return a.id.localeCompare(b.id);
   }});
   const thead = document.querySelector('#overview thead');
   thead.innerHTML = `<tr>
-    <th data-k="id">STGO</th><th data-k="name">Name</th><th data-k="tier">Tier</th>
-    <th data-k="raw">Raw CW</th><th data-k="norm">Norm CW</th><th data-k="ch">Changed</th><th data-k="appr">Approval</th></tr>`;
+    <th data-k="id">STGO</th><th data-k="name">Name</th><th data-k="launch">Launch</th><th data-k="prov">Provenance</th>
+    <th data-k="appr">Review</th><th data-k="raw">Raw CW</th><th data-k="norm">Rel CW</th>
+    <th data-k="themes">Top themes</th><th data-k="unk">Unknown#</th></tr>
+    <tr><td colspan="9" class="cmp">Relative corpus: ${{corpusLabel}}</td></tr>`;
   thead.querySelectorAll('th').forEach(th => th.onclick = () => {{
-    const k = th.dataset.k; if (sortKey===k) sortDir*=-1; else {{ sortKey=k; sortDir = (k==='norm'||k==='raw'||k==='ch')?-1:1; }}
+    const k = th.dataset.k; if (sortKey===k) sortDir*=-1; else {{ sortKey=k; sortDir = (k==='norm'||k==='raw'||k==='unk')?-1:1; }}
     renderOverview();
   }});
   const tb = document.querySelector('#overview tbody');
   tb.innerHTML = rows.map(r => `<tr style="cursor:pointer" data-id="${{r.id}}">
-    <td>${{r.id}}</td><td>${{r.name}}</td><td>${{r.tier}}</td>
-    <td>${{r.raw==null?'n/a':round1(r.raw)}}</td><td><b>${{r.norm==null?'n/a':Math.round(r.norm)}}</b></td><td>${{r.ch}}</td><td>${{r.appr}}</td></tr>`).join('');
+    <td>${{r.id}}</td><td>${{r.name}}</td><td>${{r.launch}}</td><td>${{r.prov}}</td>
+    <td>${{r.appr}}</td>
+    <td>${{r.raw==null?'UNAVAILABLE':round1(r.raw)}}</td><td><b>${{r.norm==null?'UNAVAILABLE':Math.round(r.norm)}}</b></td>
+    <td>${{r.themes}}</td><td>${{r.unk}}</td></tr>`).join('');
   tb.querySelectorAll('tr').forEach(tr => tr.onclick = () => {{ currentId = tr.dataset.id; render(); }});
 }}
 
@@ -972,9 +1166,27 @@ function renderProgress(){{
     if (d.founderApproval==='UNREVIEWED') unreviewed++;
     if (d.needsResearch) needs++;
   }});
-  document.getElementById('progress').textContent = `${{approved}} / 30 approved · modified ${{modified}} · unreviewed ${{unreviewed}} · needs-research ${{needs}}`;
+  const launchApproved = SOURCE.launchCorpusIds.filter(id => store.drafts[id]?.founderApproval==='APPROVED').length;
+  const visible = filteredIds().length;
+  document.getElementById('progress').textContent =
+    `Launch30 approved ${{launchApproved}}/30 · visible ${{visible}} · approved ${{approved}}/${{SOURCE.records.length}} · modified ${{modified}} · unreviewed ${{unreviewed}} · needs-research ${{needs}}`;
   const unsaved = store.dirty ? '<span class="unsaved">Unsaved changes</span>' : 'All changes saved locally';
-  document.getElementById('saveStatus').innerHTML = `${{unsaved}} · Last saved: ${{store.lastSavedAt || 'never'}}`;
+  const mig = store.migratedFrom ? ` · migrated from ${{store.migratedFrom}}` : '';
+  document.getElementById('saveStatus').innerHTML = `${{unsaved}} · Last saved: ${{store.lastSavedAt || 'never'}}${{mig}}`;
+  const c = SOURCE.inventoryCounts || {{}};
+  const liveLaunch = SOURCE.records.filter(r => r.launchCorpus).length;
+  const liveAll = SOURCE.records.length;
+  const liveNon = liveAll - liveLaunch;
+  const liveSeed = SOURCE.records.filter(r => r.inventoryProvenance === 'ORIGINAL_103_SEED').length;
+  const liveExt = SOURCE.records.filter(r => r.inventoryProvenance === 'FOUNDER_EXTENSION').length;
+  document.getElementById('countLaunch').textContent = liveLaunch || c.launch30 || 30;
+  document.getElementById('countNon').textContent = liveNon || c.nonLaunch || 74;
+  document.getElementById('countAll').textContent = liveAll || c.all || 104;
+  document.getElementById('countSeed').textContent = liveSeed || c.originalSeed || 103;
+  document.getElementById('countExt').textContent = liveExt || c.founderExtensions || 1;
+  document.querySelectorAll('.corpus-btn').forEach(btn => {{
+    btn.classList.toggle('active', btn.dataset.corpus === corpusFilter);
+  }});
 }}
 
 function renderGuide(){{
@@ -1037,98 +1249,127 @@ function exportField(stgoId, field, sourceValue, draftValue, changed){{
   return out;
 }}
 
-function exportJson(){{
-  const {{raws, norms, maxRaw}} = corpusScores();
+function buildExportRecord(src, raws, norms){{
+  const d = store.drafts[src.stgoId];
+  const ch = changedFields(src.stgoId);
+  const fieldExports = [];
+  THEMES.forEach(t => fieldExports.push(exportField(src.stgoId, t, src.thematicVector[t], d.thematicVector[t], fieldChanged(src.thematicVector[t], d.thematicVector[t]))));
+  METRICS.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.structuralMetrics[m], d.structuralMetrics[m], fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m]))));
+  fieldExports.push(exportField(src.stgoId, 'tier', src.tier, d.tier, fieldChanged(src.tier, d.tier)));
+  fieldExports.push(exportField(src.stgoId, 'visitTimeMin', src.visitTime, {{ min:d.visitTimeMin, typical:d.visitTimeTypical, max:d.visitTimeMax }}, fieldChanged(src.visitTime.min, d.visitTimeMin)||fieldChanged(src.visitTime.typical, d.visitTimeTypical)||fieldChanged(src.visitTime.max, d.visitTimeMax)));
+  MODES.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.modes[m]?.value ?? null, d.modes[m]?.value ?? null, fieldChanged(src.modes[m]?.value, d.modes[m]?.value))));
+  const cw = liveChronoBreakdown(d.structuralMetrics);
+  return {{
+    stgoId: src.stgoId,
+    displayName: src.displayName,
+    launchCorpus: !!src.launchCorpus,
+    inventoryProvenance: src.inventoryProvenance,
+    source: {{
+      thematicVector: src.thematicVector,
+      structuralMetrics: src.structuralMetrics,
+      tier: src.tier,
+      visitTime: src.visitTime,
+      modes: src.modes,
+      accessibility: src.accessibility,
+      operational: src.operational,
+      flags: src.flags,
+      chronoWorthProposedAtGate2A1R: src.chronoWorthProposed,
+    }},
+    founderDraft: {{
+      thematicVector: d.thematicVector,
+      structuralMetrics: d.structuralMetrics,
+      tier: d.tier,
+      visitTime: {{ min:d.visitTimeMin, typical:d.visitTimeTypical, max:d.visitTimeMax }},
+      modes: d.modes,
+      accessibilityState: d.accessibilityState,
+      operationalState: d.operationalState,
+      needsResearch: d.needsResearch,
+      founderNote: d.founderNote,
+      founderChangeReasons: d.founderChangeReasons || {{}},
+    }},
+    fields: fieldExports,
+    thematicInterpretation: liveThematicSummary(d.thematicVector),
+    structuralInterpretation: liveStructuralSummary(d.structuralMetrics),
+    chronoWorthBreakdown: cw,
+    changedFields: ch,
+    founderApproval: d.founderApproval,
+    approvedAt: d.approvedAt,
+    chronoWorthRaw: raws[src.stgoId] == null ? null : round1(raws[src.stgoId]),
+    chronoWorthNormalized: norms[src.stgoId] == null ? null : Math.round(norms[src.stgoId]),
+    provenance: {{
+      thematicVector: fieldChanged(src.thematicVector, d.thematicVector) ? 'FOUNDER_EDITED' : (src.thematicVectorProvenance || 'FOUNDER_PRECALIBRATED'),
+      structuralMetrics: fieldChanged(src.structuralMetrics, d.structuralMetrics) ? 'FOUNDER_EDITED' : (src.structuralMetricsProvenance || 'FOUNDER_PRECALIBRATED'),
+      visitTime: fieldChanged(src.visitTime.min, d.visitTimeMin) ? 'FOUNDER_EDITED' : (src.visitTime?.provenance || 'UNKNOWN'),
+    }},
+  }};
+}}
+
+function exportJson(scope){{
+  const launchOnly = scope !== 'ALL';
+  const {{raws, norms, maxRaw, corpusLabel}} = corpusScores(launchOnly ? 'LAUNCH30' : 'ALL104');
+  const srcRecords = launchOnly
+    ? SOURCE.records.filter(r => r.launchCorpus)
+    : SOURCE.records;
   let approved=0, modified=0, unreviewed=0, needs=0, unchangedApproved=0;
-  const pois = SOURCE.records.map(src => {{
+  const pois = srcRecords.map(src => {{
     const d = store.drafts[src.stgoId];
     const ch = changedFields(src.stgoId);
     if (d.founderApproval==='APPROVED') {{ approved++; if (!ch.length) unchangedApproved++; }}
     if (ch.length || d.founderApproval==='MODIFIED_AFTER_APPROVAL') modified++;
     if (d.founderApproval==='UNREVIEWED') unreviewed++;
     if (d.needsResearch) needs++;
-    const fieldExports = [];
-    THEMES.forEach(t => fieldExports.push(exportField(src.stgoId, t, src.thematicVector[t], d.thematicVector[t], fieldChanged(src.thematicVector[t], d.thematicVector[t]))));
-    METRICS.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.structuralMetrics[m], d.structuralMetrics[m], fieldChanged(src.structuralMetrics[m], d.structuralMetrics[m]))));
-    fieldExports.push(exportField(src.stgoId, 'tier', src.tier, d.tier, fieldChanged(src.tier, d.tier)));
-    fieldExports.push(exportField(src.stgoId, 'visitTimeMin', src.visitTime, {{ min:d.visitTimeMin, typical:d.visitTimeTypical, max:d.visitTimeMax }}, fieldChanged(src.visitTime.min, d.visitTimeMin)||fieldChanged(src.visitTime.typical, d.visitTimeTypical)||fieldChanged(src.visitTime.max, d.visitTimeMax)));
-    MODES.forEach(m => fieldExports.push(exportField(src.stgoId, m, src.modes[m]?.value ?? null, d.modes[m]?.value ?? null, fieldChanged(src.modes[m]?.value, d.modes[m]?.value))));
-    const cw = liveChronoBreakdown(d.structuralMetrics);
-    return {{
-      stgoId: src.stgoId,
-      displayName: src.displayName,
-      source: {{
-        thematicVector: src.thematicVector,
-        structuralMetrics: src.structuralMetrics,
-        tier: src.tier,
-        visitTime: src.visitTime,
-        modes: src.modes,
-        accessibility: src.accessibility,
-        operational: src.operational,
-        flags: src.flags,
-        chronoWorthProposedAtGate2A1R: src.chronoWorthProposed,
-      }},
-      founderDraft: {{
-        thematicVector: d.thematicVector,
-        structuralMetrics: d.structuralMetrics,
-        tier: d.tier,
-        visitTime: {{ min:d.visitTimeMin, typical:d.visitTimeTypical, max:d.visitTimeMax }},
-        modes: d.modes,
-        accessibilityState: d.accessibilityState,
-        operationalState: d.operationalState,
-        needsResearch: d.needsResearch,
-        founderNote: d.founderNote,
-        founderChangeReasons: d.founderChangeReasons || {{}},
-      }},
-      fields: fieldExports,
-      thematicInterpretation: liveThematicSummary(d.thematicVector),
-      structuralInterpretation: liveStructuralSummary(d.structuralMetrics),
-      chronoWorthBreakdown: cw,
-      changedFields: ch,
-      founderApproval: d.founderApproval,
-      approvedAt: d.approvedAt,
-      chronoWorthRaw: round1(raws[src.stgoId]),
-      chronoWorthNormalized: Math.round(norms[src.stgoId]),
-      provenance: {{
-        thematicVector: fieldChanged(src.thematicVector, d.thematicVector) ? 'FOUNDER_EDITED' : 'FOUNDER_PRECALIBRATED',
-        structuralMetrics: fieldChanged(src.structuralMetrics, d.structuralMetrics) ? 'FOUNDER_EDITED' : 'FOUNDER_PRECALIBRATED',
-        visitTime: fieldChanged(src.visitTime.min, d.visitTimeMin) ? 'FOUNDER_EDITED' : 'AI_PROPOSED_UNVERIFIED',
-      }},
-    }};
+    return buildExportRecord(src, raws, norms);
   }});
-  const incomplete = approved < 30;
+  const of = srcRecords.length;
+  const incomplete = approved < of;
+  const launchApproved = SOURCE.launchCorpusIds.filter(id => store.drafts[id]?.founderApproval==='APPROVED').length;
   const doc = {{
-    schemaVersion: 'santiago-launch30-founder-calibration.reviewed.v0.1',
-    gate: '2A.1R-UI.1',
+    schemaVersion: launchOnly
+      ? 'santiago-launch30-founder-calibration.reviewed.v0.1'
+      : 'santiago-founder-calibration.reviewed.v0.1',
+    gate: '2A.1R-UI.2',
+    exportScope: launchOnly ? 'LAUNCH30' : 'ALL104',
     sourceCheckpointSha: SOURCE.sourceCheckpointSha,
     sourceDataset: SOURCE.sourceDataset,
     canonicalSemanticArtifact: SOURCE.canonicalSemanticArtifact,
     launchCalibrationArtifact: SOURCE.launchCalibrationArtifact,
     rationaleArtifact: SOURCE.rationaleArtifact,
-    normalizationCorpus: SOURCE.normalizationCorpus,
+    normalizationCorpus: corpusLabel,
     chronoWorthFormula: SOURCE.chronoWorthFormula,
     exportTimestamp: new Date().toISOString(),
     reviewStatus: incomplete ? 'INCOMPLETE_FOUNDER_REVIEW' : 'COMPLETE_FOUNDER_REVIEW',
+    launchCalibrationComplete: launchApproved === 30,
+    fullInventoryCalibrationComplete: SOURCE.records.every(r => store.drafts[r.stgoId].founderApproval === 'APPROVED'),
     summary: {{
-      approved: approved,
-      approvedOf: 30,
+      approved,
+      approvedOf: of,
+      launchApproved,
+      launchApprovedOf: 30,
       modified,
       unchangedApproved,
       unreviewed,
       needsResearch: needs,
-      maxRawChronoWorth: round1(maxRaw),
+      maxRawChronoWorth: maxRaw ? round1(maxRaw) : null,
+      inventoryCounts: SOURCE.inventoryCounts,
     }},
     records: pois,
   }};
   const blob = new Blob([JSON.stringify(doc, null, 2)], {{type:'application/json'}});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'launch30_founder_calibration.reviewed.v0.1.json';
+  a.download = launchOnly
+    ? 'launch30_founder_calibration.reviewed.v0.1.json'
+    : 'santiago_founder_calibration.reviewed.v0.1.json';
   a.click();
-  toast(incomplete ? 'Exported INCOMPLETE FOUNDER REVIEW' : 'Exported complete review');
+  toast(launchOnly
+    ? (incomplete ? 'Exported INCOMPLETE Launch30 review' : 'Exported complete Launch30 review')
+    : (incomplete ? 'Exported INCOMPLETE full inventory review' : 'Exported complete full inventory review'));
 }}
 
 function render(){{
+  // Keep default relative mode aligned with corpus filter unless user chose All.
+  if (corpusFilter === 'LAUNCH30' && relMode === 'ALL104') {{ /* allow */ }}
+  else if (corpusFilter === 'LAUNCH30' && (relMode === 'FILTER' || !relMode)) relMode = 'LAUNCH30';
   renderList();
   renderDetail();
   renderOverview();
@@ -1138,28 +1379,62 @@ function render(){{
 document.getElementById('saveBtn').onclick = saveDraft;
 document.getElementById('approveBtn').onclick = approvePoi;
 document.getElementById('resetPoiBtn').onclick = resetPoi;
-document.getElementById('exportBtn').onclick = exportJson;
+document.getElementById('exportBtn').onclick = () => exportJson('LAUNCH30');
+document.getElementById('exportAllBtn').onclick = () => exportJson('ALL');
 document.getElementById('guideBtn').onclick = () => {{ renderGuide(); document.getElementById('guideModal').classList.add('open'); }};
 document.getElementById('prevBtn').onclick = () => {{
-  const ids = SOURCE.records.map(r=>r.stgoId);
-  const i = ids.indexOf(currentId);
+  const ids = filteredIds();
+  if (!ids.length) return;
+  const i = Math.max(0, ids.indexOf(currentId));
   currentId = ids[(i-1+ids.length)%ids.length]; render();
 }};
 document.getElementById('nextBtn').onclick = () => {{
-  const ids = SOURCE.records.map(r=>r.stgoId);
-  const i = ids.indexOf(currentId);
+  const ids = filteredIds();
+  if (!ids.length) return;
+  const i = Math.max(0, ids.indexOf(currentId));
   currentId = ids[(i+1)%ids.length]; render();
 }};
 document.getElementById('search').oninput = render;
 document.getElementById('filter').onchange = render;
+document.getElementById('sortSel').onchange = (e) => {{
+  listSortKey = e.target.value;
+  listSortDir = (listSortKey === 'raw' || listSortKey === 'norm') ? -1 : 1;
+  render();
+}};
+document.getElementById('relMode').onchange = (e) => {{ relMode = e.target.value; render(); }};
+document.querySelectorAll('.corpus-btn').forEach(btn => {{
+  btn.onclick = () => {{
+    corpusFilter = btn.dataset.corpus;
+    if (corpusFilter === 'LAUNCH30') {{
+      relMode = 'LAUNCH30';
+      document.getElementById('relMode').value = 'LAUNCH30';
+    }} else if (corpusFilter === 'ALL104') {{
+      relMode = 'ALL104';
+      document.getElementById('relMode').value = 'ALL104';
+    }} else {{
+      relMode = 'FILTER';
+      document.getElementById('relMode').value = 'FILTER';
+    }}
+    const ids = filteredIds();
+    if (ids.length) currentId = ids[0];
+    render();
+  }};
+}});
 document.getElementById('guideModal').addEventListener('click', (e) => {{
   if (e.target.id==='guideModal') e.currentTarget.classList.remove('open');
 }});
 
+// Default selection: first Launch30 node
+currentId = (SOURCE.launchCorpusIds && SOURCE.launchCorpusIds[0]) || SOURCE.records[0].stgoId;
+document.getElementById('relMode').value = 'LAUNCH30';
+
 // Expose for validation hooks / manual QA in console
 window.__CW_FOUNDER_COCKPIT__ = {{
   SOURCE, store, corpusScores, changedFields, rawChrono, makeDraftFromSource, STORAGE_KEY,
+  LEGACY_STORAGE_KEYS, filteredIds, unknownFieldCount, migrateLegacyStore,
   saveDraft, approvePoi, resetPoi, resetField, exportJson,
+  getCorpusFilter: () => corpusFilter, setCorpusFilter: (v) => {{ corpusFilter = v; }},
+  getRelMode: () => relMode,
 }};
 
 render();
@@ -1170,7 +1445,7 @@ render();
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(html, encoding="utf-8")
     print("Wrote", OUT.relative_to(ROOT))
-    print("POIs", len(payload["records"]))
+    print("POIs", len(payload["records"]), "launch", payload["inventoryCounts"]["launch30"])
     return 0
 
 

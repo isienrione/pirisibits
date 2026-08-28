@@ -14,7 +14,7 @@ import { loadEditorialCalibration } from '@/src/engine/loadCalibration'
 const ROOT = resolve(__dirname, '../../..')
 const COCKPIT = resolve(ROOT, 'docs/engine/gate-2a1-founder-calibration-cockpit.html')
 const OLD = resolve(ROOT, 'docs/engine/gate-2a1-editorial-calibration.html')
-const START = '1b0ef938e681eedcd95d57f449a411e4b972d2b0'
+const START = '0e5903e46598365fcee3142c2f374a45e49ece77'
 
 describe('Gate 2A.1R-UI founder calibration cockpit', () => {
   const html = readFileSync(COCKPIT, 'utf8')
@@ -29,19 +29,23 @@ describe('Gate 2A.1R-UI founder calibration cockpit', () => {
     expect(EDITORIAL_CALIBRATION_CURATOR_APPROVED).toBe(false)
   })
 
-  it('embeds exactly 30 launch POIs matching Gate 2A.1R values', () => {
+  it('embeds full 104 inventory with Launch30 membership preserved', () => {
     const m = html.match(/const SOURCE = (\{[\s\S]*?\});\nconst (?:RATIONALES|THEME_META)/)
     expect(m).toBeTruthy()
     const source = JSON.parse(m![1]!)
-    expect(source.records).toHaveLength(30)
+    expect(source.records).toHaveLength(104)
     expect(source.sourceCheckpointSha).toBe(START)
-    expect(['2A.1R-UI.1', '2A.1R-ADD-01R']).toContain(source.gate)
+    expect(['2A.1R-UI.2', '2A.1R-UI.1', '2A.1R-ADD-01R']).toContain(source.gate)
     expect(source.normalizationCorpus).toBe('SANTIAGO_LAUNCH30_V0_1')
+    expect(source.defaultCorpusFilter).toBe('LAUNCH30')
+    const launchRecs = source.records.filter((r: { launchCorpus?: boolean }) => r.launchCorpus)
+    expect(launchRecs).toHaveLength(30)
     const by = new Map(launch.records.map((r) => [r.stgoId, r]))
     expect(source.records.map((r: { stgoId: string }) => r.stgoId)).toContain('STGO_104')
     expect(source.records.map((r: { stgoId: string }) => r.stgoId)).toContain('STGO_33')
-    expect(source.records.map((r: { stgoId: string }) => r.stgoId)).not.toContain('STGO_23')
-    for (const r of source.records) {
+    expect(source.records.map((r: { stgoId: string }) => r.stgoId)).toContain('STGO_23')
+    expect(launchRecs.map((r: { stgoId: string }) => r.stgoId)).not.toContain('STGO_23')
+    for (const r of launchRecs) {
       const o = by.get(r.stgoId)!
       expect(r.thematicVector).toEqual(o.thematicVector)
       expect(r.structuralMetrics).toEqual(o.structuralMetrics)
@@ -65,6 +69,8 @@ describe('Gate 2A.1R-UI founder calibration cockpit', () => {
     expect(html).toContain('Reset POI to Source')
     expect(html).toContain('Reset field')
     expect(html).toContain('launch30_founder_calibration.reviewed.v0.1.json')
+    expect(html).toContain('santiago_founder_calibration.reviewed.v0.1.json')
+    expect(html).toContain('cw_founder_cockpit_santiago104_v0_1')
     expect(html).toContain('INCOMPLETE_FOUNDER_REVIEW')
     expect(html).not.toContain('Approve All')
     expect(html).toContain('ORIGINAL → DRAFT')

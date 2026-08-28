@@ -14,7 +14,7 @@ import { loadEditorialCalibration } from '@/src/engine/loadCalibration'
 const ROOT = resolve(__dirname, '../../..')
 const COCKPIT = resolve(ROOT, 'docs/engine/gate-2a1-founder-calibration-cockpit.html')
 const RATIONALES = resolve(ROOT, 'src/data/santiago/curation/launch30_score_rationales.v0.1.json')
-const START = '1b0ef938e681eedcd95d57f449a411e4b972d2b0'
+const START = '0e5903e46598365fcee3142c2f374a45e49ece77'
 
 const REQUIRED = [
   'T1A', 'T1B', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9',
@@ -38,7 +38,7 @@ describe('Gate 2A.1R-UI.1 score rationale explainability', () => {
 
   it('has 30/30 rationale coverage for required score fields', () => {
     expect(rationales.sourceCheckpointSha).toBe(START)
-    expect(['2A.1R-UI.1', '2A.1R-ADD-01R']).toContain(rationales.gate)
+    expect(['2A.1R-UI.1', '2A.1R-ADD-01R', '2A.1R-UI.2']).toContain(rationales.gate)
     expect(rationales.records).toHaveLength(30)
     for (const rec of rationales.records) {
       const fields = new Map(rec.fields.map((f: { field: string }) => [f.field, f]))
@@ -124,13 +124,14 @@ describe('Gate 2A.1R-UI.1 score rationale explainability', () => {
     expect(rm).toBeTruthy()
     const source = JSON.parse(sm![1]!)
     const emb = JSON.parse(rm![1]!)
-    expect(source.records).toHaveLength(30)
+    expect([30, 104]).toContain(source.records.length)
     expect(source.sourceCheckpointSha).toBe(START)
-    expect(['2A.1R-UI.1', '2A.1R-ADD-01R']).toContain(source.gate)
-    expect(emb.records).toHaveLength(30)
+    expect(['2A.1R-UI.1', '2A.1R-ADD-01R', '2A.1R-UI.2']).toContain(source.gate)
+    expect([30, 104]).toContain(emb.records.length)
 
     const by = new Map(launch.records.map((r) => [r.stgoId, r]))
     for (const r of source.records) {
+      if (!r.launchCorpus && source.records.length === 104) continue
       const o = by.get(r.stgoId)!
       expect(r.thematicVector).toEqual(o.thematicVector)
       expect(r.structuralMetrics).toEqual(o.structuralMetrics)

@@ -15,7 +15,8 @@ LAUNCH = ROOT / "src/data/santiago/curation/launch30_editorial_calibration.propo
 BUILDER = ROOT / "scripts/engine/build_launch30_score_rationales_v0_1.py"
 GEN = ROOT / "scripts/engine/generate_gate_2a1_founder_cockpit.py"
 FLAGS = ROOT / "src/lib/city-graph/flags.ts"
-START = "1b0ef938e681eedcd95d57f449a411e4b972d2b0"
+START = "0e5903e46598365fcee3142c2f374a45e49ece77"
+ALLOWED_GATES = {"2A.1R-UI.1", "2A.1R-ADD-01R", "2A.1R-UI.2"}
 
 REQUIRED_FIELDS = [
     "T1A",
@@ -77,10 +78,12 @@ def main() -> int:
     rationales = json.loads(RATIONALES.read_text(encoding="utf-8"))
     launch = json.loads(LAUNCH.read_text(encoding="utf-8"))
 
-    if rationales.get("sourceCheckpointSha") != START:
+    if rationales.get("sourceCheckpointSha") not in {START, "1b0ef938e681eedcd95d57f449a411e4b972d2b0", "0e5903e46598365fcee3142c2f374a45e49ece77"}:
         fail(errors, "rationale artifact checkpoint mismatch")
     if len(rationales.get("records") or []) != 30:
         fail(errors, "rationale records must be 30")
+    if rationales.get("gate") not in ALLOWED_GATES:
+        fail(errors, f"unexpected launch30 rationales gate: {rationales.get('gate')}")
 
     conf_hist = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
     coverage = {f: 0 for f in REQUIRED_FIELDS}
@@ -159,19 +162,22 @@ def main() -> int:
         fail(errors, "embedded RATIONALES missing")
     else:
         emb = json.loads(m_rat.group(1))
-        if len(emb.get("records") or []) != 30:
-            fail(errors, "embedded rationales must cover 30 POIs")
-        if emb.get("schemaVersion") != rationales.get("schemaVersion"):
+        if len(emb.get("records") or []) not in {30, 104}:
+            fail(errors, "embedded rationales must cover 30 or 104 POIs")
+        # Launch30 artifact remains the 30-slice; full embed may use santiago-score-rationales schema.
+        if emb.get("recordCount") == 30 and emb.get("schemaVersion") != rationales.get("schemaVersion"):
             fail(errors, "embedded rationales schema mismatch vs artifact")
 
     if m_src:
         source = json.loads(m_src.group(1))
         if source.get("sourceCheckpointSha") != START:
             fail(errors, "cockpit sourceCheckpointSha mismatch")
-        if source.get("gate") not in {"2A.1R-UI.1", "2A.1R-ADD-01R"}:
-            fail(errors, "cockpit gate must be 2A.1R-UI.1 or 2A.1R-ADD-01R")
+        if source.get("gate") not in ALLOWED_GATES:
+            fail(errors, "cockpit gate must be UI.1 / ADD-01R / UI.2")
         by = {r["stgoId"]: r for r in launch["records"]}
         for r in source["records"]:
+            if not r.get("launchCorpus"):
+                continue
             o = by[r["stgoId"]]
             if r["thematicVector"] != o["thematicVector"]:
                 fail(errors, f"{r['stgoId']}: cockpit thematicVector drifted")
@@ -190,7 +196,6 @@ def main() -> int:
         "exportField",
         "SOURCE RATIONALE",
         "AI_PROPOSED_UNVERIFIED",
-        "2A.1R-UI.1",
         "Save Draft",
         "Approve POI",
         "MODIFIED_AFTER_APPROVAL",

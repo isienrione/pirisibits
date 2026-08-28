@@ -1,7 +1,7 @@
 {
   "schemaVersion": "santiago-launch30-score-rationales.v0.1",
-  "gate": "2A.1R-ADD-01R",
-  "sourceCheckpointSha": "1b0ef938e681eedcd95d57f449a411e4b972d2b0",
+  "gate": "2A.1R-UI.2",
+  "sourceCheckpointSha": "0e5903e46598365fcee3142c2f374a45e49ece77",
   "sourceCalibration": "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
   "recordCount": 30,
   "confidenceHistogram": {
@@ -10,12 +10,11 @@
     "LOW": 195
   },
   "notes": [
-    "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R calibration metadata.",
+    "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R semantic metadata.",
     "They do not change scores.",
-    "SOURCE_RATIONALE vs AI_PROPOSAL_RATIONALE are distinct.",
     "STGO_104 has no prior source rationale — founder-added UNKNOWN node.",
-    "STGO_33 rationales use corrected identity (no Funicular naming).",
-    "LOW confidence means insufficient descriptive evidence — not a score defect."
+    "Coverage includes full canonical inventory (104).",
+    "Launch30 slice of full Santiago rationales."
   ],
   "records": [
     {
@@ -403,7 +402,8 @@
         "raw": 68.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (4.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_02",
@@ -790,7 +790,8 @@
         "raw": 71.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (2.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_03",
@@ -1177,7 +1178,8 @@
         "raw": 76.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (3.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_04",
@@ -1564,7 +1566,8 @@
         "raw": 71.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (34.3), while anchor density contributes less (9.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_05",
@@ -1951,7 +1954,8 @@
         "raw": 72.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (6.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_06",
@@ -2338,7 +2342,8 @@
         "raw": 68.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (10.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_07",
@@ -2725,7 +2730,8 @@
         "raw": 68.0,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (35.0), while anchor density contributes less (7.5)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_10",
@@ -3112,373 +3118,8 @@
         "raw": 68.6,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (8.0)."
-      }
-    },
-    {
-      "stgoId": "STGO_104",
-      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
-      "fields": [
-        {
-          "field": "T1A",
-          "label": "Civic, Military & Traditional Heritage",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T1B",
-          "label": "Memory, Human Rights & Grassroots",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T2",
-          "label": "Culinary Explorer & Gastronomy",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T3",
-          "label": "Urban Shutterbug & Aesthetics",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T4",
-          "label": "Subculture, Street Art & Indie",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T5",
-          "label": "Mindful, Green & Quiet Living",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T6",
-          "label": "Dark Lore, Forensics & Macabre",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T7",
-          "label": "Budget Hacker & Street Life",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T8",
-          "label": "Urban Ecology & Conscious Living",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "T9",
-          "label": "Luxury Heritage & High Craft",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "anchor_density",
-          "label": "Anchor density (canonical importance)",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "heritage_depth",
-          "label": "Heritage depth (storytelling material)",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "micro_reveal",
-          "label": "Micro reveal (hidden discovery potential)",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "polish",
-          "label": "Polish (finish / visitor readiness)",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "tier",
-          "label": "Editorial tier",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "visitTimeMin",
-          "label": "Visit time (min / typical / max)",
-          "value": {
-            "min": null,
-            "typical": null,
-            "max": null
-          },
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "M1",
-          "label": "Express / Time-Boxed",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "M2",
-          "label": "Accessibility / Step-Free",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "M3",
-          "label": "Family & Kid Quest",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "M4",
-          "label": "Night Owl / Nocturnal",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "M5",
-          "label": "High Comfort / Low Friction",
-          "value": null,
-          "provenance": "UNKNOWN",
-          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
-          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
-          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
-          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
-          "proposalRationale": null
-        },
-        {
-          "field": "flag:daylight_only",
-          "label": "daylight_only",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `daylight_only` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:step_free",
-          "label": "step_free",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `step_free` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:curbside_hub",
-          "label": "curbside_hub",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `curbside_hub` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:exclude_for_m5",
-          "label": "exclude_for_m5",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `exclude_for_m5` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        },
-        {
-          "field": "flag:is_sensitive_memory",
-          "label": "is_sensitive_memory",
-          "value": null,
-          "status": "UNKNOWN",
-          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
-          "rationaleClass": "SOURCE_RATIONALE",
-          "confidence": "HIGH",
-          "whyThisScore": "Flag `is_sensitive_memory` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
-          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
-          "whyNotLower": "UNKNOWN is already the non-assertive state.",
-          "evidenceLimitations": "Absence ≠ false."
-        }
-      ],
-      "thematicSummary": {
-        "text": "No prior calibrated thematic profile exists. This is a new founder-added launch node.",
-        "top3": [],
-        "weakThemes": [],
-        "contrast": "All T1A–T9 values are UNKNOWN until founder calibration."
       },
-      "structuralSummary": "No prior structural profile exists. This is a new founder-added launch node (all metrics UNKNOWN).",
-      "chronoWorthBreakdown": {
-        "contributions": {
-          "heritage_depth": null,
-          "anchor_density": null,
-          "micro_reveal": null,
-          "polish": null
-        },
-        "raw": null,
-        "status": "UNAVAILABLE",
-        "plainLanguage": "ChronoWorth is UNAVAILABLE until the founder supplies all four structural metrics. UNKNOWN must not be treated as zero."
-      }
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_11",
@@ -3865,7 +3506,8 @@
         "raw": 61.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while polish contributes less (6.8)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_16",
@@ -4252,7 +3894,8 @@
         "raw": 66.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while polish contributes less (9.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_18",
@@ -4639,7 +4282,8 @@
         "raw": 70.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (10.5)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_19",
@@ -5026,7 +4670,8 @@
         "raw": 64.6,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while anchor density contributes less (6.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_20",
@@ -5413,7 +5058,8 @@
         "raw": 55.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (3.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_21",
@@ -5800,7 +5446,8 @@
         "raw": 66.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (6.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_22",
@@ -6187,7 +5834,8 @@
         "raw": 76.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (33.3), while micro reveal contributes less (4.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_24",
@@ -6574,7 +6222,8 @@
         "raw": 69.0,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while micro reveal contributes less (8.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_25",
@@ -6961,7 +6610,8 @@
         "raw": 72.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (28.0), while micro reveal contributes less (6.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_26",
@@ -7348,7 +6998,8 @@
         "raw": 74.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_27",
@@ -7735,7 +7386,8 @@
         "raw": 67.3,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while anchor density contributes less (9.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_28",
@@ -8122,7 +7774,8 @@
         "raw": 57.0,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from anchor density (18.0), while micro reveal contributes less (8.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_29",
@@ -8509,7 +8162,8 @@
         "raw": 72.6,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while micro reveal contributes less (6.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_30",
@@ -8896,7 +8550,8 @@
         "raw": 57.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (21.0), while polish contributes less (7.5)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_32",
@@ -9283,7 +8938,8 @@
         "raw": 74.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_33",
@@ -9670,7 +9326,8 @@
         "raw": 66.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while anchor density contributes less (9.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_34",
@@ -10057,7 +9714,8 @@
         "raw": 68.6,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (29.8), while polish contributes less (5.3)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_35",
@@ -10444,7 +10102,8 @@
         "raw": 61.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (24.5), while polish contributes less (7.5)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_48",
@@ -10831,7 +10490,8 @@
         "raw": 76.0,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from heritage depth (31.5), while micro reveal contributes less (4.0)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_91",
@@ -11218,7 +10878,8 @@
         "raw": 55.8,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from anchor density (19.5), while polish contributes less (6.8)."
-      }
+      },
+      "launchCorpus": true
     },
     {
       "stgoId": "STGO_92",
@@ -11605,7 +11266,375 @@
         "raw": 54.5,
         "status": "AVAILABLE",
         "plainLanguage": "Most of this POI's global ChronoWorth comes from micro reveal (18.0), while polish contributes less (10.5)."
-      }
+      },
+      "launchCorpus": true
+    },
+    {
+      "stgoId": "STGO_104",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "fields": [
+        {
+          "field": "T1A",
+          "label": "Civic, Military & Traditional Heritage",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T1B",
+          "label": "Memory, Human Rights & Grassroots",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T2",
+          "label": "Culinary Explorer & Gastronomy",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T3",
+          "label": "Urban Shutterbug & Aesthetics",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T4",
+          "label": "Subculture, Street Art & Indie",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T5",
+          "label": "Mindful, Green & Quiet Living",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T6",
+          "label": "Dark Lore, Forensics & Macabre",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T7",
+          "label": "Budget Hacker & Street Life",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T8",
+          "label": "Urban Ecology & Conscious Living",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "T9",
+          "label": "Luxury Heritage & High Craft",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "anchor_density",
+          "label": "Anchor density (canonical importance)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "heritage_depth",
+          "label": "Heritage depth (storytelling material)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "micro_reveal",
+          "label": "Micro reveal (hidden discovery potential)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "polish",
+          "label": "Polish (finish / visitor readiness)",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "tier",
+          "label": "Editorial tier",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "visitTimeMin",
+          "label": "Visit time (min / typical / max)",
+          "value": {
+            "min": null,
+            "typical": null,
+            "max": null
+          },
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M1",
+          "label": "Express / Time-Boxed",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M2",
+          "label": "Accessibility / Step-Free",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M3",
+          "label": "Family & Kid Quest",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M4",
+          "label": "Night Owl / Nocturnal",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "M5",
+          "label": "High Comfort / Low Friction",
+          "value": null,
+          "provenance": "UNKNOWN",
+          "rationaleClass": "NO_PRIOR_SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "No prior calibrated score exists. This is a new founder-added launch node.",
+          "whyNotHigher": "No score has been set yet — UNKNOWN is not a numeric ceiling.",
+          "whyNotLower": "UNKNOWN must not be coerced to zero or any incidental value.",
+          "evidenceLimitations": "STGO_104 was added after the frozen 103-node seed; founder calibration is required before any numeric rationale can exist.",
+          "proposalRationale": null
+        },
+        {
+          "field": "flag:daylight_only",
+          "label": "daylight_only",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `daylight_only` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:step_free",
+          "label": "step_free",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `step_free` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:curbside_hub",
+          "label": "curbside_hub",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `curbside_hub` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:exclude_for_m5",
+          "label": "exclude_for_m5",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `exclude_for_m5` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        },
+        {
+          "field": "flag:is_sensitive_memory",
+          "label": "is_sensitive_memory",
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET",
+          "rationaleClass": "SOURCE_RATIONALE",
+          "confidence": "HIGH",
+          "whyThisScore": "Flag `is_sensitive_memory` is absent from source_present_flag_keys → UNKNOWN (not coerced to false).",
+          "whyNotHigher": "Cannot claim PRESENT without source_present_flag_keys membership.",
+          "whyNotLower": "UNKNOWN is already the non-assertive state.",
+          "evidenceLimitations": "Absence ≠ false."
+        }
+      ],
+      "thematicSummary": {
+        "text": "No prior calibrated thematic profile exists. This is a new founder-added launch node.",
+        "top3": [],
+        "weakThemes": [],
+        "contrast": "All T1A–T9 values are UNKNOWN until founder calibration."
+      },
+      "structuralSummary": "No prior structural profile exists. This is a new founder-added launch node (all metrics UNKNOWN).",
+      "chronoWorthBreakdown": {
+        "contributions": {
+          "heritage_depth": null,
+          "anchor_density": null,
+          "micro_reveal": null,
+          "polish": null
+        },
+        "raw": null,
+        "status": "UNAVAILABLE",
+        "plainLanguage": "ChronoWorth is UNAVAILABLE until the founder supplies all four structural metrics. UNKNOWN must not be treated as zero."
+      },
+      "launchCorpus": true
     }
   ]
 }
