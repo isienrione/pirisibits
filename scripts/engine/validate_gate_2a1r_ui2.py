@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate 2A.1R-UI.2 — Expand founder curator to full Santiago inventory (104)."""
+"""Gate 2A.1R-UI.2 — Expand founder curator to full Santiago inventory (105)."""
 
 from __future__ import annotations
 
@@ -55,8 +55,8 @@ def main() -> int:
     rationales = json.loads(RATIONALES.read_text(encoding="utf-8"))
     launch_ids = set(corpus.get("ids") or corpus.get("stgoIds") or [])
 
-    if len(sem.get("records") or []) != 104 or sem.get("recordCount") != 104:
-        fail(errors, "semantic inventory must be 104")
+    if len(sem.get("records") or []) != 105 or sem.get("recordCount") != 105:
+        fail(errors, "semantic inventory must be 105")
     if len(launch.get("records") or []) != 30:
         fail(errors, "launch editorial must remain 30")
     if len(launch_ids) != 30:
@@ -81,15 +81,15 @@ def main() -> int:
         fail(errors, "cockpit gate must be 2A.1R-UI.2")
     if source.get("sourceCheckpointSha") != START:
         fail(errors, "sourceCheckpointSha mismatch")
-    if len(source.get("records") or []) != 104:
-        fail(errors, f"cockpit records={len(source.get('records') or [])} want 104")
+    if len(source.get("records") or []) != 105:
+        fail(errors, f"cockpit records={len(source.get('records') or [])} want 105")
     if source.get("defaultCorpusFilter") != "LAUNCH30":
         fail(errors, "defaultCorpusFilter must be LAUNCH30")
 
     counts = source.get("inventoryCounts") or {}
-    if counts.get("all") != 104 or counts.get("launch30") != 30 or counts.get("nonLaunch") != 74:
+    if counts.get("all") != 105 or counts.get("launch30") != 30 or counts.get("nonLaunch") != 75:
         fail(errors, f"inventoryCounts wrong: {counts}")
-    if counts.get("originalSeed") != 103 or counts.get("founderExtensions") != 1:
+    if counts.get("originalSeed") != 103 or counts.get("founderExtensions") != 2:
         fail(errors, f"provenance counts wrong: {counts}")
 
     ids = [r["stgoId"] for r in source["records"]]
@@ -107,7 +107,7 @@ def main() -> int:
     non_launch = [r for r in source["records"] if not r.get("launchCorpus")]
     if len(launch_embedded) != 30:
         fail(errors, f"launchCorpus true count={len(launch_embedded)}")
-    if len(non_launch) != 74:
+    if len(non_launch) != 75:
         fail(errors, f"non-launch count={len(non_launch)}")
     if by["STGO_23"].get("launchCorpus"):
         fail(errors, "STGO_23 must not be launchCorpus")
@@ -141,10 +141,10 @@ def main() -> int:
         fail(errors, "STGO_104 ChronoWorth must be unavailable/null")
 
     # Rationales coverage
-    if len(rationales.get("records") or []) != 104:
-        fail(errors, "full rationales must cover 104")
-    if emb_rat is None or len(emb_rat.get("records") or []) != 104:
-        fail(errors, "embedded rationales must cover 104")
+    if len(rationales.get("records") or []) != 105:
+        fail(errors, "full rationales must cover 105")
+    if emb_rat is None or len(emb_rat.get("records") or []) != 105:
+        fail(errors, "embedded rationales must cover 105")
     l30r = json.loads(RATIONALES_L30.read_text(encoding="utf-8"))
     if len(l30r.get("records") or []) != 30:
         fail(errors, "launch30 rationales slice must remain 30")
@@ -162,7 +162,7 @@ def main() -> int:
         "migrateLegacyStore",
         "Launch 30",
         "Non-launch / Backlog",
-        "All 104",
+        "All 105",
         "CURRENT LAUNCH PRIORITY",
         "FOUNDER EXTENSION",
         "ORIGINAL 103 SEED",
@@ -225,11 +225,11 @@ def main() -> int:
     print(
         json.dumps(
             {
-                "all": 104,
+                "all": 105,
                 "launch30": 30,
-                "nonLaunch": 74,
+                "nonLaunch": 75,
                 "originalSeed": 103,
-                "founderExtensions": 1,
+                "founderExtensions": 2,
                 "rationaleRecords": len(rationales["records"]),
                 "rationaleFields": structured_fields,
             }

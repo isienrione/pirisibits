@@ -48,12 +48,13 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     }
   })
 
-  it('restores canonical semantic inventory as 104 (103 seed + STGO_104 extension)', () => {
-    expect(semantic.recordCount).toBe(104)
-    expect(semantic.records).toHaveLength(104)
-    expect(['2A.1R', '2A.1R-ADD-01R']).toContain(semantic.gate)
+  it('restores canonical semantic inventory as 105 (103 seed + STGO_104/105 extensions)', () => {
+    expect(semantic.recordCount).toBe(105)
+    expect(semantic.records).toHaveLength(105)
+    expect(['2A.1R', '2A.1R-ADD-01R', '2E.4']).toContain(semantic.gate)
     expect(semantic.sourceDataset).toMatch(/SANTIAGO_ENGINE_DATASET_V0.1/)
     expect(semantic.records.map((r) => r.stgoId)).toContain('STGO_104')
+    expect(semantic.records.map((r) => r.stgoId)).toContain('STGO_105')
   })
 
   it('maps launch 30 founder-precalibrated vectors; STGO_104 remains UNKNOWN/null', () => {
@@ -117,7 +118,9 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
 
   it('restores structural metrics exactly from founder source for seed nodes', () => {
     const sourceById = new Map(source.nodes.map((n: { poi_id: string }) => [n.poi_id, n]))
-    for (const r of semantic.records.filter((x) => x.stgoId !== 'STGO_104')) {
+    for (const r of semantic.records.filter(
+      (x) => x.stgoId !== 'STGO_104' && x.stgoId !== 'STGO_105',
+    )) {
       const src = sourceById.get(r.stgoId) as {
         source_calibration: {
           structural_metrics: Record<string, number>
@@ -215,7 +218,7 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     expect(top5).toEqual(expect.arrayContaining(['STGO_34', 'STGO_20']))
   })
 
-  it('keeps STGO_23 out of launch, STGO_33 active (not semantic-excluded), backlog 74, no route/NarrativeEdge', () => {
+  it('keeps STGO_23 out of launch, STGO_33 active (not semantic-excluded), backlog 75, no route/NarrativeEdge', () => {
     const pool = buildCandidatePool(nodes, TRAVELER_FIXTURES.A_first_time_essentials)
     expect(pool.evaluatedLaunchCount).toBe(30)
     expect(pool.excludedIds).not.toContain('STGO_23')
@@ -225,7 +228,7 @@ describe('Gate 2A.1R founder semantic source restoration', () => {
     expect(stgo33.launchRuntimeDisposition).not.toBe('RUNTIME_EXCLUDED_SEMANTIC')
     // Still physicalRouteGenerationEligible=false → pool-excluded for routing eligibility.
     expect(pool.excludedIds).toContain('STGO_33')
-    expect(pool.backlogLeakCount).toBe(74)
+    expect(pool.backlogLeakCount).toBe(75)
     const blob = JSON.stringify(pool)
     expect(blob).not.toMatch(/NarrativeEdgeScore|optimizeItinerary|ArcQuality/)
   })

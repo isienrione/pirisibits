@@ -10,10 +10,11 @@
     "LOW": 195
   },
   "notes": [
-    "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R semantic metadata.",
+    "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R / 2E.4 semantic metadata.",
     "They do not change scores.",
     "STGO_104 has no prior source rationale — founder-added UNKNOWN node.",
-    "Coverage includes full canonical inventory (104).",
+    "STGO_105 has no prior source rationale — founder-added IDENTITY_RESOLVED_PHYSICAL_PENDING node (Gate 2E.4).",
+    "Coverage includes full canonical inventory (105).",
     "Launch30 slice of full Santiago rationales."
   ],
   "records": [
@@ -3899,7 +3900,7 @@
     },
     {
       "stgoId": "STGO_18",
-      "displayName": "Edificio Ariztía (Flat-Iron)",
+      "displayName": "Edificio Ariztía",
       "fields": [
         {
           "field": "T1A",
@@ -3908,7 +3909,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder T1A=85 (near-archetypal / defining) for Civic, Military & Traditional Heritage. Within this POI's vector, the leading companion theme is T3=95. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Edificio Ariztía has founder T1A=85 (near-archetypal / defining) for Civic, Military & Traditional Heritage. Within this POI's vector, the leading companion theme is T3=95. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T1A in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T3) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T1A weight (85), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -3920,7 +3921,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T1B (Memory, Human Rights & Grassroots) weight in the founder continuous vector, so memory, human rights & grassroots is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T1B (Memory, Human Rights & Grassroots) weight in the founder continuous vector, so memory, human rights & grassroots is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T1B would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -3932,7 +3933,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T2 (Culinary Explorer & Gastronomy) weight in the founder continuous vector, so culinary explorer & gastronomy is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T2 (Culinary Explorer & Gastronomy) weight in the founder continuous vector, so culinary explorer & gastronomy is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T2 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -3944,7 +3945,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder T3=95 (near-archetypal / defining) for Urban Shutterbug & Aesthetics. Within this POI's vector, the leading companion theme is T1A=85. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Edificio Ariztía has founder T3=95 (near-archetypal / defining) for Urban Shutterbug & Aesthetics. Within this POI's vector, the leading companion theme is T1A=85. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T3 in the 'near-archetypal / defining' band rather than as a sole archetypal maximum; other themes (e.g. T1A) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T3 weight (95), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -3956,7 +3957,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T4 (Subculture, Street Art & Indie) weight in the founder continuous vector, so subculture, street art & indie is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T4 (Subculture, Street Art & Indie) weight in the founder continuous vector, so subculture, street art & indie is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T4 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -3968,7 +3969,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T5 (Mindful, Green & Quiet Living) weight in the founder continuous vector, so mindful, green & quiet living is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T5 (Mindful, Green & Quiet Living) weight in the founder continuous vector, so mindful, green & quiet living is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T5 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -3980,7 +3981,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T6 (Dark Lore, Forensics & Macabre) weight in the founder continuous vector, so dark lore, forensics & macabre is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T6 (Dark Lore, Forensics & Macabre) weight in the founder continuous vector, so dark lore, forensics & macabre is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T6 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -3992,7 +3993,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T7 (Budget Hacker & Street Life) weight in the founder continuous vector, so budget hacker & street life is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T7 (Budget Hacker & Street Life) weight in the founder continuous vector, so budget hacker & street life is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T7 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -4004,7 +4005,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "MEDIUM",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) carries a near-zero T8 (Urban Ecology & Conscious Living) weight in the founder continuous vector, so urban ecology & conscious living is treated as irrelevant to this experience's scoring profile.",
+          "whyThisScore": "Edificio Ariztía carries a near-zero T8 (Urban Ecology & Conscious Living) weight in the founder continuous vector, so urban ecology & conscious living is treated as irrelevant to this experience's scoring profile.",
           "whyNotHigher": "Raising T8 would invent thematic relevance not present in the founder vector (current band: absent/near-absent).",
           "whyNotLower": "Already at floor; cannot be materially lower within 0–1.",
           "evidenceLimitations": "Explanation uses only the founder thematicVector magnitude and comparative ranking."
@@ -4016,7 +4017,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder T9=70 (strongly characteristic) for Luxury Heritage & High Craft. Within this POI's vector, the leading companion theme is T3=95. Editorial role/tier context in the calibration record: micro / micro_reveal.",
+          "whyThisScore": "Edificio Ariztía has founder T9=70 (strongly characteristic) for Luxury Heritage & High Craft. Within this POI's vector, the leading companion theme is T3=95. Editorial role/tier context in the calibration record: micro / micro_reveal.",
           "whyNotHigher": "Not at 100 because the founder vector places T9 in the 'strongly characteristic' band rather than as a sole archetypal maximum; other themes (e.g. T3) also compete for experiential emphasis.",
           "whyNotLower": "Not incidental because founder calibration assigns a non-trivial T9 weight (70), indicating the theme is intrinsic rather than background noise.",
           "evidenceLimitations": "No free-text founder essay exists in-repo; rationale reconstructs from vector + role/tier/flags only."
@@ -4028,7 +4029,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "LOW",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder anchor_density=40 (meaningful but not defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
+          "whyThisScore": "Edificio Ariztía has founder anchor_density=40 (meaningful but not defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
           "whyNotHigher": "Not higher because founder seed keeps anchor_density below ceiling (band: meaningful but not defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 40 reading is material in the founder structural seed and would understate the recorded anchor density (canonical importance) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -4040,7 +4041,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder heritage_depth=85 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
+          "whyThisScore": "Edificio Ariztía has founder heritage_depth=85 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
           "whyNotHigher": "Not higher because founder seed keeps heritage_depth below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 85 reading is material in the founder structural seed and would understate the recorded heritage depth (storytelling material) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -4052,7 +4053,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder micro_reveal=90 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is heritage_depth=85.",
+          "whyThisScore": "Edificio Ariztía has founder micro_reveal=90 (near-archetypal / defining). Tier=micro_reveal. Among structural metrics, strongest companion is heritage_depth=85.",
           "whyNotHigher": "Not higher because founder seed keeps micro_reveal below ceiling (band: near-archetypal / defining), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 90 reading is material in the founder structural seed and would understate the recorded micro reveal (hidden discovery potential) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -4064,7 +4065,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "LOW",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) has founder polish=70 (strongly characteristic). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
+          "whyThisScore": "Edificio Ariztía has founder polish=70 (strongly characteristic). Tier=micro_reveal. Among structural metrics, strongest companion is micro_reveal=90.",
           "whyNotHigher": "Not higher because founder seed keeps polish below ceiling (band: strongly characteristic), so the experience is strong but not treated as the absolute Santiago maximum on this axis.",
           "whyNotLower": "Not lower because a 70 reading is material in the founder structural seed and would understate the recorded polish (finish / visitor readiness) if collapsed toward incidental.",
           "evidenceLimitations": "Structural metrics are numeric founder seed values without narrative essays."
@@ -4076,7 +4077,7 @@
           "provenance": "FOUNDER_PRECALIBRATED",
           "rationaleClass": "SOURCE_RATIONALE",
           "confidence": "HIGH",
-          "whyThisScore": "Edificio Ariztía (Flat-Iron) is classified as `micro_reveal` in the founder seed. Aligns with discovery-oriented micro_reveal=90 emphasis.",
+          "whyThisScore": "Edificio Ariztía is classified as `micro_reveal` in the founder seed. Aligns with discovery-oriented micro_reveal=90 emphasis.",
           "whyNotHigher": "Founder seed did not place this in thematic_pocket/canonical_anchor.",
           "whyNotLower": "Already the most granular tier class.",
           "evidenceLimitations": null
@@ -4932,7 +4933,7 @@
         {
           "field": "M5",
           "label": "High Comfort / Low Friction",
-          "value": 0.0,
+          "value": 0,
           "status": null,
           "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS",
           "rationaleClass": "AI_PROPOSAL_RATIONALE",

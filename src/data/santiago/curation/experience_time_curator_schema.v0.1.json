@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "santiago-experience-time-curator-fields.v0.1",
+  "gate": "2E.4",
+  "workflow": "AI_PROPOSAL → FOUNDER_VERIFICATION_OR_CORRECTION → APPROVED_VALUE",
+  "provenanceRequired": true,
+  "unknownPolicy": "UNKNOWN remains UNKNOWN; no fabricated defaults",
+  "fields": [
+    "defaultCoreVisitMode",
+    "coreDwellTypicalMin",
+    "coreDwellMin",
+    "coreDwellMax",
+    "optionalExtension",
+    "extensionVisitMode",
+    "extensionDwellTypicalMin",
+    "interiorExterior",
+    "ticketDependent",
+    "openingHoursDependent",
+    "accessOverheadMin",
+    "passThroughCapable",
+    "stopRole",
+    "authoredContentMin",
+    "stationaryDwellMin",
+    "walkCompatibleContentMin",
+    "contentMayOverlapMovement"
+  ],
+  "notes": [
+    "Founder should not fill everything from scratch — AI proposes first.",
+    "Do not assign Launch30 classifications in Gate 2E.4.",
+    "PASS_THROUGH does not imply zero dwell."
+  ]
+}

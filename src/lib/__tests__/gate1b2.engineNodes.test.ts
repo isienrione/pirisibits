@@ -8,7 +8,7 @@ import {
 import type { SantiagoEngineNodesFile } from '../city-graph/types'
 
 const root = resolve(__dirname, '../../..')
-const expectedIds = Array.from({ length: 104 }, (_, i) => `STGO_${String(i + 1).padStart(2, '0')}`)
+const expectedIds = Array.from({ length: 105 }, (_, i) => `STGO_${String(i + 1).padStart(2, '0')}`)
 const ACTIVE_LAUNCH_IDS = [
   'STGO_01', 'STGO_02', 'STGO_03', 'STGO_04', 'STGO_05', 'STGO_06', 'STGO_07',
   'STGO_10', 'STGO_11', 'STGO_16', 'STGO_18', 'STGO_19', 'STGO_20', 'STGO_21',
@@ -23,7 +23,7 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
     expect(AUTO_CURATOR_APPROVE_FROM_MAPBOX).toBe(false)
   })
 
-  it('authoritative inventory is STGO_01…STGO_104 (103 frozen seed + STGO_104 extension)', () => {
+  it('authoritative inventory is STGO_01…STGO_105 (103 frozen seed + STGO_104/105 extensions)', () => {
     const frozen = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json'), 'utf8'),
     )
@@ -33,14 +33,14 @@ describe('Gate 1B.2 Santiago canonical physical node layer', () => {
     const path = resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json')
     expect(existsSync(path)).toBe(true)
     const data = JSON.parse(readFileSync(path, 'utf8')) as SantiagoEngineNodesFile
-    expect(data.nodeCount).toBe(104)
-    expect(data.nodes).toHaveLength(104)
+    expect(data.nodeCount).toBe(105)
+    expect(data.nodes).toHaveLength(105)
     expect(data.nodes.map((n) => n.stgoId)).toEqual(expectedIds)
-    expect(new Set(data.nodes.map((n) => n.stgoId)).size).toBe(104)
+    expect(new Set(data.nodes.map((n) => n.stgoId)).size).toBe(105)
     expect(data.launchCorpusCount).toBe(30)
-    expect(data.backlogCount).toBe(74)
+    expect(data.backlogCount).toBe(75)
     expect(data.nodes.filter((n) => n.launchCorpus)).toHaveLength(30)
-    expect(data.nodes.filter((n) => !n.launchCorpus)).toHaveLength(74)
+    expect(data.nodes.filter((n) => !n.launchCorpus)).toHaveLength(75)
     expect(data.nodes.filter((n) => n.launchCorpus).map((n) => n.stgoId).sort()).toEqual(
       [...ACTIVE_LAUNCH_IDS].sort(),
     )

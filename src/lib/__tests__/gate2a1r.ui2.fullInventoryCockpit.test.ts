@@ -123,39 +123,44 @@ describe('Gate 2A.1R-UI.2 expand curator to full Santiago inventory', () => {
     expect(EDITORIAL_CALIBRATION_CURATOR_APPROVED).toBe(false)
   })
 
-  it('embeds 104 records with correct corpus counts', () => {
+  it('embeds 105 records with correct corpus counts', () => {
     expect(source.gate).toBe('2A.1R-UI.2')
     expect(source.sourceCheckpointSha).toBe(START)
-    expect(source.records).toHaveLength(104)
+    expect(source.records).toHaveLength(105)
     expect(source.defaultCorpusFilter).toBe('LAUNCH30')
     expect(source.inventoryCounts).toEqual({
-      all: 104,
+      all: 105,
       launch30: 30,
-      nonLaunch: 74,
+      nonLaunch: 75,
       originalSeed: 103,
-      founderExtensions: 1,
+      founderExtensions: 2,
     })
     const launchN = source.records.filter((r) => r.launchCorpus).length
     const nonN = source.records.filter((r) => !r.launchCorpus).length
     const seedN = source.records.filter((r) => r.inventoryProvenance === 'ORIGINAL_103_SEED').length
     const extN = source.records.filter((r) => r.inventoryProvenance === 'FOUNDER_EXTENSION').length
     expect(launchN).toBe(30)
-    expect(nonN).toBe(74)
+    expect(nonN).toBe(75)
     expect(seedN).toBe(103)
-    expect(extN).toBe(1)
+    expect(extN).toBe(2)
     expect(source.launchCorpusIds).toHaveLength(30)
   })
 
   it('includes STGO_104 once as founder extension + Launch30; excludes STGO_23 from Launch30', () => {
     const ids = source.records.map((r) => r.stgoId)
     expect(ids.filter((id) => id === 'STGO_104')).toHaveLength(1)
+    expect(ids.filter((id) => id === 'STGO_105')).toHaveLength(1)
     expect(ids.filter((id) => id === 'STGO_33')).toHaveLength(1)
     expect(ids).toContain('STGO_23')
     const r104 = source.records.find((r) => r.stgoId === 'STGO_104')!
+    const r105 = source.records.find((r) => r.stgoId === 'STGO_105')!
     const r23 = source.records.find((r) => r.stgoId === 'STGO_23')!
     const r33 = source.records.find((r) => r.stgoId === 'STGO_33')!
     expect(r104.launchCorpus).toBe(true)
     expect(r104.inventoryProvenance).toBe('FOUNDER_EXTENSION')
+    expect(r105.launchCorpus).toBe(false)
+    expect(r105.inventoryProvenance).toBe('FOUNDER_EXTENSION')
+    expect(r105.displayName).toBe('Teatro Municipal de Santiago')
     expect(Object.values(r104.thematicVector).every((v) => v == null)).toBe(true)
     expect(Object.values(r104.structuralMetrics).every((v) => v == null)).toBe(true)
     expect(r104.chronoWorthProposed == null).toBe(true)
@@ -165,14 +170,15 @@ describe('Gate 2A.1R-UI.2 expand curator to full Santiago inventory', () => {
     expect(r33.displayName).not.toMatch(/Funicular/i)
     expect(source.launchCorpusIds).not.toContain('STGO_23')
     expect(source.launchCorpusIds).toContain('STGO_104')
+    expect(source.launchCorpusIds).not.toContain('STGO_105')
   })
 
   it('supports provenance filters and combined search + corpus filter', () => {
     const seed = source.records.filter((r) => r.inventoryProvenance === 'ORIGINAL_103_SEED')
     const ext = source.records.filter((r) => r.inventoryProvenance === 'FOUNDER_EXTENSION')
     expect(seed).toHaveLength(103)
-    expect(ext).toHaveLength(1)
-    expect(ext[0]!.stgoId).toBe('STGO_104')
+    expect(ext).toHaveLength(2)
+    expect(ext.map((r) => r.stgoId).sort()).toEqual(['STGO_104', 'STGO_105'])
 
     const byId = searchHits(source.records, 'STGO_23', 'ALL104')
     expect(byId.map((r) => r.stgoId)).toEqual(['STGO_23'])
@@ -204,11 +210,12 @@ describe('Gate 2A.1R-UI.2 expand curator to full Santiago inventory', () => {
       }
     }
     expect(raws['STGO_104']).toBeNull()
+    expect(raws['STGO_105']).toBeNull()
     const sorted = sortRawUnknownLast(
       source.records.map((r) => r.stgoId),
       raws,
     )
-    expect(sorted[sorted.length - 1]).toBe('STGO_104')
+    expect(['STGO_104', 'STGO_105']).toContain(sorted[sorted.length - 1])
     const firstUnknownIdx = sorted.findIndex((id) => raws[id] == null)
     expect(sorted.slice(firstUnknownIdx).every((id) => raws[id] == null)).toBe(true)
   })
@@ -232,7 +239,7 @@ describe('Gate 2A.1R-UI.2 expand curator to full Santiago inventory', () => {
       source.records.map((r) => r.stgoId),
       legacy,
     )
-    expect(Object.keys(migrated)).toHaveLength(104)
+    expect(Object.keys(migrated)).toHaveLength(105)
     expect((migrated.STGO_01 as { founderApproval: string }).founderApproval).toBe('APPROVED')
     expect((migrated.STGO_01 as { founderChangeReasons: Record<string, string> }).founderChangeReasons.T1A).toBe(
       'civic emphasis',
@@ -254,18 +261,18 @@ describe('Gate 2A.1R-UI.2 expand curator to full Santiago inventory', () => {
     expect(html).toContain('Relative — Launch30')
     expect(html).toContain('Relative — All Santiago')
     expect(source.normalizationCorpus).toBe('SANTIAGO_LAUNCH30_V0_1')
-    expect(source.normalizationCorpusAll).toBe('SANTIAGO_ALL104_V0_1')
+    expect(source.normalizationCorpusAll).toBe('SANTIAGO_ALL105_V0_1')
   })
 
-  it('keeps Launch30 semantic values aligned and full rationales covering 104', () => {
+  it('keeps Launch30 semantic values aligned and full rationales covering 105', () => {
     const byLaunch = new Map(launch.records.map((r) => [r.stgoId, r]))
     for (const r of source.records.filter((x) => x.launchCorpus)) {
       const o = byLaunch.get(r.stgoId)!
       expect(r.thematicVector).toEqual(o.thematicVector)
       expect(r.structuralMetrics).toEqual(o.structuralMetrics)
     }
-    expect(semantic.recordCount).toBe(104)
-    expect(fullRat.records).toHaveLength(104)
+    expect(semantic.recordCount).toBe(105)
+    expect(fullRat.records).toHaveLength(105)
     expect(launchRat.records).toHaveLength(30)
     expect(fullRat.sourceCheckpointSha).toBe(START)
   })

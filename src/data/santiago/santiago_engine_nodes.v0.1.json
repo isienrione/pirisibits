@@ -2,9 +2,9 @@
   "schemaVersion": "santiago-engine-nodes.v0.1",
   "cityId": "santiago",
   "gate": "2A.1R-ADD-01R",
-  "nodeCount": 104,
+  "nodeCount": 105,
   "launchCorpusCount": 30,
-  "backlogCount": 74,
+  "backlogCount": 75,
   "physicalRouteGenerationEnabled": false,
   "autoCuratorApproveFromMapbox": false,
   "coordinatePolicy": "Provider candidates only. Never fabricate. Never auto CURATOR_APPROVED.",
@@ -250,7 +250,7 @@
         "semanticWarning": null,
         "researchBlocker": null,
         "coordinateConflict": null,
-        "providerDiffMeters": 1240.0,
+        "providerDiffMeters": 1240,
         "curatorOverrideProvider": true,
         "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
         "uiColor": "GREEN"
@@ -3612,9 +3612,11 @@
     {
       "stgoId": "STGO_18",
       "legacySlug": "barrio-brasil",
-      "canonicalName": "Edificio Palacio Ariztía (Flat-Iron)",
-      "displayName": "Edificio Palacio Ariztía (Flat-Iron)",
-      "aliases": [],
+      "canonicalName": "Edificio Ariztía",
+      "displayName": "Edificio Ariztía",
+      "aliases": [
+        "Edificio Ariztía (Flat-Iron)"
+      ],
       "commune": null,
       "neighborhood": "Brasil",
       "identityStatus": "RESOLVED",
@@ -3858,6 +3860,18 @@
           "lat": -33.4425828,
           "lng": -70.6511804
         }
+      },
+      "identityCorrection": {
+        "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+        "decisionSource": "FOUNDER_APPROVED",
+        "decisionDate": "2026-08-30",
+        "gate": "2E.4",
+        "previousIdentity": "Edificio Palacio Ariztía (Flat-Iron)",
+        "canonicalIdentity": "Edificio Ariztía",
+        "reason": "Founder decided intended POI is Edificio Ariztía (flat-iron), not Palacio Ariztía. Remove Palacio from active canonical/display identity. Coordinates and physical graph identity unchanged.",
+        "preservedHistoricalLabel": "Edificio Palacio Ariztía (Flat-Iron)",
+        "coordinatesUnchanged": true,
+        "physicalGraphIdUnchanged": "STGO_18"
       }
     },
     {
@@ -4067,7 +4081,7 @@
         "semanticWarning": null,
         "researchBlocker": null,
         "coordinateConflict": null,
-        "providerDiffMeters": 6549.0,
+        "providerDiffMeters": 6549,
         "curatorOverrideProvider": true,
         "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
         "uiColor": "GREEN"
@@ -4285,7 +4299,7 @@
         "semanticWarning": null,
         "researchBlocker": null,
         "coordinateConflict": null,
-        "providerDiffMeters": 5514.0,
+        "providerDiffMeters": 5514,
         "curatorOverrideProvider": true,
         "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
         "uiColor": "GREEN"
@@ -5239,7 +5253,7 @@
         "semanticWarning": null,
         "researchBlocker": null,
         "coordinateConflict": null,
-        "providerDiffMeters": 5651.0,
+        "providerDiffMeters": 5651,
         "curatorOverrideProvider": true,
         "overrideReason": "Curator POI materially differs from Mapbox provider candidate",
         "uiColor": "GREEN"
@@ -19166,11 +19180,104 @@
       "launchRuntimeDispositionReason": "Founder-added active launch node pending semantic calibration and edge enrichment.",
       "runtimePhysicalEndpoint": null,
       "founderExtension": true
+    },
+    {
+      "stgoId": "STGO_105",
+      "legacySlug": "teatro-municipal",
+      "canonicalName": "Teatro Municipal de Santiago",
+      "displayName": "Teatro Municipal de Santiago",
+      "aliases": [
+        "Teatro Municipal"
+      ],
+      "commune": "Santiago",
+      "neighborhood": "Santiago Centro",
+      "identityStatus": "RESOLVED",
+      "identityResolutionDetail": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+      "identityMissingSource": null,
+      "themes": [],
+      "modes": [],
+      "editorialRole": null,
+      "tier": null,
+      "chronoWorth": null,
+      "poiCoordinate": null,
+      "entranceCoordinate": null,
+      "experiencePointCoordinate": null,
+      "nearestTransit": {
+        "stationName": null,
+        "line": null,
+        "distanceMeters": null,
+        "status": "UNRESOLVED"
+      },
+      "geographicIsland": null,
+      "physicalVerificationState": "IDENTITY_ONLY",
+      "legacyContentId": null,
+      "legacyMappingStatus": "founder_extension",
+      "provenance": {
+        "identity": {
+          "status": "RESOLVED",
+          "sources": [
+            "gate-2e4-founder-identity-correction",
+            "santiago_physical_identity.v0.1#teatro-municipal"
+          ],
+          "missingSource": null
+        },
+        "physical": {
+          "provider": null,
+          "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+          "curatorApproval": "never-automatic",
+          "selectionStatus": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+          "humanCurationGate": "2E.4",
+          "humanCurationSource": "founder-approved-identity-correction"
+        },
+        "editorial": {
+          "source": "santiago_founder_extensions.v0.1",
+          "status": "absent"
+        }
+      },
+      "launchCorpus": false,
+      "fieldPriority": "BACKLOG",
+      "verificationPriority": 105,
+      "geocodeQuery": "Teatro Municipal Agustinas Santiago Centro Chile",
+      "queryUsed": null,
+      "providerClassification": "PENDING_GEOCODE",
+      "providerCandidate": null,
+      "candidates": [],
+      "selectionReason": "FOUNDER_IDENTITY_RESOLVED_COORDS_PENDING",
+      "providerId": null,
+      "curatorApproval": null,
+      "physicalRouteGenerationEnabled": false,
+      "providerAudit": {
+        "note": "Prior Mapbox hits for Teatro Municipal included wrong communes (Maipú / Ñuñoa). Do not adopt without founder verification. Physical identity slug teatro-municipal remains UNGEOCODED."
+      },
+      "launchPhysicalReadiness": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+      "launchRuntimeDisposition": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+      "launchRuntimeDispositionReason": "Founder-approved downtown Teatro Municipal de Santiago identity; coordinates unverified; not route-eligible.",
+      "physicalRouteGenerationEligible": false,
+      "founderExtension": true,
+      "identityCorrection": {
+        "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+        "decisionSource": "FOUNDER_APPROVED",
+        "decisionDate": "2026-08-30",
+        "gate": "2E.4",
+        "previousIdentity": null,
+        "canonicalIdentity": "Teatro Municipal de Santiago",
+        "reason": "Founder decided intended POI is historic downtown Teatro Municipal de Santiago — not Plaza Ñuñoa, Teatro Municipal de Ñuñoa, or Club de la Unión. Created as extension STGO_105; STGO_59 retains Club de la Unión.",
+        "coordinatesStatus": "UNVERIFIED_NULL",
+        "physicalEligibility": "IDENTITY_RESOLVED_PHYSICAL_PENDING"
+      },
+      "curatorCuration": {
+        "gate": "2E.4",
+        "source": "santiago_founder_extensions.v0.1.json",
+        "founderPlaceName": "Teatro Municipal de Santiago",
+        "googleMapsUrls": [],
+        "notes": "NEW FOUNDER EXTENSION — identity resolved; physical coords pending. NOT IN ORIGINAL 103-NODE SEED. Do not fabricate coordinates."
+      },
+      "physicalPoints": []
     }
   ],
   "counts": {
     "launch": 30,
-    "backlog": 74,
+    "backlog": 75,
     "curatorApprovedPoi": 24,
     "curatorApprovedExperience": 29,
     "accessPoints": 3,
@@ -19184,16 +19291,16 @@
     "runtimeStaged": 1,
     "runtimeExcluded": 2,
     "physicalLayerGate": "1B.5",
-    "nodes": 104,
+    "nodes": 105,
     "launchCorpus": 30,
-    "founderExtensions": 1
+    "founderExtensions": 2
   },
   "humanCurationPolicy": "Founder Google Maps / Street View review = CURATOR_APPROVED, not FIELD_VERIFIED.",
   "physicalLayerGate": "1B.5",
   "physicalLayerV01Ready": true,
   "canonicalInventory": {
     "frozenSeedCount": 103,
-    "extensionCount": 1,
-    "total": 104
+    "extensionCount": 2,
+    "total": 105
   }
 }

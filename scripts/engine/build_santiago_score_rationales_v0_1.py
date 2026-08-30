@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Gate 2A.1R-UI.2 — Deterministic score rationales for full Santiago inventory (104).
+Gate 2A.1R-UI.2 — Deterministic score rationales for full Santiago inventory (105).
 
 Reuses Launch30 rationale rules. For founder-added UNKNOWN nodes, emits the
 no-prior-calibration rationale. Never invents facts.
@@ -80,7 +80,7 @@ def build_record(rec: dict) -> dict:
 
 def main() -> int:
     sem = json.loads(SEMANTIC.read_text(encoding="utf-8"))
-    assert sem.get("recordCount") == 104 and len(sem["records"]) == 104
+    assert sem.get("recordCount") == 105 and len(sem["records"]) == 105
     launch_ids = set(json.loads(CORPUS.read_text(encoding="utf-8")).get("ids") or [])
     if not launch_ids:
         launch_ids = {r["stgoId"] for r in json.loads(LAUNCH.read_text(encoding="utf-8"))["records"]}
@@ -99,14 +99,15 @@ def main() -> int:
         "gate": "2A.1R-UI.2",
         "sourceCheckpointSha": CHECKPOINT,
         "sourceCalibration": str(SEMANTIC.relative_to(ROOT)),
-        "recordCount": 104,
+        "recordCount": 105,
         "launchCorpusCount": 30,
         "confidenceHistogram": conf_hist,
         "notes": [
-            "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R semantic metadata.",
+            "Rationales are deterministic reconstructions from Gate 2A.1R / ADD-01R / 2E.4 semantic metadata.",
             "They do not change scores.",
             "STGO_104 has no prior source rationale — founder-added UNKNOWN node.",
-            "Coverage includes full canonical inventory (104).",
+            "STGO_105 has no prior source rationale — founder-added IDENTITY_RESOLVED_PHYSICAL_PENDING node (Gate 2E.4).",
+            "Coverage includes full canonical inventory (105).",
         ],
         "records": records,
     }

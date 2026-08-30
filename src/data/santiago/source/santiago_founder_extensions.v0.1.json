@@ -5,11 +5,12 @@
   "baseSeedDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
   "baseSeedCount": 103,
   "baseSeedSha256": "fd8e6fa5329dac91d74105c379884b53c1157ef737caec3e75430c8b81fe5ff5",
-  "extensionCount": 1,
-  "currentCanonicalInventory": 104,
+  "extensionCount": 2,
+  "currentCanonicalInventory": 105,
   "notes": [
     "Extensions sit beside the frozen 103-node seed; the seed bytes must remain identical.",
-    "STGO_104 semantics are UNKNOWN until founder calibration — never coerce UNKNOWN to 0."
+    "STGO_104 semantics are UNKNOWN until founder calibration — never coerce UNKNOWN to 0.",
+    "STGO_105 Teatro Municipal de Santiago added in Gate 2E.4 as founder-approved identity; coordinates unverified (IDENTITY_RESOLVED_PHYSICAL_PENDING)."
   ],
   "extensions": [
     {
@@ -36,6 +37,30 @@
       "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
       "semanticStatus": "REQUIRES_FOUNDER_CALIBRATION",
       "launchMembership": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_105",
+      "canonicalName": "Teatro Municipal de Santiago",
+      "shortName": "Teatro Municipal de Santiago",
+      "city": "Santiago",
+      "country": "Chile",
+      "provenance": "FOUNDER_ADDED_POST_SEED",
+      "sourceNote": "Gate 2E.4 founder-approved downtown Teatro Municipal de Santiago. Not Plaza Ñuñoa / Teatro Municipal de Ñuñoa / Club de la Unión.",
+      "poiCoordinate": null,
+      "experiencePoint": null,
+      "entranceCoordinate": null,
+      "entranceStatus": "UNKNOWN",
+      "physicalStatus": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+      "semanticStatus": "REQUIRES_FOUNDER_CALIBRATION",
+      "launchMembership": "NOT_LAUNCH",
+      "geocodeQuery": "Teatro Municipal Agustinas Santiago Centro Chile",
+      "physicalIdentitySlug": "teatro-municipal",
+      "coordinatesStatus": "UNVERIFIED_NULL",
+      "identityCorrection": {
+        "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+        "decisionSource": "FOUNDER_APPROVED",
+        "decisionDate": "2026-08-30"
+      }
     }
   ]
 }

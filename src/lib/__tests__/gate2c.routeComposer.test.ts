@@ -42,12 +42,12 @@ describe('Gate 2C provisional route composer', () => {
     expect(PHYSICAL_ROUTE_GENERATION_ENABLED).toBe(false)
   })
 
-  it('Launch30 remains 30 and full inventory remains 104; narrative graph unchanged gate', () => {
+  it('Launch30 remains 30 and full inventory remains 105; narrative graph unchanged gate', () => {
     expect(nodes.filter((n) => n.launchCorpus)).toHaveLength(30)
     const semantic = JSON.parse(
       readFileSync(resolve(ROOT, 'src/data/santiago/santiago_semantic_calibration.v0.1.json'), 'utf8'),
     )
-    expect(semantic.recordCount).toBe(104)
+    expect(semantic.recordCount).toBe(105)
     const narr = loadLaunch30NarrativeGraph(ROOT)
     expect(narr.nodeCount).toBe(30)
     expect(narr.calibrationApproved).toBe(false)

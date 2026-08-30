@@ -207,7 +207,10 @@ function toNodeSummary(rec: SemanticCalibrationRecord): NarrativeNodeSummary {
     physicalStatus: rec.physicalStatus ?? null,
     physicalRouteGenerationEligible: rec.physicalRouteGenerationEligible ?? null,
     launchCorpus: true,
-    inventoryProvenance: rec.stgoId === 'STGO_104' ? 'FOUNDER_EXTENSION' : 'ORIGINAL_103_SEED',
+    inventoryProvenance:
+      rec.stgoId === 'STGO_104' || rec.stgoId === 'STGO_105'
+        ? 'FOUNDER_EXTENSION'
+        : 'ORIGINAL_103_SEED',
     legacyAliasAuditOnly: rec.legacyAlias?.alias ?? null,
   }
 }

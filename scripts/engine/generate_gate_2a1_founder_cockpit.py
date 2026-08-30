@@ -2,7 +2,7 @@
 """
 Gate 2A.1R-UI.2 — Generate Founder Calibration Cockpit (full Santiago inventory).
 
-Self-contained HTML/JS/CSS for all 104 canonical Santiago nodes.
+Self-contained HTML/JS/CSS for all 105 canonical Santiago nodes (103 seed + extensions).
 Default view: Launch 30. Does NOT mutate frozen source / physical edges.
 """
 
@@ -208,19 +208,21 @@ def slim_record(r: dict) -> dict:
         "commune": r.get("commune"),
         "launchCorpus": bool(r.get("launchCorpus")),
         "inventoryProvenance": r.get("inventoryProvenance") or (
-            "FOUNDER_EXTENSION" if r.get("stgoId") == "STGO_104" else "ORIGINAL_103_SEED"
+            "FOUNDER_EXTENSION"
+            if r.get("stgoId") in ("STGO_104", "STGO_105")
+            else "ORIGINAL_103_SEED"
         ),
         "derivedThemeTags": r.get("derivedThemeTags") or [],
         "requiresFounderCalibrationBeforeApproval": bool(
             ((r.get("sourceProvenance") or {}).get("requiresFounderCalibrationBeforeApproval"))
-            or r.get("stgoId") == "STGO_104"
+            or r.get("stgoId") in ("STGO_104", "STGO_105")
         ),
     }
 
 
 def main() -> int:
     sem = json.loads(SEMANTIC_PATH.read_text(encoding="utf-8"))
-    assert sem.get("recordCount") == 104 and len(sem["records"]) == 104
+    assert sem.get("recordCount") == 105 and len(sem["records"]) == 105
     launch_doc = json.loads(LAUNCH.read_text(encoding="utf-8"))
     assert len(launch_doc["records"]) == 30
     corpus = json.loads(CORPUS_PATH.read_text(encoding="utf-8"))
@@ -232,7 +234,7 @@ def main() -> int:
     for r in sorted(sem["records"], key=lambda x: int(x["stgoId"].split("_")[1])):
         rr = dict(r)
         rr["launchCorpus"] = rr["stgoId"] in launch_ids
-        if rr["stgoId"] == "STGO_104":
+        if rr["stgoId"] in ("STGO_104", "STGO_105"):
             rr["inventoryProvenance"] = "FOUNDER_EXTENSION"
         else:
             rr["inventoryProvenance"] = "ORIGINAL_103_SEED"
@@ -248,14 +250,14 @@ def main() -> int:
         "founderExtensionsArtifact": str(EXTENSIONS_PATH.relative_to(ROOT)),
         "rationaleArtifact": str(RATIONALES.relative_to(ROOT)),
         "normalizationCorpus": "SANTIAGO_LAUNCH30_V0_1",
-        "normalizationCorpusAll": "SANTIAGO_ALL104_V0_1",
+        "normalizationCorpusAll": "SANTIAGO_ALL105_V0_1",
         "chronoWorthFormula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
         "inventoryCounts": {
-            "all": 104,
+            "all": 105,
             "launch30": 30,
-            "nonLaunch": 74,
+            "nonLaunch": 75,
             "originalSeed": 103,
-            "founderExtensions": 1,
+            "founderExtensions": 2,
         },
         "launchCorpusIds": sorted(launch_ids, key=lambda s: int(s.split("_")[1])),
         "defaultCorpusFilter": "LAUNCH30",
@@ -264,7 +266,7 @@ def main() -> int:
     if not RATIONALES.exists():
         raise SystemExit(f"missing rationales: {RATIONALES} — run build_santiago_score_rationales_v0_1.py first")
     rationales = json.loads(RATIONALES.read_text(encoding="utf-8"))
-    assert len(rationales.get("records") or []) == 104
+    assert len(rationales.get("records") or []) == 105
     theme_json = json.dumps(THEME_META, ensure_ascii=False)
     metric_json = json.dumps(METRIC_META, ensure_ascii=False)
     mode_json = json.dumps(MODE_META, ensure_ascii=False)
@@ -276,7 +278,7 @@ def main() -> int:
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ChronoWalk — Founder Calibration Cockpit (Santiago 104)</title>
+<title>ChronoWalk — Founder Calibration Cockpit (Santiago 105)</title>
 <style>
 :root {{
   --ink:#1c1917; --muted:#78716c; --line:#e7e5e4; --bg:#f7f4ef; --panel:#fff;
@@ -366,11 +368,11 @@ th{{cursor:pointer;color:var(--muted);font-weight:600}}
 <body>
 <header>
   <h1>Founder Calibration Cockpit — Santiago</h1>
-  <div class="sub">Gate 2A.1R-UI.2 · Full inventory 104 · default Launch30 · localStorage migration · dual export · routing disabled</div>
+  <div class="sub">Gate 2A.1R-UI.2 · Full inventory 105 · default Launch30 · localStorage migration · dual export · routing disabled</div>
   <div class="toolbar corpus-bar" id="corpusBar">
     <button type="button" class="corpus-btn active" data-corpus="LAUNCH30">Launch 30 <span class="count" id="countLaunch">30</span></button>
     <button type="button" class="corpus-btn" data-corpus="NONLAUNCH">Non-launch / Backlog <span class="count" id="countNon">74</span></button>
-    <button type="button" class="corpus-btn" data-corpus="ALL104">All 104 <span class="count" id="countAll">104</span></button>
+    <button type="button" class="corpus-btn" data-corpus="ALL104">All 105 <span class="count" id="countAll">105</span></button>
     <span class="statusline">Seed <b id="countSeed">103</b> · Ext <b id="countExt">1</b></span>
   </div>
   <div class="toolbar">
@@ -794,7 +796,7 @@ function approvePoi(){{
     const missingThemes = THEMES.filter(t => isUnknown(d.thematicVector[t]));
     const missingMetrics = METRICS.filter(m => isUnknown(d.structuralMetrics[m]));
     if (missingThemes.length || missingMetrics.length || isUnknown(d.tier)) {{
-      toast('STGO_104 requires founder calibration before approval (UNKNOWN remains)');
+      if (src.stgoId==='STGO_104'||src.stgoId==='STGO_105') toast(src.stgoId+' requires founder calibration before approval (UNKNOWN remains)');
       return;
     }}
   }}
@@ -960,7 +962,7 @@ function renderDetail(){{
       ${{src.launchCorpus?'<span class="badge ok">LAUNCH 30</span><span class="badge founder">CURRENT LAUNCH PRIORITY</span>':'<span class="badge">BACKLOG / NON-LAUNCH</span>'}}
       <span class="badge source">${{src.inventoryProvenance==='FOUNDER_EXTENSION'?'FOUNDER EXTENSION':'ORIGINAL 103 SEED'}}</span>
       ${{(src.founderNodeBadges||[]).map(b=>`<span class="badge founder">${{b.replace(/_/g,' ')}}</span>`).join('')}}
-      ${{src.stgoId==='STGO_104'?'<span class="badge ai">NEW FOUNDER NODE</span><span class="badge warn">NOT IN ORIGINAL 103-NODE SEED</span>':''}}
+      ${{(src.stgoId==='STGO_104'||src.stgoId==='STGO_105')?'<span class="badge ai">NEW FOUNDER NODE</span><span class="badge warn">NOT IN ORIGINAL 103-NODE SEED</span>':''}}
       ${{src.stgoId==='STGO_33'?'<span class="badge founder">FOUNDER SEMANTIC CORRECTION</span><span class="badge">LEGACY NAME DEPRECATED</span>':''}}
       ${{src.legacyAlias?`<span class="badge">legacy: ${{src.legacyAlias.alias}}</span>`:''}}
     </div>
@@ -1181,7 +1183,7 @@ function renderProgress(){{
   const liveExt = SOURCE.records.filter(r => r.inventoryProvenance === 'FOUNDER_EXTENSION').length;
   document.getElementById('countLaunch').textContent = liveLaunch || c.launch30 || 30;
   document.getElementById('countNon').textContent = liveNon || c.nonLaunch || 74;
-  document.getElementById('countAll').textContent = liveAll || c.all || 104;
+  document.getElementById('countAll').textContent = liveAll || c.all || 105;
   document.getElementById('countSeed').textContent = liveSeed || c.originalSeed || 103;
   document.getElementById('countExt').textContent = liveExt || c.founderExtensions || 1;
   document.querySelectorAll('.corpus-btn').forEach(btn => {{
@@ -1424,8 +1426,13 @@ document.getElementById('guideModal').addEventListener('click', (e) => {{
   if (e.target.id==='guideModal') e.currentTarget.classList.remove('open');
 }});
 
-// Default selection: first Launch30 node
+// Default selection: first Launch30 node (optional ?stgoId= deep link from Route Lab)
 currentId = (SOURCE.launchCorpusIds && SOURCE.launchCorpusIds[0]) || SOURCE.records[0].stgoId;
+try {{
+  const _p = new URLSearchParams(location.search);
+  const _jump = _p.get('stgoId');
+  if (_jump && sourceById[_jump]) currentId = _jump;
+}} catch (e) {{}}
 document.getElementById('relMode').value = 'LAUNCH30';
 
 // Expose for validation hooks / manual QA in console

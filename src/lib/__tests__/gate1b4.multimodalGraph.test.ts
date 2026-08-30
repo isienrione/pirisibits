@@ -68,7 +68,7 @@ describe('Gate 1B.4 Santiago multimodal physical graph', () => {
     expect(multi.sanCristobalStaging.routingEndpoint).toBe('funicular')
   })
 
-  it('excludes unresolved launch nodes and preserves 104-node inventory (103 seed + STGO_104)', () => {
+  it('excludes unresolved launch nodes and preserves 105-node inventory (103 seed + extensions)', () => {
     const engine = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json'), 'utf8'),
     ) as SantiagoEngineNodesFile
@@ -78,9 +78,9 @@ describe('Gate 1B.4 Santiago multimodal physical graph', () => {
     const multi = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_multimodal_graph.v0.1.json'), 'utf8'),
     ) as SantiagoMultimodalGraphFile
-    expect(engine.nodeCount).toBe(104)
+    expect(engine.nodeCount).toBe(105)
     expect(engine.nodes.filter((n) => n.launchCorpus)).toHaveLength(30)
-    expect(engine.nodes.filter((n) => !n.launchCorpus)).toHaveLength(74)
+    expect(engine.nodes.filter((n) => !n.launchCorpus)).toHaveLength(75)
     const launchIds = engine.nodes.filter((n) => n.launchCorpus).map((n) => n.stgoId)
     expect(launchIds).toContain('STGO_104')
     expect(launchIds).toContain('STGO_33')

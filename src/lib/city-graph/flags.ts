@@ -92,3 +92,12 @@ export const ROUTE_COMPOSER_V0_2_PRODUCTION = false
 
 /** Never true in this gate. */
 export const ARCQUALITY_V0_2_PRODUCTION = false
+
+/**
+ * Gate 2E.4 — Experience-Time Model V0.1 parallel scaffold ready.
+ * Contract + evaluator only — does NOT cut into production composition.
+ */
+export const EXPERIENCE_TIME_MODEL_V0_1_PARALLEL_READY = true
+
+/** Gate 2E.4 — never true in this gate (no production cutover). */
+export const EXPERIENCE_TIME_MODEL_V0_1_PRODUCTION = false

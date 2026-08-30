@@ -45,11 +45,11 @@ describe('Gate 1B.2A launch human curation', () => {
     const data = JSON.parse(
       readFileSync(resolve(root, 'src/data/santiago/santiago_engine_nodes.v0.1.json'), 'utf8'),
     ) as SantiagoEngineNodesFile
-    expect(data.nodeCount).toBe(104)
+    expect(data.nodeCount).toBe(105)
     const launch = data.nodes.filter((n) => n.launchCorpus)
     const backlog = data.nodes.filter((n) => !n.launchCorpus)
     expect(launch).toHaveLength(30)
-    expect(backlog).toHaveLength(74)
+    expect(backlog).toHaveLength(75)
     expect(launch.map((n) => n.stgoId).sort()).toEqual([...launchIds].sort())
     expect(launch.map((n) => n.stgoId)).toContain('STGO_104')
     expect(launch.map((n) => n.stgoId)).toContain('STGO_33')
@@ -64,7 +64,8 @@ describe('Gate 1B.2A launch human curation', () => {
     for (const n of backlog) {
       expect(n.curatorApproval).not.toBe('CURATOR_APPROVED')
       // STGO_23 retained historical 1B.2A curation rows after leaving active launch.
-      if (n.stgoId === 'STGO_23') continue
+      // STGO_105 is a Gate 2E.4 founder extension with identity-correction curation notes.
+      if (n.stgoId === 'STGO_23' || n.stgoId === 'STGO_105') continue
       expect(n.curatorCuration).toBeFalsy()
     }
   })

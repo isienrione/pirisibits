@@ -5,7 +5,8 @@
   "notes": [
     "STGO_33 remains a single canonical node from the frozen 103-node seed.",
     "Correction is naming/status — not a wholesale reset of founder semantic calibration.",
-    "Luciano K / hotel association is contextual/fun-fact material, not an exclusion reason."
+    "Luciano K / hotel association is contextual/fun-fact material, not an exclusion reason.",
+    "Gate 2E.4: STGO_18 Edificio Ariztía naming correction; STGO_105 Teatro Municipal de Santiago created; STGO_59 remains Club de la Unión with erroneous Plaza Ñuñoa mapping deprecated."
   ],
   "corrections": [
     {
@@ -25,6 +26,56 @@
       },
       "provenance": "FOUNDER_SEMANTIC_CORRECTION",
       "preserveSourceCalibration": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "oldName": "Edificio Palacio Ariztía (Flat-Iron)",
+      "newName": "Edificio Ariztía",
+      "displayName": "Edificio Ariztía",
+      "legacyAlias": {
+        "alias": "Edificio Ariztía (Flat-Iron)",
+        "status": "descriptive_alias"
+      },
+      "preservedHistoricalLabel": "Edificio Palacio Ariztía (Flat-Iron)",
+      "reason": "Founder decided intended POI is Edificio Ariztía (flat-iron), not Palacio Ariztía. Remove Palacio from active canonical/display identity.",
+      "founderInstruction": "Canonicalize STGO_18 as Edificio Ariztía. Keep coordinates and physical graph identity STGO_18. Do not create a separate Palacio Ariztía node.",
+      "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "decisionSource": "FOUNDER_APPROVED",
+      "decisionDate": "2026-08-30",
+      "provenance": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "coordinatesUnchanged": true
+    },
+    {
+      "stgoId": "STGO_105",
+      "oldName": null,
+      "newName": "Teatro Municipal de Santiago",
+      "displayName": "Teatro Municipal de Santiago",
+      "reason": "Founder decided intended POI is historic downtown Teatro Municipal de Santiago. No correct existing node with verified downtown coords; create extension STGO_105.",
+      "founderInstruction": "Do not reuse STGO_59. Do not fabricate coordinates. Status IDENTITY_RESOLVED_PHYSICAL_PENDING. Not immediately route-eligible.",
+      "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "decisionSource": "FOUNDER_APPROVED",
+      "decisionDate": "2026-08-30",
+      "provenance": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "physicalStatus": "IDENTITY_RESOLVED_PHYSICAL_PENDING",
+      "coordinatesStatus": "UNVERIFIED_NULL",
+      "relatedCollision": {
+        "stgoId": "STGO_59",
+        "retainedIdentity": "Club de la Unión",
+        "erroneousMapping": "Plaza Ñuñoa & Teatro Municipal",
+        "disposition": "ERRONEOUS_DEPRECATED"
+      }
+    },
+    {
+      "stgoId": "STGO_59",
+      "oldName": "Plaza Ñuñoa & Teatro Municipal",
+      "newName": "Club de la Unión",
+      "reason": "STGO_59 frozen engine/physical lineage is Club de la Unión. Erroneous Plaza Ñuñoa & Teatro Municipal editorial association removed from derived identity text.",
+      "classification": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "decisionSource": "FOUNDER_APPROVED",
+      "decisionDate": "2026-08-30",
+      "provenance": "FOUNDER_APPROVED_IDENTITY_CORRECTION",
+      "disposition": "RETAIN_CLUB_DE_LA_UNION_DEPRECATE_PLAZA_NUNOA_TEATRO_MAPPING"
     }
-  ]
+  ],
+  "gateNotes": []
 }
