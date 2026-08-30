@@ -101,3 +101,21 @@ export const EXPERIENCE_TIME_MODEL_V0_1_PARALLEL_READY = true
 
 /** Gate 2E.4 — never true in this gate (no production cutover). */
 export const EXPERIENCE_TIME_MODEL_V0_1_PRODUCTION = false
+
+/**
+ * Gate 2E.5-QA — measurement / invariants / parallel Vnext scaffolds.
+ * NON-CANONICAL branch work. Does NOT enable production cutovers.
+ */
+export const GATE_2E5_QA_MEASUREMENT_READY = true
+
+/** Parallel PhysicalEfficiency Vnext — not wired into arbitration. */
+export const PHYSICAL_EFFICIENCY_VNEXT_PARALLEL_READY = true
+export const PHYSICAL_EFFICIENCY_VNEXT_PRODUCTION = false
+
+/** Parallel ArcQuality Vnext (timeUtilization removed) — not wired into runtime. */
+export const ARC_QUALITY_VNEXT_PARALLEL_READY = true
+export const ARC_QUALITY_VNEXT_PRODUCTION = false
+
+/** Place/Experience/Content schema parallel — Launch30 not migrated. */
+export const PLACE_EXPERIENCE_SCHEMA_V0_1_PARALLEL_READY = true
+export const PLACE_EXPERIENCE_SCHEMA_V0_1_PRODUCTION = false
