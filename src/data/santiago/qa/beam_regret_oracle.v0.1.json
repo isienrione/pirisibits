@@ -1,0 +1,812 @@
+{
+  "gate": "2E.5-QA",
+  "status": "NON_CANONICAL",
+  "objective": "mean(BaseNodeValue) - 0.15 * mean(haversineTransitionMin)",
+  "comparableToRouteChoiceScore": false,
+  "runtimeBeamWidthUnchanged": 24,
+  "rows": [
+    {
+      "fixture": "F1",
+      "lane": "SIGNATURE",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03"
+      ],
+      "beamOracleObj": 73.22500000000001,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": -0.404012726533594,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": -0.404012726533594,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": -0.404012726533594,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 315,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F1",
+      "lane": "DISCOVERY",
+      "beamStops": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03"
+      ],
+      "beamOracleObj": 67.15671705119757,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 5.66427022226884,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 5.66427022226884,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 5.66427022226884,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 316,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F1",
+      "lane": "FLOW",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_16",
+        "STGO_02"
+      ],
+      "beamOracleObj": 65.70199270607496,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 7.118994567391454,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 7.118994567391454,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 7.118994567391454,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 317,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F2",
+      "lane": "SIGNATURE",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_02",
+        "STGO_16",
+        "STGO_18",
+        "STGO_19",
+        "STGO_03"
+      ],
+      "beamOracleObj": 66.2743734647439,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 497,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F2",
+      "lane": "DISCOVERY",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_02",
+        "STGO_16",
+        "STGO_18",
+        "STGO_19",
+        "STGO_03"
+      ],
+      "beamOracleObj": 66.2743734647439,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 498,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F2",
+      "lane": "FLOW",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_02",
+        "STGO_16",
+        "STGO_18",
+        "STGO_19",
+        "STGO_03"
+      ],
+      "beamOracleObj": 66.2743734647439,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 72.82098727346641,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26",
+            "STGO_05"
+          ],
+          "regret": 6.546613808722512,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 499,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F6",
+      "lane": "SIGNATURE",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34"
+      ],
+      "beamOracleObj": 56.2250351421972,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 4.646977665199884,
+          "runtimeMs": 4,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 4.646977665199884,
+          "runtimeMs": 4,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 4.646977665199884,
+          "runtimeMs": 5,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 423,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F6",
+      "lane": "DISCOVERY",
+      "beamStops": [
+        "STGO_01",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34",
+        "STGO_91"
+      ],
+      "beamOracleObj": 59.07792627907563,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 1.7940865283214507,
+          "runtimeMs": 4,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 1.7940865283214507,
+          "runtimeMs": 4,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 60.872012807397084,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_28",
+            "STGO_24"
+          ],
+          "regret": 1.7940865283214507,
+          "runtimeMs": 3,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 434,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F6",
+      "lane": "FLOW",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_16",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34"
+      ],
+      "beamOracleObj": 54.315966297696455,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 61.16719915987845,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_24",
+            "STGO_28",
+            "STGO_21"
+          ],
+          "regret": 6.851232862181995,
+          "runtimeMs": 12,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 61.16719915987845,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_24",
+            "STGO_28",
+            "STGO_21"
+          ],
+          "regret": 6.851232862181995,
+          "runtimeMs": 11,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 61.16719915987845,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_35",
+            "STGO_34",
+            "STGO_24",
+            "STGO_28",
+            "STGO_21"
+          ],
+          "regret": 6.851232862181995,
+          "runtimeMs": 12,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 469,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F8",
+      "lane": "SIGNATURE",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_19",
+        "STGO_18",
+        "STGO_06",
+        "STGO_03"
+      ],
+      "beamOracleObj": 48.106402966592476,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 1.5036129305374857,
+          "runtimeMs": 8,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 1.5036129305374857,
+          "runtimeMs": 8,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 1.5036129305374857,
+          "runtimeMs": 7,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 405,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F8",
+      "lane": "DISCOVERY",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_92",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_06"
+      ],
+      "beamOracleObj": 46.98302164394754,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 2.626994253182424,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 2.626994253182424,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 2.626994253182424,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 432,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F8",
+      "lane": "FLOW",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_22",
+        "STGO_19",
+        "STGO_92",
+        "STGO_18",
+        "STGO_03"
+      ],
+      "beamOracleObj": 45.9437653361402,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 3.6662505609897593,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 3.6662505609897593,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 49.61001589712996,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_19",
+            "STGO_06",
+            "STGO_26"
+          ],
+          "regret": 3.6662505609897593,
+          "runtimeMs": 9,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 459,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F15",
+      "lane": "SIGNATURE",
+      "beamStops": [
+        "STGO_01",
+        "STGO_22",
+        "STGO_02"
+      ],
+      "beamOracleObj": 73.22699270607497,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 3.1523034038664974,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 3.1523034038664974,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 3.1523034038664974,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 209,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F15",
+      "lane": "DISCOVERY",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_16"
+      ],
+      "beamOracleObj": 69.26666666666667,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 1,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 210,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    },
+    {
+      "fixture": "F15",
+      "lane": "FLOW",
+      "beamStops": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_16"
+      ],
+      "beamOracleObj": 69.26666666666667,
+      "pools": [
+        {
+          "pool": 24,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 48,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        },
+        {
+          "pool": 22,
+          "oracleScore": 76.37929610994146,
+          "oracleStops": [
+            "STGO_01",
+            "STGO_26"
+          ],
+          "regret": 7.112629443274798,
+          "runtimeMs": 0,
+          "exactness": "BNB_EXHAUSTIVE_OVER_POOL"
+        }
+      ],
+      "totalMs": 210,
+      "note": "Not comparable to RouteChoiceScore; OracleObjective only."
+    }
+  ]
+}
