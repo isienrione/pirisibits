@@ -1,0 +1,458 @@
+{
+  "gate": "2E.6",
+  "status": "NON_CANONICAL",
+  "benchmark": "B02_ORIGINS_COLONIAL",
+  "coverage": "SUPPORTED",
+  "timeEvaluationMode": "LEGACY_COMPATIBILITY",
+  "timeDisclosure": [
+    "EXPERIENCE-TIME CALIBRATION PENDING",
+    "TIME MODEL: LEGACY COMPATIBILITY",
+    "TIME MODEL: LEGACY COMPATIBILITY",
+    "EXPERIENCE-TIME CALIBRATION PENDING",
+    "timeEvidence=LEGACY_SCALAR_DWELL"
+  ],
+  "recommendation": {
+    "lane": "SIGNATURE",
+    "stgoIds": [
+      "STGO_01",
+      "STGO_19",
+      "STGO_03",
+      "STGO_18",
+      "STGO_16",
+      "STGO_02"
+    ],
+    "experienceIds": [
+      "STGO_01::LEGACY_CORE",
+      "STGO_19::LEGACY_CORE",
+      "STGO_03::LEGACY_CORE",
+      "STGO_18::LEGACY_CORE",
+      "STGO_16::LEGACY_CORE",
+      "STGO_02::LEGACY_CORE"
+    ],
+    "totalEstimatedMin": 101.6,
+    "fingerprint": "7142c56424b03279"
+  },
+  "arcSummary": {
+    "phase": "LANDING",
+    "orientationSatisfied": true,
+    "payoffSatisfied": false,
+    "landingSatisfied": true,
+    "openQuestions": 0,
+    "resolvedQuestions": 0
+  },
+  "arcScore": 59.9,
+  "arbitrationWinner": "SIGNATURE",
+  "arbitrationConfidence": "CLOSE_CALL",
+  "experimentalWinner": "DISCOVERY",
+  "explanation": {
+    "routeWhy": [
+      "Selected via CURRENT_OBJECTIVE arbitration",
+      "Lane diversification strategy: SIGNATURE (internal, not traveler category)",
+      "Arc phase ended in LANDING"
+    ],
+    "narrativeArcSummary": [
+      "OPEN/ORIENT → DEVELOP → DEEPEN → LAND",
+      "Open questions: 0; resolved: 0",
+      "ArcQualityVNext score: 59.9"
+    ],
+    "timeSummary": "Total ~102 min · Time evidence mode: LEGACY_COMPATIBILITY · TIME MODEL: LEGACY COMPATIBILITY · EXPERIENCE-TIME CALIBRATION PENDING · timeEvidence=LEGACY_SCALAR_DWELL",
+    "confidence": "CLOSE_CALL",
+    "limitations": [
+      "NON_CANONICAL Feature-Complete Alpha",
+      "Experience-Time calibration pending unless EXPLICITLY calibrated",
+      "Semantic facets may be UNKNOWN",
+      "Weights are provisional (CALIBRATION_REQUIRED)",
+      "TIME MODEL: LEGACY COMPATIBILITY",
+      "EXPERIENCE-TIME CALIBRATION PENDING",
+      "timeEvidence=LEGACY_SCALAR_DWELL"
+    ],
+    "experiences": [
+      {
+        "id": "STGO_01::LEGACY_CORE",
+        "stgoId": "STGO_01",
+        "role": "ORIENT",
+        "why": [
+          "Route start / orientation"
+        ]
+      },
+      {
+        "id": "STGO_19::LEGACY_CORE",
+        "stgoId": "STGO_19",
+        "role": "DEVELOP",
+        "why": [
+          "Selected at step 1 under MIDDLE"
+        ]
+      },
+      {
+        "id": "STGO_03::LEGACY_CORE",
+        "stgoId": "STGO_03",
+        "role": "DEVELOP",
+        "why": [
+          "Selected at step 2 under MIDDLE"
+        ]
+      },
+      {
+        "id": "STGO_18::LEGACY_CORE",
+        "stgoId": "STGO_18",
+        "role": "DEVELOP",
+        "why": [
+          "Selected at step 3 under LATE"
+        ]
+      },
+      {
+        "id": "STGO_16::LEGACY_CORE",
+        "stgoId": "STGO_16",
+        "role": "DEVELOP",
+        "why": [
+          "Selected at step 4 under LATE"
+        ]
+      },
+      {
+        "id": "STGO_02::LEGACY_CORE",
+        "stgoId": "STGO_02",
+        "role": "LAND",
+        "why": [
+          "Selected at step 5 under LANDING"
+        ]
+      }
+    ]
+  },
+  "compositionStepsSample": [
+    {
+      "stepIndex": 1,
+      "phase": "MIDDLE",
+      "budgetConsumedFrac": 0.3380952380952381,
+      "remainingMin": 69.5,
+      "currentSequence": [
+        "STGO_01",
+        "STGO_19"
+      ],
+      "candidatesConsidered": [
+        {
+          "experienceId": "STGO_19::LEGACY_CORE",
+          "baseValue": 69.4,
+          "mrv": 63.6,
+          "transitionValue": 47.5,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 21.5,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_03::LEGACY_CORE",
+          "baseValue": 72.4,
+          "mrv": 57.4,
+          "transitionValue": 46.3,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 26,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_16::LEGACY_CORE",
+          "baseValue": 56.6,
+          "mrv": 62,
+          "transitionValue": 47.1,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 22.7,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_18::LEGACY_CORE",
+          "baseValue": 57.1,
+          "mrv": 59.7,
+          "transitionValue": 46.4,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 20.9,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_02::LEGACY_CORE",
+          "baseValue": 55.9,
+          "mrv": 53.5,
+          "transitionValue": 48.8,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 13.5,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_27::LEGACY_CORE",
+          "baseValue": 54,
+          "mrv": 58.5,
+          "transitionValue": null,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 25.304624821692773,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_25::LEGACY_CORE",
+          "baseValue": 54.7,
+          "mrv": 55.5,
+          "transitionValue": null,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 24.506845064160192,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_22::LEGACY_CORE",
+          "baseValue": 56.4,
+          "mrv": 52,
+          "transitionValue": 48.9,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 23.4,
+          "reason": "lane=SIGNATURE"
+        }
+      ],
+      "chosenExperienceId": "STGO_19::LEGACY_CORE",
+      "rhythmAssessment": "GOOD",
+      "arcStateAfter": {
+        "phase": "MIDDLE",
+        "orientationSatisfied": true,
+        "payoffSatisfied": false,
+        "landingSatisfied": false,
+        "repetitionLoad": 0
+      }
+    },
+    {
+      "stepIndex": 2,
+      "phase": "MIDDLE",
+      "budgetConsumedFrac": 0.5133333333333333,
+      "remainingMin": 51.1,
+      "currentSequence": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03"
+      ],
+      "candidatesConsidered": [
+        {
+          "experienceId": "STGO_03::LEGACY_CORE",
+          "baseValue": 72.4,
+          "mrv": 57.6,
+          "transitionValue": 48.9,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 18.4,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_18::LEGACY_CORE",
+          "baseValue": 57.1,
+          "mrv": 59.9,
+          "transitionValue": 48.9,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 13.3,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_16::LEGACY_CORE",
+          "baseValue": 56.6,
+          "mrv": 62.3,
+          "transitionValue": 47.7,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 20.8,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_06::LEGACY_CORE",
+          "baseValue": 55.3,
+          "mrv": 57.4,
+          "transitionValue": 46.8,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 19.6,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_26::LEGACY_CORE",
+          "baseValue": 56.3,
+          "mrv": 52.8,
+          "transitionValue": null,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 24.49503173989354,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_02::LEGACY_CORE",
+          "baseValue": 55.9,
+          "mrv": 53.8,
+          "transitionValue": 47,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 19,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_27::LEGACY_CORE",
+          "baseValue": 54,
+          "mrv": 58.8,
+          "transitionValue": null,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 29.289942100803046,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_10::LEGACY_CORE",
+          "baseValue": 54.3,
+          "mrv": 56.6,
+          "transitionValue": 47.5,
+          "incrementalArcValue": 0.093,
+          "effectiveMarginalTime": 19.5,
+          "reason": "lane=SIGNATURE"
+        }
+      ],
+      "chosenExperienceId": "STGO_03::LEGACY_CORE",
+      "rhythmAssessment": "GOOD",
+      "arcStateAfter": {
+        "phase": "MIDDLE",
+        "orientationSatisfied": true,
+        "payoffSatisfied": false,
+        "landingSatisfied": false,
+        "repetitionLoad": 0
+      }
+    },
+    {
+      "stepIndex": 3,
+      "phase": "LATE",
+      "budgetConsumedFrac": 0.6599999999999999,
+      "remainingMin": 35.7,
+      "currentSequence": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18"
+      ],
+      "candidatesConsidered": [
+        {
+          "experienceId": "STGO_18::LEGACY_CORE",
+          "baseValue": 57.1,
+          "mrv": 60.1,
+          "transitionValue": 48.2,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 15.4,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_16::LEGACY_CORE",
+          "baseValue": 56.6,
+          "mrv": 62.5,
+          "transitionValue": 46.3,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 25.2,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_06::LEGACY_CORE",
+          "baseValue": 55.3,
+          "mrv": 57.6,
+          "transitionValue": 47.2,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 18.5,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_26::LEGACY_CORE",
+          "baseValue": 56.3,
+          "mrv": 53,
+          "transitionValue": null,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 26.822989300730292,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_27::LEGACY_CORE",
+          "baseValue": 54,
+          "mrv": 59,
+          "transitionValue": null,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 30.885953937182162,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_10::LEGACY_CORE",
+          "baseValue": 54.3,
+          "mrv": 56.8,
+          "transitionValue": 46.6,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 22.2,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_11::LEGACY_CORE",
+          "baseValue": 53.6,
+          "mrv": 61,
+          "transitionValue": null,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 34.608917626532616,
+          "reason": "lane=SIGNATURE"
+        },
+        {
+          "experienceId": "STGO_25::LEGACY_CORE",
+          "baseValue": 54.7,
+          "mrv": 55.9,
+          "transitionValue": null,
+          "incrementalArcValue": 0.092,
+          "effectiveMarginalTime": 29.352026984080208,
+          "reason": "lane=SIGNATURE"
+        }
+      ],
+      "chosenExperienceId": "STGO_18::LEGACY_CORE",
+      "rhythmAssessment": "GOOD",
+      "arcStateAfter": {
+        "phase": "LATE",
+        "orientationSatisfied": true,
+        "payoffSatisfied": false,
+        "landingSatisfied": false,
+        "repetitionLoad": 0
+      }
+    }
+  ],
+  "eligibleCount": 25,
+  "excludedCount": 5,
+  "runFingerprint": "ca63598efb8b87f564c8666e",
+  "LEGACY_EXPERIENCE_ADAPTER": true,
+  "benchmarks": [
+    {
+      "id": "B01_FIRST_TIMER_BALANCED",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B02_ORIGINS_COLONIAL",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B03_REPEAT_VISITOR_FLANEUR",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B04_FOOD_MARKETS",
+      "coverage": "DATA_COVERAGE_LIMITED"
+    },
+    {
+      "id": "B05_ARCHITECTURE_VISUAL",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B06_MEMORY_DETECTIVE",
+      "coverage": "DATA_COVERAGE_LIMITED"
+    },
+    {
+      "id": "B07_FAMILY_YOUNG_KIDS",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B08_OUTDOOR_HIKING",
+      "coverage": "DATA_COVERAGE_LIMITED"
+    },
+    {
+      "id": "B09_FIRST_TIMER_NATURE",
+      "coverage": "DATA_COVERAGE_LIMITED"
+    },
+    {
+      "id": "B10_LOCAL_FLANEUR",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B11_STEP_FREE_HISTORY",
+      "coverage": "SUPPORTED"
+    },
+    {
+      "id": "B12_EXPRESS_45",
+      "coverage": "SUPPORTED"
+    }
+  ]
+}

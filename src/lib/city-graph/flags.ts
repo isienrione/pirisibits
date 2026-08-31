@@ -119,3 +119,24 @@ export const ARC_QUALITY_VNEXT_PRODUCTION = false
 /** Place/Experience/Content schema parallel — Launch30 not migrated. */
 export const PLACE_EXPERIENCE_SCHEMA_V0_1_PARALLEL_READY = true
 export const PLACE_EXPERIENCE_SCHEMA_V0_1_PRODUCTION = false
+
+/**
+ * Gate 2E.6 — Feature-Complete Alpha (NON-CANONICAL quarantine).
+ * VNext shadow pipeline is executable end-to-end. NOT production.
+ */
+export const ENGINE_FEATURE_COMPLETE_ALPHA = true
+export const ENGINE_FEATURE_COMPLETE_ALPHA_CANONICAL = false
+
+export const EXPERIENCE_GRAPH_VNEXT_READY = true
+export const EXPERIENCE_TIME_VNEXT_READY = true
+export const ARCSTATE_VNEXT_READY = true
+export const COMPOSER_VNEXT_READY = true
+export const ARCQUALITY_VNEXT_READY = true
+export const ARBITRATION_VNEXT_READY = true
+export const EXPLANATION_ENGINE_READY = true
+export const LIVE_TRACE_READY = true
+
+/** Explicit production guards remain false. */
+export const EXPERIENCE_TIME_PRODUCTION = false
+export const PRODUCTION_ROUTE_GENERATION = false
+
