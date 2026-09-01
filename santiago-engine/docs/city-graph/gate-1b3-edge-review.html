@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 1B.3 — Santiago Pedestrian Edge QA</title>
+<style>
+body { font-family: Georgia, serif; margin: 0; background: #f4efe6; color: #1a1a1a; }
+header, section { max-width: 1200px; margin: 0 auto; padding: 16px 20px; }
+.card { background: #fffdf8; border: 1px solid #d8cfc0; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { border-bottom: 1px solid #e8dfd3; padding: 6px 8px; text-align: left; }
+.green { background: #eef8f0; }
+.yellow { background: #fff8e8; }
+.orange { background: #fff0e0; }
+code { background: #f0ebe3; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gate 1B.3 — Santiago launch pedestrian edge graph (QA)</h1>
+  <p>Provider-derived Mapbox walking edges. Traveler route generation remains disabled.</p>
+</header>
+<section class="card">
+  <h2>Summary</h2>
+  <p>Eligible nodes: 27 · Runtime edges: 598 ·
+     GREEN 430 · YELLOW 168 · ORANGE 5 · pruned 5</p>
+  <p>Connected components: 1 · Isolated: none ·
+     Median distance 1311.0 m · Median duration 15.81 min</p>
+  <p>Reference matrix: REFERENCE_MATRIX_NOT_PRESENT</p>
+</section>
+<section class="card">
+  <h2>QA shortest paths (runtime graph)</h2>
+  <ul><li><b>Plaza de Armas → Lastarria</b>: 16.77 min / 1311.0 m (1 legs)</li><li><b>La Moneda → Londres 38</b>: 8.97 min / 730.8 m (1 legs)</li><li><b>Lastarria → La Chascona</b>: 11.5 min / 991.2 m (1 legs)</li><li><b>La Vega → GAM</b>: 23.2 min / 1809.3 m (3 legs)</li><li><b>Yungay → Museo de la Memoria</b>: 8.01 min / 742.6 m (1 legs)</li></ul>
+</section>
+<section class="card">
+  <h2>Central pair checks</h2>
+  <ul><li>STGO_01→STGO_02: GREEN 3.5 min (runtime=True)</li><li>STGO_01→STGO_03: GREEN 10.95 min (runtime=True)</li><li>STGO_03→STGO_04: GREEN 3.64 min (runtime=True)</li><li>STGO_06→STGO_07: GREEN 0.63 min (runtime=True)</li><li>STGO_24→STGO_25: GREEN 5.27 min (runtime=True)</li><li>STGO_24→STGO_26: GREEN 5.16 min (runtime=True)</li><li>STGO_29→STGO_32: GREEN 1.97 min (runtime=True)</li><li>STGO_34→STGO_35: GREEN 3.29 min (runtime=True)</li></ul>
+</section>
+<section class="card">
+  <h2>ORANGE / pruned edges</h2>
+  <ul><li>STGO_48→STGO_03: 38.35 min — ORANGE_high_burden_transition</li><li>STGO_48→STGO_04: 36.7 min — ORANGE_high_burden_transition</li><li>STGO_48→STGO_18: 39.27 min — ORANGE_high_burden_transition</li><li>STGO_48→STGO_19: 35.93 min — ORANGE_high_burden_transition</li><li>STGO_48→STGO_92: 36.43 min — ORANGE_high_burden_transition</li></ul>
+</section>
+<section class="card">
+  <h2>Long runtime edges (&gt;30 min) — review</h2>
+  <ul><li>STGO_03→STGO_30: 31.55 min</li><li>STGO_04→STGO_29: 30.79 min</li><li>STGO_11→STGO_03: 33.46 min</li><li>STGO_11→STGO_04: 32.65 min</li><li>STGO_11→STGO_19: 31.88 min</li><li>STGO_11→STGO_92: 32.37 min</li><li>STGO_21→STGO_34: 30.07 min</li><li>STGO_29→STGO_04: 30.4 min</li><li>STGO_30→STGO_03: 30.09 min</li><li>STGO_48→STGO_01: 31.07 min</li><li>STGO_48→STGO_21: 33.35 min</li><li>STGO_48→STGO_22: 33.14 min</li></ul>
+</section>
+<section class="card">
+  <h2>Sample runtime edges (first 120 by class/duration)</h2>
+  <table>
+    <thead><tr><th>From</th><th>To</th><th>Class</th><th>m</th><th>min</th><th>Points</th><th>Provider ref</th></tr></thead>
+    <tbody><tr class="green">
+          <td><code>STGO_07</code> Londres 38 Memorial</td>
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td>GREEN</td>
+          <td>49.5</td>
+          <td>0.52</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>WpWeBflszzhpyjCm-fR9oDwGXMwi765g6CWMuOSeZYsN2UOMDGgLRw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td><code>STGO_07</code> Londres 38 Memorial</td>
+          <td>GREEN</td>
+          <td>49.5</td>
+          <td>0.63</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>TsavuTM1hzBehbh-QI3Hj6u44sh4XKFt5Wr2HAOG5UwrDYMnq4Y_iA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>65.5</td>
+          <td>0.77</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>1tNA_P-lChuKs10wBfGazVIR4zo8KVd56eagz7KN6TrbaPQOdT_nOA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>65.5</td>
+          <td>0.8</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>EkgO8OfcSt8x99T4YFEzHOamRuDAgUFpxD-04q8eVsOKGMp4wN1BMg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td>GREEN</td>
+          <td>105.2</td>
+          <td>1.0</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>da681Wy6T2ojw7kqCW91Ij8uLChj6vtvM2LhD8BcvQTjst_VV9DxHA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td>GREEN</td>
+          <td>105.2</td>
+          <td>1.56</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>bgZaoHaSIULq14lIwGiSFt34hmLwK9h8hQighjXqtSmkopHdLU-dEA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_29</code> La Chascona (Neruda House)</td>
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td>GREEN</td>
+          <td>177.1</td>
+          <td>1.97</td>
+          <td><code>experience</code>→<code>funicular</code></td>
+          <td>i0RwdwR-M790C19wkD_J_yDTShqWheNiTmdqV9O0AzULPe0sIeHnHg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>187.6</td>
+          <td>2.12</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>gfXsjSmOvZ7v7Lc8BauCCsHuivBTbI5TKXw6owtEBDYG99gUTcBtLw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td><code>STGO_29</code> La Chascona (Neruda House)</td>
+          <td>GREEN</td>
+          <td>177.1</td>
+          <td>2.15</td>
+          <td><code>funicular</code>→<code>experience</code></td>
+          <td>nEhELqOt8ipoptrVLHnhqhOlQpCRDR1VdSpATrkaj6-S-LVtOUfDYw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td>GREEN</td>
+          <td>219.2</td>
+          <td>2.28</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>uLAbqzlQlhFAWtw0ygZiVhJjidjJkudZfKMMnNCGYMU3y5z4ZmdmcQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>241.6</td>
+          <td>2.6</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>kdlKQBmUZdpMM_WmiUZKpGXF9ydcPVQdiR8rVEGa8QdifglIIK2c3A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>225.6</td>
+          <td>2.62</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>SAB9Zx8pGlCVII7gQQbZnvQaZz7zsfhWSc7iAVcCSbYX_qJulo9HMw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>187.6</td>
+          <td>2.65</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>YLOf_xKEJLPYUjl4JTPwT2Ofq62LZMFkrm3xL9K9i5CtMgh5Bs9Qdw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>247.2</td>
+          <td>2.67</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>5uXllsWzfYXQJcV5-8EhZayFGxApp4BaJj0kftZG78tgeYf3TlWJyQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>216.2</td>
+          <td>2.76</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>I8JlPGxo9TyfB5CeVo3Fb6Shi_Lrb4V6gSwvqTOqrzym-OP62RYzsQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>229.6</td>
+          <td>2.87</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Ds9LOwkY6mLQ0sGizihnPoTPR92OMwu3Ce3tr3tlEEPCZGWf6frMsg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td>GREEN</td>
+          <td>219.2</td>
+          <td>2.87</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>kWiuD6kzGTWsF4PfbWz-OJufZfLGhLWr2S-zb_CbPwxfOASyO4853Q==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>250.3</td>
+          <td>3.02</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>VYtKqFkvzPBmTkdbwKxlc42DJhi8LrkHKDm1O7Zkwqawkku-RiQsMQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>241.6</td>
+          <td>3.05</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>6QeSQALkeAg9XjJaUedBLQHWP91UxBqqMlh6f7iLQgSPPjjezsSyYA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>225.6</td>
+          <td>3.06</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>o7k9z1jhC6fp1ob-yLmpXRNfLNpc1ZtHMpgONe9vQTtU1sIsdkP04Q==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>267.5</td>
+          <td>3.11</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Pa7vVPhwXX8QJlDEcplM5D5frA2PwFLX-qZhYOMcjQU252XLLBrE8w==</td>
+        </tr><tr class="green">
+          <td><code>STGO_20</code> La Piojera</td>
+          <td><code>STGO_35</code> Mercado Tirso de Molina</td>
+          <td>GREEN</td>
+          <td>259.3</td>
+          <td>3.16</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>UOOfjesQISFDGjImCQLUH4NnKT6ZC_WX6OsYQt93yaFqjQKlAR3npA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>267.5</td>
+          <td>3.2</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>tVHucW6_PjJlMcG0d1mIpZj2gMn5ir-xax7yQ_3KB222rakyZ3k6tg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>276.8</td>
+          <td>3.23</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Rvlmo-4g5_kOJnh9v_E2R6eTsZkvh8XrpNXJFFWgXsx7XcZuYBGpsQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_30</code> Bellavista Mural Corridors</td>
+          <td><code>STGO_29</code> La Chascona (Neruda House)</td>
+          <td>GREEN</td>
+          <td>279.7</td>
+          <td>3.24</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>jfno05yiD-lIfNhxdU7G9KN7OYI9GckmBKNnW0bcrn2Jcf_KHiUplg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td>GREEN</td>
+          <td>254.5</td>
+          <td>3.26</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>fKeXPAUDoE7hdvpz-ShlqMW1c3wHvoWaDu-5mv7kMmkDh5xxK6YMZw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_35</code> Mercado Tirso de Molina</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>259.3</td>
+          <td>3.28</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>-f8ywGoaKu5SnTWTN8v1pnfmjD9QhJWccmbwFQzHOplIOtLgtPySOg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td><code>STGO_35</code> Mercado Tirso de Molina</td>
+          <td>GREEN</td>
+          <td>298.9</td>
+          <td>3.29</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>oPUEOlmyPmR3pqeQs69k9qn_gRWgrQMHOBIhfm-M2Sgp1RdnYyodKQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_29</code> La Chascona (Neruda House)</td>
+          <td><code>STGO_30</code> Bellavista Mural Corridors</td>
+          <td>GREEN</td>
+          <td>279.7</td>
+          <td>3.31</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>pcudgjI7fb2qnBm-4S7GFzOB_AWP0Cj44QnNf1qa2P8iMJ3B8L-9yA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>276.8</td>
+          <td>3.34</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>ER-CCYv5QbqyTe3xvioY3aOqh1bklucAc_4Y-CpBIcXzOkhewG9ukg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>307.1</td>
+          <td>3.37</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>qyrIjVEEllPrG9BJMFBHd5a7fVmPuHS_tIPiu4p9SKWamcEoEgcxfg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>216.2</td>
+          <td>3.38</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>7fuRtou39jyDjr4kFcjGd8A2AGgC0sAfVt7w98a_XOfkygvX4WaIVw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>312.7</td>
+          <td>3.44</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Xabp3WcPLVwdeEyGq0eEaP3XxYJRE-Q8VBBx3MLK0dHY5BHGpAQxEg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td>GREEN</td>
+          <td>291.4</td>
+          <td>3.45</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>s6N6zfGCDf5KAlnIqQGs5XL2TUCdD8tASXQOG1ElcPokfwXDR08zIA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>298.2</td>
+          <td>3.47</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>pF9kx0YF8tT4f7CHXNDCMKvsQW3SJAP7sMlPz7VlDM2HPd6300knUg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td>GREEN</td>
+          <td>291.4</td>
+          <td>3.48</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>BtYKzsAJ0z6XjRs-l1DzuOkkQilCOzDLYDOnUt3SIOhfdqwoyazMng==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>229.6</td>
+          <td>3.5</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>4f9H5xj_yPLgycZyYdF2BLj1nKZ-4cOdQzE45e0n7C55D2zPOofdvA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>314.4</td>
+          <td>3.56</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>fnaBt4ep-YhSq1AUf3XXjTFeG44niB_gOLz3d1plFt9UVtwRTR36-Q==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>298.2</td>
+          <td>3.61</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>8f0xeu4WQ0JNimEkD57_nkv_ZLaIG33y5g-J-NuCWBAYWdufp1qvyA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_35</code> Mercado Tirso de Molina</td>
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td>GREEN</td>
+          <td>298.9</td>
+          <td>3.63</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>4CLnnIL3liQkkYcM1Bsebl9sG3wkLNuf9uqrRvT5233t8hnpPnjGlw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>274.6</td>
+          <td>3.64</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>QTjebrdU8lWA3X0qaX0bntxikVuPnEsGbmYEu0sJaAU8bFIg67rkpQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>307.1</td>
+          <td>3.85</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>4Z3ZIWkMC2LdGcgbfU2EwNH0XJoULtV2owbGA0hLK0438wqLTESlFw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>314.4</td>
+          <td>3.9</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>u3j0YNu6t6sES9CxGR8YGAMtb5jEHbIIawrtprcnIyBW7aIFy0bfKQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td>GREEN</td>
+          <td>254.5</td>
+          <td>4.27</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>fKkO4pMoks2a0_bL_5uF5Iri6uBYRIG5E7H2Iac-CoEiUiyvyIoctw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>340.1</td>
+          <td>4.44</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>8qNjVaJS3NpIvx6KYZNwiF2sj8HWKwTGUcL4sfrHfW5RT9NmWdIpTg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>394.0</td>
+          <td>4.44</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>3Z0mxlvU97aZRCEAk3VAhhTiv4nbP1O6NloshW0k4qzQDzOo1BGy7A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>350.9</td>
+          <td>4.78</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>e2XMI0usp56u11SXsIf_nm74cxngUEwpUSivUlMPWbbudOBH3tBBqw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td>GREEN</td>
+          <td>359.7</td>
+          <td>4.82</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>yP6SCx6FcZUiONIfH3suv6rW8Gj-EpbVWkOBHUpcYLe4rQDUIsXYJg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>403.8</td>
+          <td>4.88</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>emo5Cs-csaCKdPGJVD2sjHd6amEzwB_Js3q9cA4-XjMMMrrj4oe7vQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>403.2</td>
+          <td>5.02</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>tamGJwE0cTWekvngk0uVRKb-6BOBlDZC5qq-vd5KQykngO_NQpxErQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td>GREEN</td>
+          <td>445.2</td>
+          <td>5.16</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>PGVrwk171nOAA_16Q1G-MFj72l-q_wzEkl6Wr2YCEAWATDrdl--YXw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_30</code> Bellavista Mural Corridors</td>
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td>GREEN</td>
+          <td>456.8</td>
+          <td>5.2</td>
+          <td><code>experience</code>→<code>funicular</code></td>
+          <td>iAz1nm9JqPSL3gSSNKmCFcTekLOtlqXm28dXt8fiUI4iaKVLwMSI2g==</td>
+        </tr><tr class="green">
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td>GREEN</td>
+          <td>359.7</td>
+          <td>5.27</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>36p2J932cD9fJ3PuyiyR3jWb2vvm0WyyJmazx5qKZITiDh01RHSRJQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>495.0</td>
+          <td>5.34</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>KaT5EDsZBji8_jzW2igOhUN1TLZlZ4LI4qW3A0hr2rzoaqPNtSJkog==</td>
+        </tr><tr class="green">
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td>GREEN</td>
+          <td>445.2</td>
+          <td>5.36</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>SZN87NWErC4hkmXtiMN1VONjE_9ixxaQKW9Fhe3Rt6YuwckzDlUbZA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>421.4</td>
+          <td>5.44</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>JRISclsiRUF2pZ_0H4ZV3twbv8RScXxDE_NR4mOc5RHAqOzh9w18Xg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td><code>STGO_30</code> Bellavista Mural Corridors</td>
+          <td>GREEN</td>
+          <td>456.8</td>
+          <td>5.46</td>
+          <td><code>funicular</code>→<code>experience</code></td>
+          <td>IvuhAbUe9BFUYO_l0FCOBC8owUsIvAfuj9TUKRTERx0-bMGzQEfUCA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>403.2</td>
+          <td>5.67</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>YCXq9fDTnZmQiArhSlCjLcEhGzvFeVwJdrcTJ_wtVc8V57uX5pH9ew==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>498.1</td>
+          <td>5.94</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>sIcywisqMzGPzD37DW6YyM02G4gBL3XkLzo7_AvILyIJyENoeps25A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td>GREEN</td>
+          <td>503.9</td>
+          <td>5.98</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>K4S684Ua4qkAmCtICHkiE4OEkDgMAbqCT1af0JIzpOhq6D9fA2hCsA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>542.1</td>
+          <td>5.99</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>kPdZVmp3NKB_V5fOxhlnsbL1NKXc7zhHPe5LXtfz53xMFBI6s3qyDA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>502.0</td>
+          <td>6.02</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>cY-dZo9gNaqpvgeo4mtGmguYNbEFTZDiS0Ih656CkqQtHUSswSVQow==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>554.4</td>
+          <td>6.03</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>j5zGE5qxwGYxMRNCi3TAaSwWR9UO9uCKBoaYRecmo52n0al9SgoVAw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_21</code> Confitería Torres (1879)</td>
+          <td>GREEN</td>
+          <td>512.6</td>
+          <td>6.09</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>OtOBttq7CFzKW_NOnSOFsvVcEV8E6dpD-KziZavAKQ5MrYwa0zE-mA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>498.2</td>
+          <td>6.13</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>OZJcLftRfW5olHYHGiJLk8pVdDet7VXEfoameN-6r5M8JZ0HoNzTAQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td>GREEN</td>
+          <td>473.7</td>
+          <td>6.14</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>GszKzNM5PaOVOXQ2V9EkimjJGV9ezu-Ei-rbfm0QJjYiZrCtdxrqIg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_91</code> Patronato Textile &amp; Culture Corridor</td>
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td>GREEN</td>
+          <td>574.7</td>
+          <td>6.27</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>3Ash7h_WYFftaFgexe8rIlQ5IJLh8uY0XcliZhHhY5t5PL2zd0c2nw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_20</code> La Piojera</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>495.0</td>
+          <td>6.3</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>DTZbSDo6x1xr9N5Wc5D7OrvRTfD2kAQcn79GkMQxB8oY1eQq6Nulug==</td>
+        </tr><tr class="green">
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td>GREEN</td>
+          <td>550.4</td>
+          <td>6.36</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>8bMeGrHDK06NsxYpvZ4YXNo0pXQqxXvceMUReLNfKpX30CfHe93V8w==</td>
+        </tr><tr class="green">
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>561.3</td>
+          <td>6.52</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Q5Ks8STIhAozVnMg_4TuGXbADQu6LpaXs3kjEsw-E3TkLdtaV9Afyw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>540.0</td>
+          <td>6.52</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>7QKs6LqZe5r4i638_XcqrstJZXT_FSSo6Oum6_mXDfkKccuVhRQLYg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>583.8</td>
+          <td>6.53</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>VWDIWvgjTEsRciXISru4nBZOTciJPbfYAegaLWXTIWhw88AUERjAKA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td><code>STGO_25</code> GAM (Centro Gabriela Mistral)</td>
+          <td>GREEN</td>
+          <td>473.7</td>
+          <td>6.55</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>SsbFp3rtNk4thj-6pgYkQSVNjq9TM8GD0MhFcvmLhWh-5Qq35boziQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>540.0</td>
+          <td>6.62</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>7qeaEpE1vVwOhiYJdaoYfOS17PxhZ7EbxfH0_emAOM2g-Tb1_mxdMA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_07</code> Londres 38 Memorial</td>
+          <td>GREEN</td>
+          <td>557.1</td>
+          <td>6.63</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>t56Qsz-f8ITsMBRzcmxD6K_WqhqR053JUd7vfcEyFhnFr4KyciihPw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>516.7</td>
+          <td>6.63</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>PxfaqIDA5AiV829r9j9DCbmDg1xL4M6_sAEacAaJXObJLqyn3EDVtA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_28</code> Bocanáriz &amp; Chipe Libre</td>
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td>GREEN</td>
+          <td>550.4</td>
+          <td>6.72</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>WwjykkjAlR5_6rxazgBOl66yN5oAXGMWb4yWheQ98nu77jxNvQHRkQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>616.3</td>
+          <td>6.73</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>qMqT4HOPJQ9n432e_WCGiH6_EMY_ShpomLJ2SUB_tf0Tc7_ox13XvQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>563.7</td>
+          <td>6.75</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>_q5vkk99fpp0hGRPz4ghnFyaj_ZFB5OE8x6YqMI9kDjoug-RKGD9sg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>607.7</td>
+          <td>6.76</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>ixkYuUpzMS6c-aSe7bS2QHc7m6lenPSb15b40pwHtXj9z20KsHPrbg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>542.1</td>
+          <td>6.79</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>ASGkxRYehD1VJIrATRljh8cniYQvbQwlfKoutCSJZpGsqMZr3sYrbQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_20</code> La Piojera</td>
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td>GREEN</td>
+          <td>561.3</td>
+          <td>6.84</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>8p1dmbaSuS1VqimkmJSAa-oQ-uSyUfBpLpNr1y3TdWHM_F3mjoiaVw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>563.8</td>
+          <td>6.9</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>96Jz7d7npm8A6QAO1MxC08OaxFaPAe77lj1yk72RktFXmeKk7bF77A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_21</code> Confitería Torres (1879)</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>559.4</td>
+          <td>7.03</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>11XwzcHZd3pkCqDO5MIt2kFZ67-uNWdy9jVPFpOBvWtcRPj4vXg2MQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_34</code> La Vega Central</td>
+          <td><code>STGO_91</code> Patronato Textile &amp; Culture Corridor</td>
+          <td>GREEN</td>
+          <td>574.7</td>
+          <td>7.07</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>IE-YJ-ZsUYooBDEWO_m9RF0wY3_mhFXAzncqOD6zF-jQnhEz_K0XIQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td>GREEN</td>
+          <td>633.6</td>
+          <td>7.32</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>BVxWXy54dwdArYxe2MTmlE0_nhDKsUpN7T1z_dyS8Owot0__xN3c7A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>649.3</td>
+          <td>7.33</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>gGd14UI7Z9U92ilYiV4f0FYqQWZzxGGbydVMcT7pOcQ7kqUg8LSu4g==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>670.6</td>
+          <td>7.44</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>_zbZkUlQP9ctvrQoC7KCgU7si8KiYY3FvL28-nm2fGLJ2aGdu6rhLw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>581.7</td>
+          <td>7.49</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>qXlN-UK8QefF-Wz8Ct8AdJV0dpEstLqdHKDzbe0ITpAtM4ilk36KFA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>597.9</td>
+          <td>7.52</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>bnvf-jtPy_3Ll1VDhiavee8-aKb-vB3jVsh3SdppbZsWasWa2wcQwg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>661.8</td>
+          <td>7.54</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>HNN91ChqQX9rzPytBkCaOdZBFB9hRYj4Wv7nk1NWs7HNMqZG1HxXyQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_26</code> MNBA &amp; Parque Forestal</td>
+          <td><code>STGO_27</code> Taller Castillo Kulczewski</td>
+          <td>GREEN</td>
+          <td>633.6</td>
+          <td>7.55</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Mglg4UhKZ19YoiUHfHNNK2Lykym8TLeJ7Hb4JVeVuudmpmsX-6dHvA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>607.7</td>
+          <td>7.59</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>keWuToam6nIgPvAqmG8NWCrLQP2Xz_Z2EDNYwKK4bm2QJBsSqd4Tow==</td>
+        </tr><tr class="green">
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>692.2</td>
+          <td>7.67</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>mQ3UxmDLR1chyrsE10xLN7tA3M7as4gPBrM_YleDo7rHylZOrY_1Fg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_35</code> Mercado Tirso de Molina</td>
+          <td>GREEN</td>
+          <td>688.5</td>
+          <td>7.73</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Q2iH1S0h0CkHhJSIIysmi9X-94vcCLhScSQL4cVxM2jJy29vx686fw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td><code>STGO_91</code> Patronato Textile &amp; Culture Corridor</td>
+          <td>GREEN</td>
+          <td>697.1</td>
+          <td>7.77</td>
+          <td><code>funicular</code>→<code>experience</code></td>
+          <td>MZR9r4qKiU4SDW_xHIbdQjPnL1csaPmXyQRx2baK4M6BUxl9FTsN-Q==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>590.7</td>
+          <td>7.79</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>byu5XElmmW8ipZJbvUKEjdih9xgCKfzFd_qVzO5RkjhtiCxsZ5kFYQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>699.9</td>
+          <td>7.91</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>RiVB-JrzUqjBMuzLEL29ZgruJ4wSCUkdolr-pMxhfLRDxfmpJ12fxA==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_92</code> Paseo Bandera Urban Art Corridor</td>
+          <td>GREEN</td>
+          <td>616.3</td>
+          <td>8.01</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>f3ofm81Ejj-GTej01Am1F7punE_5pLYJp3XIU7KDvt6wEdubPJF83Q==</td>
+        </tr><tr class="green">
+          <td><code>STGO_11</code> Barrio Yungay &amp; Plaza Roto Chileno</td>
+          <td><code>STGO_48</code> Museo de la Memoria y DDHH</td>
+          <td>GREEN</td>
+          <td>742.6</td>
+          <td>8.01</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>KemtoFwM2CXHP9HbuhVD5KtylgSg-qcvqk27S-Ny4ZkXWQZaqpnQIw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>712.5</td>
+          <td>8.01</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Vjzu5To4xkLr7bTUFyFY3RhBkmreFQIIE1MF4OqnjfmimnmnGj0Dwg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_29</code> La Chascona (Neruda House)</td>
+          <td><code>STGO_91</code> Patronato Textile &amp; Culture Corridor</td>
+          <td>GREEN</td>
+          <td>730.2</td>
+          <td>8.01</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>d2n_1f4mnx-FkiA0xToL4mRulGdxgykzym4PtfA8K8dLtizPeDiHXQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td>GREEN</td>
+          <td>663.9</td>
+          <td>8.06</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>tcHglsl1CE_keuAXE-mh5gIWOk3UjvYstsldFAyW-e9vWJ6C3IfIMg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>628.8</td>
+          <td>8.08</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>eZ-cKbgLRBRXvfvd0BQGsFX7oEKlSIpdADRqFBR78ob4KSrltE2SDw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_20</code> La Piojera</td>
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td>GREEN</td>
+          <td>633.0</td>
+          <td>8.1</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>hPVWDuWyMqheTtgqWrrfFhKqyeJD9ooEGXzO6OoypRl38kN2Mw5Vaw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>739.4</td>
+          <td>8.13</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>D5MmS2FHfMzGlarmwx0FvqJ96iOR_fQKZumm9NshL8Jby1yQX0FK8A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_20</code> La Piojera</td>
+          <td>GREEN</td>
+          <td>674.5</td>
+          <td>8.26</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>-fWaefVz-PY-GtW-hy-fx-b-opwgIZHh1dKdAK1UbdlnBm9PsjT1bg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td>GREEN</td>
+          <td>663.4</td>
+          <td>8.29</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>XSRAg08oZMcSC0icHQs2xCnqR5IAXwRTne3hlCJN_BPkgHF9v-3G8A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td><code>STGO_02</code> Catedral Metropolitana</td>
+          <td>GREEN</td>
+          <td>628.8</td>
+          <td>8.29</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>G5nKsQCalQNNwsn16jsoVfoSLdjQRex8fs4F11RT4HkICxu7R6tGbw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>727.3</td>
+          <td>8.34</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>WEj1O_lY-G1yWTvXhlncf68BSYahKpXvq6fFah20Wv9H31fUrq4uhw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td><code>STGO_18</code> Edificio Palacio Ariztía (Flat-Iron)</td>
+          <td>GREEN</td>
+          <td>625.6</td>
+          <td>8.41</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>hhjXVk9wWlS3MpJnTGDTRfqYH4DIWM62TgM5lncQEq8N5V21l8ejtg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td><code>STGO_21</code> Confitería Torres (1879)</td>
+          <td>GREEN</td>
+          <td>720.6</td>
+          <td>8.43</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>1SlvlFeLRKQMUIhgGRT0vpSlumr4hRJiAUb26ogEqoFVEwUf_UkY9w==</td>
+        </tr><tr class="green">
+          <td><code>STGO_03</code> Palacio de La Moneda</td>
+          <td><code>STGO_06</code> Barrio París-Londres</td>
+          <td>GREEN</td>
+          <td>691.3</td>
+          <td>8.47</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>QXzuCU0XW-mVtPq3Wn0THdc9hRR0g1GDmKKKbn2QsNNTkOmOOl96mw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td><code>STGO_19</code> Seguro Obrero Bullet Scars (Correo)</td>
+          <td>GREEN</td>
+          <td>657.4</td>
+          <td>8.48</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>O9LA-mf7EDGGR86PEtawD8rvSK50wsy7G1XRjcuYA9czWATo4KG8xg==</td>
+        </tr><tr class="green">
+          <td><code>STGO_04</code> Morandé 80 (President&#x27;s Door)</td>
+          <td><code>STGO_21</code> Confitería Torres (1879)</td>
+          <td>GREEN</td>
+          <td>744.1</td>
+          <td>8.56</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>MmXNLdRWGdtBa_jBlns_MRnwDJwg27RzGfAmXHk-9CuI3Z-sl0un1A==</td>
+        </tr><tr class="green">
+          <td><code>STGO_24</code> Barrio Lastarria Corridor</td>
+          <td><code>STGO_30</code> Bellavista Mural Corridors</td>
+          <td>GREEN</td>
+          <td>736.2</td>
+          <td>8.61</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>1j35riBT9eexczeDF-rS2znzIBHbdEgZaSANZYRLMdVYo2SuSK413g==</td>
+        </tr><tr class="green">
+          <td><code>STGO_21</code> Confitería Torres (1879)</td>
+          <td><code>STGO_10</code> Palacio Pereira</td>
+          <td>GREEN</td>
+          <td>693.0</td>
+          <td>8.64</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>9ZlmV6jkKv6c3bIF-u0U8bkMz0Ojt8u99aJ6fsBzHhn8sM3yu0DzTQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_01</code> Plaza de Armas</td>
+          <td><code>STGO_16</code> Pasaje Matte &amp; Hidden Ballroom</td>
+          <td>GREEN</td>
+          <td>663.5</td>
+          <td>8.71</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>Jck3o9Nbs30eLLigxHDclfGjnUQivlc8ORlsRowxLwITckJZOpvOlQ==</td>
+        </tr><tr class="green">
+          <td><code>STGO_20</code> La Piojera</td>
+          <td><code>STGO_22</code> Museo Chileno Arte Precolombino</td>
+          <td>GREEN</td>
+          <td>695.5</td>
+          <td>8.72</td>
+          <td><code>experience</code>→<code>experience</code></td>
+          <td>bw7ymvRICONKwlLdf154IaFX8r38oNAXpC-puMnqmWOb7XAB29_viw==</td>
+        </tr><tr class="green">
+          <td><code>STGO_91</code> Patronato Textile &amp; Culture Corridor</td>
+          <td><code>STGO_32</code> Cerro San Cristóbal Funicular / Hill complex</td>
+          <td>GREEN</td>
+          <td>697.1</td>
+          <td>8.72</td>
+          <td><code>experience</code>→<code>funicular</code></td>
+          <td>wjg1FRWZ4r4IHNVF_B1_x69JF3Wucn9p2Cs8eMGTPZZd3jk6z0JUQQ==</td>
+        </tr></tbody>
+  </table>
+</section>
+</body>
+</html>

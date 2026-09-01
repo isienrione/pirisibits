@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 1B.4.1 — Official Transit Correction</title>
+<style>
+body { margin:0; font-family: Georgia, serif; background:#f4efe6; color:#1a1a1a; }
+header, section { max-width:1100px; margin:0 auto; padding:16px 20px; }
+.card { background:#fffdf8; border:1px solid #d8cfc0; border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+.badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; }
+.badge.green { background:#d9f0e0; }
+.badge.red { background:#f7d6d6; }
+.badge.blue { background:#d9e6f7; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+td, th { border-bottom:1px solid #e8dfd3; padding:6px 8px; text-align:left; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gate 1B.4.1 — Official 2026 DTPM GTFS transit correction</h1>
+  <p>Canonical runtime Metro from official DTPM GTFS. OSM is supplemental QA only. Traveler routing remains disabled.</p>
+</header>
+<section class="card">
+  <h2>Official feed</h2>
+  <p>Source: <code>https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip</code></p>
+  <p>Version: <b>V166.20260704</b> · Effective: 20260704 → 20261231</p>
+  <p>Agency: M — Metro de Santiago</p>
+  <p>Retrieved: 2026-08-27T06:26:05Z</p>
+</section>
+<section class="card">
+  <h2>Operational lines (runtime)</h2>
+  <table><thead><tr><th>Line</th><th>Name</th><th>Stations</th><th>Status</th></tr></thead><tbody><tr><td>L1</td><td>Línea 1</td><td>27</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L2</td><td>Línea 2</td><td>26</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L3</td><td>Línea 3</td><td>21</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L4</td><td>Línea 4</td><td>23</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L4A</td><td>Línea 4A</td><td>6</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L5</td><td>Línea 5</td><td>30</td><td><span class='badge green'>OPERATIONAL</span></td></tr><tr><td>L6</td><td>Línea 6</td><td>10</td><td><span class='badge green'>OPERATIONAL</span></td></tr></tbody></table>
+</section>
+<section class="card">
+  <h2>Future / non-operational excluded</h2>
+  <ul><li><b>L7</b> — FUTURE_NON_OPERATIONAL: Line 7 is not present as an operational Metro route in official DTPM GTFS V166.20260704 (valid from 2026-07-04). Excluded from 2026 runtime graph.</li></ul>
+  <p><span class="badge red">L7 NOT IN RUNTIME</span></p>
+</section>
+<section class="card">
+  <h2>Station reconciliation (OSM ↔ GTFS)</h2>
+  <p>GTFS normalized stations: 126 · OSM stations: 126</p>
+  <p>Matched: 126 · GTFS-only: 0 · OSM-only: 0 · Ambiguous: 0</p>
+</section>
+<section class="card">
+  <h2>GTFS timing coverage</h2>
+  <p>Scheduled segments: 368 · Ride edges with scheduled times: 100.0%</p>
+  <p>Duration label: <code>SCHEDULED_GTFS_DURATION</code> (not realtime). Transfer physical walk: unresolved (engine-policy penalty only).</p>
+  <p>POI↔Metro access retained: 108 · unresolved: 0</p>
+</section>
+<section>
+  <h2>QA routes</h2>
+  
+        <article class="card">
+          <h3>Plaza de Armas → Lastarria</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Walking physical: 1017.1s</li>
+            <li>Scheduled Metro ride: 0s</li>
+            <li>Known total physical: 1017.1</li>
+            <li>Wait + generalized penalties: 50.1s</li>
+            <li>Generalized cost: 1067.2</li>
+            <li>Lines: none · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>La Moneda → Londres 38</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Walking physical: 538.3s</li>
+            <li>Scheduled Metro ride: 0s</li>
+            <li>Known total physical: 538.3</li>
+            <li>Wait + generalized penalties: 8.7s</li>
+            <li>Generalized cost: 547.0</li>
+            <li>Lines: none · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Lastarria → La Chascona</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Walking physical: 711.0s</li>
+            <li>Scheduled Metro ride: 0s</li>
+            <li>Known total physical: 711.0</li>
+            <li>Wait + generalized penalties: 5.5s</li>
+            <li>Generalized cost: 716.5</li>
+            <li>Lines: none · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>La Vega → GAM</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Walking physical: 1392.0s</li>
+            <li>Scheduled Metro ride: 0s</li>
+            <li>Known total physical: 1392.0</li>
+            <li>Wait + generalized penalties: 41.2s</li>
+            <li>Generalized cost: 1433.2</li>
+            <li>Lines: none · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Yungay → Museo de la Memoria</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Walking physical: 480.6s</li>
+            <li>Scheduled Metro ride: 0s</li>
+            <li>Known total physical: 480.6</li>
+            <li>Wait + generalized penalties: 0.1s</li>
+            <li>Generalized cost: 480.7</li>
+            <li>Lines: none · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Museo de la Memoria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Walking physical: 282.8s</li>
+            <li>Scheduled Metro ride: 303s</li>
+            <li>Known total physical: 585.8</li>
+            <li>Wait + generalized penalties: 480.0s</li>
+            <li>Generalized cost: 1065.8</li>
+            <li>Lines: L5 · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Yungay</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Walking physical: 712.6s</li>
+            <li>Scheduled Metro ride: 193s</li>
+            <li>Known total physical: 905.6</li>
+            <li>Wait + generalized penalties: 480.0s</li>
+            <li>Generalized cost: 1385.6</li>
+            <li>Lines: L5 · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Plaza Ñuñoa</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Walking physical: 652.4s</li>
+            <li>Scheduled Metro ride: 76s</li>
+            <li>Known total physical: 728.4</li>
+            <li>Wait + generalized penalties: 480.0s</li>
+            <li>Generalized cost: 1208.4</li>
+            <li>Lines: L5 · Transfers: 0</li>
+            <li>Unverified: none</li>
+          </ul>
+        </article>
+</section>
+<section class="card">
+  <h2>Remaining unknowns</h2>
+  <ul>
+    <li>Realtime Metro durations</li>
+    <li>Physical interchange walking times</li>
+    <li>Funicular ascent for STGO_32</li>
+    <li>STGO_05 / STGO_23 / STGO_33 still unresolved</li>
+  </ul>
+</section>
+</body>
+</html>

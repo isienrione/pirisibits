@@ -1,0 +1,1545 @@
+{
+  "schemaVersion": "santiago-arc-reranker-fixtures.v0.1",
+  "gate": "2D",
+  "status": "PROVISIONAL_FIXTURE_SUMMARY",
+  "arcQualityStatus": "PROVISIONAL_V0_1",
+  "calibrationApproved": false,
+  "physicalRouteGenerationEnabled": false,
+  "winnersChangedCount": 11,
+  "deterministicRepeatF2F18": true,
+  "fixtures": [
+    {
+      "id": "F1",
+      "label": "60 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_6f86f1dc_STGO_01-STGO_03-STGO_18_698, score 69.8) reranked to #2; arc winner is prov_6f86f1dc_STGO_01-STGO_92-STGO_05_670 (reranked 64.2). Moved from #3 to #1 because arc quality (60) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_6f86f1dc_STGO_01-STGO_03-STGO_18_698",
+      "rerankedTopRouteId": "prov_6f86f1dc_STGO_01-STGO_92-STGO_05_670",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_03",
+        "STGO_18"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_05"
+      ],
+      "composerScore": 69.8,
+      "arcQualityScore": 60,
+      "rerankedScore": 64.2,
+      "totalEstimatedMin": 59.2,
+      "unusedBudgetMin": 0.8,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 0.8 min (1.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 2,
+        "pockets": 0,
+        "micros": 1,
+        "stops": 3,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "repetitionPenalty (0.08)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_6f86f1dc_STGO_01-STGO_92-STGO_05_670",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 67,
+          "arcQualityScore": 60,
+          "rerankedScore": 64.2
+        },
+        {
+          "routeId": "prov_6f86f1dc_STGO_01-STGO_03-STGO_18_698",
+          "originalComposerRank": 1,
+          "rerankedRank": 2,
+          "rankChange": -1,
+          "composerScore": 69.8,
+          "arcQualityScore": 54,
+          "rerankedScore": 63.5
+        },
+        {
+          "routeId": "prov_6f86f1dc_STGO_01-STGO_02-STGO_26-STGO_27_691",
+          "originalComposerRank": 2,
+          "rerankedRank": 3,
+          "rankChange": -1,
+          "composerScore": 69.1,
+          "arcQualityScore": 51,
+          "rerankedScore": 61.9
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F2",
+      "label": "120 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684, score 68.4) reranked to #3; arc winner is prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684 (reranked 63). Moved from #3 to #1 because arc quality (55) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+      "rerankedTopRouteId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "composerScore": 68.4,
+      "arcQualityScore": 55,
+      "rerankedScore": 63,
+      "totalEstimatedMin": 118.4,
+      "unusedBudgetMin": 1.6,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 1.6 min (1.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.25)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 68.4,
+          "arcQualityScore": 55,
+          "rerankedScore": 63
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24_674",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 67.4,
+          "arcQualityScore": 56,
+          "rerankedScore": 62.8
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 68.4,
+          "arcQualityScore": 54,
+          "rerankedScore": 62.6
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F3",
+      "label": "180 min WALK_ONLY balanced",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_5b352d4c_STGO_01-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26-STGO_27-STGO_29-STGO_32_684",
+      "rerankedTopRouteId": "prov_5b352d4c_STGO_01-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26-STGO_27-STGO_29-STGO_32_684",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "composerScore": 68.4,
+      "arcQualityScore": 55,
+      "rerankedScore": 63,
+      "totalEstimatedMin": 182.8,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 6,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 9,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_5b352d4c_STGO_01-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26-STGO_27-STGO_29-STGO_32_684",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 68.4,
+          "arcQualityScore": 55,
+          "rerankedScore": 63
+        },
+        {
+          "routeId": "prov_5b352d4c_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24-STGO_27-STGO_28-STGO_25_683",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 68.3,
+          "arcQualityScore": 55,
+          "rerankedScore": 63
+        },
+        {
+          "routeId": "prov_5b352d4c_STGO_01-STGO_02-STGO_18-STGO_03-STGO_06-STGO_05-STGO_28-STGO_29_681",
+          "originalComposerRank": 2,
+          "rerankedRank": 3,
+          "rankChange": -1,
+          "composerScore": 68.1,
+          "arcQualityScore": 55,
+          "rerankedScore": 62.9
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F4",
+      "label": "120 min WALK_METRO",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_a1a65c4d_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_26_689, score 68.9) reranked to #2; arc winner is prov_a1a65c4d_STGO_01-STGO_18-STGO_03-STGO_19-STGO_05-STGO_02_682 (reranked 62.9). Moved from #2 to #1 because arc quality (55) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_a1a65c4d_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_26_689",
+      "rerankedTopRouteId": "prov_a1a65c4d_STGO_01-STGO_18-STGO_03-STGO_19-STGO_05-STGO_02_682",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_26"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "composerScore": 68.9,
+      "arcQualityScore": 55,
+      "rerankedScore": 62.9,
+      "totalEstimatedMin": 117.3,
+      "unusedBudgetMin": 2.7,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 2.7 min (2.25%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_a1a65c4d_STGO_01-STGO_18-STGO_03-STGO_19-STGO_05-STGO_02_682",
+          "originalComposerRank": 2,
+          "rerankedRank": 1,
+          "rankChange": 1,
+          "composerScore": 68.2,
+          "arcQualityScore": 55,
+          "rerankedScore": 62.9
+        },
+        {
+          "routeId": "prov_a1a65c4d_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_26_689",
+          "originalComposerRank": 1,
+          "rerankedRank": 2,
+          "rankChange": -1,
+          "composerScore": 68.9,
+          "arcQualityScore": 54,
+          "rerankedScore": 62.9
+        },
+        {
+          "routeId": "prov_a1a65c4d_STGO_01-STGO_03-STGO_18-STGO_02-STGO_26-STGO_27-STGO_24_663",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 66.3,
+          "arcQualityScore": 55,
+          "rerankedScore": 61.8
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F5",
+      "label": "120 min strong T1A",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_95b952bd_STGO_01-STGO_24-STGO_27-STGO_29-STGO_32_671",
+      "rerankedTopRouteId": "prov_95b952bd_STGO_01-STGO_24-STGO_27-STGO_29-STGO_32_671",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_24",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_24",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "composerScore": 67.1,
+      "arcQualityScore": 55,
+      "rerankedScore": 62.3,
+      "totalEstimatedMin": 111.2,
+      "unusedBudgetMin": 8.8,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 8.8 min (7.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 3,
+        "pockets": 1,
+        "micros": 1,
+        "stops": 5,
+        "anchorRatio": 0.6,
+        "pocketRatio": 0.2,
+        "microRatio": 0.2,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_95b952bd_STGO_01-STGO_24-STGO_27-STGO_29-STGO_32_671",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 67.1,
+          "arcQualityScore": 55,
+          "rerankedScore": 62.3
+        },
+        {
+          "routeId": "prov_95b952bd_STGO_01-STGO_02-STGO_18-STGO_03-STGO_22-STGO_10_660",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 66,
+          "arcQualityScore": 54,
+          "rerankedScore": 61.2
+        },
+        {
+          "routeId": "prov_95b952bd_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24_645",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 64.5,
+          "arcQualityScore": 56,
+          "rerankedScore": 61.1
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F6",
+      "label": "120 min strong T2 culinary",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91_698",
+      "rerankedTopRouteId": "prov_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91_698",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34",
+        "STGO_91"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34",
+        "STGO_91"
+      ],
+      "composerScore": 69.8,
+      "arcQualityScore": 60,
+      "rerankedScore": 65.9,
+      "totalEstimatedMin": 117.2,
+      "unusedBudgetMin": 2.8,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 3,
+      "timeUtilizationReason": "Unused 2.8 min (2.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 2,
+        "pockets": 1,
+        "micros": 2,
+        "stops": 5,
+        "anchorRatio": 0.4,
+        "pocketRatio": 0.2,
+        "microRatio": 0.4,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "MICRO_REVEAL_TRAIL",
+        "THEMATIC_DEEP_DIVE",
+        "BALANCED_ESCALATION"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91_698",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 69.8,
+          "arcQualityScore": 60,
+          "rerankedScore": 65.9
+        },
+        {
+          "routeId": "prov_b60f105a_STGO_01-STGO_35-STGO_34-STGO_24-STGO_28_670",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 67,
+          "arcQualityScore": 59,
+          "rerankedScore": 63.8
+        },
+        {
+          "routeId": "prov_b60f105a_STGO_01-STGO_24-STGO_20-STGO_34_655",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 65.5,
+          "arcQualityScore": 58,
+          "rerankedScore": 62.5
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F7",
+      "label": "120 min strong T3 aesthetics",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_f3d8e109_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "rerankedTopRouteId": "prov_f3d8e109_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "composerScore": 65.4,
+      "arcQualityScore": 63,
+      "rerankedScore": 64.4,
+      "totalEstimatedMin": 123.8,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.33,
+        "pocketRatio": 0.33,
+        "microRatio": 0.33,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "THEMATIC_DEEP_DIVE",
+        "BALANCED_ESCALATION"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_f3d8e109_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 65.4,
+          "arcQualityScore": 63,
+          "rerankedScore": 64.4
+        },
+        {
+          "routeId": "prov_f3d8e109_STGO_01-STGO_24-STGO_27-STGO_30-STGO_29-STGO_32_644",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 64.4,
+          "arcQualityScore": 57,
+          "rerankedScore": 61.4
+        },
+        {
+          "routeId": "prov_f3d8e109_STGO_01-STGO_26-STGO_27-STGO_24-STGO_25-STGO_30_629",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 62.9,
+          "arcQualityScore": 59,
+          "rerankedScore": 61.3
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F8",
+      "label": "120 min D1 Flâneur",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_efaca3e1_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_06_574, score 57.4) reranked to #2; arc winner is prov_efaca3e1_STGO_01-STGO_92-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26_565 (reranked 57.5). Moved from #2 to #1 because arc quality (59) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_efaca3e1_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_06_574",
+      "rerankedTopRouteId": "prov_efaca3e1_STGO_01-STGO_92-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26_565",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_06"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26"
+      ],
+      "composerScore": 57.4,
+      "arcQualityScore": 59,
+      "rerankedScore": 57.5,
+      "totalEstimatedMin": 124.4,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 0,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 7,
+        "anchorRatio": 0.57,
+        "pocketRatio": 0,
+        "microRatio": 0.43,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC",
+        "CONTRAST_LADDER",
+        "MICRO_REVEAL_TRAIL",
+        "THEMATIC_DEEP_DIVE"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_efaca3e1_STGO_01-STGO_92-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26_565",
+          "originalComposerRank": 2,
+          "rerankedRank": 1,
+          "rankChange": 1,
+          "composerScore": 56.5,
+          "arcQualityScore": 59,
+          "rerankedScore": 57.5
+        },
+        {
+          "routeId": "prov_efaca3e1_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_06_574",
+          "originalComposerRank": 1,
+          "rerankedRank": 2,
+          "rankChange": -1,
+          "composerScore": 57.4,
+          "arcQualityScore": 57,
+          "rerankedScore": 57.2
+        },
+        {
+          "routeId": "prov_efaca3e1_STGO_01-STGO_18-STGO_03-STGO_19-STGO_22-STGO_92_572",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 57.2,
+          "arcQualityScore": 56,
+          "rerankedScore": 56.7
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F9",
+      "label": "120 min D2 Detective",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_80542319_STGO_01-STGO_92-STGO_03-STGO_19-STGO_04-STGO_10_625",
+      "rerankedTopRouteId": "prov_80542319_STGO_01-STGO_92-STGO_03-STGO_19-STGO_04-STGO_10_625",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_03",
+        "STGO_19",
+        "STGO_04",
+        "STGO_10"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_03",
+        "STGO_19",
+        "STGO_04",
+        "STGO_10"
+      ],
+      "composerScore": 62.5,
+      "arcQualityScore": 60,
+      "rerankedScore": 61.5,
+      "totalEstimatedMin": 106.5,
+      "unusedBudgetMin": 13.5,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 13.5 min (11.25%) within acceptable slack.",
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6,
+        "anchorRatio": 0.5,
+        "pocketRatio": 0,
+        "microRatio": 0.5,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC",
+        "MICRO_REVEAL_TRAIL",
+        "FRAGMENTED"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_80542319_STGO_01-STGO_92-STGO_03-STGO_19-STGO_04-STGO_10_625",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 62.5,
+          "arcQualityScore": 60,
+          "rerankedScore": 61.5
+        },
+        {
+          "routeId": "prov_80542319_STGO_01-STGO_18-STGO_03-STGO_19-STGO_04-STGO_06-STGO_07_607",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 60.7,
+          "arcQualityScore": 56,
+          "rerankedScore": 58.8
+        },
+        {
+          "routeId": "prov_80542319_STGO_01-STGO_19-STGO_04-STGO_07-STGO_25-STGO_27_585",
+          "originalComposerRank": 2,
+          "rerankedRank": 3,
+          "rankChange": -1,
+          "composerScore": 58.5,
+          "arcQualityScore": 55,
+          "rerankedScore": 57.1
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F10",
+      "label": "120 min M1 Express",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_b72888c6_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_692, score 69.2) reranked to #3; arc winner is prov_b72888c6_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_690 (reranked 63.4). Moved from #3 to #1 because arc quality (55) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_b72888c6_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_692",
+      "rerankedTopRouteId": "prov_b72888c6_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_690",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "composerScore": 69.2,
+      "arcQualityScore": 55,
+      "rerankedScore": 63.4,
+      "totalEstimatedMin": 118.4,
+      "unusedBudgetMin": 1.6,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 1.6 min (1.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.25)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_b72888c6_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_690",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 69,
+          "arcQualityScore": 55,
+          "rerankedScore": 63.4
+        },
+        {
+          "routeId": "prov_b72888c6_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24_681",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 68.1,
+          "arcQualityScore": 56,
+          "rerankedScore": 63.3
+        },
+        {
+          "routeId": "prov_b72888c6_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_692",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 69.2,
+          "arcQualityScore": 54,
+          "rerankedScore": 63.1
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F11",
+      "label": "stepFreeRequired",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_3d979ee2_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_646, score 64.6) reranked to #3; arc winner is prov_3d979ee2_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_631 (reranked 60.7). Moved from #2 to #1 because arc quality (57) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_3d979ee2_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_646",
+      "rerankedTopRouteId": "prov_3d979ee2_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_631",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_10"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_16",
+        "STGO_22",
+        "STGO_19",
+        "STGO_03",
+        "STGO_21"
+      ],
+      "composerScore": 64.6,
+      "arcQualityScore": 57,
+      "rerankedScore": 60.7,
+      "totalEstimatedMin": 125.4,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 3,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6,
+        "anchorRatio": 0.5,
+        "pocketRatio": 0,
+        "microRatio": 0.5,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC",
+        "MICRO_REVEAL_TRAIL",
+        "THEMATIC_DEEP_DIVE"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "themeMonotonyPenalty (0.6)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_3d979ee2_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_631",
+          "originalComposerRank": 2,
+          "rerankedRank": 1,
+          "rankChange": 1,
+          "composerScore": 63.1,
+          "arcQualityScore": 57,
+          "rerankedScore": 60.7
+        },
+        {
+          "routeId": "prov_3d979ee2_STGO_01-STGO_18-STGO_03-STGO_19-STGO_22-STGO_16_644",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 64.4,
+          "arcQualityScore": 54,
+          "rerankedScore": 60.2
+        },
+        {
+          "routeId": "prov_3d979ee2_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_646",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 64.6,
+          "arcQualityScore": 52,
+          "rerankedScore": 59.6
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F12",
+      "label": "memorySitesOptIn=false",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_d95108f3_STGO_01-STGO_28-STGO_27-STGO_24-STGO_29_674",
+      "rerankedTopRouteId": "prov_d95108f3_STGO_01-STGO_28-STGO_27-STGO_24-STGO_29_674",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_28",
+        "STGO_27",
+        "STGO_24",
+        "STGO_29"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_28",
+        "STGO_27",
+        "STGO_24",
+        "STGO_29"
+      ],
+      "composerScore": 67.4,
+      "arcQualityScore": 61,
+      "rerankedScore": 64.8,
+      "totalEstimatedMin": 113.3,
+      "unusedBudgetMin": 6.7,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 6.7 min (5.58%) within acceptable slack.",
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 1,
+        "stops": 5,
+        "anchorRatio": 0.4,
+        "pocketRatio": 0.4,
+        "microRatio": 0.2,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "BALANCED_ESCALATION"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.25)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_d95108f3_STGO_01-STGO_28-STGO_27-STGO_24-STGO_29_674",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 67.4,
+          "arcQualityScore": 61,
+          "rerankedScore": 64.8
+        },
+        {
+          "routeId": "prov_d95108f3_STGO_01-STGO_24-STGO_27-STGO_25-STGO_30-STGO_26_637",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 63.7,
+          "arcQualityScore": 58,
+          "rerankedScore": 61.4
+        },
+        {
+          "routeId": "prov_d95108f3_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_659",
+          "originalComposerRank": 2,
+          "rerankedRank": 3,
+          "rankChange": -1,
+          "composerScore": 65.9,
+          "arcQualityScore": 54,
+          "rerankedScore": 61.1
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F13",
+      "label": "memorySitesOptIn=true",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_c03969f1_STGO_01-STGO_19-STGO_04-STGO_03-STGO_18-STGO_22-STGO_02_670, score 67) reranked to #2; arc winner is prov_c03969f1_STGO_01-STGO_04-STGO_19-STGO_03-STGO_07-STGO_25_657 (reranked 62.2). Moved from #2 to #1 because arc quality (57) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_c03969f1_STGO_01-STGO_19-STGO_04-STGO_03-STGO_18-STGO_22-STGO_02_670",
+      "rerankedTopRouteId": "prov_c03969f1_STGO_01-STGO_04-STGO_19-STGO_03-STGO_07-STGO_25_657",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_04",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_02"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_04",
+        "STGO_19",
+        "STGO_03",
+        "STGO_07",
+        "STGO_25"
+      ],
+      "composerScore": 67,
+      "arcQualityScore": 57,
+      "rerankedScore": 62.2,
+      "totalEstimatedMin": 118,
+      "unusedBudgetMin": 2,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 2 min (1.67%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "backtrackingPenalty (0.3)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_c03969f1_STGO_01-STGO_04-STGO_19-STGO_03-STGO_07-STGO_25_657",
+          "originalComposerRank": 2,
+          "rerankedRank": 1,
+          "rankChange": 1,
+          "composerScore": 65.7,
+          "arcQualityScore": 57,
+          "rerankedScore": 62.2
+        },
+        {
+          "routeId": "prov_c03969f1_STGO_01-STGO_19-STGO_04-STGO_03-STGO_18-STGO_22-STGO_02_670",
+          "originalComposerRank": 1,
+          "rerankedRank": 2,
+          "rankChange": -1,
+          "composerScore": 67,
+          "arcQualityScore": 53,
+          "rerankedScore": 61.4
+        },
+        {
+          "routeId": "prov_c03969f1_STGO_01-STGO_18-STGO_03-STGO_19-STGO_04-STGO_05_665",
+          "originalComposerRank": 3,
+          "rerankedRank": 3,
+          "rankChange": 0,
+          "composerScore": 66.5,
+          "arcQualityScore": 52,
+          "rerankedScore": 60.7
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F14",
+      "label": "highComfort",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_9230f196_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_643, score 64.3) reranked to #3; arc winner is prov_9230f196_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_628 (reranked 60.5). Moved from #2 to #1 because arc quality (57) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_9230f196_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_643",
+      "rerankedTopRouteId": "prov_9230f196_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_628",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_19",
+        "STGO_03",
+        "STGO_18",
+        "STGO_22",
+        "STGO_10"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_16",
+        "STGO_22",
+        "STGO_19",
+        "STGO_03",
+        "STGO_21"
+      ],
+      "composerScore": 64.3,
+      "arcQualityScore": 57,
+      "rerankedScore": 60.5,
+      "totalEstimatedMin": 125.4,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 3,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 3,
+        "pockets": 0,
+        "micros": 3,
+        "stops": 6,
+        "anchorRatio": 0.5,
+        "pocketRatio": 0,
+        "microRatio": 0.5,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC",
+        "MICRO_REVEAL_TRAIL",
+        "THEMATIC_DEEP_DIVE"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "themeMonotonyPenalty (0.6)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_9230f196_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_628",
+          "originalComposerRank": 2,
+          "rerankedRank": 1,
+          "rankChange": 1,
+          "composerScore": 62.8,
+          "arcQualityScore": 57,
+          "rerankedScore": 60.5
+        },
+        {
+          "routeId": "prov_9230f196_STGO_01-STGO_18-STGO_03-STGO_19-STGO_22-STGO_16_640",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 64,
+          "arcQualityScore": 54,
+          "rerankedScore": 60
+        },
+        {
+          "routeId": "prov_9230f196_STGO_01-STGO_19-STGO_03-STGO_18-STGO_22-STGO_10_643",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 64.3,
+          "arcQualityScore": 52,
+          "rerankedScore": 59.4
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F15",
+      "label": "tight time budget",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_56c731cf_STGO_01-STGO_03_722, score 72.2) reranked to #3; arc winner is prov_56c731cf_STGO_01-STGO_10_718 (reranked 66.7). Moved from #3 to #1 because arc quality (59) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_56c731cf_STGO_01-STGO_03_722",
+      "rerankedTopRouteId": "prov_56c731cf_STGO_01-STGO_10_718",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_03"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_10"
+      ],
+      "composerScore": 72.2,
+      "arcQualityScore": 59,
+      "rerankedScore": 66.7,
+      "totalEstimatedMin": 35.1,
+      "unusedBudgetMin": 9.9,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 9.9 min (22%) within acceptable slack.",
+      "composition": {
+        "anchors": 1,
+        "pockets": 0,
+        "micros": 1,
+        "stops": 2,
+        "anchorRatio": 0.5,
+        "pocketRatio": 0,
+        "microRatio": 0.5,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC",
+        "MICRO_REVEAL_TRAIL",
+        "THEMATIC_DEEP_DIVE"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "repetitionPenalty (0.08)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_56c731cf_STGO_01-STGO_10_718",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 71.8,
+          "arcQualityScore": 59,
+          "rerankedScore": 66.7
+        },
+        {
+          "routeId": "prov_56c731cf_STGO_01-STGO_02-STGO_18_714",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 71.4,
+          "arcQualityScore": 52,
+          "rerankedScore": 63.6
+        },
+        {
+          "routeId": "prov_56c731cf_STGO_01-STGO_03_722",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 72.2,
+          "arcQualityScore": 50,
+          "rerankedScore": 63.3
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F16",
+      "label": "start near STGO_33 physically supported (STGO_01 hub; 33 not start)",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": false,
+      "winnerChangeExplanation": null,
+      "composerTopRouteId": "prov_77c30bdf_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "rerankedTopRouteId": "prov_77c30bdf_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "composerScore": 65.4,
+      "arcQualityScore": 63,
+      "rerankedScore": 64.4,
+      "totalEstimatedMin": 123.8,
+      "unusedBudgetMin": 0,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 0 min (0%) within acceptable slack.",
+      "composition": {
+        "anchors": 2,
+        "pockets": 2,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.33,
+        "pocketRatio": 0.33,
+        "microRatio": 0.33,
+        "longestAnchorRun": 1
+      },
+      "shapeTags": [
+        "THEMATIC_DEEP_DIVE",
+        "BALANCED_ESCALATION"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.5)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_77c30bdf_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+          "originalComposerRank": 1,
+          "rerankedRank": 1,
+          "rankChange": 0,
+          "composerScore": 65.4,
+          "arcQualityScore": 63,
+          "rerankedScore": 64.4
+        },
+        {
+          "routeId": "prov_77c30bdf_STGO_01-STGO_24-STGO_25-STGO_27-STGO_26-STGO_30_630",
+          "originalComposerRank": 3,
+          "rerankedRank": 2,
+          "rankChange": 1,
+          "composerScore": 63,
+          "arcQualityScore": 56,
+          "rerankedScore": 60.2
+        },
+        {
+          "routeId": "prov_77c30bdf_STGO_01-STGO_24-STGO_29-STGO_30-STGO_32_638",
+          "originalComposerRank": 2,
+          "rerankedRank": 3,
+          "rankChange": -1,
+          "composerScore": 63.8,
+          "arcQualityScore": 53,
+          "rerankedScore": 59.5
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F17",
+      "label": "STGO_104 excluded physical pending",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684, score 68.4) reranked to #3; arc winner is prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684 (reranked 63). Moved from #3 to #1 because arc quality (55) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+      "rerankedTopRouteId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "composerScore": 68.4,
+      "arcQualityScore": 55,
+      "rerankedScore": 63,
+      "totalEstimatedMin": 118.4,
+      "unusedBudgetMin": 1.6,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 1.6 min (1.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.25)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 68.4,
+          "arcQualityScore": 55,
+          "rerankedScore": 63
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24_674",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 67.4,
+          "arcQualityScore": 56,
+          "rerankedScore": 62.8
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 68.4,
+          "arcQualityScore": 54,
+          "rerankedScore": 62.6
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    },
+    {
+      "id": "F18",
+      "label": "deterministic repeat of F2",
+      "candidatesReturned": 3,
+      "rerankedCount": 3,
+      "rejectedCount": 0,
+      "winnerChanged": true,
+      "winnerChangeExplanation": "Composer #1 (prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684, score 68.4) reranked to #3; arc winner is prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684 (reranked 63). Moved from #3 to #1 because arc quality (55) and endingStrength (1), openingStrength (1) outweigh composer-only ordering.",
+      "composerTopRouteId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+      "rerankedTopRouteId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "composerTopStopIds": [
+        "STGO_01",
+        "STGO_02",
+        "STGO_18",
+        "STGO_03",
+        "STGO_10",
+        "STGO_22"
+      ],
+      "rerankedTopStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "composerScore": 68.4,
+      "arcQualityScore": 55,
+      "rerankedScore": 63,
+      "totalEstimatedMin": 118.4,
+      "unusedBudgetMin": 1.6,
+      "underutilizedBudgetPenalty": 0,
+      "feasibleWorthwhileContinuations": 10,
+      "timeUtilizationReason": "Unused 1.6 min (1.33%) within acceptable slack.",
+      "composition": {
+        "anchors": 4,
+        "pockets": 0,
+        "micros": 2,
+        "stops": 6,
+        "anchorRatio": 0.67,
+        "pocketRatio": 0,
+        "microRatio": 0.33,
+        "longestAnchorRun": 2
+      },
+      "shapeTags": [
+        "ANCHOR_LED_CIVIC_ARC"
+      ],
+      "strongestPositiveFactor": "openingStrength (1)",
+      "strongestPenalty": "unresolvedSetupPenalty (0.25)",
+      "candidateRankChanges": [
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+          "originalComposerRank": 3,
+          "rerankedRank": 1,
+          "rankChange": 2,
+          "composerScore": 68.4,
+          "arcQualityScore": 55,
+          "rerankedScore": 63
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_19-STGO_03-STGO_18-STGO_02-STGO_26-STGO_24_674",
+          "originalComposerRank": 2,
+          "rerankedRank": 2,
+          "rankChange": 0,
+          "composerScore": 67.4,
+          "arcQualityScore": 56,
+          "rerankedScore": 62.8
+        },
+        {
+          "routeId": "prov_f01a66c4_STGO_01-STGO_02-STGO_18-STGO_03-STGO_10-STGO_22_684",
+          "originalComposerRank": 1,
+          "rerankedRank": 3,
+          "rankChange": -2,
+          "composerScore": 68.4,
+          "arcQualityScore": 54,
+          "rerankedScore": 62.6
+        }
+      ],
+      "flags": {
+        "includesStgo104": false,
+        "includesStgo33": false,
+        "calibrationApproved": false,
+        "arcQualityStatus": "PROVISIONAL_V0_1"
+      }
+    }
+  ]
+}

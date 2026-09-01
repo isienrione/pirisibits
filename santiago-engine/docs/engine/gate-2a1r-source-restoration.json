@@ -1,0 +1,62 @@
+{
+  "gate": "2A.1R",
+  "verdict": "SOURCE_VALIDATED_AND_RESTORED",
+  "sourcePath": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+  "sourceNodeCount": 103,
+  "semanticArtifact": "src/data/santiago/santiago_semantic_calibration.v0.1.json",
+  "launchArtifact": "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
+  "sensitiveMemorySourceList": [
+    {
+      "stgoId": "STGO_04",
+      "name": "Morand\u00e9 80 (President's Door)"
+    },
+    {
+      "stgoId": "STGO_07",
+      "name": "Londres 38 Memorial"
+    },
+    {
+      "stgoId": "STGO_36",
+      "name": "Cementerio General (Patio 29)"
+    },
+    {
+      "stgoId": "STGO_48",
+      "name": "Museo de la Memoria y DDHH"
+    },
+    {
+      "stgoId": "STGO_51",
+      "name": "Villa Grimaldi (Parque por la Paz)"
+    }
+  ],
+  "t2StrongLaunch": [
+    {
+      "stgoId": "STGO_20",
+      "t2": 0.85
+    },
+    {
+      "stgoId": "STGO_21",
+      "t2": 0.9
+    },
+    {
+      "stgoId": "STGO_24",
+      "t2": 0.85
+    },
+    {
+      "stgoId": "STGO_28",
+      "t2": 0.95
+    },
+    {
+      "stgoId": "STGO_34",
+      "t2": 0.98
+    },
+    {
+      "stgoId": "STGO_35",
+      "t2": 0.92
+    },
+    {
+      "stgoId": "STGO_91",
+      "t2": 0.85
+    }
+  ],
+  "poisTsCanonicalDependency": 0,
+  "binary07CanonicalFallback": 0
+}

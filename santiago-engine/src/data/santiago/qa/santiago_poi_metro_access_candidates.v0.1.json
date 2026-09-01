@@ -1,0 +1,1327 @@
+{
+  "schemaVersion": "santiago-poi-metro-access-candidates.v0.1",
+  "gate": "1B.4",
+  "note": "QA candidates — not competing source of truth",
+  "records": [
+    {
+      "stgoId": "STGO_01",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 172.5,
+      "routingStatus": "OK",
+      "distanceMeters": 211.1,
+      "durationSeconds": 195.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_01",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 554.3,
+      "routingStatus": "OK",
+      "distanceMeters": 615.9,
+      "durationSeconds": 470.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_01",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 635.0,
+      "routingStatus": "OK",
+      "distanceMeters": 648.9,
+      "durationSeconds": 424.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_01",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 706.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1132.7,
+      "durationSeconds": 837.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_01",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 801.3,
+      "routingStatus": "OK",
+      "distanceMeters": 1078.9,
+      "durationSeconds": 799.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_02",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 26.4,
+      "routingStatus": "OK",
+      "distanceMeters": 31.5,
+      "durationSeconds": 20.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_02",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 532.2,
+      "routingStatus": "OK",
+      "distanceMeters": 690.0,
+      "durationSeconds": 470.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_02",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 643.8,
+      "routingStatus": "OK",
+      "distanceMeters": 644.5,
+      "durationSeconds": 506.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_02",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 728.6,
+      "routingStatus": "OK",
+      "distanceMeters": 798.6,
+      "durationSeconds": 581.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_02",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 817.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1159.0,
+      "durationSeconds": 844.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_03",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 150.2,
+      "routingStatus": "OK",
+      "distanceMeters": 191.3,
+      "durationSeconds": 169.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_03",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 278.6,
+      "routingStatus": "OK",
+      "distanceMeters": 425.2,
+      "durationSeconds": 317.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_03",
+      "stationId": "METRO_OSM_2307244234",
+      "stationName": "Los Héroes",
+      "straightLineM": 675.4,
+      "routingStatus": "OK",
+      "distanceMeters": 762.9,
+      "durationSeconds": 517.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_03",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 761.3,
+      "routingStatus": "OK",
+      "distanceMeters": 1087.4,
+      "durationSeconds": 789.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_03",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 844.8,
+      "routingStatus": "OK",
+      "distanceMeters": 917.0,
+      "durationSeconds": 699.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_04",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 280.4,
+      "routingStatus": "OK",
+      "distanceMeters": 496.9,
+      "durationSeconds": 339.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_04",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 297.5,
+      "routingStatus": "OK",
+      "distanceMeters": 415.5,
+      "durationSeconds": 302.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_04",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 600.6,
+      "routingStatus": "OK",
+      "distanceMeters": 812.8,
+      "durationSeconds": 571.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_04",
+      "stationId": "METRO_OSM_2307244234",
+      "stationName": "Los Héroes",
+      "straightLineM": 779.1,
+      "routingStatus": "OK",
+      "distanceMeters": 994.4,
+      "durationSeconds": 665.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_04",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 779.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1097.0,
+      "durationSeconds": 717.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_06",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 229.7,
+      "routingStatus": "OK",
+      "distanceMeters": 317.5,
+      "durationSeconds": 244.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_06",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 414.5,
+      "routingStatus": "OK",
+      "distanceMeters": 564.5,
+      "durationSeconds": 435.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_06",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 603.0,
+      "routingStatus": "OK",
+      "distanceMeters": 720.6,
+      "durationSeconds": 540.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_06",
+      "stationId": "METRO_OSM_4550281347",
+      "stationName": "Parque Almagro",
+      "straightLineM": 778.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1034.8,
+      "durationSeconds": 690.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_06",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 846.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1019.5,
+      "durationSeconds": 785.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_07",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 232.0,
+      "routingStatus": "OK",
+      "distanceMeters": 357.1,
+      "durationSeconds": 267.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_07",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 380.9,
+      "routingStatus": "OK",
+      "distanceMeters": 493.2,
+      "durationSeconds": 386.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_07",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 620.2,
+      "routingStatus": "OK",
+      "distanceMeters": 760.2,
+      "durationSeconds": 563.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_07",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 814.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1072.6,
+      "durationSeconds": 814.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_07",
+      "stationId": "METRO_OSM_4550281347",
+      "stationName": "Parque Almagro",
+      "straightLineM": 819.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1074.4,
+      "durationSeconds": 715.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_10",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 281.9,
+      "routingStatus": "OK",
+      "distanceMeters": 366.2,
+      "durationSeconds": 235.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_10",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 589.6,
+      "routingStatus": "OK",
+      "distanceMeters": 856.8,
+      "durationSeconds": 649.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_10",
+      "stationId": "METRO_OSM_2307244234",
+      "stationName": "Los Héroes",
+      "straightLineM": 674.8,
+      "routingStatus": "OK",
+      "distanceMeters": 907.8,
+      "durationSeconds": 617.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_10",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 728.8,
+      "routingStatus": "OK",
+      "distanceMeters": 944.3,
+      "durationSeconds": 708.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_10",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 803.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1146.9,
+      "durationSeconds": 853.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_11",
+      "stationId": "METRO_OSM_253281419",
+      "stationName": "Cumming",
+      "straightLineM": 544.3,
+      "routingStatus": "OK",
+      "distanceMeters": 712.9,
+      "durationSeconds": 516.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_11",
+      "stationId": "METRO_OSM_254343697",
+      "stationName": "Quinta Normal",
+      "straightLineM": 660.8,
+      "routingStatus": "OK",
+      "distanceMeters": 844.4,
+      "durationSeconds": 567.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_16",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 189.2,
+      "routingStatus": "OK",
+      "distanceMeters": 194.1,
+      "durationSeconds": 134.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_16",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 529.0,
+      "routingStatus": "OK",
+      "distanceMeters": 573.0,
+      "durationSeconds": 397.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_16",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 694.7,
+      "routingStatus": "OK",
+      "distanceMeters": 989.8,
+      "durationSeconds": 675.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_16",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 699.0,
+      "routingStatus": "OK",
+      "distanceMeters": 876.2,
+      "durationSeconds": 651.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_16",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 721.8,
+      "routingStatus": "OK",
+      "distanceMeters": 865.6,
+      "durationSeconds": 596.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 149.0,
+      "routingStatus": "OK",
+      "distanceMeters": 251.5,
+      "durationSeconds": 171.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 426.6,
+      "routingStatus": "OK",
+      "distanceMeters": 563.4,
+      "durationSeconds": 411.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 574.7,
+      "routingStatus": "OK",
+      "distanceMeters": 597.2,
+      "durationSeconds": 474.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 597.3,
+      "routingStatus": "OK",
+      "distanceMeters": 771.6,
+      "durationSeconds": 582.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_18",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 930.3,
+      "routingStatus": "OK",
+      "distanceMeters": 1282.0,
+      "durationSeconds": 959.9,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_19",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 325.0,
+      "routingStatus": "OK",
+      "distanceMeters": 489.5,
+      "durationSeconds": 344.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_19",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 351.7,
+      "routingStatus": "OK",
+      "distanceMeters": 481.1,
+      "durationSeconds": 348.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_19",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 542.1,
+      "routingStatus": "OK",
+      "distanceMeters": 747.3,
+      "durationSeconds": 523.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_19",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 734.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1031.5,
+      "durationSeconds": 669.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_19",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 800.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1165.2,
+      "durationSeconds": 818.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_20",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 107.5,
+      "routingStatus": "OK",
+      "distanceMeters": 180.7,
+      "durationSeconds": 141.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_20",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 450.6,
+      "routingStatus": "OK",
+      "distanceMeters": 476.5,
+      "durationSeconds": 367.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_20",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 623.0,
+      "routingStatus": "OK",
+      "distanceMeters": 838.9,
+      "durationSeconds": 609.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_20",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 825.7,
+      "routingStatus": "OK",
+      "distanceMeters": 1072.0,
+      "durationSeconds": 822.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_20",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 895.7,
+      "routingStatus": "OK",
+      "distanceMeters": 1232.2,
+      "durationSeconds": 838.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_21",
+      "stationId": "METRO_OSM_2307244234",
+      "stationName": "Los Héroes",
+      "straightLineM": 237.2,
+      "routingStatus": "OK",
+      "distanceMeters": 281.5,
+      "durationSeconds": 170.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_21",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 303.8,
+      "routingStatus": "OK",
+      "distanceMeters": 363.6,
+      "durationSeconds": 284.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_21",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 708.9,
+      "routingStatus": "OK",
+      "distanceMeters": 799.0,
+      "durationSeconds": 614.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_21",
+      "stationId": "METRO_OSM_141096340",
+      "stationName": "Toesca",
+      "straightLineM": 791.9,
+      "routingStatus": "OK",
+      "distanceMeters": 984.0,
+      "durationSeconds": 671.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_21",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 867.5,
+      "routingStatus": "OK",
+      "distanceMeters": 965.2,
+      "durationSeconds": 666.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_22",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 165.6,
+      "routingStatus": "OK",
+      "distanceMeters": 236.0,
+      "durationSeconds": 169.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_22",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 603.5,
+      "routingStatus": "OK",
+      "distanceMeters": 760.6,
+      "durationSeconds": 556.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_22",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 645.2,
+      "routingStatus": "OK",
+      "distanceMeters": 678.5,
+      "durationSeconds": 466.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_22",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 701.8,
+      "routingStatus": "OK",
+      "distanceMeters": 812.5,
+      "durationSeconds": 522.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_22",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 734.7,
+      "routingStatus": "OK",
+      "distanceMeters": 979.3,
+      "durationSeconds": 716.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_24",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 278.1,
+      "routingStatus": "OK",
+      "distanceMeters": 434.0,
+      "durationSeconds": 323.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_24",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 304.0,
+      "routingStatus": "OK",
+      "distanceMeters": 436.5,
+      "durationSeconds": 324.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_24",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 658.0,
+      "routingStatus": "OK",
+      "distanceMeters": 798.7,
+      "durationSeconds": 544.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_24",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 704.8,
+      "routingStatus": "OK",
+      "distanceMeters": 920.7,
+      "durationSeconds": 696.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_24",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 953.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1113.4,
+      "durationSeconds": 766.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_25",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 65.3,
+      "routingStatus": "OK",
+      "distanceMeters": 230.6,
+      "durationSeconds": 206.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_25",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 487.9,
+      "routingStatus": "OK",
+      "distanceMeters": 796.2,
+      "durationSeconds": 613.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_25",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 583.2,
+      "routingStatus": "OK",
+      "distanceMeters": 662.1,
+      "durationSeconds": 481.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_25",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 635.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1123.7,
+      "durationSeconds": 882.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_25",
+      "stationId": "METRO_OSM_475497992",
+      "stationName": "Parque Bustamante",
+      "straightLineM": 835.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1260.4,
+      "durationSeconds": 924.5,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_26",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 171.3,
+      "routingStatus": "OK",
+      "distanceMeters": 192.7,
+      "durationSeconds": 148.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_26",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 563.7,
+      "routingStatus": "OK",
+      "distanceMeters": 879.3,
+      "durationSeconds": 645.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_26",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 737.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1045.2,
+      "durationSeconds": 695.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_26",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 799.0,
+      "routingStatus": "OK",
+      "distanceMeters": 868.7,
+      "durationSeconds": 587.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_26",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 800.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1243.9,
+      "durationSeconds": 866.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_27",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 214.3,
+      "routingStatus": "OK",
+      "distanceMeters": 548.0,
+      "durationSeconds": 400.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_27",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 492.3,
+      "routingStatus": "OK",
+      "distanceMeters": 624.9,
+      "durationSeconds": 456.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_27",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 531.8,
+      "routingStatus": "OK",
+      "distanceMeters": 860.0,
+      "durationSeconds": 629.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_27",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 726.5,
+      "routingStatus": "OK",
+      "distanceMeters": 912.6,
+      "durationSeconds": 621.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_27",
+      "stationId": "METRO_OSM_475497992",
+      "stationName": "Parque Bustamante",
+      "straightLineM": 851.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1255.3,
+      "durationSeconds": 897.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_28",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 189.2,
+      "routingStatus": "OK",
+      "distanceMeters": 328.8,
+      "durationSeconds": 263.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_28",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 343.3,
+      "routingStatus": "OK",
+      "distanceMeters": 541.7,
+      "durationSeconds": 417.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_28",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 567.1,
+      "routingStatus": "OK",
+      "distanceMeters": 693.4,
+      "durationSeconds": 484.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_28",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 723.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1079.2,
+      "durationSeconds": 801.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_28",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 952.0,
+      "routingStatus": "OK",
+      "distanceMeters": 1188.0,
+      "durationSeconds": 829.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_29",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 755.2,
+      "routingStatus": "OK",
+      "distanceMeters": 1016.5,
+      "durationSeconds": 774.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_29",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 902.2,
+      "routingStatus": "OK",
+      "distanceMeters": 1270.1,
+      "durationSeconds": 903.5,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_29",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 951.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1003.4,
+      "durationSeconds": 658.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_29",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 997.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1424.2,
+      "durationSeconds": 1031.8,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_29",
+      "stationId": "METRO_OSM_520459156",
+      "stationName": "Salvador",
+      "straightLineM": 1027.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1521.7,
+      "durationSeconds": 1113.2,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_30",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 543.7,
+      "routingStatus": "OK",
+      "distanceMeters": 805.9,
+      "durationSeconds": 632.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_30",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 723.2,
+      "routingStatus": "OK",
+      "distanceMeters": 975.0,
+      "durationSeconds": 718.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_30",
+      "stationId": "METRO_OSM_252527603",
+      "stationName": "Universidad Católica",
+      "straightLineM": 733.0,
+      "routingStatus": "OK",
+      "distanceMeters": 1169.2,
+      "durationSeconds": 853.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_30",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 1006.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1223.1,
+      "durationSeconds": 819.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_30",
+      "stationId": "METRO_OSM_520459156",
+      "stationName": "Salvador",
+      "straightLineM": 1042.1,
+      "routingStatus": "OK",
+      "distanceMeters": 1487.1,
+      "durationSeconds": 1098.2,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_32",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 899.3,
+      "routingStatus": "OK",
+      "distanceMeters": 970.2,
+      "durationSeconds": 644.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_32",
+      "stationId": "METRO_OSM_1157168087",
+      "stationName": "Baquedano",
+      "straightLineM": 928.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1133.1,
+      "durationSeconds": 857.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_32",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 1002.0,
+      "routingStatus": "OK",
+      "distanceMeters": 1348.2,
+      "durationSeconds": 962.3,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_32",
+      "stationId": "METRO_OSM_944490442",
+      "stationName": "Cerro Blanco",
+      "straightLineM": 1037.2,
+      "routingStatus": "OK",
+      "distanceMeters": 1208.6,
+      "durationSeconds": 816.0,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_32",
+      "stationId": "METRO_OSM_520459156",
+      "stationName": "Salvador",
+      "straightLineM": 1109.3,
+      "routingStatus": "OK",
+      "distanceMeters": 1607.7,
+      "durationSeconds": 1175.0,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_34",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 216.3,
+      "routingStatus": "OK",
+      "distanceMeters": 295.4,
+      "durationSeconds": 211.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_34",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 435.7,
+      "routingStatus": "OK",
+      "distanceMeters": 575.8,
+      "durationSeconds": 399.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_34",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 765.5,
+      "routingStatus": "OK",
+      "distanceMeters": 937.8,
+      "durationSeconds": 686.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_34",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 796.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1054.4,
+      "durationSeconds": 802.7,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_34",
+      "stationId": "METRO_OSM_944490442",
+      "stationName": "Cerro Blanco",
+      "straightLineM": 967.7,
+      "routingStatus": "OK",
+      "distanceMeters": 1104.9,
+      "durationSeconds": 765.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_35",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 219.6,
+      "routingStatus": "OK",
+      "distanceMeters": 273.8,
+      "durationSeconds": 205.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_35",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 432.6,
+      "routingStatus": "OK",
+      "distanceMeters": 594.3,
+      "durationSeconds": 429.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_35",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 630.8,
+      "routingStatus": "OK",
+      "distanceMeters": 670.0,
+      "durationSeconds": 517.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_35",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 845.1,
+      "routingStatus": "OK",
+      "distanceMeters": 1021.7,
+      "durationSeconds": 792.6,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_35",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 1090.1,
+      "routingStatus": "OK",
+      "distanceMeters": 1458.7,
+      "durationSeconds": 1007.5,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_48",
+      "stationId": "METRO_OSM_254343697",
+      "stationName": "Quinta Normal",
+      "straightLineM": 101.6,
+      "routingStatus": "OK",
+      "distanceMeters": 101.8,
+      "durationSeconds": 86.9,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_48",
+      "stationId": "METRO_OSM_253281419",
+      "stationName": "Cumming",
+      "straightLineM": 997.8,
+      "routingStatus": "OK",
+      "distanceMeters": 1001.6,
+      "durationSeconds": 744.8,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_48",
+      "stationId": "METRO_OSM_475498004",
+      "stationName": "Gruta de Lourdes",
+      "straightLineM": 1124.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1447.2,
+      "durationSeconds": 1011.7,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_48",
+      "stationId": "METRO_OSM_252528387",
+      "stationName": "Unión Latinoamericana",
+      "straightLineM": 1150.2,
+      "routingStatus": "OK",
+      "distanceMeters": 1501.6,
+      "durationSeconds": 1067.4,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_48",
+      "stationId": "METRO_OSM_252528391",
+      "stationName": "Estación Central",
+      "straightLineM": 1176.5,
+      "routingStatus": "OK",
+      "distanceMeters": 1363.6,
+      "durationSeconds": 960.6,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_91",
+      "stationId": "METRO_OSM_944490419",
+      "stationName": "Patronato",
+      "straightLineM": 261.0,
+      "routingStatus": "OK",
+      "distanceMeters": 273.1,
+      "durationSeconds": 177.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_91",
+      "stationId": "METRO_OSM_253281389",
+      "stationName": "Bellas Artes",
+      "straightLineM": 741.1,
+      "routingStatus": "OK",
+      "distanceMeters": 865.1,
+      "durationSeconds": 666.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_91",
+      "stationId": "METRO_OSM_944490442",
+      "stationName": "Cerro Blanco",
+      "straightLineM": 805.6,
+      "routingStatus": "OK",
+      "distanceMeters": 992.9,
+      "durationSeconds": 666.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_91",
+      "stationId": "METRO_OSM_6506316370",
+      "stationName": "Puente Cal y Canto",
+      "straightLineM": 873.0,
+      "routingStatus": "OK",
+      "distanceMeters": 1126.5,
+      "durationSeconds": 777.3,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_91",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 1049.9,
+      "routingStatus": "OK",
+      "distanceMeters": 1332.6,
+      "durationSeconds": 956.0,
+      "useful": false
+    },
+    {
+      "stgoId": "STGO_92",
+      "stationId": "METRO_OSM_5227884069",
+      "stationName": "Universidad de Chile",
+      "straightLineM": 347.0,
+      "routingStatus": "OK",
+      "distanceMeters": 520.7,
+      "durationSeconds": 365.1,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_92",
+      "stationId": "METRO_OSM_6231367141",
+      "stationName": "Plaza de Armas",
+      "straightLineM": 404.4,
+      "routingStatus": "OK",
+      "distanceMeters": 508.5,
+      "durationSeconds": 368.4,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_92",
+      "stationId": "METRO_OSM_3391796062",
+      "stationName": "La Moneda",
+      "straightLineM": 501.5,
+      "routingStatus": "OK",
+      "distanceMeters": 722.7,
+      "durationSeconds": 504.2,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_92",
+      "stationId": "METRO_OSM_252527604",
+      "stationName": "Santa Lucía",
+      "straightLineM": 705.3,
+      "routingStatus": "OK",
+      "distanceMeters": 937.5,
+      "durationSeconds": 645.5,
+      "useful": true
+    },
+    {
+      "stgoId": "STGO_92",
+      "stationId": "METRO_OSM_477827069",
+      "stationName": "Santa Ana",
+      "straightLineM": 781.6,
+      "routingStatus": "OK",
+      "distanceMeters": 1064.0,
+      "durationSeconds": 682.4,
+      "useful": true
+    }
+  ]
+}

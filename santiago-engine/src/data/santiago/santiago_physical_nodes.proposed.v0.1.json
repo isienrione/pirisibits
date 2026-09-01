@@ -1,0 +1,3675 @@
+{
+  "schemaVersion": "physical-nodes.proposed.v0.1",
+  "cityId": "santiago",
+  "gate": "1B.1",
+  "generatedBy": "enrich_santiago_physical_graph.py",
+  "physicalRouteGenerationEnabled": false,
+  "autoCuratorApproveFromMapbox": false,
+  "launchCorpusIds": [
+    "la-moneda",
+    "morande-80",
+    "londres-38",
+    "plaza-de-armas",
+    "pasaje-phillips",
+    "catedral",
+    "merced",
+    "santa-lucia",
+    "lastarria",
+    "parque-forestal",
+    "gam",
+    "bellavista",
+    "la-chascona",
+    "san-cristobal",
+    "mercado-central",
+    "museo-memoria",
+    "yungay",
+    "barrio-brasil",
+    "barrio-italia",
+    "san-francisco",
+    "palacio-pereira",
+    "ex-congreso",
+    "plaza-constitucion",
+    "museo-bellas-artes",
+    "estacion-mapocho",
+    "cementerio-general",
+    "plaza-nunoa",
+    "villa-grimaldi",
+    "teatro-municipal",
+    "casa-de-los-diez"
+  ],
+  "identityNodeCount": 103,
+  "launchNodeCount": 30,
+  "coordinatePolicy": "Mapbox provider coordinates only. No arithmetic fallback.",
+  "nodes": [
+    {
+      "id": "la-moneda",
+      "name": "La Moneda",
+      "kind": "anchor",
+      "neighborhood": "Centro Cívico",
+      "geocodeQuery": "Palacio de La Moneda Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "la-moneda",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.44005,
+      "lng": -70.6552,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4394678637775306",
+          "placeName": "Pasaje La Moneda, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje La Moneda",
+          "relevance": 0.670635,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.785571,
+          "lat": -33.522737,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "locality.13347375",
+          "placeName": "Moneda, Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Moneda",
+          "relevance": 0.617143,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.6552,
+          "lat": -33.44005,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4299263020464290",
+          "placeName": "Moneda, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Moneda",
+          "relevance": 0.617143,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.662296,
+          "lat": -33.443068,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2468053101298954",
+          "placeName": "Pasaje Paladio, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Paladio",
+          "relevance": 0.592687,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.781629,
+          "lat": -33.519304,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.497355,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Palacio de La Moneda Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.13347375",
+        "placeName": "Moneda, Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Moneda",
+        "relevance": 0.617143,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.6552,
+        "lat": -33.44005,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Plausible hit (relevance=0.617, overlap=1.00) — curator review",
+      "providerId": "locality.13347375",
+      "relevance": 0.617143,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "morande-80",
+      "name": "Morandé 80",
+      "kind": "pocket",
+      "neighborhood": "Centro Cívico",
+      "geocodeQuery": "Morandé 80 Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "morande-80",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.5163520634616018",
+          "placeName": "Morandé 80, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Morandé",
+          "relevance": 1,
+          "accuracy": "rooftop",
+          "category": null,
+          "lng": -70.653353,
+          "lat": -33.442718,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.592593,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.592593,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Morandé 80 Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.2517039",
+        "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Santiago",
+        "relevance": 0.592593,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.64937,
+        "lat": -33.440643,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.2517039",
+      "relevance": 0.592593,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "londres-38",
+      "name": "Londres 38",
+      "kind": "pocket",
+      "neighborhood": "París-Londres",
+      "geocodeQuery": "Londres 38 París Londres Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "londres-38",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.444208,
+      "lng": -70.648025,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4154915140809224",
+          "placeName": "Londres 38, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Londres",
+          "relevance": 1,
+          "accuracy": "rooftop",
+          "category": null,
+          "lng": -70.648025,
+          "lat": -33.444208,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2608760114595160",
+          "placeName": "Los Jazmines 38, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Los Jazmines",
+          "relevance": 1,
+          "accuracy": "interpolated",
+          "category": null,
+          "lng": -70.617679,
+          "lat": -33.457734,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6824497764162416",
+          "placeName": "Londres, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+          "text": "Londres",
+          "relevance": 0.994259,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.633443,
+          "lat": -33.439943,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.5573561511934864",
+          "placeName": "Londres, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Londres",
+          "relevance": 0.666667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.638891,
+          "lat": -33.456789,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4695667637150494",
+          "placeName": "Los Ceibos, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Los Ceibos",
+          "relevance": 0.666667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.684702,
+          "lat": -33.411125,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Londres 38 París Londres Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.4154915140809224",
+        "placeName": "Londres 38, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+        "text": "Londres",
+        "relevance": 1,
+        "accuracy": "rooftop",
+        "category": null,
+        "lng": -70.648025,
+        "lat": -33.444208,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
+      "providerId": "address.4154915140809224",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "plaza-de-armas",
+      "name": "Plaza de Armas",
+      "kind": "anchor",
+      "neighborhood": "Santiago Centro",
+      "geocodeQuery": "Plaza de Armas Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "plaza-de-armas",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.438084,
+      "lng": -70.651179,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4047443208197870",
+          "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 0.797037,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651179,
+          "lat": -33.438084,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7185841951092628",
+          "placeName": "Plaza de Armas, La Pintana, Región Metropolitana de Santiago 8820000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 0.787037,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.618476,
+          "lat": -33.592954,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3002112095548218",
+          "placeName": "Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Plaza",
+          "relevance": 0.777778,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.628713,
+          "lat": -33.403989,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8744148176172056",
+          "placeName": "Plaza, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Plaza",
+          "relevance": 0.777778,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.691155,
+          "lat": -33.413705,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4110780975301328",
+          "placeName": "Pasaje Plata, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Pasaje Plata",
+          "relevance": 0.756481,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.634584,
+          "lat": -33.392196,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Plaza de Armas Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.4047443208197870",
+        "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+        "text": "Plaza de Armas",
+        "relevance": 0.797037,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.651179,
+        "lat": -33.438084,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
+      "providerId": "address.4047443208197870",
+      "relevance": 0.797037,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "pasaje-phillips",
+      "name": "Pasaje Phillips",
+      "kind": "micro",
+      "neighborhood": "Santiago Centro",
+      "geocodeQuery": "Pasaje Phillips Plaza de Armas Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "pasaje-phillips",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.8091885541629108",
+          "placeName": "Phillips, Macul, Región Metropolitana de Santiago 7810000, Chile",
+          "text": "Phillips",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.60034,
+          "lat": -33.482686,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2536382913820410",
+          "placeName": "Pasaje, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Pasaje",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.589485,
+          "lat": -33.472106,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8013703090801366",
+          "placeName": "Paseo Phillips, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Paseo Phillips",
+          "relevance": 0.76,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.649467,
+          "lat": -33.437702,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.592593,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.592593,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Pasaje Phillips Plaza de Armas Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.2517039",
+        "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Santiago",
+        "relevance": 0.592593,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.64937,
+        "lat": -33.440643,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.2517039",
+      "relevance": 0.592593,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "catedral",
+      "name": "Catedral Metropolitana de",
+      "kind": "micro",
+      "neighborhood": "Plaza de Armas",
+      "geocodeQuery": "Catedral Metropolitana Plaza de Armas Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "catedral",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.438084,
+      "lng": -70.651179,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4047443208197870",
+          "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651179,
+          "lat": -33.438084,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7185841951092628",
+          "placeName": "Plaza de Armas, La Pintana, Región Metropolitana de Santiago 8820000, Chile",
+          "text": "Plaza de Armas",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.618476,
+          "lat": -33.592954,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3002112095548218",
+          "placeName": "Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Plaza",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.628713,
+          "lat": -33.403989,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8744148176172056",
+          "placeName": "Plaza, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Plaza",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.691155,
+          "lat": -33.413705,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4110780975301328",
+          "placeName": "Pasaje Plata, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Pasaje Plata",
+          "relevance": 0.799444,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.634584,
+          "lat": -33.392196,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Catedral Metropolitana Plaza de Armas Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.4047443208197870",
+        "placeName": "Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+        "text": "Plaza de Armas",
+        "relevance": 1,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.651179,
+        "lat": -33.438084,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=0.00)",
+      "providerId": "address.4047443208197870",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "merced",
+      "name": "Basílica de la Merced",
+      "kind": "micro",
+      "neighborhood": "Merced",
+      "geocodeQuery": "Basílica de la Merced Merced Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "merced",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4942208776307484",
+          "placeName": "Pasaje La Merced, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje La Merced",
+          "relevance": 0.638889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.773879,
+          "lat": -33.524128,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.481481,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.481481,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Basílica de la Merced Merced Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.2517039",
+        "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Santiago",
+        "relevance": 0.481481,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.64937,
+        "lat": -33.440643,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.2517039",
+      "relevance": 0.481481,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "santa-lucia",
+      "name": "Cerro Santa Lucía",
+      "kind": "anchor",
+      "neighborhood": "Santa Lucía",
+      "geocodeQuery": "Cerro Santa Lucía Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "santa-lucia",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.439572,
+      "lng": -70.644295,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.5044447540921746",
+          "placeName": "Cerro Santa Lucía, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Cerro Santa Lucía",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.755045,
+          "lat": -33.470146,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.399479834553766",
+          "placeName": "Cerro Santa Lucía, San Bernardo, Región Metropolitana de Santiago 8050000, Chile",
+          "text": "Cerro Santa Lucía",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.666748,
+          "lat": -33.585559,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6078820237814952",
+          "placeName": "Cerro Santa Lucía, Puente Alto, Región Metropolitana de Santiago 8150000, Chile",
+          "text": "Cerro Santa Lucía",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.563706,
+          "lat": -33.594701,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7440207269562444",
+          "placeName": "Santa Lucía, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Santa Lucía",
+          "relevance": 0.703704,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.644295,
+          "lat": -33.439572,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2816301768267246",
+          "placeName": "Santa Lucía, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+          "text": "Santa Lucía",
+          "relevance": 0.703704,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.677194,
+          "lat": -33.359367,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Cerro Santa Lucía Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.7440207269562444",
+        "placeName": "Santa Lucía, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+        "text": "Santa Lucía",
+        "relevance": 0.703704,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.644295,
+        "lat": -33.439572,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Plausible hit (relevance=0.704, overlap=0.50) — curator review",
+      "providerId": "address.7440207269562444",
+      "relevance": 0.703704,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "lastarria",
+      "name": "Barrio Lastarria",
+      "kind": "pocket",
+      "neighborhood": "Lastarria",
+      "geocodeQuery": "Barrio Lastarria Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "lastarria",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.369047,
+      "lng": -70.637796,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.407294838543210",
+          "placeName": "Lastarria, Cerro Navia, Región Metropolitana de Santiago 9080000, Chile",
+          "text": "Lastarria",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.729236,
+          "lat": -33.415295,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.342666664745332",
+          "placeName": "Lastarria, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+          "text": "Lastarria",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.637796,
+          "lat": -33.369047,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8293168354615306",
+          "placeName": "Lastarria, La Florida, Región Metropolitana de Santiago 8240000, Chile",
+          "text": "Lastarria",
+          "relevance": 0.683333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.584636,
+          "lat": -33.560708,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.5938594250136682",
+          "placeName": "Pasaje Bario, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Bario",
+          "relevance": 0.622593,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.784225,
+          "lat": -33.519196,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.73516746873854",
+          "placeName": "Chila, Lo Prado, Región Metropolitana de Santiago 8980000, Chile",
+          "text": "Chila",
+          "relevance": 0.603333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.725424,
+          "lat": -33.445309,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Barrio Lastarria Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.342666664745332",
+        "placeName": "Lastarria, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+        "text": "Lastarria",
+        "relevance": 0.822222,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.637796,
+        "lat": -33.369047,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Provider hit needs curator review (relevance=0.822, overlap=1.00)",
+      "providerId": "address.342666664745332",
+      "relevance": 0.822222,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "parque-forestal",
+      "name": "Parque Forestal",
+      "kind": "micro",
+      "neighborhood": "Forestal",
+      "geocodeQuery": "Parque Forestal Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "parque-forestal",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.465247,
+      "lng": -70.692707,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.8164251954080248",
+          "placeName": "Parque, Pedro Aguirre Cerda, Región Metropolitana de Santiago 8460000, Chile",
+          "text": "Parque",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.662652,
+          "lat": -33.481105,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8138766845354862",
+          "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Parque",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.692707,
+          "lat": -33.465247,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6866398598442290",
+          "placeName": "Forestal, Conchalí, Región Metropolitana de Santiago 8540000, Chile",
+          "text": "Forestal",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.674148,
+          "lat": -33.386856,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6052949131603764",
+          "placeName": "Pasaje Foresta, San Miguel, Región Metropolitana de Santiago 8900000, Chile",
+          "text": "Pasaje Foresta",
+          "relevance": 0.807986,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.639471,
+          "lat": -33.50484,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6337221655582328",
+          "placeName": "Pasaje Parque Forestal, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Parque Forestal",
+          "relevance": 0.772222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.753715,
+          "lat": -33.468876,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Parque Forestal Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.8138766845354862",
+        "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+        "text": "Parque",
+        "relevance": 0.822222,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.692707,
+        "lat": -33.465247,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=0.50)",
+      "providerId": "address.8138766845354862",
+      "relevance": 0.822222,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "gam",
+      "name": "Centro Cultural Gabriela Mistral GAM",
+      "kind": "pocket",
+      "neighborhood": "Lastarria",
+      "geocodeQuery": "Centro Gabriela Mistral GAM Alameda Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "gam",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.6142274157693902",
+          "placeName": "Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.704224,
+          "lat": -33.457471,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4434209100921050",
+          "placeName": "Pasaje Alameda, Quilicura, Región Metropolitana de Santiago 8700000, Chile",
+          "text": "Pasaje Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.732383,
+          "lat": -33.379855,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8460462945649304",
+          "placeName": "Pasaje La Alameda, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje La Alameda",
+          "relevance": 0.933333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.780305,
+          "lat": -33.515207,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.666667,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.666667,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Centro Gabriela Mistral GAM Alameda Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.2517039",
+        "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Santiago",
+        "relevance": 0.666667,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.64937,
+        "lat": -33.440643,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.2517039",
+      "relevance": 0.666667,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "bellavista",
+      "name": "Barrio Bellavista",
+      "kind": "pocket",
+      "neighborhood": "Bellavista",
+      "geocodeQuery": "Barrio Bellavista Recoleta Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "bellavista",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.1589444820940962",
+          "placeName": "Avenida Recoleta, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Avenida Recoleta",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.642623,
+          "lat": -33.395608,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.5061945379310142",
+          "placeName": "Pasaje Bellavista, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Pasaje Bellavista",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.73713,
+          "lat": -33.410412,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4136016743388752",
+          "placeName": "Recoleta, Pudahuel, Región Metropolitana de Santiago 9020000, Chile",
+          "text": "Recoleta",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.744049,
+          "lat": -33.461411,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8020030614266190",
+          "placeName": "Bellavista, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Bellavista",
+          "relevance": 0.8,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.641962,
+          "lat": -33.433632,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1788498659871992",
+          "placeName": "Pasaje Recoleta, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+          "text": "Pasaje Recoleta",
+          "relevance": 0.776667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.639913,
+          "lat": -33.373739,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Barrio Bellavista Recoleta Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.1589444820940962",
+        "placeName": "Avenida Recoleta, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+        "text": "Avenida Recoleta",
+        "relevance": 0.822222,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.642623,
+        "lat": -33.395608,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.1589444820940962",
+      "relevance": 0.822222,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "la-chascona",
+      "name": "La Chascona Museo Neruda",
+      "kind": "micro",
+      "neighborhood": "Bellavista",
+      "geocodeQuery": "Museo La Chascona Fernando Márquez de la Plata Bellavista Santiago",
+      "launchCorpus": true,
+      "legacyContentId": "la-chascona",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.4765644272819800",
+          "placeName": "Fernando Márquez de La Plata, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+          "text": "Fernando Márquez de La Plata",
+          "relevance": 0.843915,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.63462,
+          "lat": -33.431212,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6932078540546930",
+          "placeName": "Pasaje de La Plata, Puente Alto, Región Metropolitana de Santiago 8150000, Chile",
+          "text": "Pasaje de La Plata",
+          "relevance": 0.624339,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.60258,
+          "lat": -33.594792,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1806441877896098",
+          "placeName": "Río de la Plata, San Ramón, Región Metropolitana de Santiago 8860000, Chile",
+          "text": "Río de la Plata",
+          "relevance": 0.549206,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.637494,
+          "lat": -33.552385,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2517039",
+          "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Santiago",
+          "relevance": 0.34127,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64937,
+          "lat": -33.440643,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "region.50223",
+          "placeName": "Región Metropolitana de Santiago, Chile",
+          "text": "Región Metropolitana de Santiago",
+          "relevance": 0.34127,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.651067,
+          "lat": -33.437699,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "region"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Museo La Chascona Fernando Márquez de la Plata Bellavista Santiago",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.2517039",
+        "placeName": "Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Santiago",
+        "relevance": 0.34127,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.64937,
+        "lat": -33.440643,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.2517039",
+      "relevance": 0.34127,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "san-cristobal",
+      "name": "Cerro San Cristóbal",
+      "kind": "anchor",
+      "neighborhood": "Parque Metropolitano",
+      "geocodeQuery": "Cerro San Cristóbal Parque Metropolitano Recoleta Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "san-cristobal",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "PROVIDER_SELECTED_HIGH_CONFIDENCE",
+      "physicalState": "PROVIDER_SELECTED",
+      "lat": -33.420729,
+      "lng": -70.642442,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.5839212371157530",
+          "placeName": "Cerro San Cristóbal, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Cerro San Cristóbal",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.755084,
+          "lat": -33.470418,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3006569595463988",
+          "placeName": "Cerro San Cristóbal, Pudahuel, Región Metropolitana de Santiago 9020000, Chile",
+          "text": "Cerro San Cristóbal",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.771843,
+          "lat": -33.436803,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2890930287462752",
+          "placeName": "Cerro San Cristóbal, San Bernardo, Región Metropolitana de Santiago 8050000, Chile",
+          "text": "Cerro San Cristóbal",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.668215,
+          "lat": -33.587229,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8030416230194136",
+          "placeName": "Cerro San Cristóbal, Puente Alto, Región Metropolitana de Santiago 8150000, Chile",
+          "text": "Cerro San Cristóbal",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.56043,
+          "lat": -33.595239,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3668385214104074",
+          "placeName": "San Cristóbal, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "San Cristóbal",
+          "relevance": 0.911111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.642442,
+          "lat": -33.420729,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Cerro San Cristóbal Parque Metropolitano Recoleta Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.3668385214104074",
+        "placeName": "San Cristóbal, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+        "text": "San Cristóbal",
+        "relevance": 0.911111,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.642442,
+        "lat": -33.420729,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "High-confidence provider selection relevance=0.911 overlap=0.50",
+      "providerId": "address.3668385214104074",
+      "relevance": 0.911111,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "mercado-central",
+      "name": "Mercado Central de",
+      "kind": "micro",
+      "neighborhood": "Mercado",
+      "geocodeQuery": "Mercado Central Ismael Valdés Vergara Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "mercado-central",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.434393,
+      "lng": -70.646778,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.1743884312522496",
+          "placeName": "Ismael Valdés Vergara, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Ismael Valdés Vergara",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.646778,
+          "lat": -33.434393,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8408963562438516",
+          "placeName": "Ismael Valdés, Pedro Aguirre Cerda, Región Metropolitana de Santiago 8460000, Chile",
+          "text": "Ismael Valdés",
+          "relevance": 0.911111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.661839,
+          "lat": -33.480001,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3337500104710602",
+          "placeName": "Vergara, Pedro Aguirre Cerda, Región Metropolitana de Santiago 8460000, Chile",
+          "text": "Vergara",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.672852,
+          "lat": -33.478978,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4079474770689454",
+          "placeName": "Vergara, Conchalí, Región Metropolitana de Santiago 8540000, Chile",
+          "text": "Vergara",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.684583,
+          "lat": -33.38949,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7464946663188820",
+          "placeName": "Manuel Vergara, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Manuel Vergara",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.730447,
+          "lat": -33.468527,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Mercado Central Ismael Valdés Vergara Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.1743884312522496",
+        "placeName": "Ismael Valdés Vergara, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+        "text": "Ismael Valdés Vergara",
+        "relevance": 1,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.646778,
+        "lat": -33.434393,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=0.00)",
+      "providerId": "address.1743884312522496",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "museo-memoria",
+      "name": "Museo de la Memoria y los Derechos Humanos",
+      "kind": "pocket",
+      "neighborhood": "Matucana",
+      "geocodeQuery": "Museo de la Memoria y los Derechos Humanos Matucana Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "museo-memoria",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.429195,
+      "lng": -70.6767,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.7299995796910398",
+          "placeName": "Matucana, Quinta Normal, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Matucana",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.680066,
+          "lat": -33.43858,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2040032590314496",
+          "placeName": "Pasaje Matucana, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Matucana",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.746764,
+          "lat": -33.492256,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "locality.12905007",
+          "placeName": "Matucana, Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Matucana",
+          "relevance": 1,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.6767,
+          "lat": -33.429195,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1925942123394934",
+          "placeName": "Matucana, La Reina, Región Metropolitana de Santiago 7850000, Chile",
+          "text": "Matucana",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.536072,
+          "lat": -33.461842,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3350655200281966",
+          "placeName": "Maturana, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Maturana",
+          "relevance": 0.989167,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.667019,
+          "lat": -33.438385,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Museo de la Memoria y los Derechos Humanos Matucana Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.12905007",
+        "placeName": "Matucana, Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Matucana",
+        "relevance": 1,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.6767,
+        "lat": -33.429195,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Plausible hit (relevance=1.000, overlap=0.00) — curator review",
+      "providerId": "locality.12905007",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "yungay",
+      "name": "Barrio Yungay",
+      "kind": "micro",
+      "neighborhood": "Yungay",
+      "geocodeQuery": "Barrio Yungay Quinta Normal Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "yungay",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.432793,
+      "lng": -70.685875,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "locality.21891631",
+          "placeName": "Yungay, Quinta Normal, Región Metropolitana de Santiago, Chile",
+          "text": "Yungay",
+          "relevance": 0.814815,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.685875,
+          "lat": -33.432793,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2107439",
+          "placeName": "Quinta Normal, Región Metropolitana de Santiago, Chile",
+          "text": "Quinta Normal",
+          "relevance": 0.712963,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.69222,
+          "lat": -33.431774,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1776304705489602",
+          "placeName": "Pasaje Parque Quinta Normal, Puente Alto, Región Metropolitana de Santiago 8150000, Chile",
+          "text": "Pasaje Parque Quinta Normal",
+          "relevance": 0.712963,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.572714,
+          "lat": -33.572548,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3057819854285662",
+          "placeName": "Yungay, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Yungay",
+          "relevance": 0.685185,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.674219,
+          "lat": -33.429055,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3113394026334142",
+          "placeName": "Yungay, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Yungay",
+          "relevance": 0.685185,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.695692,
+          "lat": -33.409277,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Barrio Yungay Quinta Normal Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.21891631",
+        "placeName": "Yungay, Quinta Normal, Región Metropolitana de Santiago, Chile",
+        "text": "Yungay",
+        "relevance": 0.814815,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.685875,
+        "lat": -33.432793,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=1.00)",
+      "providerId": "locality.21891631",
+      "relevance": 0.814815,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "barrio-brasil",
+      "name": "Barrio Brasil",
+      "kind": "micro",
+      "neighborhood": "Brasil",
+      "geocodeQuery": "Barrio Brasil Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "barrio-brasil",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.442154,
+      "lng": -70.66512,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.3503299873024190",
+          "placeName": "Brasil, Cerrillos, Región Metropolitana de Santiago 9200000, Chile",
+          "text": "Brasil",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.729576,
+          "lat": -33.487652,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8906414201618344",
+          "placeName": "Brasil, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Brasil",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.744927,
+          "lat": -33.400382,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2588745030373136",
+          "placeName": "Brasil, Quilicura, Región Metropolitana de Santiago 8700000, Chile",
+          "text": "Brasil",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.744983,
+          "lat": -33.358443,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "locality.1346095",
+          "placeName": "Brasil, Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Brasil",
+          "relevance": 0.693333,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.66512,
+          "lat": -33.442154,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4257186093548864",
+          "placeName": "Avenida Brasil, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Avenida Brasil",
+          "relevance": 0.693333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.66463,
+          "lat": -33.438654,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Barrio Brasil Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.1346095",
+        "placeName": "Brasil, Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Brasil",
+        "relevance": 0.693333,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.66512,
+        "lat": -33.442154,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=1.00)",
+      "providerId": "locality.1346095",
+      "relevance": 0.693333,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "barrio-italia",
+      "name": "Barrio Italia",
+      "kind": "pocket",
+      "neighborhood": "Italia",
+      "geocodeQuery": "Barrio Italia Ñuñoa Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": "barrio-italia",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.5238273700790410",
+          "placeName": "Talia, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Talia",
+          "relevance": 0.803241,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.744818,
+          "lat": -33.41088,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.54831404296606",
+          "placeName": "Italia, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Italia",
+          "relevance": 0.8,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.583834,
+          "lat": -33.45295,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7125111922743768",
+          "placeName": "Avenida Italia, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+          "text": "Avenida Italia",
+          "relevance": 0.7,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.62499,
+          "lat": -33.446715,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.1533999",
+          "placeName": "Ñuñoa, Región Metropolitana de Santiago, Chile",
+          "text": "Ñuñoa",
+          "relevance": 0.683333,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.5979,
+          "lat": -33.45498,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2012633844563834",
+          "placeName": "Italia, San Joaquín, Región Metropolitana de Santiago 8940000, Chile",
+          "text": "Italia",
+          "relevance": 0.683333,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.620529,
+          "lat": -33.513268,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Barrio Italia Ñuñoa Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "place.1533999",
+        "placeName": "Ñuñoa, Región Metropolitana de Santiago, Chile",
+        "text": "Ñuñoa",
+        "relevance": 0.683333,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.5979,
+        "lat": -33.45498,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "place"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "place.1533999",
+      "relevance": 0.683333,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "san-francisco",
+      "name": "Iglesia de San Francisco",
+      "kind": "micro",
+      "neighborhood": "Alameda",
+      "geocodeQuery": "Iglesia San Francisco Alameda Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "san-francisco",
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.457471,
+      "lng": -70.704224,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.6142274157693902",
+          "placeName": "Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.704224,
+          "lat": -33.457471,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4434209100921050",
+          "placeName": "Pasaje Alameda, Quilicura, Región Metropolitana de Santiago 8700000, Chile",
+          "text": "Pasaje Alameda",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.732383,
+          "lat": -33.379855,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8460462945649304",
+          "placeName": "Pasaje La Alameda, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje La Alameda",
+          "relevance": 0.9,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.780305,
+          "lat": -33.515207,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Iglesia San Francisco Alameda Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.6142274157693902",
+        "placeName": "Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+        "text": "Alameda",
+        "relevance": 1,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.704224,
+        "lat": -33.457471,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=micro requires curator confirmation (overlap=0.00)",
+      "providerId": "address.6142274157693902",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "palacio-pereira",
+      "name": "Palacio Pereira",
+      "kind": "micro",
+      "neighborhood": "Barrio Cívico",
+      "geocodeQuery": "Palacio Pereira Huérfanos Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": "palacio-pereira",
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.2996132911434942",
+          "placeName": "Huérfanos, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Huérfanos",
+          "relevance": 0.777778,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.695421,
+          "lat": -33.443744,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6449054827314010",
+          "placeName": "Huérfanos, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Huérfanos",
+          "relevance": 0.648889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.661532,
+          "lat": -33.440693,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2468053101298954",
+          "placeName": "Pasaje Paladio, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Paladio",
+          "relevance": 0.623677,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.781629,
+          "lat": -33.519304,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.73516746873854",
+          "placeName": "Chila, Lo Prado, Región Metropolitana de Santiago 8980000, Chile",
+          "text": "Chila",
+          "relevance": 0.575185,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.725424,
+          "lat": -33.445309,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1780617000659772",
+          "placeName": "Centro, La Florida, Región Metropolitana de Santiago 8240000, Chile",
+          "text": "Centro",
+          "relevance": 0.522407,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.561716,
+          "lat": -33.535976,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Palacio Pereira Huérfanos Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.2996132911434942",
+        "placeName": "Huérfanos, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+        "text": "Huérfanos",
+        "relevance": 0.777778,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.695421,
+        "lat": -33.443744,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.2996132911434942",
+      "relevance": 0.777778,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "ex-congreso",
+      "name": "Ex Congreso Nacional",
+      "kind": "civic",
+      "neighborhood": "Centro Cívico",
+      "geocodeQuery": "Ex Congreso Nacional Catedral Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.47967,
+      "lng": -70.528776,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.7628733444601846",
+          "placeName": "Catedral, Lo Prado, Región Metropolitana de Santiago 8980000, Chile",
+          "text": "Catedral",
+          "relevance": 0.746032,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.707695,
+          "lat": -33.443197,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6622103295409666",
+          "placeName": "Pasaje El Congreso, Peñalolén, Región Metropolitana de Santiago 7910000, Chile",
+          "text": "Pasaje El Congreso",
+          "relevance": 0.65855,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.528776,
+          "lat": -33.47967,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4383606705088042",
+          "placeName": "Catedral, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Catedral",
+          "relevance": 0.617143,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.665684,
+          "lat": -33.438873,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7944163794563858",
+          "placeName": "Congreso, Pudahuel, Región Metropolitana de Santiago 9020000, Chile",
+          "text": "Congreso",
+          "relevance": 0.607143,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.753181,
+          "lat": -33.45781,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7201583970383344",
+          "placeName": "Pasaje La Catedral, La Florida, Región Metropolitana de Santiago 8240000, Chile",
+          "text": "Pasaje La Catedral",
+          "relevance": 0.566667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.608354,
+          "lat": -33.562613,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Ex Congreso Nacional Catedral Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.6622103295409666",
+        "placeName": "Pasaje El Congreso, Peñalolén, Región Metropolitana de Santiago 7910000, Chile",
+        "text": "Pasaje El Congreso",
+        "relevance": 0.65855,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.528776,
+        "lat": -33.47967,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
+      "providerId": "address.6622103295409666",
+      "relevance": 0.65855,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "plaza-constitucion",
+      "name": "Plaza de la Constitución",
+      "kind": "civic",
+      "neighborhood": "Centro Cívico",
+      "geocodeQuery": "Plaza de la Constitución Moneda Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.432677,
+      "lng": -70.634847,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.1867968347677978",
+          "placeName": "Constitución, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+          "text": "Constitución",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.634847,
+          "lat": -33.432677,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3002112095548218",
+          "placeName": "Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Plaza",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.628713,
+          "lat": -33.403989,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8744148176172056",
+          "placeName": "Plaza, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Plaza",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.691155,
+          "lat": -33.413705,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1143854560220044",
+          "placeName": "Constitución, Conchalí, Región Metropolitana de Santiago 8540000, Chile",
+          "text": "Constitución",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.686264,
+          "lat": -33.377249,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2011277144517500",
+          "placeName": "Plaza, La Cisterna, Región Metropolitana de Santiago 7970000, Chile",
+          "text": "Plaza",
+          "relevance": 0.548148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.667134,
+          "lat": -33.519056,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Plaza de la Constitución Moneda Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.1867968347677978",
+        "placeName": "Constitución, Providencia, Región Metropolitana de Santiago 7500000, Chile",
+        "text": "Constitución",
+        "relevance": 0.548148,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.634847,
+        "lat": -33.432677,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Ambiguous: multiple near-equal Mapbox candidates",
+      "providerId": "address.1867968347677978",
+      "relevance": 0.548148,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "museo-bellas-artes",
+      "name": "Museo Nacional de Bellas Artes",
+      "kind": "museum",
+      "neighborhood": "Parque Forestal",
+      "geocodeQuery": "Museo Nacional de Bellas Artes Parque Forestal Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.6337221655582328",
+          "placeName": "Pasaje Parque Forestal, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Pasaje Parque Forestal",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.753715,
+          "lat": -33.468876,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8164251954080248",
+          "placeName": "Parque, Pedro Aguirre Cerda, Región Metropolitana de Santiago 8460000, Chile",
+          "text": "Parque",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.662652,
+          "lat": -33.481105,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8138766845354862",
+          "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+          "text": "Parque",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.692707,
+          "lat": -33.465247,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6866398598442290",
+          "placeName": "Forestal, Conchalí, Región Metropolitana de Santiago 8540000, Chile",
+          "text": "Forestal",
+          "relevance": 0.888889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.674148,
+          "lat": -33.386856,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.6052949131603764",
+          "placeName": "Pasaje Foresta, San Miguel, Región Metropolitana de Santiago 8900000, Chile",
+          "text": "Pasaje Foresta",
+          "relevance": 0.873264,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.639471,
+          "lat": -33.50484,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Museo Nacional de Bellas Artes Parque Forestal Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.8138766845354862",
+        "placeName": "Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile",
+        "text": "Parque",
+        "relevance": 0.888889,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.692707,
+        "lat": -33.465247,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.8138766845354862",
+      "relevance": 0.888889,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "estacion-mapocho",
+      "name": "Estación Mapocho",
+      "kind": "architecture",
+      "neighborhood": "Mapocho",
+      "geocodeQuery": "Centro Cultural Estación Mapocho Independencia Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.434574,
+      "lng": -70.66077,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.8823022058757376",
+          "placeName": "Pasaje Estación, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Pasaje Estación",
+          "relevance": 0.624339,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.689664,
+          "lat": -33.402563,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "locality.12749359",
+          "placeName": "Mapocho, Santiago, Región Metropolitana de Santiago, Chile",
+          "text": "Mapocho",
+          "relevance": 0.611111,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.66077,
+          "lat": -33.434574,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4536907542372822",
+          "placeName": "Avenida Mapocho, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Avenida Mapocho",
+          "relevance": 0.611111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.698592,
+          "lat": -33.429529,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4056885545245324",
+          "placeName": "Mapocho, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "Mapocho",
+          "relevance": 0.611111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.694569,
+          "lat": -33.408131,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1132014650844140",
+          "placeName": "Avenida Mapocho Sur, Cerro Navia, Región Metropolitana de Santiago 9080000, Chile",
+          "text": "Avenida Mapocho Sur",
+          "relevance": 0.611111,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.749428,
+          "lat": -33.422257,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Centro Cultural Estación Mapocho Independencia Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.12749359",
+        "placeName": "Mapocho, Santiago, Región Metropolitana de Santiago, Chile",
+        "text": "Mapocho",
+        "relevance": 0.611111,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.66077,
+        "lat": -33.434574,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Plausible hit (relevance=0.611, overlap=0.50) — curator review",
+      "providerId": "locality.12749359",
+      "relevance": 0.611111,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "cementerio-general",
+      "name": "Cementerio General",
+      "kind": "memory",
+      "neighborhood": "Recoleta",
+      "geocodeQuery": "Cementerio General Recoleta Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "NEEDS_CURATOR_REVIEW",
+      "physicalState": "NEEDS_CURATOR_REVIEW",
+      "lat": -33.405178,
+      "lng": -70.646194,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "locality.2640431",
+          "placeName": "Cementerio General, Recoleta, Región Metropolitana de Santiago, Chile",
+          "text": "Cementerio General",
+          "relevance": 1,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.646194,
+          "lat": -33.405178,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2301276407279016",
+          "placeName": "Cementerio General, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "Cementerio General",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.645475,
+          "lat": -33.41401,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4136016743388752",
+          "placeName": "Recoleta, Pudahuel, Región Metropolitana de Santiago 9020000, Chile",
+          "text": "Recoleta",
+          "relevance": 0.822222,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.744049,
+          "lat": -33.461411,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1788498659871992",
+          "placeName": "Pasaje Recoleta, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+          "text": "Pasaje Recoleta",
+          "relevance": 0.776667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.639913,
+          "lat": -33.373739,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "place.2156591",
+          "placeName": "Recoleta, Región Metropolitana de Santiago, Chile",
+          "text": "Recoleta",
+          "relevance": 0.683333,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.64304,
+          "lat": -33.403522,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "place"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Cementerio General Recoleta Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.2640431",
+        "placeName": "Cementerio General, Recoleta, Región Metropolitana de Santiago, Chile",
+        "text": "Cementerio General",
+        "relevance": 1,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.646194,
+        "lat": -33.405178,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "kind=memory requires curator confirmation (overlap=1.00)",
+      "providerId": "locality.2640431",
+      "relevance": 1,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "plaza-nunoa",
+      "name": "Plaza Ñuñoa",
+      "kind": "plaza",
+      "neighborhood": "Ñuñoa",
+      "geocodeQuery": "Plaza Ñuñoa Irarrázaval Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "PROVIDER_COORDINATE",
+      "selectionStatus": "PROVIDER_SELECTED_HIGH_CONFIDENCE",
+      "physicalState": "PROVIDER_SELECTED",
+      "lat": -33.459415,
+      "lng": -70.59024,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.154231700892252",
+          "placeName": "Avenida Irarrázaval, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Avenida Irarrázaval",
+          "relevance": 1,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.584228,
+          "lat": -33.455117,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "locality.15649327",
+          "placeName": "Plaza Ñuñoa, Ñuñoa, Región Metropolitana de Santiago, Chile",
+          "text": "Plaza Ñuñoa",
+          "relevance": 0.911111,
+          "accuracy": null,
+          "category": null,
+          "lng": -70.59024,
+          "lat": -33.459415,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "locality"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8517846014649206",
+          "placeName": "Avenida Chile España, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Avenida Chile España",
+          "relevance": 0.584444,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.59664,
+          "lat": -33.446742,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1921745553537912",
+          "placeName": "Chiloé, San Miguel, Región Metropolitana de Santiago 8900000, Chile",
+          "text": "Chiloé",
+          "relevance": 0.561667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.644746,
+          "lat": -33.481913,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7809799599203274",
+          "placeName": "Chiloé, Peñalolén, Región Metropolitana de Santiago 7910000, Chile",
+          "text": "Chiloé",
+          "relevance": 0.561667,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.583373,
+          "lat": -33.501568,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Plaza Ñuñoa Irarrázaval Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "locality.15649327",
+        "placeName": "Plaza Ñuñoa, Ñuñoa, Región Metropolitana de Santiago, Chile",
+        "text": "Plaza Ñuñoa",
+        "relevance": 0.911111,
+        "accuracy": null,
+        "category": null,
+        "lng": -70.59024,
+        "lat": -33.459415,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "locality"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "High-confidence provider selection relevance=0.911 overlap=1.00",
+      "providerId": "locality.15649327",
+      "relevance": 0.911111,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "villa-grimaldi",
+      "name": "Villa Grimaldi",
+      "kind": "memory",
+      "neighborhood": "Peñalolén",
+      "geocodeQuery": "Parque por la Paz Villa Grimaldi Peñalolén Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.3707338359190468",
+          "placeName": "La Paz, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "La Paz",
+          "relevance": 0.753086,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.651142,
+          "lat": -33.426111,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1677090738025826",
+          "placeName": "La Paz, Renca, Región Metropolitana de Santiago 8640000, Chile",
+          "text": "La Paz",
+          "relevance": 0.753086,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.697952,
+          "lat": -33.38961,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8247556918357218",
+          "placeName": "La Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+          "text": "La Plaza",
+          "relevance": 0.733282,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.631733,
+          "lat": -33.412861,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8035353054677116",
+          "placeName": "Parque O'Higgins, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Parque O'Higgins",
+          "relevance": 0.648148,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.662443,
+          "lat": -33.461484,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.2443478152591282",
+          "placeName": "La Plaza Sur, Peñalolén, Región Metropolitana de Santiago 7910000, Chile",
+          "text": "La Plaza Sur",
+          "relevance": 0.635391,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.562129,
+          "lat": -33.500544,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Parque por la Paz Villa Grimaldi Peñalolén Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.3707338359190468",
+        "placeName": "La Paz, Recoleta, Región Metropolitana de Santiago 8420000, Chile",
+        "text": "La Paz",
+        "relevance": 0.753086,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.651142,
+        "lat": -33.426111,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.3707338359190468",
+      "relevance": 0.753086,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "teatro-municipal",
+      "name": "Teatro Municipal",
+      "kind": "culture",
+      "neighborhood": "Santiago Centro",
+      "geocodeQuery": "Teatro Municipal Agustinas Santiago Centro Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.2321854749876724",
+          "placeName": "Los Agustinos, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+          "text": "Los Agustinos",
+          "relevance": 0.72572,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.575205,
+          "lat": -33.442839,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.5397511892833738",
+          "placeName": "Teatro Municipal, Maipú, Región Metropolitana de Santiago 9250000, Chile",
+          "text": "Teatro Municipal",
+          "relevance": 0.712963,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.770872,
+          "lat": -33.490238,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.8453867341840814",
+          "placeName": "Agustinas, Santiago, Región Metropolitana de Santiago 8320000, Chile",
+          "text": "Agustinas",
+          "relevance": 0.648889,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.661848,
+          "lat": -33.441856,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.166876721708406",
+          "placeName": "Pasaje Los Agustinos, Puente Alto, Región Metropolitana de Santiago 8150000, Chile",
+          "text": "Pasaje Los Agustinos",
+          "relevance": 0.586831,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.561619,
+          "lat": -33.582414,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.1780617000659772",
+          "placeName": "Centro, La Florida, Región Metropolitana de Santiago 8240000, Chile",
+          "text": "Centro",
+          "relevance": 0.522407,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.561716,
+          "lat": -33.535976,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Teatro Municipal Agustinas Santiago Centro Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.2321854749876724",
+        "placeName": "Los Agustinos, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile",
+        "text": "Los Agustinos",
+        "relevance": 0.72572,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.575205,
+        "lat": -33.442839,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.2321854749876724",
+      "relevance": 0.72572,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    },
+    {
+      "id": "casa-de-los-diez",
+      "name": "Casa de los Diez",
+      "kind": "architecture",
+      "neighborhood": "Lastarria",
+      "geocodeQuery": "Casa de los Diez Lastarria Santiago Chile",
+      "launchCorpus": true,
+      "legacyContentId": null,
+      "coordinateStatus": "UNRESOLVED",
+      "selectionStatus": "SUSPICIOUS_OUT_OF_BBOX",
+      "physicalState": "SUSPICIOUS_OUT_OF_BBOX",
+      "lat": null,
+      "lng": null,
+      "provider": "mapbox",
+      "candidates": [
+        {
+          "provider": "mapbox",
+          "providerId": "address.407294838543210",
+          "placeName": "Lastarria, Cerro Navia, Región Metropolitana de Santiago 9080000, Chile",
+          "text": "Lastarria",
+          "relevance": 0.746032,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.729236,
+          "lat": -33.415295,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.342666664745332",
+          "placeName": "Lastarria, Huechuraba, Región Metropolitana de Santiago 8580000, Chile",
+          "text": "Lastarria",
+          "relevance": 0.746032,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.637796,
+          "lat": -33.369047,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.7568457330893310",
+          "placeName": "Pasaje 10, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+          "text": "Pasaje 10",
+          "relevance": 0.705556,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.694164,
+          "lat": -33.415952,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.4972797654162026",
+          "placeName": "Pasaje 10, Conchalí, Región Metropolitana de Santiago 8540000, Chile",
+          "text": "Pasaje 10",
+          "relevance": 0.705556,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.689245,
+          "lat": -33.373354,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": false
+        },
+        {
+          "provider": "mapbox",
+          "providerId": "address.3784212425475778",
+          "placeName": "Pasaje Diez, Quilicura, Región Metropolitana de Santiago 8700000, Chile",
+          "text": "Pasaje Diez",
+          "relevance": 0.705556,
+          "accuracy": "street",
+          "category": null,
+          "lng": -70.715618,
+          "lat": -33.369442,
+          "inSantiagoBbox": true,
+          "placeType": [
+            "address"
+          ],
+          "looksPenalizedCommune": true
+        }
+      ],
+      "provenance": {
+        "source": "gate-1b1-identity-seed",
+        "coordinatePolicy": "mapbox-only-no-arithmetic-fallback",
+        "curatorApproval": "never-automatic"
+      },
+      "queryUsed": "Casa de los Diez Lastarria Santiago Chile",
+      "selectedCandidate": {
+        "provider": "mapbox",
+        "providerId": "address.7568457330893310",
+        "placeName": "Pasaje 10, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile",
+        "text": "Pasaje 10",
+        "relevance": 0.705556,
+        "accuracy": "street",
+        "category": null,
+        "lng": -70.694164,
+        "lat": -33.415952,
+        "inSantiagoBbox": true,
+        "placeType": [
+          "address"
+        ],
+        "looksPenalizedCommune": false
+      },
+      "selectionReason": "Low name overlap (0.00) with provider place_name",
+      "providerId": "address.7568457330893310",
+      "relevance": 0.705556,
+      "curatorApproval": null,
+      "physicalStateNote": "Mapbox selection is not CURATOR_APPROVED"
+    }
+  ],
+  "counts": {
+    "PROVIDER_SELECTED_HIGH_CONFIDENCE": 2,
+    "NEEDS_CURATOR_REVIEW": 16,
+    "NO_RESULT": 0,
+    "SUSPICIOUS_OUT_OF_BBOX": 12
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ChronoWalk — Santiago Route Lab V0.1 (Geographic QA)</title>
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--panel:#fff;--warn:#b45309;--win:#0f766e;--danger:#dc2626;--composer:#2563eb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:13px}
+.banner-provisional{background:#7f1d1d;color:#fff;padding:.65rem 1rem;font-weight:600}
+.banner-provisional small{display:block;font-weight:400;opacity:.9;margin-top:.2rem}
+.layout{max-width:1520px;margin:0 auto;padding:.75rem;display:grid;gap:.75rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.65rem}
+.toolbar select,button,label.chk{padding:.35rem .65rem;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font:inherit}
+label.chk{display:inline-flex;align-items:center;gap:.35rem;cursor:pointer}
+button.primary{background:var(--win);color:#fff;border-color:var(--win)}
+button.secondary{background:#f1f5f9}
+.grid-main{display:grid;grid-template-columns:1.15fr .85fr;gap:.75rem}
+@media(max-width:1100px){.grid-main{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.65rem}
+.panel h2{margin:.1rem 0 .5rem;font-size:.95rem}
+.muted{color:var(--muted)}
+.pill{display:inline-block;font-size:.65rem;padding:.1rem .35rem;border-radius:999px;background:#f1f5f9;border:1px solid var(--line);margin-left:.2rem}
+.pill.win{background:#ecfdf5;color:var(--win);border-color:#99f6e4}
+.pill.warn-pill{background:#fffbeb;color:var(--warn);border-color:#fde68a}
+.map-wrap{position:relative;min-height:380px}
+#mapboxHost{width:100%;height:380px;border-radius:8px;border:1px solid var(--line);display:none}
+#mapHost.fallback{display:block}
+.map-svg{width:100%;height:auto;border-radius:8px;border:1px solid var(--line)}
+.map-note{font-size:.75rem;color:var(--muted);margin-top:.35rem}
+.map-note.warn{color:var(--warn)}
+.map-controls{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.45rem;align-items:center}
+.map-seq{font-family:ui-monospace,monospace;font-size:.72rem;background:#f8fafc;border:1px solid var(--line);border-radius:6px;padding:.35rem .5rem;margin-top:.35rem}
+.map-seq.composer{border-left:3px solid var(--composer)}
+.map-seq.rerank{border-left:3px solid var(--win)}
+#candidateCards{display:grid;gap:.45rem}
+.cand-card{text-align:left;border:1px solid var(--line);border-radius:8px;padding:.5rem;background:#fff;cursor:pointer}
+.cand-card.selected{border-color:var(--win);box-shadow:0 0 0 1px var(--win)}
+.cand-card.winner{border-color:#14b8a6}
+.cand-head{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.cand-metrics,.cand-scores,.cand-meta{font-size:.78rem;color:var(--muted)}
+.tag{font-size:.65rem;background:#eef2ff;border-radius:4px;padding:.1rem .25rem;margin-right:.2rem}
+.stop-row{display:flex;gap:.5rem;padding:.45rem;border-bottom:1px solid var(--line);cursor:pointer}
+.stop-row.sel{background:#ecfdf5}
+.stop-num{font-weight:700;color:var(--win);width:1.5rem}
+.explain{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.arc-row{display:flex;justify-content:space-between;font-size:.78rem;padding:.15rem 0;border-bottom:1px solid #f1f5f9}
+.diag{padding:.4rem;border-bottom:1px solid var(--line)}
+.diag.STRONG-WARNING{background:#fef2f2}
+.diag.WARNING{background:#fffbeb}
+.banner-win{background:#ecfdf5;border:1px solid #99f6e4;padding:.5rem;border-radius:8px;margin-bottom:.5rem;color:#065f46;font-weight:600}
+.ribbon{font-family:ui-monospace,monospace;font-size:1rem;padding:.35rem;background:#f8fafc;border-radius:6px}
+.chip{background:#f1f5f9;padding:.1rem .3rem;border-radius:4px;font-size:.75rem}
+.chip.rep{background:#fee2e2}
+.tbar{display:flex;height:16px;border-radius:4px;overflow:hidden;border:1px solid var(--line);margin-bottom:.25rem}
+.t-move{background:#3b82f6}.t-dwell{background:#10b981}.t-unused{background:#e2e8f0}
+.req-pre{font-size:.7rem;max-height:120px;overflow:auto;background:#f8fafc;padding:.5rem;border-radius:6px}
+.watch-btn{font-size:.75rem}
+.lower{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.75rem}
+.up{color:var(--win)}.down{color:var(--danger)}
+.warn-sm{color:var(--warn);font-size:.75rem}
+a{color:var(--win)}
+.geo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.35rem;font-size:.78rem}
+.geo-grid div{background:#f8fafc;border:1px solid var(--line);border-radius:6px;padding:.35rem}
+.geo-section{margin-top:.45rem;padding-top:.45rem;border-top:1px dashed var(--line)}
+.geo-section h4{margin:.2rem 0;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.4rem}
+.review-grid label{font-size:.75rem;display:flex;flex-direction:column;gap:.2rem}
+.review-grid select,.review-grid textarea{font:inherit;padding:.25rem;border:1px solid var(--line);border-radius:6px}
+.review-grid textarea{min-height:56px;resize:vertical}
+.matrix-wrap{overflow:auto;max-height:280px}
+.matrix{width:100%;border-collapse:collapse;font-size:.72rem}
+.matrix th,.matrix td{border:1px solid var(--line);padding:.25rem .35rem;text-align:left;vertical-align:top}
+.matrix th{background:#f1f5f9;position:sticky;top:0}
+.watch-panel{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.5rem;margin-bottom:.5rem}
+.rating-GOOD{color:var(--win)}.rating-QUESTIONABLE{color:var(--warn)}.rating-BAD{color:var(--danger)}
+.ambiguity{background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:.4rem;margin-top:.35rem;font-size:.78rem;font-weight:600}
+.inspect-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.4rem;margin-bottom:.5rem}
+.inspect-grid div{background:#f8fafc;border:1px solid var(--line);border-radius:6px;padding:.4rem}
+.inspect-k{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.avail{font-size:.62rem;margin-left:.25rem}
+.avail-AVAILABLE{color:var(--win)}.avail-UNKNOWN{color:var(--warn)}.avail-NOT_MODELED{color:var(--muted)}
+.inspect-section{margin:.85rem 0 .35rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.repro-PASS,.repro-NO{color:var(--win);font-weight:700}
+.repro-FAIL,.repro-YES{color:var(--danger);font-weight:700}
+
+</style>
+</head>
+<body>
+<div class="banner-provisional">
+  PROVISIONAL ENGINE OUTPUT — EDITORIAL_CALIBRATION_CURATOR_APPROVED=false
+  <small>Routes use provisional editorial calibration for inspection and tuning, not production delivery. PHYSICAL_ROUTE_GENERATION_ENABLED=false · ROUTE_LAB_GEOGRAPHIC_QA_READY</small>
+</div>
+<div class="layout">
+  <div class="toolbar">
+    <label>Fixture <select id="fixtureSelect"></select></label>
+    <button type="button" id="btnRun" class="primary">RUN ROUTES</button>
+    <button type="button" id="btnReset">RESET TO DEFAULT (F2)</button>
+    <button type="button" id="btnExport">EXPORT ROUTE SNAPSHOT</button>
+    <button type="button" id="btnReviewMatrix" class="secondary">REVIEW MATRIX</button>
+    <button type="button" id="btnChoicePolicy" class="secondary">CHOICE POLICY V0.2</button>
+    <button type="button" id="btnFounderInspect" class="secondary">FOUNDER INSPECTION</button>
+    <span id="watchBar"></span>
+  </div>
+  <div id="fixtureDesc" class="muted"></div>
+  <div id="watchPanel"></div>
+  <div class="grid-main">
+    <div>
+      <div class="panel">
+        <h2>Geographic map</h2>
+        <div class="map-controls">
+          <button type="button" id="btnFitRoute" class="secondary">FIT SELECTED ROUTE</button>
+          <label class="chk"><input type="checkbox" id="chkCompareCandidates"/> COMPARE CANDIDATES ON MAP</label>
+          <label>Winner view
+            <select id="winnerOverlayMode">
+              <option value="RERANKED">RERANKED WINNER</option>
+              <option value="COMPOSER">COMPOSER WINNER</option>
+              <option value="OVERLAY_BOTH">OVERLAY BOTH</option>
+            </select>
+          </label>
+          <span id="mapProviderBadge" class="pill"></span>
+        </div>
+        <div class="map-wrap">
+          <div id="mapboxHost"></div>
+          <div id="mapHost" class="fallback"></div>
+        </div>
+        <div id="winnerSequences"></div>
+        <div id="geoDiagnostics"></div>
+      </div>
+      <div class="panel" style="margin-top:.75rem"><h2>Route timeline</h2><div id="timelineHost"></div></div>
+      <div class="panel" style="margin-top:.75rem"><h2>Structural / theme / relation rhythm</h2>
+        <div id="ribbonHost"></div><div style="margin-top:.5rem" id="themeHost"></div><div style="margin-top:.5rem" id="relationHost"></div>
+        <div id="shapeAmbiguity"></div>
+      </div>
+      <div class="panel" style="margin-top:.75rem"><h2>Time budget</h2><div id="timeBar"></div></div>
+    </div>
+    <div>
+      <div class="panel"><h2>Candidates</h2><div id="candidateCards"></div></div>
+      <div class="panel" style="margin-top:.75rem"><h2>Composer vs Arc reranker</h2><div id="rerankPanel"></div></div>
+      <div class="panel" style="margin-top:.75rem"><h2>Human review (local only)</h2><div id="humanReviewPanel"></div></div>
+      <div class="panel" style="margin-top:.75rem"><h2>Stop inspector</h2><div id="stopInspector"></div></div>
+      <div class="panel" style="margin-top:.75rem"><h2>Request</h2><div id="reqSummary"></div></div>
+    </div>
+  </div>
+  <div class="lower">
+    <div class="panel"><h2>ArcQuality inspector</h2><div id="arcInspector"></div></div>
+    <div class="panel"><h2>Diagnostics</h2><div id="diagPanel"></div></div>
+    <div class="panel"><h2>Why not these?</h2><div id="omitPanel"></div></div>
+    <div class="panel"><h2>Candidate differences</h2><div id="comparePanel"></div></div>
+  </div>
+  <div id="reviewMatrixPanel" class="panel" style="display:none">
+    <h2>Founder review matrix (F1 · F2 · F6 · F8 · F9 · F15 · F17)</h2>
+    <div class="matrix-wrap"><table class="matrix" id="reviewMatrix"></table></div>
+  </div>
+  <div id="choicePolicyPanel" class="panel" style="display:none">
+    <h2>CHOICE POLICY V0.2</h2>
+    <p class="muted">Lane-neutral arbitration. ComposerScore is within-lane search quality, not a cross-lane utility. Parallel only — not production.</p>
+    <div id="choicePolicyHost"></div>
+  </div>
+  <div id="founderInspectPanel" class="panel" style="display:none">
+    <h2>FOUNDER INSPECTION</h2>
+    <p class="muted">Read-only engine observation + separate human judgment. Review metadata does not affect scoring, arbitration, or route selection. Reconstructed Gate 2E.3-R / 2E.3.1-R / 2E.3.2-R capability — not original UX. Executable oracle: F1–F18. Historical R1–R8 = LOST_HISTORICAL_ORACLES. Time/insertion diagnostics are observational only.</p>
+    <div id="founderInspectHost"></div>
+  </div>
+</div>
+<!--INJECT_DATA-->
+<script src="/docs/engine/route-lab-map.v0.1.js"></script>
+<script src="/docs/engine/route-lab-ui.v0.1.js"></script>
+</body>
+</html>

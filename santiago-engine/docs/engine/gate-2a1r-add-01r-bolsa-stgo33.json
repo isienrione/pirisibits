@@ -1,0 +1,85 @@
+{
+  "gate": "2A.1R-ADD-01R",
+  "sourceCheckpointSha": "1b0ef938e681eedcd95d57f449a411e4b972d2b0",
+  "frozenSeedCount": 103,
+  "frozenSeedSha256": "fd8e6fa5329dac91d74105c379884b53c1157ef737caec3e75430c8b81fe5ff5",
+  "extensionCount": 1,
+  "canonicalInventory": 104,
+  "activeLaunchCount": 30,
+  "activeLaunchIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_32",
+    "STGO_33",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92",
+    "STGO_104"
+  ],
+  "stgo104": {
+    "canonicalName": "Edificio de la Bolsa de Comercio de Santiago",
+    "poiCoordinate": {
+      "lat": -33.4423866,
+      "lng": -70.6517565
+    },
+    "experiencePoint": {
+      "lat": -33.4421764,
+      "lng": -70.6517853
+    },
+    "headingDegrees": 155.14,
+    "entrance": "UNKNOWN",
+    "semantic": "UNKNOWN",
+    "chronoWorth": "UNAVAILABLE",
+    "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT"
+  },
+  "stgo33": {
+    "oldName": "Kulczewski Funicular Gargoyle",
+    "newName": "Gárgola de Luciano K",
+    "legacyAlias": "Kulczewski Funicular Gargoyle",
+    "launchEditorialStatus": "ACTIVE_LAUNCH",
+    "physicalStatus": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION",
+    "sourceCalibrationPreserved": true
+  },
+  "stgo23": {
+    "launchEditorialStatus": "EXCLUDED_FROM_ACTIVE_LAUNCH",
+    "disposition": "RUNTIME_EXCLUDED_RESEARCH"
+  },
+  "physicalFrozenHashes": {
+    "src/data/santiago/santiago_physical_edges.v0.1.json": "462b94070f219fa95558db086de4715622359c299e4a0023228fa38f05bfdd3b",
+    "src/data/santiago/santiago_pedestrian_adjacency.v0.2.json": "48bdc47dc062b94b985d0b8f8b6faeab39c3e391ddea7e8cb369355f7bbc1225",
+    "src/data/santiago/santiago_multimodal_graph.v0.3.json": "a84bf25cdfa070c5b9ed1eb73bf83d4367c295f01334f2167e28b2c2f9507f04",
+    "src/data/santiago/santiago_physical_graph_manifest.v0.1.json": "859c74132ea0fdf9ebbf9c5c424833c17eb8800b61352fce33134e2d3c947d7d",
+    "src/data/santiago/santiago_physical_edges_stgo05_extension.v0.1.json": "0e5450ffd178f6dcb306c5ac805433df4066730d27ff9662e31beee6914759e3"
+  },
+  "artifacts": {
+    "extensions": "src/data/santiago/source/santiago_founder_extensions.v0.1.json",
+    "identityCorrections": "src/data/santiago/curation/santiago_founder_identity_corrections.v0.1.json",
+    "semantic": "src/data/santiago/santiago_semantic_calibration.v0.1.json",
+    "launch": "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json",
+    "corpus": "src/data/santiago/santiago_launch_corpus.v0.1.json",
+    "membership": "src/data/santiago/santiago_launch_runtime_membership.v0.1.json",
+    "engine": "src/data/santiago/santiago_engine_nodes.v0.1.json"
+  }
+}

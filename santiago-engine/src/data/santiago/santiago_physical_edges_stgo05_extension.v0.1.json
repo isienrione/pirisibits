@@ -1,0 +1,1450 @@
+{
+  "schemaVersion": "santiago-physical-edges-stgo05-extension.v0.1",
+  "gate": "1B.5",
+  "note": "Supplemental Mapbox walks for STGO_05 Terraza Neptuno endpoint; Gate 1B.3 provider file preserved",
+  "edgeCount": 24,
+  "runtimeEligibleCount": 24,
+  "edges": [
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_07|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_07",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_07",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4442832,
+          "lng": -70.6482238
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 550.5,
+      "durationS": 391.4,
+      "durationMin": 6.52,
+      "physicalCost": {
+        "distanceM": 550.5,
+        "durationS": 391.4,
+        "durationMin": 6.52,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "WphdxHMAdxsYfuPcuJw9NfHRzNLtsY8QW6X55I2BLZdXjSXPg_36yw==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "WphdxHMAdxsYfuPcuJw9NfHRzNLtsY8QW6X55I2BLZdXjSXPg_36yw==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 283.6,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_07|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_07",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_07",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4442832,
+          "lng": -70.6482238
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 435.5,
+      "durationS": 354.3,
+      "durationMin": 5.9,
+      "physicalCost": {
+        "distanceM": 435.5,
+        "durationS": 354.3,
+        "durationMin": 5.9,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "ymC3WnK_yx4BD1wxZLqMIdt02dsyRSRPUksZol9bzcwSOnlNMKEWpA==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "ymC3WnK_yx4BD1wxZLqMIdt02dsyRSRPUksZol9bzcwSOnlNMKEWpA==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 283.6,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_06|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_06",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_06",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4446332,
+          "lng": -70.6483784
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 621.8,
+      "durationS": 424.9,
+      "durationMin": 7.08,
+      "physicalCost": {
+        "distanceM": 621.8,
+        "durationS": 424.9,
+        "durationMin": 7.08,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "rjGCn4htQgH1tstX-XsKSACPG0fQ2BxD_DuNPbpGlhUqylDdK9Z71w==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "rjGCn4htQgH1tstX-XsKSACPG0fQ2BxD_DuNPbpGlhUqylDdK9Z71w==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 325.1,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_06|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_06",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_06",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4446332,
+          "lng": -70.6483784
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 621.8,
+      "durationS": 496.0,
+      "durationMin": 8.27,
+      "physicalCost": {
+        "distanceM": 621.8,
+        "durationS": 496.0,
+        "durationMin": 8.27,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "7xdD4yi2dC9eSPqm_wzamal66PxyK50L_fjZXMgfvL9vW4p2pWP4nQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "7xdD4yi2dC9eSPqm_wzamal66PxyK50L_fjZXMgfvL9vW4p2pWP4nQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 325.1,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_18|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_18",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_18",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425828,
+          "lng": -70.6511804
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 403.7,
+      "durationS": 323.2,
+      "durationMin": 5.39,
+      "physicalCost": {
+        "distanceM": 403.7,
+        "durationS": 323.2,
+        "durationMin": 5.39,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "MBZssoq2jG8A3DV4oR5CCMGr1ly6sYbfLffYn9n1LzWbwP3S3WAs3A==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "MBZssoq2jG8A3DV4oR5CCMGr1ly6sYbfLffYn9n1LzWbwP3S3WAs3A==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 368.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_18|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_18",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_18",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425828,
+          "lng": -70.6511804
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 403.7,
+      "durationS": 328.6,
+      "durationMin": 5.48,
+      "physicalCost": {
+        "distanceM": 403.7,
+        "durationS": 328.6,
+        "durationMin": 5.48,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "-nfsxhLkl5vuDTNsId8074X0xpzWAOhLejowvgRNXgMq8JJdQ0WLPg==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "-nfsxhLkl5vuDTNsId8074X0xpzWAOhLejowvgRNXgMq8JJdQ0WLPg==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 368.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_92|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_92",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_92",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4409812,
+          "lng": -70.6521349
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 574.7,
+      "durationS": 416.9,
+      "durationMin": 6.95,
+      "physicalCost": {
+        "distanceM": 574.7,
+        "durationS": 416.9,
+        "durationMin": 6.95,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "1-4usMnBbLVNeZQsyNyqhmaeLaB5wlcSRjiZyPPwDrt2Wvw0jX6T4w==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "1-4usMnBbLVNeZQsyNyqhmaeLaB5wlcSRjiZyPPwDrt2Wvw0jX6T4w==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 458.5,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_92|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_92",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_92",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4409812,
+          "lng": -70.6521349
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 621.7,
+      "durationS": 430.5,
+      "durationMin": 7.17,
+      "physicalCost": {
+        "distanceM": 621.7,
+        "durationS": 430.5,
+        "durationMin": 7.17,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "vDZu94lowLoCjr-cvKmvgIJ2A9Xl12fzl7DYEneEM7WOiJqpKejeWw==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "vDZu94lowLoCjr-cvKmvgIJ2A9Xl12fzl7DYEneEM7WOiJqpKejeWw==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 458.5,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_16|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_16",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_16",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391071,
+          "lng": -70.6510578
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 627.0,
+      "durationS": 467.1,
+      "durationMin": 7.78,
+      "physicalCost": {
+        "distanceM": 627.0,
+        "durationS": 467.1,
+        "durationMin": 7.78,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "yeJwV8ZowbxrUXE-MMBurVk12QSeMsdpzOI0jHosBcHneVNa8eMF0g==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "yeJwV8ZowbxrUXE-MMBurVk12QSeMsdpzOI0jHosBcHneVNa8eMF0g==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 462.9,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_16|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_16",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_16",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4391071,
+          "lng": -70.6510578
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 674.0,
+      "durationS": 460.2,
+      "durationMin": 7.67,
+      "physicalCost": {
+        "distanceM": 674.0,
+        "durationS": 460.2,
+        "durationMin": 7.67,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "bunmJaH9Dwb5gawKNg4lJVdwoF_HObS_MhV45Ux0vL1HevrftXsdaA==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "bunmJaH9Dwb5gawKNg4lJVdwoF_HObS_MhV45Ux0vL1HevrftXsdaA==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 462.9,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_04|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_04",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_04",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425566,
+          "lng": -70.6532628
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 606.2,
+      "durationS": 436.4,
+      "durationMin": 7.27,
+      "physicalCost": {
+        "distanceM": 606.2,
+        "durationS": 436.4,
+        "durationMin": 7.27,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "dD46XGgP02NpglRgXnZ3XmwY1hPxeLtaYMN_3krS6tCYlNwW9zatrQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "dD46XGgP02NpglRgXnZ3XmwY1hPxeLtaYMN_3krS6tCYlNwW9zatrQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 558.4,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_04|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_04",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_04",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4425566,
+          "lng": -70.6532628
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 606.2,
+      "durationS": 454.9,
+      "durationMin": 7.58,
+      "physicalCost": {
+        "distanceM": 606.2,
+        "durationS": 454.9,
+        "durationMin": 7.58,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "GCfT6aBIvBIau-ClxfL-xm9oNifDHCS12SGqrxFpDmrpK0k6pVlekQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "GCfT6aBIvBIau-ClxfL-xm9oNifDHCS12SGqrxFpDmrpK0k6pVlekQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 558.4,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_19|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_19",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_19",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4419727,
+          "lng": -70.6533529
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 584.8,
+      "durationS": 421.8,
+      "durationMin": 7.03,
+      "physicalCost": {
+        "distanceM": 584.8,
+        "durationS": 421.8,
+        "durationMin": 7.03,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "VJszh5vMLFR4fb06Z_ouOGITO7HNQBmpq2N6S4Pg7KCO5qtj03EVqQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "VJszh5vMLFR4fb06Z_ouOGITO7HNQBmpq2N6S4Pg7KCO5qtj03EVqQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 561.4,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_19|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_19",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_19",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4419727,
+          "lng": -70.6533529
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 584.8,
+      "durationS": 438.5,
+      "durationMin": 7.31,
+      "physicalCost": {
+        "distanceM": 584.8,
+        "durationS": 438.5,
+        "durationMin": 7.31,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "lATMp_yG-vOBOgHq3ofQVuYfqerC3EANxebQDMcPMp9UZQpjQHOtMw==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "lATMp_yG-vOBOgHq3ofQVuYfqerC3EANxebQDMcPMp9UZQpjQHOtMw==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 561.4,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_22|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_22",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_22",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4386084,
+          "lng": -70.6523455
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 814.6,
+      "durationS": 594.2,
+      "durationMin": 9.9,
+      "physicalCost": {
+        "distanceM": 814.6,
+        "durationS": 594.2,
+        "durationMin": 9.9,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "Bw6C-IID1WnDKNZxi2R2sy0EjkW4dMQ6GSnzbF77yKFP4axbP-om_Q==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "Bw6C-IID1WnDKNZxi2R2sy0EjkW4dMQ6GSnzbF77yKFP4axbP-om_Q==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 590.5,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_22|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_22",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_22",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4386084,
+          "lng": -70.6523455
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 813.6,
+      "durationS": 604.9,
+      "durationMin": 10.08,
+      "physicalCost": {
+        "distanceM": 813.6,
+        "durationS": 604.9,
+        "durationMin": 10.08,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "iqeYLXmaV2JjldV2N40UtOjqXTnwmMWSOOgXVs0v_X8qwFDDD6Hvow==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "iqeYLXmaV2JjldV2N40UtOjqXTnwmMWSOOgXVs0v_X8qwFDDD6Hvow==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 590.5,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_02|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_02",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_02",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4373075,
+          "lng": -70.6510237
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 801.6,
+      "durationS": 556.7,
+      "durationMin": 9.28,
+      "physicalCost": {
+        "distanceM": 801.6,
+        "durationS": 556.7,
+        "durationMin": 9.28,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "QZdzScewnmeGv0II3YxiRdMiRmyZWQKInR84ap0FuN87Tf-Xh_kq2A==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "QZdzScewnmeGv0II3YxiRdMiRmyZWQKInR84ap0FuN87Tf-Xh_kq2A==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 611.8,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_02|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_02",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_02",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4373075,
+          "lng": -70.6510237
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 801.6,
+      "durationS": 602.6,
+      "durationMin": 10.04,
+      "physicalCost": {
+        "distanceM": 801.6,
+        "durationS": 602.6,
+        "durationMin": 10.04,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "K3Q19cp2_nempTmaOamcEsfVAMpXYSboCFpvb3MHDZYqHfSgN2BgEA==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "K3Q19cp2_nempTmaOamcEsfVAMpXYSboCFpvb3MHDZYqHfSgN2BgEA==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 611.8,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_03|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_03",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_03",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4439646,
+          "lng": -70.6536703
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 853.4,
+      "durationS": 596.3,
+      "durationMin": 9.94,
+      "physicalCost": {
+        "distanceM": 853.4,
+        "durationS": 596.3,
+        "durationMin": 9.94,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "k8JQuT6rki94b5lmRceLzfZq_fmdFlfbdTxZb_d5QjLKm_ikxSkbkQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "k8JQuT6rki94b5lmRceLzfZq_fmdFlfbdTxZb_d5QjLKm_ikxSkbkQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 635.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_03|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_03",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_03",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4439646,
+          "lng": -70.6536703
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 825.1,
+      "durationS": 654.7,
+      "durationMin": 10.91,
+      "physicalCost": {
+        "distanceM": 825.1,
+        "durationS": 654.7,
+        "durationMin": 10.91,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "PGJQexOJyjn21WOgNzLeFbu9ecKC-djtSAsCeWnbUIwchzVlBkshwg==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "PGJQexOJyjn21WOgNzLeFbu9ecKC-djtSAsCeWnbUIwchzVlBkshwg==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 635.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_28|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_28",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_28",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4383804,
+          "lng": -70.6410837
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 1076.4,
+      "durationS": 754.7,
+      "durationMin": 12.58,
+      "physicalCost": {
+        "distanceM": 1076.4,
+        "durationS": 754.7,
+        "durationMin": 12.58,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "vCkvsoQbLuSqJnA2kOr_ZFQlByJya7pOG70pjvQY7aHrIpI1R3bumg==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "vCkvsoQbLuSqJnA2kOr_ZFQlByJya7pOG70pjvQY7aHrIpI1R3bumg==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 694.3,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_28|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_28",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_28",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4383804,
+          "lng": -70.6410837
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 1068.9,
+      "durationS": 760.9,
+      "durationMin": 12.68,
+      "physicalCost": {
+        "distanceM": 1068.9,
+        "durationS": 760.9,
+        "durationMin": 12.68,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "g8d2OvoPRj4fK3jvA40zu2h-6Y2zbDF2V9begfz1nkIH1AodZc9hWQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "g8d2OvoPRj4fK3jvA40zu2h-6Y2zbDF2V9begfz1nkIH1AodZc9hWQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 694.3,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_05|terraza_neptuno|STGO_01|experience",
+      "fromPoiId": "STGO_05",
+      "toPoiId": "STGO_01",
+      "fromPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_01",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4378234,
+          "lng": -70.6530715
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 1031.2,
+      "durationS": 728.8,
+      "durationMin": 12.15,
+      "physicalCost": {
+        "distanceM": 1031.2,
+        "durationS": 728.8,
+        "durationMin": 12.15,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "s5Kg9KgoaeuCsAQEHPVnRNTxc39w8d6u56U6vueEZntwHEq5_vNWSw==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "s5Kg9KgoaeuCsAQEHPVnRNTxc39w8d6u56U6vueEZntwHEq5_vNWSw==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 697.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    },
+    {
+      "edgeId": "WALK|STGO_01|experience|STGO_05|terraza_neptuno",
+      "fromPoiId": "STGO_01",
+      "toPoiId": "STGO_05",
+      "fromPoint": {
+        "stgoId": "STGO_01",
+        "pointId": "experience",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4378234,
+          "lng": -70.6530715
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "toPoint": {
+        "stgoId": "STGO_05",
+        "pointId": "terraza_neptuno",
+        "pointType": "experience_point",
+        "coordinate": {
+          "lat": -33.4418503,
+          "lng": -70.6473047
+        },
+        "coordinateSource": "curator_approved_experience"
+      },
+      "mode": "WALK",
+      "distanceM": 1030.8,
+      "durationS": 799.2,
+      "durationMin": 13.32,
+      "physicalCost": {
+        "distanceM": 1030.8,
+        "durationS": 799.2,
+        "durationMin": 13.32,
+        "baseProvider": "mapbox",
+        "stepFree": null,
+        "surfaceRoughness": null,
+        "crossingFriction": null,
+        "inclineFriction": null,
+        "crowdFriction": null,
+        "pleasantness": null
+      },
+      "provider": "mapbox",
+      "providerReference": "1G8t_cYZwHkfH2T9upP_ZA5rlHGlv3HvL30tfdiu4T4EgMBfeo6GMQ==",
+      "geometry": null,
+      "physicalClassification": "GREEN",
+      "provenance": {
+        "provider": "mapbox",
+        "providerReference": "1G8t_cYZwHkfH2T9upP_ZA5rlHGlv3HvL30tfdiu4T4EgMBfeo6GMQ==",
+        "routingProfile": "mapbox/walking",
+        "routingStatus": "OK",
+        "checkedAt": "2026-08-27T06:42:12.123726+00:00",
+        "candidateStraightLineM": 697.7,
+        "gate": "1B.5",
+        "extensionFor": "STGO_05"
+      },
+      "curatorStatus": "PROVIDER_DERIVED",
+      "runtimeEligible": true,
+      "uncertaintyFlags": [],
+      "pruned": false,
+      "pruneReason": null
+    }
+  ],
+  "generatedAt": "2026-08-27T06:42:12.123726+00:00"
+}

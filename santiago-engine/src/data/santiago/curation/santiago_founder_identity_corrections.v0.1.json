@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "santiago-founder-identity-corrections.v0.1",
+  "gate": "2A.1R-ADD-01R",
+  "sourceCheckpointSha": "1b0ef938e681eedcd95d57f449a411e4b972d2b0",
+  "notes": [
+    "STGO_33 remains a single canonical node from the frozen 103-node seed.",
+    "Correction is naming/status — not a wholesale reset of founder semantic calibration.",
+    "Luciano K / hotel association is contextual/fun-fact material, not an exclusion reason."
+  ],
+  "corrections": [
+    {
+      "stgoId": "STGO_33",
+      "oldName": "Kulczewski Funicular Gargoyle",
+      "newName": "Gárgola de Luciano K",
+      "legacyAlias": {
+        "alias": "Kulczewski Funicular Gargoyle",
+        "status": "deprecated_alias"
+      },
+      "reason": "Founder clarification: the experience is valid; 'Funicular' was the misleading element in the prior canonical name. Luciano K / hotel association is contextual fun-fact content, not a reason to exclude the POI.",
+      "founderInstruction": "Restore STGO_33 to active launch. Rename away from Funicular. Preserve source semantic calibration. Do not fabricate coordinates.",
+      "statusChange": {
+        "from": "RUNTIME_EXCLUDED_SEMANTIC",
+        "toLaunchEditorial": "ACTIVE_LAUNCH",
+        "toPhysical": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION"
+      },
+      "provenance": "FOUNDER_SEMANTIC_CORRECTION",
+      "preserveSourceCalibration": true
+    }
+  ]
+}

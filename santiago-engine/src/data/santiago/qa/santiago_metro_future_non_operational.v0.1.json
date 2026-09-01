@@ -1,0 +1,12 @@
+{
+  "gate": "1B.4.1",
+  "lines": [
+    {
+      "lineId": "L7",
+      "status": "FUTURE_NON_OPERATIONAL",
+      "runtimeEligible": false,
+      "note": "Line 7 is not present as an operational Metro route in official DTPM GTFS V166.20260704 (valid from 2026-07-04). Excluded from 2026 runtime graph.",
+      "previousOsmPresence": "Gate 1B.4 OSM import included unresolved L7 relation"
+    }
+  ]
+}

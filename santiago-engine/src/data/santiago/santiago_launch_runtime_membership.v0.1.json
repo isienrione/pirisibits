@@ -1,0 +1,377 @@
+{
+  "schemaVersion": "santiago-launch-runtime-membership.v0.1",
+  "gate": "2A.1R-ADD-01R",
+  "launchCorpusCount": 30,
+  "runtimeReadyCount": 27,
+  "runtimeStagedCount": 1,
+  "runtimeExcludedCount": 1,
+  "runtimeReadyIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92"
+  ],
+  "runtimeStagedIds": [
+    "STGO_32"
+  ],
+  "runtimeExcludedIds": [
+    "STGO_23"
+  ],
+  "runtimeRoutingIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_32",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92"
+  ],
+  "byDisposition": {
+    "RUNTIME_READY": [
+      "STGO_01",
+      "STGO_02",
+      "STGO_03",
+      "STGO_04",
+      "STGO_05",
+      "STGO_06",
+      "STGO_07",
+      "STGO_10",
+      "STGO_11",
+      "STGO_16",
+      "STGO_18",
+      "STGO_19",
+      "STGO_20",
+      "STGO_21",
+      "STGO_22",
+      "STGO_24",
+      "STGO_25",
+      "STGO_26",
+      "STGO_27",
+      "STGO_28",
+      "STGO_29",
+      "STGO_30",
+      "STGO_34",
+      "STGO_35",
+      "STGO_48",
+      "STGO_91",
+      "STGO_92"
+    ],
+    "RUNTIME_STAGED": [
+      "STGO_32"
+    ],
+    "ACTIVE_LAUNCH": [
+      "STGO_33",
+      "STGO_104"
+    ],
+    "RUNTIME_EXCLUDED_RESEARCH": [
+      "STGO_23"
+    ]
+  },
+  "dispositions": [
+    {
+      "stgoId": "STGO_01",
+      "displayName": "Plaza de Armas",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_02",
+      "displayName": "Catedral Metropolitana",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_03",
+      "displayName": "Palacio de La Moneda",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_04",
+      "displayName": "Morandé 80 (President's Door)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_05",
+      "displayName": "Cerro Santa Lucía & Terraza Neptuno",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_06",
+      "displayName": "Barrio París-Londres",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_07",
+      "displayName": "Londres 38 Memorial",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_10",
+      "displayName": "Palacio Pereira",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_11",
+      "displayName": "Barrio Yungay & Plaza Roto Chileno",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_16",
+      "displayName": "Pasaje Matte & Hidden Ballroom",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_18",
+      "displayName": "Edificio Palacio Ariztía (Flat-Iron)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_19",
+      "displayName": "Seguro Obrero Bullet Scars (Correo)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_20",
+      "displayName": "La Piojera",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_21",
+      "displayName": "Confitería Torres (1879)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_22",
+      "displayName": "Museo Chileno Arte Precolombino",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_24",
+      "displayName": "Barrio Lastarria Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_25",
+      "displayName": "GAM (Centro Gabriela Mistral)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_26",
+      "displayName": "MNBA & Parque Forestal",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_27",
+      "displayName": "Taller Castillo Kulczewski",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_28",
+      "displayName": "Bocanáriz & Chipe Libre",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_29",
+      "displayName": "La Chascona (Neruda House)",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_30",
+      "displayName": "Bellavista Mural Corridors",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_32",
+      "displayName": "Cerro San Cristóbal Funicular / Hill complex",
+      "disposition": "RUNTIME_STAGED",
+      "reason": "Preserved Gate 1B.5 staging for Cerro San Cristóbal funicular base endpoint.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_33",
+      "displayName": "Gárgola de Luciano K",
+      "disposition": "ACTIVE_LAUNCH",
+      "physicalStatus": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION",
+      "reason": "Gate 2A.1R-ADD-01R founder semantic correction: restored to active launch. Legacy name 'Kulczewski Funicular Gargoyle' deprecated. Existing experience-point evidence preserved; physical route eligibility pending regression. Routing remains disabled.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_34",
+      "displayName": "La Vega Central",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_35",
+      "displayName": "Mercado Tirso de Molina",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_48",
+      "displayName": "Museo de la Memoria y DDHH",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_91",
+      "displayName": "Patronato Textile & Culture Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_92",
+      "displayName": "Paseo Bandera Urban Art Corridor",
+      "disposition": "RUNTIME_READY",
+      "reason": "Preserved prior Gate 1B.5 RUNTIME_READY editorial/physical readiness.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_104",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "disposition": "ACTIVE_LAUNCH",
+      "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+      "reason": "Founder-added Launch30 node. Semantic UNKNOWNs require founder calibration. Physical edges not yet enriched. Routing remains disabled.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "ACTIVE_LAUNCH"
+    },
+    {
+      "stgoId": "STGO_23",
+      "displayName": "Inca Tambo Canal Dip (Puente/Stgo)",
+      "disposition": "RUNTIME_EXCLUDED_RESEARCH",
+      "reason": "Remains research/excluded and removed from active Launch30 review corpus (Gate 2A.1R-ADD-01R). Not deleted from canonical inventory.",
+      "runtimeEndpoint": null,
+      "launchEditorialStatus": "EXCLUDED_FROM_ACTIVE_LAUNCH"
+    }
+  ],
+  "activeLaunchPendingPhysicalCount": 2,
+  "activeLaunchPendingPhysicalIds": [
+    "STGO_33",
+    "STGO_104"
+  ],
+  "notes": [
+    "Gate 2A.1R-ADD-01R updates editorial membership only.",
+    "Frozen physical edge/adjacency/multimodal artifacts are unchanged.",
+    "PHYSICAL_ROUTE_GENERATION_ENABLED remains false.",
+    "STGO_33/STGO_104 require a later narrow physical-extension gate for edges."
+  ]
+}
