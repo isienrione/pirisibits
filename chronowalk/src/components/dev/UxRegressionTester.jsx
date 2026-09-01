@@ -69,6 +69,11 @@ export default function UxRegressionTester() {
   }, [step])
 
   if (!import.meta.env.DEV) return null
+  const nativePreview =
+    typeof window !== 'undefined' &&
+    (new URLSearchParams(location.search).has('nativePreview') ||
+      window.localStorage.getItem('cw_dev_native_preview') === '1')
+  if (nativePreview) return null
 
   const setOpenState = (next) => {
     writePanelOpen(next)

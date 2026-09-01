@@ -1477,6 +1477,22 @@ html.redesign-pwa #root {
   overscroll-behavior: none;
 }
 
+/* Native iOS: WebView fills the device. Capacitor contentInset is "never",
+   so env(safe-area-inset-*) is the only inset. Do not pad html/body/#root. */
+html.cw-native-ios,
+html.cw-native-ios body,
+html.cw-native-ios #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  --app-height: 100dvh;
+  --wc-browser-chrome: 0px;
+  background: #faf6ef;
+  overflow: hidden;
+}
+
 .redesign-app-shell {
   width: 100%;
   min-height: 100dvh;
@@ -1485,9 +1501,62 @@ html.redesign-pwa #root {
   height: var(--app-height, 100dvh);
   display: flex;
   flex-direction: column;
-  background: var(--obsidian);
+  background: #faf6ef;
   position: relative;
   overflow: hidden;
+}
+
+.native-page-header {
+  padding-top: env(safe-area-inset-top, 0px);
+  margin: 0 0 4px;
+  flex: 0 0 auto;
+}
+
+.native-page-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+}
+
+.native-page-back {
+  width: 44px;
+  height: 44px;
+  margin-left: -8px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #1a1a1f;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex: 0 0 44px;
+}
+
+.native-page-back-spacer {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+}
+
+.native-page-identity {
+  margin: 0;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #1a1a1f 55%, #cfc6b8);
+}
+
+.native-plan-sticky-cta {
+  position: sticky;
+  bottom: calc(var(--shell-tab-bar-height, 72px) + env(safe-area-inset-bottom, 0px));
+  z-index: 6;
+  background: linear-gradient(180deg, rgba(250, 246, 239, 0) 0%, #faf6ef 18%);
+  padding: 12px 0 8px;
+  margin-top: 8px;
 }
 
 .redesign-app-shell > * {
@@ -1518,6 +1587,7 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
+  background: #FAF6EF;
   /* Sit above the fixed ShellTabBar so MAP/TOUR/JOURNAL stay tappable.
      Must override base .redesign-phone-frame min-height — otherwise min-height
      wins over a shorter height/max-height and Pause / I'm here sit under the nav. */

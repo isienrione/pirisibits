@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
+    "generate:ios-assets": "node scripts/generate-ios-native-assets.mjs",
     "build": "npm run generate:pwa-assets && vite build",
     "verify:pwa-routing": "node scripts/verify-pwa-routing.mjs",
     "lint": "eslint .",
@@ -50,9 +51,14 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:analytics": "playwright test tests/analytics.spec.ts",
+    "ios:sync": "npm run build && npm run generate:ios-assets && npx cap sync ios",
+    "ios:open": "npx cap open ios",
     "pretest": "npm run check:commerce-drift"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/geolocation": "^8.2.2",
     "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
@@ -65,6 +71,8 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
     "@eslint/js": "^10.0.1",
     "@paddle/paddle-node-sdk": "^3.8.0",
     "@playwright/test": "^1.54.2",

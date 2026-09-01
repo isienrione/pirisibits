@@ -2,6 +2,7 @@ import { JOURNEY_PACE, JOURNEY_PATH, getDefaultPace } from '../data/romePacing'
 import { shouldClassicDayBreak } from '../content/actBoundaries.js'
 import { isLastTourWaypoint } from '../content/myTourPlan.js'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
+import { buildPlayableSequence } from '../content/playableSequence.js'
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
 import { scheduleJourneyCloudPush } from '../lib/journeyCloud.js'
@@ -321,7 +322,7 @@ export function advanceSequenceIndex(manifest = null) {
 function markJourneyCompleteIfPastEnd(manifest, journeySnapshot = snapshot) {
   if (!manifest) return journeySnapshot
   const { path, currentSequenceIndex, promotedOptionalIds } = journeySnapshot.context
-  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+  const sequence = buildPlayableSequence(manifest, path, promotedOptionalIds, journeySnapshot.context)
   if (currentSequenceIndex >= sequence.length && journeySnapshot.state !== JOURNEY_STATES.COMPLETE) {
     return transitionJourney(JOURNEY_STATES.COMPLETE, { currentSequenceIndex })
   }
@@ -371,7 +372,7 @@ export function completeWaypointAndAdvance(waypointId, manifest = null) {
   if (alreadyComplete) {
     if (manifest) {
       const { path, promotedOptionalIds = [], currentSequenceIndex } = snapshot.context
-      const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+      const sequence = buildPlayableSequence(manifest, path, promotedOptionalIds, snapshot.context)
       if (sequence[currentSequenceIndex] === waypointId) {
         return advanceSequenceIndex(manifest)
       }

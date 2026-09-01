@@ -6,6 +6,7 @@ import './redesign/redesign.css'
 import './index.css'
 import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
+import { isNativeIOS } from './lib/platform.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
 import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
 import { captureAttribution } from './lib/attribution.ts'
@@ -17,6 +18,7 @@ import {
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
+  void import('./lib/platform.js').then(({ logPlatformDiagnostics }) => logPlatformDiagnostics())
 }
 
 // Mark / clear interrupted-boot sentinel, but never block React mount.
@@ -44,6 +46,9 @@ try {
 // variable can boot an older generation of the app.
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
+  if (isNativeIOS()) {
+    document.documentElement.classList.add('cw-native-ios')
+  }
   initMobileViewportChrome()
 
   const motionQuery =

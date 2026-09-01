@@ -27,6 +27,7 @@ import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { packTitleForPurchasedTier } from '../lib/appEntry.js'
+import { mayStartPaidRomeJourney } from '../lib/contentAccess.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { getPaceOption, JOURNEY_PACE } from '../data/romePacing.js'
 import {
@@ -176,6 +177,9 @@ export default function RedesignHomeScreen() {
   )
 
   const handleContinue = useCallback(() => {
+    if (!mayStartPaidRomeJourney()) {
+      return
+    }
     if (journeyActive) {
       navigate('/journey')
       return
@@ -260,6 +264,10 @@ export default function RedesignHomeScreen() {
   }, [])
 
   const handleConfirmStartOver = useCallback(() => {
+    if (!mayStartPaidRomeJourney()) {
+      setStartOverOpen(false)
+      return
+    }
     setStartOverOpen(false)
     reset()
     begin({

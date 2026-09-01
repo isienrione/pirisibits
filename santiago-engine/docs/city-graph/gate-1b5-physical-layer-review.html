@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 1B.5 — Physical Layer V0.1 Freeze</title>
+<style>
+body { margin:0; font-family: Georgia, serif; background:#f4efe6; color:#1a1a1a; }
+header, section { max-width:1100px; margin:0 auto; padding:16px 20px; }
+.card { background:#fffdf8; border:1px solid #d8cfc0; border-radius:12px; padding:14px 16px; margin-bottom:12px; }
+.badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#efe6d8; }
+.badge.blue { background:#d9e6f7; }
+.badge.green { background:#d9f0e0; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+td, th { border-bottom:1px solid #e8dfd3; padding:6px 8px; text-align:left; vertical-align:top; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Gate 1B.5 — Santiago Physical Graph V0.1 Freeze</h1>
+  <p>Launch runtime membership finalized. Traveler route generation remains disabled.
+     <span class="badge green">PHYSICAL_LAYER_V0_1_READY=True</span>
+     <span class="badge">PHYSICAL_ROUTE_GENERATION_ENABLED=False</span>
+  </p>
+</header>
+<section>
+  <div class="card">
+    <h2>Membership</h2>
+    <ul>
+      <li>RUNTIME_READY: 27</li>
+      <li>RUNTIME_STAGED: 1 (STGO_32)</li>
+      <li>RUNTIME_EXCLUDED: 2 (STGO_23, STGO_33)</li>
+      <li>Routing-capable: 28</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Sparse adjacency v0.2</h2>
+    <ul>
+      <li>Sparse edges: 417</li>
+      <li>Components: 1</li>
+      <li>Directed strongly connected: True</li>
+      <li>Median out-degree: 15</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Friction honesty</h2>
+    <p>Soft UNKNOWN fields: 196. Hard UNKNOWN fields: 84. No fabricated accessibility.</p>
+  </div>
+</section>
+<section>
+  <h2>Dispositions</h2>
+  <table>
+    <thead><tr><th>STGO</th><th>Name</th><th>Disposition</th><th>Reason</th></tr></thead>
+    <tbody><tr><td>STGO_01</td><td>Plaza de Armas</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_02</td><td>Catedral Metropolitana</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_03</td><td>Palacio de La Moneda</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_04</td><td>Morandé 80 (President&#x27;s Door)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_05</td><td>Cerro Santa Lucía &amp; Terraza Neptuno</td><td><span class='badge'>RUNTIME_READY</span></td><td>Gate 1B.5: complex POI remains Cerro Santa Lucía; launch runtime endpoint = founder-curated Terraza Neptuno experience point. Broad hill @ conflict retained as </td></tr><tr><td>STGO_06</td><td>Barrio París-Londres</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_07</td><td>Londres 38 Memorial</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_10</td><td>Palacio Pereira</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_11</td><td>Barrio Yungay &amp; Plaza Roto Chileno</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_16</td><td>Pasaje Matte &amp; Hidden Ballroom</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_18</td><td>Edificio Palacio Ariztía (Flat-Iron)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_19</td><td>Seguro Obrero Bullet Scars (Correo)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_20</td><td>La Piojera</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_21</td><td>Confitería Torres (1879)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_22</td><td>Museo Chileno Arte Precolombino</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_23</td><td>Inca Tambo Canal Dip (Puente/Stgo)</td><td><span class='badge'>RUNTIME_EXCLUDED_RESEARCH</span></td><td>EXCLUDED_FROM_LAUNCH_RUNTIME / RESEARCH_REQUIRED: founder cannot identify POI concept; no authoritative repository evidence clarifies Inca Tambo Canal Dip.</td></tr><tr><td>STGO_24</td><td>Barrio Lastarria Corridor</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_25</td><td>GAM (Centro Gabriela Mistral)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_26</td><td>MNBA &amp; Parque Forestal</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_27</td><td>Taller Castillo Kulczewski</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_28</td><td>Bocanáriz &amp; Chipe Libre</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_29</td><td>La Chascona (Neruda House)</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_30</td><td>Bellavista Mural Corridors</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_32</td><td>Cerro San Cristóbal Funicular / Hill complex</td><td><span class='badge'>RUNTIME_STAGED</span></td><td>RUNTIME_STAGED: launch endpoint = funicular base. Reaching STGO_32 does NOT imply summit. Ascent transport inactive/unresolved.</td></tr><tr><td>STGO_33</td><td>Kulczewski Funicular Gargoyle</td><td><span class='badge'>RUNTIME_EXCLUDED_SEMANTIC</span></td><td>EXCLUDED_FROM_LAUNCH_RUNTIME / SEMANTIC_RESEARCH_REQUIRED: curator Street View points at Hotel Luciano K; canonical label is Kulczewski Funicular Gargoyle; STGO</td></tr><tr><td>STGO_34</td><td>La Vega Central</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_35</td><td>Mercado Tirso de Molina</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_48</td><td>Museo de la Memoria y DDHH</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_91</td><td>Patronato Textile &amp; Culture Corridor</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr><tr><td>STGO_92</td><td>Paseo Bandera Urban Art Corridor</td><td><span class='badge'>RUNTIME_READY</span></td><td>Curator-approved and edge-eligible from Gate 1B.2A/1B.3</td></tr></tbody>
+  </table>
+</section>
+<section>
+  <h2>E2E QA</h2>
+  
+        <article class="card">
+          <h3>Plaza de Armas → Catedral</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 209.7s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 209.7</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>La Moneda → Londres 38</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 538.3s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 547.0</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Lastarria → GAM</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 315.9s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 315.9</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>La Chascona → San Cristóbal funicular</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 118.0s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 118.0</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>La Vega → Tirso de Molina</h3>
+          <p><span class="badge blue">WALK_LOWER_OR_EQUAL_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 197.2s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 197.2</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Plaza de Armas → Lastarria</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 1017.1s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 1067.2</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Museo de la Memoria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 282.8s</li>
+            <li>Scheduled Metro: 303s</li>
+            <li>Generalized cost: 1065.8</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Yungay</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 712.6s</li>
+            <li>Scheduled Metro: 193s</li>
+            <li>Generalized cost: 1385.6</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Taller Castillo Kulczewski</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 652.4s</li>
+            <li>Scheduled Metro: 76s</li>
+            <li>Generalized cost: 1208.4</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Centro → Cerro Santa Lucía (Terraza Neptuno)</h3>
+          <p><span class="badge blue">WALK_ONLY_BEST</span></p>
+          <ul>
+            <li>Modes: WALK</li>
+            <li>Walking physical: 822.2s</li>
+            <li>Scheduled Metro: 0s</li>
+            <li>Generalized cost: 822.2</li>
+            <li>Lines: none</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Multimodal: Centro → Museo de la Memoria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 282.8s</li>
+            <li>Scheduled Metro: 303s</li>
+            <li>Generalized cost: 1065.8</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Multimodal: Centro → Yungay</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 712.6s</li>
+            <li>Scheduled Metro: 193s</li>
+            <li>Generalized cost: 1385.6</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Multimodal: Lastarria → Museo de la Memoria</h3>
+          <p><span class="badge blue">MULTIMODAL_LOWER_GENERALIZED_COST</span></p>
+          <ul>
+            <li>Modes: METRO_RIDE, POI_METRO_ACCESS</li>
+            <li>Walking physical: 411.1s</li>
+            <li>Scheduled Metro: 387s</li>
+            <li>Generalized cost: 1278.1</li>
+            <li>Lines: L5</li>
+          </ul>
+        </article>
+</section>
+<section>
+  <h2>Known non-blocking V0.1 limitations</h2>
+  <ul><li>Realtime Metro duration absent</li><li>Physical interchange walk durations unknown (engine-policy penalty)</li><li>POI soft-friction fields UNKNOWN</li><li>POI hard accessibility UNKNOWN (Metro stations have GTFS wheelchair_boarding provenance)</li><li>STGO_32 funicular ascent inactive</li><li>STGO_23 and STGO_33 excluded from launch runtime</li><li>Backlog 73 nodes not physically edge-enriched</li><li>Future L7 not operational</li></ul>
+</section>
+</body>
+</html>

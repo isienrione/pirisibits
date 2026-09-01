@@ -1,0 +1,534 @@
+{
+  "schemaVersion": "santiago-physical-friction-audit.v0.1",
+  "gate": "1B.5",
+  "policy": "UNKNOWN is valid; do not fabricate; hard accessibility never inferred from null",
+  "runtimeNodeCount": 28,
+  "softFrictionUnknownCount": 196,
+  "hardAccessibilityUnknownCount": 84,
+  "metroStationAccessibility": {
+    "ACCESSIBLE": 126
+  },
+  "metroStationAccessibilityNote": "GTFS wheelchair_boarding=1 mapped to ACCESSIBLE with provenance; node-level soft friction remains UNKNOWN",
+  "fields": {
+    "soft": {
+      "surfaceRoughness": "UNKNOWN",
+      "crossingFriction": "UNKNOWN",
+      "inclineFriction": "UNKNOWN",
+      "crowdFriction": "UNKNOWN",
+      "pleasantness": "UNKNOWN",
+      "daylightOnly": "UNKNOWN",
+      "comfortExclusions": "UNKNOWN"
+    },
+    "hard": {
+      "stepFree": "UNKNOWN_AT_POI_LEVEL",
+      "wheelchairAccessible": "UNKNOWN_AT_POI_LEVEL",
+      "accessibility": "UNKNOWN_AT_POI_LEVEL"
+    }
+  },
+  "nodes": [
+    {
+      "stgoId": "STGO_01",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_02",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_03",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_04",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_05",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_06",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_07",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_10",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_11",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_16",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_18",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_19",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_20",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_21",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_22",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_24",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_25",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_26",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_27",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_28",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_29",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_30",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_32",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_34",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_35",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_48",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_91",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    },
+    {
+      "stgoId": "STGO_92",
+      "soft": {
+        "surfaceRoughness": "UNKNOWN",
+        "crossingFriction": "UNKNOWN",
+        "inclineFriction": "UNKNOWN",
+        "crowdFriction": "UNKNOWN",
+        "pleasantness": "UNKNOWN",
+        "daylightOnly": "UNKNOWN",
+        "comfortExclusions": "UNKNOWN"
+      },
+      "hard": {
+        "stepFree": "UNKNOWN",
+        "wheelchairAccessible": "UNKNOWN",
+        "accessibility": "UNKNOWN"
+      },
+      "coverage": "ALL_UNKNOWN_EXPLICIT"
+    }
+  ]
+}

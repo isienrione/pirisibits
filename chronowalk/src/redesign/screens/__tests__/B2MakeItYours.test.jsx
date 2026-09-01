@@ -53,4 +53,12 @@ describe('AppEntryPrepare', () => {
     expect(screen.getByText(/use as a mobile app/i)).toBeInTheDocument()
     expect(screen.queryByTestId('a2hs-option-installed')).not.toBeInTheDocument()
   })
+
+  it('omits A2HS when the native iOS setup flow asks to hide it', () => {
+    render(<AppEntryPrepare hideA2hs onContinue={vi.fn()} showIosInstructions />)
+    expect(screen.getByTestId('app-entry-prepare')).toBeInTheDocument()
+    expect(screen.queryByTestId('app-entry-a2hs')).not.toBeInTheDocument()
+    expect(screen.queryByText(/use as a mobile app/i)).not.toBeInTheDocument()
+    expect(screen.getByTestId('app-entry-download')).toBeInTheDocument()
+  })
 })

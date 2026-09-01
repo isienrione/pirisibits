@@ -1,0 +1,524 @@
+{
+  "schemaVersion": "gate-2e31r-scenario-identity-oracle.v0.1",
+  "executableOracle": "F1-F18",
+  "lostHistoricalOracle": "R1-R8",
+  "reconstructionParent": "d7c62f490e0ee9337ba73e50107fdbcd09a56579",
+  "records": {
+    "F1": {
+      "scenarioId": "F1",
+      "scenarioFingerprint": "a807699769c6c7295096cd81",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "6f86f1dcd232df1592021b5d",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_05"
+      ],
+      "routeFingerprintV01": "67bcd75871b5b369",
+      "routeIdV01": "prov_6f86f1dc_STGO_01-STGO_92-STGO_05_670",
+      "routeFingerprintV02": "541d1faa10246c3c",
+      "routeIdV02": "v02_SIGNATURE_6f86f1dc_STGO_01-STGO_02-STGO_18-STGO_03",
+      "totalModeledMinutes": 59.2,
+      "composerScore": 67,
+      "rerankedScore": 64.2,
+      "arbitrationStatus": "CLOSE_CALL"
+    },
+    "F2": {
+      "scenarioId": "F2",
+      "scenarioFingerprint": "55e4c8395a43a589faa92815",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "routeFingerprintV01": "b6e74235bf601d90",
+      "routeIdV01": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "routeFingerprintV02": "49010e8ba2fb4604",
+      "routeIdV02": "v02_SIGNATURE_f01a66c4_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "totalModeledMinutes": 118.4,
+      "composerScore": 68.4,
+      "rerankedScore": 63,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F3": {
+      "scenarioId": "F3",
+      "scenarioFingerprint": "eb4755b542dab181ff7de7a9",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "5b352d4cd44569f9711dbdac",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "routeFingerprintV01": "26cd7a21fa79b993",
+      "routeIdV01": "prov_5b352d4c_STGO_01-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26-STGO_27-STGO_29-STGO_32_684",
+      "routeFingerprintV02": "9dfb04f8da207f19",
+      "routeIdV02": "v02_SIGNATURE_5b352d4c_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_05-STGO_03-STGO_06",
+      "totalModeledMinutes": 182.8,
+      "composerScore": 68.4,
+      "rerankedScore": 63,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F4": {
+      "scenarioId": "F4",
+      "scenarioFingerprint": "a2547e0b6b763623154ebf7a",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "a1a65c4d5933a256a5effcf6",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "routeFingerprintV01": "4bd20824b9b44f00",
+      "routeIdV01": "prov_a1a65c4d_STGO_01-STGO_18-STGO_03-STGO_19-STGO_05-STGO_02_682",
+      "routeFingerprintV02": "18b2da892494557c",
+      "routeIdV02": "v02_SIGNATURE_a1a65c4d_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "totalModeledMinutes": 117.3,
+      "composerScore": 68.2,
+      "rerankedScore": 62.9,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F5": {
+      "scenarioId": "F5",
+      "scenarioFingerprint": "59f3836c1163877eb0a811aa",
+      "travelerFixtureId": "TRAVELER_FIXTURES.B_civic_history",
+      "requestHash": "95b952bd0168340dae640acd",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_24",
+        "STGO_27",
+        "STGO_29",
+        "STGO_32"
+      ],
+      "routeFingerprintV01": "98f4e985a4cfccd6",
+      "routeIdV01": "prov_95b952bd_STGO_01-STGO_24-STGO_27-STGO_29-STGO_32_671",
+      "routeFingerprintV02": "deb2801992963d10",
+      "routeIdV02": "v02_DISCOVERY_95b952bd_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_18",
+      "totalModeledMinutes": 111.2,
+      "composerScore": 67.1,
+      "rerankedScore": 62.3,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F6": {
+      "scenarioId": "F6",
+      "scenarioFingerprint": "ef332bfad6f2f3b965fcbb17",
+      "travelerFixtureId": "TRAVELER_FIXTURES.C_food_street_life",
+      "requestHash": "b60f105a6dab521b54f1c48b",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_20",
+        "STGO_35",
+        "STGO_34",
+        "STGO_91"
+      ],
+      "routeFingerprintV01": "741a83fc6aecf796",
+      "routeIdV01": "prov_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91_698",
+      "routeFingerprintV02": "e52031628f0b54ed",
+      "routeIdV02": "v02_DISCOVERY_b60f105a_STGO_01-STGO_20-STGO_35-STGO_34-STGO_91",
+      "totalModeledMinutes": 117.2,
+      "composerScore": 69.8,
+      "rerankedScore": 65.9,
+      "arbitrationStatus": "MODERATE"
+    },
+    "F7": {
+      "scenarioId": "F7",
+      "scenarioFingerprint": "2934646cc2145270cdc45efd",
+      "travelerFixtureId": "TRAVELER_FIXTURES.D_architecture_aesthetics",
+      "requestHash": "f3d8e1096218c09d65f3f651",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "routeFingerprintV01": "9bb5c84fbc1433b4",
+      "routeIdV01": "prov_f3d8e109_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "routeFingerprintV02": "4ece81c463c4a93a",
+      "routeIdV02": "v02_DISCOVERY_f3d8e109_STGO_01-STGO_02-STGO_16-STGO_92-STGO_19-STGO_18-STGO_05",
+      "totalModeledMinutes": 123.8,
+      "composerScore": 65.4,
+      "rerankedScore": 64.4,
+      "arbitrationStatus": "MODERATE"
+    },
+    "F8": {
+      "scenarioId": "F8",
+      "scenarioFingerprint": "259fdb789f8385489219c7e3",
+      "travelerFixtureId": "F8_D1_FLANEUR_TRAVELER",
+      "requestHash": "efaca3e19172f919a5b3c6ae",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_18",
+        "STGO_03",
+        "STGO_19",
+        "STGO_02",
+        "STGO_26"
+      ],
+      "routeFingerprintV01": "a4c3a5b7e3ead60e",
+      "routeIdV01": "prov_efaca3e1_STGO_01-STGO_92-STGO_18-STGO_03-STGO_19-STGO_02-STGO_26_565",
+      "routeFingerprintV02": "5071dcfcc78e274f",
+      "routeIdV02": "v02_DISCOVERY_efaca3e1_STGO_01-STGO_02-STGO_92-STGO_19-STGO_03-STGO_18-STGO_06",
+      "totalModeledMinutes": 124.4,
+      "composerScore": 56.5,
+      "rerankedScore": 57.5,
+      "arbitrationStatus": "CLOSE_CALL"
+    },
+    "F9": {
+      "scenarioId": "F9",
+      "scenarioFingerprint": "d678beca9f9c169e6c954262",
+      "travelerFixtureId": "INLINE",
+      "requestHash": "805423198b119256cbc02848",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_03",
+        "STGO_19",
+        "STGO_04",
+        "STGO_10"
+      ],
+      "routeFingerprintV01": "9172ccc41d4cfaae",
+      "routeIdV01": "prov_80542319_STGO_01-STGO_92-STGO_03-STGO_19-STGO_04-STGO_10_625",
+      "routeFingerprintV02": "e1e046cff04fe80c",
+      "routeIdV02": "v02_DISCOVERY_80542319_STGO_01-STGO_22-STGO_16-STGO_04-STGO_19-STGO_18-STGO_03",
+      "totalModeledMinutes": 106.5,
+      "composerScore": 62.5,
+      "rerankedScore": 61.5,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F10": {
+      "scenarioId": "F10",
+      "scenarioFingerprint": "e33881840535b905eb6621a9",
+      "travelerFixtureId": "TRAVELER_FIXTURES.G_express_time_boxed",
+      "requestHash": "b72888c6976c7ba5dad23ba7",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "routeFingerprintV01": "ed3d46305271655e",
+      "routeIdV01": "prov_b72888c6_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_690",
+      "routeFingerprintV02": "2ae20c59e787571d",
+      "routeIdV02": "v02_SIGNATURE_b72888c6_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "totalModeledMinutes": 118.4,
+      "composerScore": 69,
+      "rerankedScore": 63.4,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F11": {
+      "scenarioId": "F11",
+      "scenarioFingerprint": "552e88b8f2929974e7debd7e",
+      "travelerFixtureId": "TRAVELER_FIXTURES.H_accessibility_sensitive",
+      "requestHash": "3d979ee280a4413af6befc4a",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_16",
+        "STGO_22",
+        "STGO_19",
+        "STGO_03",
+        "STGO_21"
+      ],
+      "routeFingerprintV01": "6e34d3581accc0fa",
+      "routeIdV01": "prov_3d979ee2_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_631",
+      "routeFingerprintV02": "aeb8acaadbfc8e96",
+      "routeIdV02": "v02_DISCOVERY_3d979ee2_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_18",
+      "totalModeledMinutes": 125.4,
+      "composerScore": 63.1,
+      "rerankedScore": 60.7,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F12": {
+      "scenarioId": "F12",
+      "scenarioFingerprint": "1cc33bfba4b4262c5732252b",
+      "travelerFixtureId": "TRAVELER_FIXTURES.B_civic_history",
+      "requestHash": "d95108f3fe8f416b290b6c2b",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_28",
+        "STGO_27",
+        "STGO_24",
+        "STGO_29"
+      ],
+      "routeFingerprintV01": "2099117761a920c1",
+      "routeIdV01": "prov_d95108f3_STGO_01-STGO_28-STGO_27-STGO_24-STGO_29_674",
+      "routeFingerprintV02": "c663c0074e538156",
+      "routeIdV02": "v02_DISCOVERY_d95108f3_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_18",
+      "totalModeledMinutes": 113.3,
+      "composerScore": 67.4,
+      "rerankedScore": 64.8,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F13": {
+      "scenarioId": "F13",
+      "scenarioFingerprint": "3df2225a069ba81db3bb505d",
+      "travelerFixtureId": "TRAVELER_FIXTURES.E_memory_human_rights",
+      "requestHash": "c03969f184d2ea8361cdd26f",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_04",
+        "STGO_19",
+        "STGO_03",
+        "STGO_07",
+        "STGO_25"
+      ],
+      "routeFingerprintV01": "11a504c0f51bf5e6",
+      "routeIdV01": "prov_c03969f1_STGO_01-STGO_04-STGO_19-STGO_03-STGO_07-STGO_25_657",
+      "routeFingerprintV02": "df9ce1edc7d6c643",
+      "routeIdV02": "v02_SIGNATURE_c03969f1_STGO_01-STGO_22-STGO_19-STGO_04-STGO_03-STGO_21",
+      "totalModeledMinutes": 118,
+      "composerScore": 65.7,
+      "rerankedScore": 62.2,
+      "arbitrationStatus": "CLOSE_CALL"
+    },
+    "F14": {
+      "scenarioId": "F14",
+      "scenarioFingerprint": "ea8a9d318e788300c454e7d2",
+      "travelerFixtureId": "TRAVELER_FIXTURES.I_high_comfort",
+      "requestHash": "9230f196337736018e8c2946",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_16",
+        "STGO_22",
+        "STGO_19",
+        "STGO_03",
+        "STGO_21"
+      ],
+      "routeFingerprintV01": "3d2e1391197d8aa6",
+      "routeIdV01": "prov_9230f196_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_21_628",
+      "routeFingerprintV02": "c487f177482180b3",
+      "routeIdV02": "v02_DISCOVERY_9230f196_STGO_01-STGO_16-STGO_22-STGO_19-STGO_03-STGO_18",
+      "totalModeledMinutes": 125.4,
+      "composerScore": 62.8,
+      "rerankedScore": 60.5,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F15": {
+      "scenarioId": "F15",
+      "scenarioFingerprint": "fd00de0002394fdf4163e0b2",
+      "travelerFixtureId": "TRAVELER_FIXTURES.G_express_time_boxed",
+      "requestHash": "56c731cf4c9c0f2d9e1cff84",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "FLOW",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_10"
+      ],
+      "routeFingerprintV01": "62b3870856f14d68",
+      "routeIdV01": "prov_56c731cf_STGO_01-STGO_10_718",
+      "routeFingerprintV02": "108c1cb7e906046c",
+      "routeIdV02": "v02_FLOW_56c731cf_STGO_01-STGO_02-STGO_16",
+      "totalModeledMinutes": 35.1,
+      "composerScore": 71.8,
+      "rerankedScore": 66.7,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F16": {
+      "scenarioId": "F16",
+      "scenarioFingerprint": "dbafb16871ff10bcacf0b7df",
+      "travelerFixtureId": "TRAVELER_FIXTURES.D_architecture_aesthetics",
+      "requestHash": "77c30bdfd3450c9a707432db",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "DISCOVERY",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_92",
+        "STGO_24",
+        "STGO_27",
+        "STGO_25",
+        "STGO_28"
+      ],
+      "routeFingerprintV01": "67cb0926b5db15ba",
+      "routeIdV01": "prov_77c30bdf_STGO_01-STGO_92-STGO_24-STGO_27-STGO_25-STGO_28_654",
+      "routeFingerprintV02": "18ebf973c3c59f28",
+      "routeIdV02": "v02_DISCOVERY_77c30bdf_STGO_01-STGO_22-STGO_16-STGO_18-STGO_05-STGO_19",
+      "totalModeledMinutes": 123.8,
+      "composerScore": 65.4,
+      "rerankedScore": 64.4,
+      "arbitrationStatus": "MODERATE"
+    },
+    "F17": {
+      "scenarioId": "F17",
+      "scenarioFingerprint": "b4f3a91e3831c28c6ff054f0",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "routeFingerprintV01": "b6e74235bf601d90",
+      "routeIdV01": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "routeFingerprintV02": "49010e8ba2fb4604",
+      "routeIdV02": "v02_SIGNATURE_f01a66c4_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "totalModeledMinutes": 118.4,
+      "composerScore": 68.4,
+      "rerankedScore": 63,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    },
+    "F18": {
+      "scenarioId": "F18",
+      "scenarioFingerprint": "f556512d99f0a6841ea78395",
+      "travelerFixtureId": "TRAVELER_FIXTURES.A_first_time_essentials",
+      "requestHash": "f01a66c48327cff9c6fa2000",
+      "engineVersions": {
+        "requestSchemaVersion": "santiago-route-request.v0.1",
+        "arbitrationVersion": "0.2.hypothesis.1",
+        "routeChoiceScoreVersion": "0.2.choice.hypothesis.1",
+        "arbitrationConfigStatus": "PROVISIONAL_V0_2_HYPOTHESIS"
+      },
+      "winningLane": "SIGNATURE",
+      "orderedStopIds": [
+        "STGO_01",
+        "STGO_18",
+        "STGO_03",
+        "STGO_06",
+        "STGO_05",
+        "STGO_02"
+      ],
+      "routeFingerprintV01": "b6e74235bf601d90",
+      "routeIdV01": "prov_f01a66c4_STGO_01-STGO_18-STGO_03-STGO_06-STGO_05-STGO_02_684",
+      "routeFingerprintV02": "49010e8ba2fb4604",
+      "routeIdV02": "v02_SIGNATURE_f01a66c4_STGO_01-STGO_22-STGO_02-STGO_16-STGO_18-STGO_19-STGO_03",
+      "totalModeledMinutes": 118.4,
+      "composerScore": 68.4,
+      "rerankedScore": 63,
+      "arbitrationStatus": "CONSTRAINT_DOMINATED"
+    }
+  }
+}

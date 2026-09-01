@@ -1,0 +1,26 @@
+{
+  "sourceUrl": "https://www.dtpm.cl/descargas/gtfs/GTFS_20260704.zip",
+  "localZip": "/tmp/dtpm-gtfs/GTFS_20260704.zip",
+  "retrievedAt": "2026-08-27T06:26:05Z",
+  "feedPublisherName": "Red Metropolitana",
+  "feedPublisherUrl": "http://www.red.cl",
+  "feedStartDate": "20260704",
+  "feedEndDate": "20261231",
+  "feedVersion": "V166.20260704",
+  "agencyId": "M",
+  "agencyName": "Metro de Santiago",
+  "agencyUrl": "http://www.metro.cl",
+  "licenseNote": "Official DTPM GTFS published at dtpm.cl/noticias/gtfs-vigente",
+  "operationalLinesPolicy": [
+    "L1",
+    "L2",
+    "L3",
+    "L4",
+    "L4A",
+    "L5",
+    "L6"
+  ],
+  "futureLinesExcluded": [
+    "L7"
+  ]
+}

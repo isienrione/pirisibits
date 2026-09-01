@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gate 1B.2A — Launch 30 Human Curation Review</title>
+<style>
+:root { --ink:#1a1a1a; --paper:#f7f3ec; --card:#fffdf8; --line:#d8cfc0; --green:#1f7a3f; --yellow:#a67c00; --red:#a11f1f; --gray:#555; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; background:
+  radial-gradient(ellipse at 10% 0%, #e7efe8 0%, transparent 45%),
+  linear-gradient(180deg, #f4efe6, #ebe4d8); color:var(--ink); }
+header.top { padding:28px 24px 8px; max-width:1200px; margin:0 auto; }
+h1 { font-size:clamp(1.6rem, 3vw, 2.2rem); margin:0 0 8px; }
+.summary, .filters { max-width:1200px; margin:12px auto; padding:14px 16px; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+.filters { display:flex; flex-wrap:wrap; gap:8px; align-items:center; position:sticky; top:0; z-index:5; }
+.filters button { font:inherit; border:1px solid var(--line); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; }
+.filters button.active { background:#1b1b1b; color:#fff; }
+.grid { max-width:1200px; margin:0 auto 40px; padding:0 16px; display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
+.card.green { border-left:6px solid var(--green); }
+.card.yellow { border-left:6px solid var(--yellow); }
+.card.red { border-left:6px solid var(--red); }
+.card.gray { border-left:6px solid var(--gray); }
+.badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#eee; margin-right:4px; }
+.badge.launch { background:#dde8ff; }
+code { font-size:12px; background:#f0ebe3; padding:1px 5px; border-radius:4px; }
+.mapwrap iframe { width:100%; height:180px; border:1px solid var(--line); border-radius:10px; }
+.warn { background:#fff3cd; padding:8px; border-radius:8px; font-size:13px; }
+.note, .pins { font-size:12px; opacity:0.85; }
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Gate 1B.2A — Launch 30 founder human curation</h1>
+  <p>Founder Google Maps / Street View review ingested as CURATOR_APPROVED (not FIELD_VERIFIED).
+  POI ≠ entrance ≠ experience-point preserved. Physical route generation remains disabled.</p>
+</header>
+<section class="summary">
+  <div>Launch 30 · Ready 27 · Partial 1 · Blocked 2</div>
+  <div>Curator-approved POI 24 · Experience points 29 · Access points 3</div>
+  <div>Provider overrides 24 · Backlog curator-approved 0 · Field verified 0</div>
+  <div>Normalized records: 30 · Source: src/data/santiago/curation/launch30_physical_review.normalized.v0.1.json</div>
+</section>
+<nav class="filters" aria-label="Filters">
+  <strong>Filter:</strong>
+  <button type="button" class="active" data-filter="ALL">ALL 30</button>
+  <button type="button" data-filter="READY_FOR_EDGE_GENERATION">READY</button>
+  <button type="button" data-filter="PARTIAL_REVIEW_REQUIRED">PARTIAL</button>
+  <button type="button" data-filter="UNRESOLVED_RESEARCH_REQUIRED">UNRESOLVED</button>
+  <button type="button" data-filter="NEEDS_SEMANTIC_REVIEW">SEMANTIC</button>
+  <button type="button" data-filter="CURATOR_APPROVED">APPROVED</button>
+</nav>
+<section class="grid" id="grid">
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Plaza de Armas</strong>
+        <code>STGO_01</code>
+        <code class="slug">la-moneda</code>
+      </header>
+      <p><b>Founder place:</b> Plaza de Armas</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Moneda, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=1240 m</p>
+      <p><b>Founder feedback:</b> very close but better official coordinates @-33.4378234,-70.6530715,17z</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4378234%2C-70.6505019" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_01" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.66107149999999%2C-33.4458234%2C-70.6450715%2C-33.4298234&layer=mapnik&marker=-33.4378234%2C-70.6530715"></iframe>
+          <p class="pins">Curator POI: -33.4378234, -70.6505019 ·
+             Experience: -33.4378234, -70.6530715 ·
+             Provider delta: 1240 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4378234, -70.6505019 — Plaza de Armas</li><li><code>curator_experience</code> experience_point: -33.4378234, -70.6530715 — Plaza de Armas observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650404,3a,75y,84.8h,84.77t/data=!3m8!1e1!3m6!1sCIHM0ogKEICAgIDEiKuPGw!2e10!3e11!6shttps://lh3.googleusercontent.com/gpms-cs-s/AFP8RcP6CXvzNZfKZwPd_2Nl2EmleIjZ_Z2ZNfkT2cXJdEofk-EVCMphLyAFxy1wWcwCI_Kd4TWvMfssLhMYjrzEg6o35Q2Fqs9FpuA5e5R-9RLLh7GnVJmOwL62awATwyNq1i9umQoS=w900-h600-k-no-pi5.22751106217234-ya84.80388182831926-ro0-fo100!7i8192!8i4096!4m14!1m7!3m6!1s0x9662c5a390957307:0xef87ffe6bed7c7!2sPlaza+de+Armas+de+Santiago!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2!3m5!1s0x9662c5a390957307:0xef87ffe6bed7c7!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650…</a></li><li><a href="https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650404,3a,75y,84.8h,84.77t/data=!3m8!1e1!3m6!1sCIHM0ogKEICAgIDEiKuPGw!2e10!3e11!6shttps://lh3.googleusercontent.com/gpms-cs-s/AFP8RcP6CXvzNZfKZwPd_2Nl2EmleIjZ_Z2ZNfkT2cXJdEofk-EVCMphLyAFxy1wWcwCI_Kd4TWvMfssLhMYjrzEg6o35Q2Fqs9FpuA5e5R-9RLLh7GnVJmOwL62awATwyNq1i9umQoS=w900-h600-k-no-pi5.22751106217234-ya84.80388182831926-ro0-fo100!7i8192!8i4096!4m14!1m7!3m6!1s0x9662c5a390957307:0xef87ffe6bed7c7!2sPlaza+de+Armas+de+Santiago!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2!3m5!1s0x9662c5a390957307:0xef87ffe6bed7c7!8m2!3d-33.4378234!4d-70.6505019!16s/m/0jwwrs2?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Plaza+de+Armas+de+Santiago/@-33.438505,-70.650…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Catedral Metropolitana</strong>
+        <code>STGO_02</code>
+        <code class="slug">morande-80</code>
+      </header>
+      <p><b>Founder place:</b> Catedral Metropolitana</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Morandé 80, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> google maps pin is correct but the coordinates specified are not. The correct ones of the street view point are -33.4373075,-70.6510237,3a,75y,229.35h,117.23t/</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Catedral%20Metropolitana" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_02" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.65902369999999%2C-33.445307500000006%2C-70.6430237%2C-33.4293075&layer=mapnik&marker=-33.4373075%2C-70.6510237"></iframe>
+          <p class="pins">Curator POI: ,  ·
+             Experience: -33.4373075, -70.6510237 ·
+             Provider delta: —</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_experience</code> experience_point: -33.4373075, -70.6510237 — Catedral Metropolitana observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://maps.app.goo.gl/kKsyudDbwBpZVSYS8" target="_blank" rel="noopener">https://maps.app.goo.gl/kKsyudDbwBpZVSYS8…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Palacio de La Moneda</strong>
+        <code>STGO_03</code>
+        <code class="slug">londres-38</code>
+      </header>
+      <p><b>Founder place:</b> Palacio de La Moneda</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Londres 38, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> Wrong coordinates, Correct ones and street view are -33.4439646,-70.6536703
+and 3a,90y,0.31h,72.77t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Palacio%20de%20La%20Moneda" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_03" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6616703%2C-33.451964600000004%2C-70.6456703%2C-33.4359646&layer=mapnik&marker=-33.4439646%2C-70.6536703"></iframe>
+          <p class="pins">Curator POI: ,  ·
+             Experience: -33.4439646, -70.6536703 ·
+             Provider delta: —</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_experience</code> experience_point: -33.4439646, -70.6536703 — Palacio de La Moneda observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://maps.app.goo.gl/sANBtjaAWVUzK6m2A" target="_blank" rel="noopener">https://maps.app.goo.gl/sANBtjaAWVUzK6m2A…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Morandé 80 (President&#x27;s Door)</strong>
+        <code>STGO_04</code>
+        <code class="slug">plaza-de-armas</code>
+      </header>
+      <p><b>Founder place:</b> Morandé 80 (President&#x27;s Door)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> close, but wrong.. Correct coordinates are formally **33°26&#x27;33.8&quot;S 70°39&#x27;12.1&quot;W
+and specific street view point @-33.4425566,-70.6532628,3a,82.4y,245.95h,91t/**</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Morand%C3%A9%2080%20%28President%27s%20Door%29" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_04" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.66126279999999%2C-33.450556600000006%2C-70.6452628%2C-33.4345566&layer=mapnik&marker=-33.4425566%2C-70.6532628"></iframe>
+          <p class="pins">Curator POI: ,  ·
+             Experience: -33.4425566, -70.6532628 ·
+             Provider delta: —</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_experience</code> experience_point: -33.4425566, -70.6532628 — Morandé 80 (President&#x27;s Door) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://maps.app.goo.gl/MWhrip38taNRYoNW7" target="_blank" rel="noopener">https://maps.app.goo.gl/MWhrip38taNRYoNW7…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card yellow" data-readiness="PARTIAL_REVIEW_REQUIRED" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">PARTIAL_REVIEW_REQUIRED</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Cerro Santa Lucía &amp; Terraza Neptuno</strong>
+        <code>STGO_05</code>
+        <code class="slug">pasaje-phillips</code>
+      </header>
+      <p><b>Founder place:</b> Cerro Santa Lucía &amp; Terraza Neptuno</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Paseo Phillips, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=637 m</p>
+      <p><b>Founder feedback:</b> Cerro Santa Lucia @-33.4402705,-70.6844474,13z
+
+Terraza Neptuno
+@-33.4418503,-70.6473047,16.17z
+
+Castillo HIdalgo
+@-33.4392,-70.6431626,3a,75y,248.86h,80.64t</p>
+      
+      
+      <p class='warn'><b>Coordinate conflict:</b> {&quot;founderAtCoordinate&quot;: {&quot;lat&quot;: -33.4402705, &quot;lng&quot;: -70.6844474, &quot;source&quot;: &quot;founder_at&quot;, &quot;role&quot;: &quot;labeled&quot;}, &quot;linkedPlaceCoordinate&quot;: {&quot;lat&quot;: -33.4402778, &quot;lng&quot;: -70.6433333, &quot;source&quot;: &quot;google_maps_place&quot;, &quot;role&quot;: &quot;poi_candidate&quot;}, &quot;distanceMeters&quot;: 3814.9, &quot;resolution&quot;: &quot;Use linked Google Maps place for POI; retain founder @ coordinate as conflicting evidence pending confirmation.&quot;}</p>
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4402778%2C-70.6433333" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_05" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6553047%2C-33.4498503%2C-70.63930470000001%2C-33.433850299999996&layer=mapnik&marker=-33.4418503%2C-70.6473047"></iframe>
+          <p class="pins">Curator POI: -33.4402778, -70.6433333 ·
+             Experience: -33.4418503, -70.6473047 ·
+             Provider delta: 637 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>cerro_poi</code> poi: -33.4402778, -70.6433333 — Cerro Santa Lucía (linked place)</li><li><code>terraza_neptuno</code> experience_point: -33.4418503, -70.6473047 — Terraza Neptuno</li><li><code>castillo_hidalgo</code> experience_point: -33.4392, -70.6431626 — Castillo Hidalgo</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/data=!3m1!4b1!4m6!3m5!1s0x9662c59f3b42ac29:0x9f9c852a64743e83!8m2!3d-33.4402778!4d-70.6433333!16zL20vMDRqOTNf?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/…</a></li><li><a href="https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/data=!3m1!4b1!4m6!3m5!1s0x9662c59f3b42ac29:0x9f9c852a64743e83!8m2!3d-33.4402778!4d-70.6433333!16zL20vMDRqOTNf?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Santa+Lucía+Hill/@-33.4402705,-70.6844474,13z/…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Barrio París-Londres</strong>
+        <code>STGO_06</code>
+        <code class="slug">catedral</code>
+      </header>
+      <p><b>Founder place:</b> Barrio París-Londres</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Plaza de Armas, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=771 m</p>
+      <p><b>Founder feedback:</b> @-33.4446332,-70.6483784,3a,75y,268.84h,90t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4446231%2C-70.6484288" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_06" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6563784%2C-33.4526332%2C-70.6403784%2C-33.436633199999996&layer=mapnik&marker=-33.4446332%2C-70.6483784"></iframe>
+          <p class="pins">Curator POI: -33.4446231, -70.6484288 ·
+             Experience: -33.4446332, -70.6483784 ·
+             Provider delta: 771 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4446231, -70.6484288 — Barrio París-Londres</li><li><code>curator_experience</code> experience_point: -33.4446332, -70.6483784 — Barrio París-Londres observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50023873003:0xf057d2270e1d4126!8m2!3d-33.4446231!4d-70.6484288!16s/g/11wwn__db7?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,…</a></li><li><a href="https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c50023873003:0xf057d2270e1d4126!8m2!3d-33.4446231!4d-70.6484288!16s/g/11wwn__db7?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Barrio+París+Londres/@-33.4446231,-70.6509984,…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Londres 38 Memorial</strong>
+        <code>STGO_07</code>
+        <code class="slug">merced</code>
+      </header>
+      <p><b>Founder place:</b> Londres 38 Memorial</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Región Metropolitana de Santiago, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=786 m</p>
+      <p><b>Founder feedback:</b> @-33.4442832,-70.6482238,3a,87y,134.33h,81.01t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4443106%2C-70.6480764" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_07" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.65622379999999%2C-33.452283200000004%2C-70.6402238%2C-33.4362832&layer=mapnik&marker=-33.4442832%2C-70.6482238"></iframe>
+          <p class="pins">Curator POI: -33.4443106, -70.6480764 ·
+             Experience: -33.4442832, -70.6482238 ·
+             Provider delta: 786 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4443106, -70.6480764 — Londres 38 Memorial</li><li><code>curator_experience</code> experience_point: -33.4442832, -70.6482238 — Londres 38 Memorial observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a0612b558b:0x8663fd43bf2755e5!8m2!3d-33.4443106!4d-70.6480764!16s/g/120_rrr_?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3…</a></li><li><a href="https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a0612b558b:0x8663fd43bf2755e5!8m2!3d-33.4443106!4d-70.6480764!16s/g/120_rrr_?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Londres+38/@-33.4443106,-70.650646,17z/data=!3…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Palacio Pereira</strong>
+        <code>STGO_10</code>
+        <code class="slug">parque-forestal</code>
+      </header>
+      <p><b>Founder place:</b> Palacio Pereira</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=4238 m</p>
+      <p><b>Founder feedback:</b> @-33.4403937,-70.6582743,3a,90y,342.42h,97.37t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.440218%2C-70.6582542" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_10" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6662743%2C-33.448393700000004%2C-70.6502743%2C-33.4323937&layer=mapnik&marker=-33.4403937%2C-70.6582743"></iframe>
+          <p class="pins">Curator POI: -33.440218, -70.6582542 ·
+             Experience: -33.4403937, -70.6582743 ·
+             Provider delta: 4238 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.440218, -70.6582542 — Palacio Pereira</li><li><code>curator_experience</code> experience_point: -33.4403937, -70.6582743 — Palacio Pereira observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5af680c627f:0x120948f2d87f1c7b!8m2!3d-33.440218!4d-70.6582542!16s/g/123b43x2?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/da…</a></li><li><a href="https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5af680c627f:0x120948f2d87f1c7b!8m2!3d-33.440218!4d-70.6582542!16s/g/123b43x2?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Palacio+Pereira/@-33.440218,-70.6608238,17z/da…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Barrio Yungay &amp; Plaza Roto Chileno</strong>
+        <code>STGO_11</code>
+        <code class="slug">gam</code>
+      </header>
+      <p><b>Founder place:</b> Barrio Yungay &amp; Plaza Roto Chileno</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=3309 m</p>
+      <p><b>Founder feedback:</b> @-33.4374962,-70.674057,17z</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4429112%2C-70.6731231" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_11" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.682057%2C-33.4454962%2C-70.66605700000001%2C-33.429496199999996&layer=mapnik&marker=-33.4374962%2C-70.674057"></iframe>
+          <p class="pins">Curator POI: -33.4429112, -70.6731231 ·
+             Experience: -33.4374962, -70.674057 ·
+             Provider delta: 3309 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4429112, -70.6731231 — Barrio Yungay &amp; Plaza Roto Chileno</li><li><code>curator_experience</code> experience_point: -33.4374962, -70.674057 — Barrio Yungay &amp; Plaza Roto Chileno observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/data=!4m15!1m8!3m7!1s0x9662c453c5de7955:0x4eb2d5b924112c2e!2sBarrio+Yungay,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4429112!4d-70.6731231!16s/m/0zthydz!3m5!1s0x9662c44deb081c75:0xd4c005f7882e809a!8m2!3d-33.4374962!4d-70.674057!16s/m/0nfwmc7?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/…</a></li><li><a href="https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/data=!4m15!1m8!3m7!1s0x9662c453c5de7955:0x4eb2d5b924112c2e!2sBarrio+Yungay,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4429112!4d-70.6731231!16s/m/0zthydz!3m5!1s0x9662c44deb081c75:0xd4c005f7882e809a!8m2!3d-33.4374962!4d-70.674057!16s/m/0nfwmc7?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Yungay+Square/@-33.4374142,-70.6771169,16.49z/…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Pasaje Matte &amp; Hidden Ballroom</strong>
+        <code>STGO_16</code>
+        <code class="slug">museo-memoria</code>
+      </header>
+      <p><b>Founder place:</b> Pasaje Matte &amp; Hidden Ballroom</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Matucana, Quinta Normal, Región Metropolitana de Santiago 8320000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> pasaje matte (comunidad edificio argentina ) @-33.4391071,-70.6510578,3a,75y,85.02h,86.58t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Pasaje%20Matte%20%26%20Hidden%20Ballroom" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_16" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6590578%2C-33.447107100000004%2C-70.64305780000001%2C-33.4311071&layer=mapnik&marker=-33.4391071%2C-70.6510578"></iframe>
+          <p class="pins">Curator POI: ,  ·
+             Experience: -33.4391071, -70.6510578 ·
+             Provider delta: —</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_experience</code> experience_point: -33.4391071, -70.6510578 — Pasaje Matte &amp; Hidden Ballroom observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Comunidad+Edificio+Argentina+Pasaje+Matte/data=!4m2!3m1!1s0x0:0x761854167ce82dfe?sa=X&amp;ved=1t:2428&amp;ictx=111" target="_blank" rel="noopener">https://www.google.com/maps/place/Comunidad+Edificio+Argentina+Pasaje+Matte/data…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Edificio Palacio Ariztía (Flat-Iron)</strong>
+        <code>STGO_18</code>
+        <code class="slug">barrio-brasil</code>
+      </header>
+      <p><b>Founder place:</b> Edificio Palacio Ariztía (Flat-Iron)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Avenida Brasil, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=1269 m</p>
+      <p><b>Founder feedback:</b> @-33.4425828,-70.6511804,3a,75y,113.69h,117.01t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4421039%2C-70.6515891" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_18" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6591804%2C-33.4505828%2C-70.6431804%2C-33.434582799999994&layer=mapnik&marker=-33.4425828%2C-70.6511804"></iframe>
+          <p class="pins">Curator POI: -33.4421039, -70.6515891 ·
+             Experience: -33.4425828, -70.6511804 ·
+             Provider delta: 1269 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4421039, -70.6515891 — Edificio Palacio Ariztía (Flat-Iron)</li><li><code>curator_experience</code> experience_point: -33.4425828, -70.6511804 — Edificio Palacio Ariztía (Flat-Iron) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/data=!4m10!1m2!2m1!1sedificio+ariztia!3m6!1s0x9662c5a6caf6c237:0x1da2223bf8246a0f!8m2!3d-33.4421039!4d-70.6515891!15sChBlZGlmaWNpbyBhcml6dGlhkgEWY2l0eV9nb3Zlcm5tZW50X29mZmljZeABAA!16s/g/11g6jrmx4v?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/…</a></li><li><a href="https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/data=!4m10!1m2!2m1!1sedificio+ariztia!3m6!1s0x9662c5a6caf6c237:0x1da2223bf8246a0f!8m2!3d-33.4421039!4d-70.6515891!15sChBlZGlmaWNpbyBhcml6dGlhkgEWY2l0eV9nb3Zlcm5tZW50X29mZmljZeABAA!16s/g/11g6jrmx4v?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Edificio+Ariztía/@-33.4462295,-70.6594161,15z/…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Seguro Obrero Bullet Scars (Correo)</strong>
+        <code>STGO_19</code>
+        <code class="slug">barrio-italia</code>
+      </header>
+      <p><b>Founder place:</b> Seguro Obrero Bullet Scars (Correo)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Italia, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=6549 m</p>
+      <p><b>Founder feedback:</b> @-33.4419727,-70.6533529,3a,90y,84.39h,86.75t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4419417%2C-70.6531766" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_19" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6613529%2C-33.449972700000004%2C-70.6453529%2C-33.4339727&layer=mapnik&marker=-33.4419727%2C-70.6533529"></iframe>
+          <p class="pins">Curator POI: -33.4419417, -70.6531766 ·
+             Experience: -33.4419727, -70.6533529 ·
+             Provider delta: 6549 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4419417, -70.6531766 — Seguro Obrero Bullet Scars (Correo)</li><li><code>curator_experience</code> experience_point: -33.4419727, -70.6533529 — Seguro Obrero Bullet Scars (Correo) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Workers&#x27;+Insurance+Building/@-33.4419727,-70.6533529,3a,75y,72.52h,94.63t/data=!3m7!1e1!3m5!1s8qa_dmoQu0wYOrOc4ROOXw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-4.6251837990922695&amp;panoid=8qa_dmoQu0wYOrOc4ROOXw&amp;yaw=72.51897593768821!7i16384!8i8192!4m9!3m8!1s0x9662c5a3c3d21bef:0xeca5df680e75fac3!8m2!3d-33.4419417!4d-70.6531766!10e5!14m1!1BCgIgARICCAI!16s/g/11b5v43nnd?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Workers&#x27;+Insurance+Building/@-33.4419727,-70.6…</a></li><li><a href="https://www.google.com/maps/place/Workers&#x27;+Insurance+Building/@-33.4419727,-70.6533529,3a,75y,72.52h,94.63t/data=!3m7!1e1!3m5!1s8qa_dmoQu0wYOrOc4ROOXw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-4.6251837990922695&amp;panoid=8qa_dmoQu0wYOrOc4ROOXw&amp;yaw=72.51897593768821!7i16384!8i8192!4m9!3m8!1s0x9662c5a3c3d21bef:0xeca5df680e75fac3!8m2!3d-33.4419417!4d-70.6531766!10e5!14m1!1BCgIgARICCAI!16s/g/11b5v43nnd?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Workers&#x27;+Insurance+Building/@-33.4419727,-70.6…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>La Piojera</strong>
+        <code>STGO_20</code>
+        <code class="slug">san-francisco</code>
+      </header>
+      <p><b>Founder place:</b> La Piojera</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Alameda, Estación Central, Región Metropolitana de Santiago 9160000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=5514 m</p>
+      <p><b>Founder feedback:</b> @-33.4334303,-70.6521616,3a,75y,177.12h,82.63t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4335938%2C-70.6521378" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_20" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6601616%2C-33.4414303%2C-70.6441616%2C-33.425430299999995&layer=mapnik&marker=-33.4334303%2C-70.6521616"></iframe>
+          <p class="pins">Curator POI: -33.4335938, -70.6521378 ·
+             Experience: -33.4334303, -70.6521616 ·
+             Provider delta: 5514 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4335938, -70.6521378 — La Piojera</li><li><code>curator_experience</code> experience_point: -33.4334303, -70.6521616 — La Piojera observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bb65f8aa49:0x39b476e51989c180!8m2!3d-33.4335938!4d-70.6521378!16s/g/1211qy72?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!…</a></li><li><a href="https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bb65f8aa49:0x39b476e51989c180!8m2!3d-33.4335938!4d-70.6521378!16s/g/1211qy72?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/La+Piojera/@-33.4335938,-70.6547181,17z/data=!…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Confitería Torres (1879)</strong>
+        <code>STGO_21</code>
+        <code class="slug">palacio-pereira</code>
+      </header>
+      <p><b>Founder place:</b> Confitería Torres (1879)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Huérfanos, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=3489 m</p>
+      <p><b>Founder feedback:</b> @-33.4458744,-70.6579168,3a,75y,201.52h,93.39t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4459733%2C-70.6579077" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_21" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.66591679999999%2C-33.453874400000004%2C-70.6499168%2C-33.4378744&layer=mapnik&marker=-33.4458744%2C-70.6579168"></iframe>
+          <p class="pins">Curator POI: -33.4459733, -70.6579077 ·
+             Experience: -33.4458744, -70.6579168 ·
+             Provider delta: 3489 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4459733, -70.6579077 — Confitería Torres (1879)</li><li><code>curator_experience</code> experience_point: -33.4458744, -70.6579168 — Confitería Torres (1879) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,75y,201.52h,93.39t/data=!3m7!1e1!3m5!1sZzDvLSlRkq_0QbqFhqSNhA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-3.3866785211263846&amp;panoid=ZzDvLSlRkq_0QbqFhqSNhA&amp;yaw=201.5177428070729!7i16384!8i8192!4m10!1m2!2m1!1sConfitería+Torres!3m6!1s0x9662c5a811c4ef3f:0x4496a2238df70ec1!8m2!3d-33.4459733!4d-70.6579077!15sChJDb25maXRlcsOtYSBUb3JyZXMiA4gBAVoUIhJjb25maXRlcsOtYSB0b3JyZXOSAQpyZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJZYUZwcFJsbG5FQUXgAQD6AQQIOBBF!16s/g/1ywqfmz8l?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,…</a></li><li><a href="https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,75y,201.52h,93.39t/data=!3m7!1e1!3m5!1sZzDvLSlRkq_0QbqFhqSNhA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-3.3866785211263846&amp;panoid=ZzDvLSlRkq_0QbqFhqSNhA&amp;yaw=201.5177428070729!7i16384!8i8192!4m10!1m2!2m1!1sConfitería+Torres!3m6!1s0x9662c5a811c4ef3f:0x4496a2238df70ec1!8m2!3d-33.4459733!4d-70.6579077!15sChJDb25maXRlcsOtYSBUb3JyZXMiA4gBAVoUIhJjb25maXRlcsOtYSB0b3JyZXOSAQpyZXN0YXVyYW50mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJZYUZwcFJsbG5FQUXgAQD6AQQIOBBF!16s/g/1ywqfmz8l?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Confitería+Torres/@-33.4458744,-70.6579168,3a,…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Museo Chileno Arte Precolombino</strong>
+        <code>STGO_22</code>
+        <code class="slug">ex-congreso</code>
+      </header>
+      <p><b>Founder place:</b> Museo Chileno Arte Precolombino</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Pasaje El Congreso, Peñalolén, Región Metropolitana de Santiago 7910000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=12341 m</p>
+      <p><b>Founder feedback:</b> @-33.4386084,-70.6523455,3a,90y,223.06h,82.94t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4386677%2C-70.6523921" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_22" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.66034549999999%2C-33.4466084%2C-70.6443455%2C-33.4306084&layer=mapnik&marker=-33.4386084%2C-70.6523455"></iframe>
+          <p class="pins">Curator POI: -33.4386677, -70.6523921 ·
+             Experience: -33.4386084, -70.6523455 ·
+             Provider delta: 12341 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4386677, -70.6523921 — Museo Chileno Arte Precolombino</li><li><code>curator_experience</code> experience_point: -33.4386084, -70.6523455 — Museo Chileno Arte Precolombino observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.4386677,-70.6549724,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a46c29c7e7:0x441c0411745f7ac3!8m2!3d-33.4386677!4d-70.6523921!16s/m/04ygspw?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.43866…</a></li><li><a href="https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.4386677,-70.6549724,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a46c29c7e7:0x441c0411745f7ac3!8m2!3d-33.4386677!4d-70.6523921!16s/m/04ygspw?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Chilean+Museum+of+Pre-Columbian+Art/@-33.43866…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card red" data-readiness="UNRESOLVED_RESEARCH_REQUIRED" data-approved="none">
+      <header>
+        <span class="badge">UNRESOLVED_RESEARCH_REQUIRED</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Inca Tambo Canal Dip (Puente/Stgo)</strong>
+        <code>STGO_23</code>
+        <code class="slug">plaza-constitucion</code>
+      </header>
+      <p><b>Founder place:</b> Inca Tambo Canal Dip (Puente/Stgo)</p>
+      <p><b>Curator approval:</b> none ·
+         <b>Verification:</b> UNRESOLVED</p>
+      <p><b>Provider (pre-ingest):</b> Constitución, Providencia, Región Metropolitana de Santiago 7500000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> i dont undesrtand what this POI , cant find it like its written</p>
+      
+      <p class='warn'><b>Research blocker:</b> Founder cannot identify POI concept; canonical Inca Tambo Canal Dip requires editorial research before physical promotion.</p>
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Inca%20Tambo%20Canal%20Dip%20%28Puente/Stgo%29" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      <p class="pins">No curator pin to preview.</p>
+      <details open><summary>Physical points</summary><ul><li>None</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li>None</li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Barrio Lastarria Corridor</strong>
+        <code>STGO_24</code>
+        <code class="slug">museo-bellas-artes</code>
+      </header>
+      <p><b>Founder place:</b> Barrio Lastarria Corridor</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Parque, Estación Central, Región Metropolitana de Santiago 9160000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=5651 m</p>
+      <p><b>Founder feedback:</b> @-33.4374383,-70.641002,3a,75y,172.8h,84.6t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4382715%2C-70.6410854" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_24" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.649002%2C-33.4454383%2C-70.633002%2C-33.429438299999994&layer=mapnik&marker=-33.4374383%2C-70.641002"></iframe>
+          <p class="pins">Curator POI: -33.4382715, -70.6410854 ·
+             Experience: -33.4374383, -70.641002 ·
+             Provider delta: 5651 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4382715, -70.6410854 — Barrio Lastarria Corridor</li><li><code>curator_experience</code> experience_point: -33.4374383, -70.641002 — Barrio Lastarria Corridor observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-70.6410346,3a,84.7y,153.77h,90.72t/data=!3m7!1e1!3m5!1s9s_X0nc9uVcVU2FGL8LgeA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-0.7236172924506263&amp;panoid=9s_X0nc9uVcVU2FGL8LgeA&amp;yaw=153.7650451331805!7i16384!8i8192!4m15!1m8!3m7!1s0x96623debe2486905:0xa38ed010f5764604!2sLastarria,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4382715!4d-70.6410854!16s/g/11fk3y3kkd!3m5!1s0x9662c59940788e33:0xebab0b2b31a52a0a!8m2!3d-33.4376407!4d-70.6407791!16s/g/1n36gdyhs?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-…</a></li><li><a href="https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-70.6410346,3a,84.7y,153.77h,90.72t/data=!3m7!1e1!3m5!1s9s_X0nc9uVcVU2FGL8LgeA!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=-0.7236172924506263&amp;panoid=9s_X0nc9uVcVU2FGL8LgeA&amp;yaw=153.7650451331805!7i16384!8i8192!4m15!1m8!3m7!1s0x96623debe2486905:0xa38ed010f5764604!2sLastarria,+Santiago,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4382715!4d-70.6410854!16s/g/11fk3y3kkd!3m5!1s0x9662c59940788e33:0xebab0b2b31a52a0a!8m2!3d-33.4376407!4d-70.6407791!16s/g/1n36gdyhs?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Museo+de+Artes+Visuales+MAVI+UC/@-33.4372585,-…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>GAM (Centro Gabriela Mistral)</strong>
+        <code>STGO_25</code>
+        <code class="slug">estacion-mapocho</code>
+      </header>
+      <p><b>Founder place:</b> GAM (Centro Gabriela Mistral)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Avenida Mapocho, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=5556 m</p>
+      <p><b>Founder feedback:</b> @-33.4391756,-70.6398489,3a,75y,127.28h,84.06t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4391942%2C-70.6398448" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_25" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6478489%2C-33.4471756%2C-70.63184890000001%2C-33.431175599999996&layer=mapnik&marker=-33.4391756%2C-70.6398489"></iframe>
+          <p class="pins">Curator POI: -33.4391942, -70.6398448 ·
+             Experience: -33.4391756, -70.6398489 ·
+             Provider delta: 5556 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4391942, -70.6398448 — GAM (Centro Gabriela Mistral)</li><li><code>curator_experience</code> experience_point: -33.4391756, -70.6398489 — GAM (Centro Gabriela Mistral) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,-70.6425548,17z/data=!3m1!5s0x9662c59ea911f4bd:0x956fd84a83fd3d4!4m10!1m2!2m1!1sGAM!3m6!1s0x9662c59b6ee5a887:0x43a746bfa98d9592!8m2!3d-33.4391942!4d-70.6398448!15sCgNHQU1aBSIDZ2FtkgEPY3VsdHVyYWxfY2VudGVymgEkQ2hkRFNVaE5NRzluUzBWSlEwRm5TVU5TYTJGaFRtNW5SUkFC4AEA-gEECBEQQw!16s/m/0jwv0_6?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,…</a></li><li><a href="https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,-70.6425548,17z/data=!3m1!5s0x9662c59ea911f4bd:0x956fd84a83fd3d4!4m10!1m2!2m1!1sGAM!3m6!1s0x9662c59b6ee5a887:0x43a746bfa98d9592!8m2!3d-33.4391942!4d-70.6398448!15sCgNHQU1aBSIDZ2FtkgEPY3VsdHVyYWxfY2VudGVymgEkQ2hkRFNVaE5NRzluUzBWSlEwRm5TVU5TYTJGaFRtNW5SUkFC4AEA-gEECBEQQw!16s/m/0jwv0_6?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Gabriela+Mistral+Cultural+Centre/@-33.4387275,…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>MNBA &amp; Parque Forestal</strong>
+        <code>STGO_26</code>
+        <code class="slug">cementerio-general</code>
+      </header>
+      <p><b>Founder place:</b> MNBA &amp; Parque Forestal</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Cementerio General, Recoleta, Región Metropolitana de Santiago 8420000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=2375 m</p>
+      <p><b>Founder feedback:</b> @-33.4354102,-70.6430095,3a,75y,290.43h,85.51t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4353053%2C-70.6435365" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_26" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6510095%2C-33.4434102%2C-70.63500950000001%2C-33.4274102&layer=mapnik&marker=-33.4354102%2C-70.6430095"></iframe>
+          <p class="pins">Curator POI: -33.4353053, -70.6435365 ·
+             Experience: -33.4354102, -70.6430095 ·
+             Provider delta: 2375 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4353053, -70.6435365 — MNBA &amp; Parque Forestal</li><li><code>curator_experience</code> experience_point: -33.4354102, -70.6430095 — MNBA &amp; Parque Forestal observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.6461168,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c598506488df:0xc4261233e54747ba!8m2!3d-33.4353053!4d-70.6435365!16s/m/03cdgsj?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.…</a></li><li><a href="https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.6461168,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c598506488df:0xc4261233e54747ba!8m2!3d-33.4353053!4d-70.6435365!16s/m/03cdgsj?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/National+Museum+of+Fine+Arts/@-33.4353053,-70.…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Taller Castillo Kulczewski</strong>
+        <code>STGO_27</code>
+        <code class="slug">plaza-nunoa</code>
+      </header>
+      <p><b>Founder place:</b> Taller Castillo Kulczewski</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Plaza Ñuñoa, Ñuñoa, Región Metropolitana de Santiago, Chile · class=AUTO_HIGH_CONFIDENCE</p>
+      <p><b>Override provider:</b> True · diff=5114 m</p>
+      <p><b>Founder feedback:</b> @-33.4379605,-70.6390723,3a,23.9y,104.96h,129.36t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4380109%2C-70.6390334" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_27" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.64707229999999%2C-33.445960500000005%2C-70.6310723%2C-33.4299605&layer=mapnik&marker=-33.4379605%2C-70.6390723"></iframe>
+          <p class="pins">Curator POI: -33.4380109, -70.6390334 ·
+             Experience: -33.4379605, -70.6390723 ·
+             Provider delta: 5114 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4380109, -70.6390334 — Taller Castillo Kulczewski</li><li><code>curator_experience</code> experience_point: -33.4379605, -70.6390723 — Taller Castillo Kulczewski observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-70.6416137,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59ebf03174b:0x476636f0e295ebb3!8m2!3d-33.4380109!4d-70.6390334!16s/g/11gn1xc534?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-7…</a></li><li><a href="https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-70.6416137,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59ebf03174b:0x476636f0e295ebb3!8m2!3d-33.4380109!4d-70.6390334!16s/g/11gn1xc534?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Casa-Taller+Luciano+Kulczewski/@-33.4380109,-7…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Bocanáriz &amp; Chipe Libre</strong>
+        <code>STGO_28</code>
+        <code class="slug">villa-grimaldi</code>
+      </header>
+      <p><b>Founder place:</b> Bocanáriz &amp; Chipe Libre</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> La Paz, Recoleta, Región Metropolitana de Santiago 8420000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=1643 m</p>
+      <p><b>Founder feedback:</b> @-33.4383804,-70.6410837,3a,75y,288.31h,89.58t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4384002%2C-70.6413193" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_28" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.64908369999999%2C-33.4463804%2C-70.6330837%2C-33.4303804&layer=mapnik&marker=-33.4383804%2C-70.6410837"></iframe>
+          <p class="pins">Curator POI: -33.4384002, -70.6413193 ·
+             Experience: -33.4383804, -70.6410837 ·
+             Provider delta: 1643 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4384002, -70.6413193 — Bocanáriz &amp; Chipe Libre</li><li><code>curator_experience</code> experience_point: -33.4383804, -70.6410837 — Bocanáriz &amp; Chipe Libre observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.44h,90t/data=!3m7!1e1!3m5!1sy2ChLlLIbfJHxAASReSudw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=0&amp;panoid=y2ChLlLIbfJHxAASReSudw&amp;yaw=263.4448!7i16384!8i8192!4m14!1m7!3m6!1s0x9662c59940a7c1e7:0x92f1a277401b023d!2sBocanáriz!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p!3m5!1s0x9662c59940a7c1e7:0x92f1a277401b023d!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.…</a></li><li><a href="https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.44h,90t/data=!3m7!1e1!3m5!1sy2ChLlLIbfJHxAASReSudw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=0&amp;panoid=y2ChLlLIbfJHxAASReSudw&amp;yaw=263.4448!7i16384!8i8192!4m14!1m7!3m6!1s0x9662c59940a7c1e7:0x92f1a277401b023d!2sBocanáriz!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p!3m5!1s0x9662c59940a7c1e7:0x92f1a277401b023d!8m2!3d-33.4384002!4d-70.6413193!16s/g/11b8tx279p?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bocanáriz/@-33.4383804,-70.6410837,3a,75y,263.…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>La Chascona (Neruda House)</strong>
+        <code>STGO_29</code>
+        <code class="slug">teatro-municipal</code>
+      </header>
+      <p><b>Founder place:</b> La Chascona (Neruda House)</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Los Agustinos, Ñuñoa, Región Metropolitana de Santiago 7750000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=5647 m</p>
+      <p><b>Founder feedback:</b> @-33.4311212,-70.6369978,17z</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4311212%2C-70.6344175" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_29" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6449978%2C-33.4391212%2C-70.62899780000001%2C-33.4231212&layer=mapnik&marker=-33.4311212%2C-70.6369978"></iframe>
+          <p class="pins">Curator POI: -33.4311212, -70.6344175 ·
+             Experience: -33.4311212, -70.6369978 ·
+             Provider delta: 5647 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4311212, -70.6344175 — La Chascona (Neruda House)</li><li><code>curator_experience</code> experience_point: -33.4311212, -70.6369978 — La Chascona (Neruda House) observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59017cb616d:0x4efb4711f2a9a116!8m2!3d-33.4311212!4d-70.6344175!16s/m/0pdp3jz?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=…</a></li><li><a href="https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c59017cb616d:0x4efb4711f2a9a116!8m2!3d-33.4311212!4d-70.6344175!16s/m/0pdp3jz?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/La+Chascona/@-33.4311212,-70.6369978,17z/data=…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Cerro San Cristóbal Funicular / Hill complex</strong>
+        <code>STGO_32</code>
+        <code class="slug">plaza-bulnes</code>
+      </header>
+      <p><b>Founder place:</b> Cerro San Cristóbal Funicular / Hill complex</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Plaza, Recoleta, Región Metropolitana de Santiago 8420000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=1824 m</p>
+      <p><b>Founder feedback:</b> Funicular @-33.4295677,-70.63743,16.7z
+Acceso Carlos reed @-33.4261818,-70.626117,18.08z
+Teleferico , entrada pedro de valdivia @-33.4156103,-70.6175375,17.54z</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4202404%2C-70.6313749" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_32" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.64542999999999%2C-33.4375677%2C-70.62943%2C-33.4215677&layer=mapnik&marker=-33.4295677%2C-70.63743"></iframe>
+          <p class="pins">Curator POI: -33.4202404, -70.6313749 ·
+             Experience: -33.4295677, -70.63743 ·
+             Provider delta: 1824 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>hill_poi</code> poi: -33.4202404, -70.6313749 — Cerro San Cristóbal</li><li><code>funicular</code> access: -33.4295677, -70.63743 — Funicular</li><li><code>acceso_carlos_reed</code> access: -33.4261818, -70.626117 — Acceso Carlos reed</li><li><code>teleferico_pedro_de_valdivia</code> access: -33.4156103, -70.6175375 — Teleferico , entrada pedro de valdivia</li></ul></details>
+      <details><summary>Access points</summary><ul><li><code>funicular</code> -33.4295677, -70.63743</li><li><code>acceso_carlos_reed</code> -33.4261818, -70.626117</li><li><code>teleferico_pedro_de_valdivia</code> -33.4156103, -70.6175375</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15z/data=!3m1!4b1!4m6!3m5!1s0x9662c5f2c4b10d51:0xf5ed6089dea23c83!8m2!3d-33.4202404!4d-70.6313749!16zL20vMDZzbGs1?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15…</a></li><li><a href="https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15z/data=!3m1!4b1!4m6!3m5!1s0x9662c5f2c4b10d51:0xf5ed6089dea23c83!8m2!3d-33.4202404!4d-70.6313749!16zL20vMDZzbGs1?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/San+Cristóbal+Hill/@-33.4202399,-70.6313749,15…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card red" data-readiness="NEEDS_SEMANTIC_REVIEW" data-approved="none">
+      <header>
+        <span class="badge">NEEDS_SEMANTIC_REVIEW</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Kulczewski Funicular Gargoyle</strong>
+        <code>STGO_33</code>
+        <code class="slug">iglesia-de-san-agustin</code>
+      </header>
+      <p><b>Founder place:</b> Kulczewski Funicular Gargoyle</p>
+      <p><b>Curator approval:</b> none ·
+         <b>Verification:</b> NEEDS_CURATOR_REVIEW</p>
+      <p><b>Provider (pre-ingest):</b> San Agustín, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> False · diff=—</p>
+      <p><b>Founder feedback:</b> @-33.4368473,-70.6364354,3a,75y,191.01h,81.88t</p>
+      <p class='warn'><b>Semantic warning:</b> its lvciano K hotel today</p>
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=Kulczewski%20Funicular%20Gargoyle" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_33" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.64443539999999%2C-33.4448473%2C-70.6284354%2C-33.428847299999994&layer=mapnik&marker=-33.4368473%2C-70.6364354"></iframe>
+          <p class="pins">Curator POI: ,  ·
+             Experience: -33.4368473, -70.6364354 ·
+             Provider delta: —</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>founder_street_view</code> experience_candidate: -33.4368473, -70.6364354 — Founder Street View (Hotel Luciano K)</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=8.115650956896644&amp;panoid=3VJbWxYDWGtY9x_wRVxMuw&amp;yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75…</a></li><li><a href="https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75y,191.01h,81.88t/data=!3m7!1e1!3m5!1s3VJbWxYDWGtY9x_wRVxMuw!2e0!6shttps://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&amp;w=900&amp;h=600&amp;pitch=8.115650956896644&amp;panoid=3VJbWxYDWGtY9x_wRVxMuw&amp;yaw=191.01321470330564!7i16384!8i8192!4m11!3m10!1s0x9662c59ba01c3105:0xf7a0909bc17b5559!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4370519!4d-70.6364697!16s/g/11cm3nx5zd?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Hotel+Luciano+K/@-33.4368473,-70.6364354,3a,75…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>La Vega Central</strong>
+        <code>STGO_34</code>
+        <code class="slug">iglesia-de-santo-domingo</code>
+      </header>
+      <p><b>Founder place:</b> La Vega Central</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Santo Domingo, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=2568 m</p>
+      <p><b>Founder feedback:</b> @-33.4307788,-70.6490827,3a,90y,14.1h,77.29t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4300652%2C-70.6495745" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_34" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.65708269999999%2C-33.4387788%2C-70.6410827%2C-33.422778799999996&layer=mapnik&marker=-33.4307788%2C-70.6490827"></iframe>
+          <p class="pins">Curator POI: -33.4300652, -70.6495745 ·
+             Experience: -33.4307788, -70.6490827 ·
+             Provider delta: 2568 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4300652, -70.6495745 — La Vega Central</li><li><code>curator_experience</code> experience_point: -33.4307788, -70.6490827 — La Vega Central observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521548,17z/data=!3m1!4b1!4m11!3m10!1s0x9662c5be64184569:0x89553bf87c2db350!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4300652!4d-70.6495745!16s/m/0n_8q09?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521…</a></li><li><a href="https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521548,17z/data=!3m1!4b1!4m11!3m10!1s0x9662c5be64184569:0x89553bf87c2db350!5m4!1s2026-09-10!2i3!4m1!1i2!8m2!3d-33.4300652!4d-70.6495745!16s/m/0n_8q09?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Vega+Central+de+Santiago/@-33.4300652,-70.6521…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Mercado Tirso de Molina</strong>
+        <code>STGO_35</code>
+        <code class="slug">iglesia-de-san-saturnino</code>
+      </header>
+      <p><b>Founder place:</b> Mercado Tirso de Molina</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> San Saturnino, Santiago, Región Metropolitana de Santiago, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=1854 m</p>
+      <p><b>Founder feedback:</b> @-33.4317446,-70.6511075,3a,75y,136.4h,87.59t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4318177%2C-70.65046" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_35" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.65910749999999%2C-33.439744600000004%2C-70.6431075%2C-33.4237446&layer=mapnik&marker=-33.4317446%2C-70.6511075"></iframe>
+          <p class="pins">Curator POI: -33.4318177, -70.65046 ·
+             Experience: -33.4317446, -70.6511075 ·
+             Provider delta: 1854 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4318177, -70.65046 — Mercado Tirso de Molina</li><li><code>curator_experience</code> experience_point: -33.4317446, -70.6511075 — Mercado Tirso de Molina observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.6530403,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bc65b2e8b1:0x809d0eb626421136!8m2!3d-33.4318177!4d-70.65046!16s/g/11b8v9jhm3?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.65304…</a></li><li><a href="https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.6530403,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5bc65b2e8b1:0x809d0eb626421136!8m2!3d-33.4318177!4d-70.65046!16s/g/11b8v9jhm3?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Mercado+Tirso+de+Molina/@-33.4318177,-70.65304…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Museo de la Memoria y DDHH</strong>
+        <code>STGO_48</code>
+        <code class="slug">patio-bellavista</code>
+      </header>
+      <p><b>Founder place:</b> Museo de la Memoria y DDHH</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Bellavista, Recoleta, Región Metropolitana de Santiago 8420000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=3552 m</p>
+      <p><b>Founder feedback:</b> @-33.4402446,-70.6792068,3a,75y,350.88h,84.11t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4399195%2C-70.6794885" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_48" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6872068%2C-33.4482446%2C-70.67120680000001%2C-33.4322446&layer=mapnik&marker=-33.4402446%2C-70.6792068"></iframe>
+          <p class="pins">Curator POI: -33.4399195, -70.6794885 ·
+             Experience: -33.4402446, -70.6792068 ·
+             Provider delta: 3552 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4399195, -70.6794885 — Museo de la Memoria y DDHH</li><li><code>curator_experience</code> experience_point: -33.4402446, -70.6792068 — Museo de la Memoria y DDHH observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c45020555555:0xc3a0578158ca8903!8m2!3d-33.4399195!4d-70.6794885!16s/g/11gd67y209?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,1…</a></li><li><a href="https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c45020555555:0xc3a0578158ca8903!8m2!3d-33.4399195!4d-70.6794885!16s/g/11gd67y209?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Museo+de+la+Memoria/@-33.4399195,-70.6820688,1…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Patronato Textile &amp; Culture Corridor</strong>
+        <code>STGO_91</code>
+        <code class="slug">torre-entel</code>
+      </header>
+      <p><b>Founder place:</b> Patronato Textile &amp; Culture Corridor</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Santiago Downtown, Santiago, Región Metropolitana de Santiago 8320000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=2081 m</p>
+      <p><b>Founder feedback:</b> @-33.4299694,-70.6443207,3a,75y,354.16h,79.44t/</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4287589%2C-70.6439634" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_91" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.65232069999999%2C-33.4379694%2C-70.6363207%2C-33.421969399999995&layer=mapnik&marker=-33.4299694%2C-70.6443207"></iframe>
+          <p class="pins">Curator POI: -33.4287589, -70.6439634 ·
+             Experience: -33.4299694, -70.6443207 ·
+             Provider delta: 2081 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4287589, -70.6439634 — Patronato Textile &amp; Culture Corridor</li><li><code>curator_experience</code> experience_point: -33.4299694, -70.6443207 — Patronato Textile &amp; Culture Corridor observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Region/@-33.4294151,-70.6503537,15.57z/data=!4m15!1m8!3m7!1s0x96621baaf050fc95:0x9a55299416c4ebb9!2sPatronato,+Recoleta,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l!3m5!1s0x96621baaf050fc95:0x9a55299416c4ebb9!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Reg…</a></li><li><a href="https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Region/@-33.4294151,-70.6503537,15.57z/data=!4m15!1m8!3m7!1s0x96621baaf050fc95:0x9a55299416c4ebb9!2sPatronato,+Recoleta,+Santiago+Metropolitan+Region!3b1!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l!3m5!1s0x96621baaf050fc95:0x9a55299416c4ebb9!8m2!3d-33.4287589!4d-70.6439634!16s/m/0hgqn5l?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Patronato,+Recoleta,+Santiago+Metropolitan+Reg…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Paseo Bandera Urban Art Corridor</strong>
+        <code>STGO_92</code>
+        <code class="slug">plaza-vicuna</code>
+      </header>
+      <p><b>Founder place:</b> Paseo Bandera Urban Art Corridor</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Avenida Vicuña Mackenna, San Joaquín, Región Metropolitana de Santiago 8940000, Chile · class=NEEDS_CURATOR_REVIEW</p>
+      <p><b>Override provider:</b> True · diff=4617 m</p>
+      <p><b>Founder feedback:</b> @-33.4409812,-70.6521349,3a,75y,355.77h,76.43t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.4386243%2C-70.6524805" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_92" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.66013489999999%2C-33.448981200000006%2C-70.6441349%2C-33.4329812&layer=mapnik&marker=-33.4409812%2C-70.6521349"></iframe>
+          <p class="pins">Curator POI: -33.4386243, -70.6524805 ·
+             Experience: -33.4409812, -70.6521349 ·
+             Provider delta: 4617 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.4386243, -70.6524805 — Paseo Bandera Urban Art Corridor</li><li><code>curator_experience</code> experience_point: -33.4409812, -70.6521349 — Paseo Bandera Urban Art Corridor observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4386243,-70.6550608,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a48a2bf90f:0xa67306bd512f5c79!8m2!3d-33.4386243!4d-70.6524805!16s/g/121yh8tt?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4…</a></li><li><a href="https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4386243,-70.6550608,17z/data=!3m1!4b1!4m6!3m5!1s0x9662c5a48a2bf90f:0xa67306bd512f5c79!8m2!3d-33.4386243!4d-70.6524805!16s/g/121yh8tt?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bandera,+Santiago,+Región+Metropolitana/@-33.4…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+
+    <article class="card green" data-readiness="READY_FOR_EDGE_GENERATION" data-approved="CURATOR_APPROVED">
+      <header>
+        <span class="badge">READY_FOR_EDGE_GENERATION</span>
+        <span class="badge launch">LAUNCH</span>
+        <strong>Bellavista Mural Corridors</strong>
+        <code>STGO_30</code>
+        <code class="slug">casa-de-los-diez</code>
+      </header>
+      <p><b>Founder place:</b> Bellavista Mural Corridors</p>
+      <p><b>Curator approval:</b> CURATOR_APPROVED ·
+         <b>Verification:</b> CURATOR_APPROVED</p>
+      <p><b>Provider (pre-ingest):</b> Pasaje 10, Quinta Normal, Región Metropolitana de Santiago 8500000, Chile · class=SUSPICIOUS</p>
+      <p><b>Override provider:</b> True · diff=5475 m</p>
+      <p><b>Founder feedback:</b> @-33.4335418,-70.6372758,3a,63.6y,300.39h,84.75t</p>
+      
+      
+      
+      <p><a href="https://www.google.com/maps/search/?api=1&query=-33.432015%2C-70.6383949" target="_blank" rel="noopener">Open curator POI in Google Maps</a></p>
+      
+        <div class="mapwrap">
+          <iframe title="map-STGO_30" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-70.6452758%2C-33.4415418%2C-70.6292758%2C-33.4255418&layer=mapnik&marker=-33.4335418%2C-70.6372758"></iframe>
+          <p class="pins">Curator POI: -33.432015, -70.6383949 ·
+             Experience: -33.4335418, -70.6372758 ·
+             Provider delta: 5475 m</p>
+        </div>
+      <details open><summary>Physical points</summary><ul><li><code>curator_poi</code> poi: -33.432015, -70.6383949 — Bellavista Mural Corridors</li><li><code>curator_experience</code> experience_point: -33.4335418, -70.6372758 — Bellavista Mural Corridors observation</li></ul></details>
+      <details><summary>Access points</summary><ul><li>None</li></ul></details>
+      <details><summary>Founder Google Maps links</summary><ul><li><a href="https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropolitan+Region/@-33.4320128,-70.6590375,14z/data=!3m1!4b1!4m10!1m2!2m1!1sbarrio+bellavista!3m6!1s0x9662c5908a224009:0x73c003ec5d9074c3!8m2!3d-33.432015!4d-70.6383949!15sChFiYXJyaW8gYmVsbGF2aXN0YZIBDG5laWdoYm9yaG9vZOABAA!16s/g/11byl029hq?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropo…</a></li><li><a href="https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropolitan+Region/@-33.4320128,-70.6590375,14z/data=!3m1!4b1!4m10!1m2!2m1!1sbarrio+bellavista!3m6!1s0x9662c5908a224009:0x73c003ec5d9074c3!8m2!3d-33.432015!4d-70.6383949!15sChFiYXJyaW8gYmVsbGF2aXN0YZIBDG5laWdoYm9yaG9vZOABAA!16s/g/11byl029hq?entry=ttu&amp;g_ep=EgoyMDI2MDgyNC4wIKXMDSoASAFQAw==" target="_blank" rel="noopener">https://www.google.com/maps/place/Bellavista,+8420436+Recoleta,+Santiago+Metropo…</a></li></ul></details>
+      <p class="note">Read-only Gate 1B.2A ingest review. Human curation = CURATOR_APPROVED, not FIELD_VERIFIED.</p>
+    </article>
+</section>
+<script>
+(function(){
+  const cards=[...document.querySelectorAll('.card')];
+  function apply(filter){
+    cards.forEach(card=>{
+      let show=true;
+      if(filter==='ALL') show=true;
+      else if(filter==='CURATOR_APPROVED') show=card.dataset.approved==='CURATOR_APPROVED';
+      else show=card.dataset.readiness===filter;
+      card.classList.toggle('hidden', !show);
+    });
+  }
+  document.querySelectorAll('.filters button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      apply(btn.dataset.filter);
+    });
+  });
+})();
+</script>
+</body>
+</html>

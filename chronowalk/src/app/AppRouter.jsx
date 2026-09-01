@@ -24,7 +24,8 @@ import {
   clearSkipSwOnce,
 } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
-import { RequireAccess } from '../lib/requireAccess.jsx'
+import { NativePublicLandingRoute } from '../lib/nativeAppEntry.jsx'
+import { RequireAccess, RequireAppShell } from '../lib/requireAccess.jsx'
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
@@ -48,6 +49,17 @@ import {
   LazyTourPage,
   LazyHomePage,
   LazyWelcomePage,
+  LazyContextPage,
+  LazyExperiencePage,
+  LazyExplorePage,
+  LazyDiscoveryPage,
+  LazyBestNextPage,
+  LazyPlanPage,
+  LazyActiveRoutePage,
+  LazyWalkPage,
+  LazyArrivalPage,
+  LazyAdjustPlanPage,
+  LazyMysteryPage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
   LazyLegalRefundPage,
@@ -64,6 +76,11 @@ function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
 }
 
+/** Home / Context: paid travelers or native guests. Not a Rome content unlock. */
+function AppShell({ children, requireOnboardedGuest = false }) {
+  return <RequireAppShell requireOnboardedGuest={requireOnboardedGuest}>{children}</RequireAppShell>
+}
+
 let LazyUxRegressionTester = null
 
 if (import.meta.env.DEV) {
@@ -76,8 +93,14 @@ if (import.meta.env.DEV) {
 // Apex chronowalk.com serves the public marketing homepage directly.
 // Purchasers reach setup only via /access and post-purchase routes - not a
 // silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
+// Native iOS never mounts the landing: `/` redirects at render time to
+// `/home` (entitled or returning guest) or `/welcome` (first run).
 function PublicLandingRoute() {
-  return <LazyLandingPage />
+  return (
+    <NativePublicLandingRoute>
+      <LazyLandingPage />
+    </NativePublicLandingRoute>
+  )
 }
 
 function TourDebugBootstrap() {
@@ -104,6 +127,13 @@ const JOURNEY_CHROME_PATHS = new Set([
   '/map',
   '/begin',
   '/setup',
+  '/context',
+  '/explore',
+  '/plan',
+  '/route',
+  '/walk',
+  '/arrive',
+  '/next',
   '/walk-together',
   '/journal',
   '/letter',
@@ -116,7 +146,15 @@ function JourneyChrome() {
   const onJourneyChrome =
     JOURNEY_CHROME_PATHS.has(pathname) ||
     pathname.startsWith('/journal/') ||
-    pathname.startsWith('/preview/')
+    pathname.startsWith('/preview/') ||
+    pathname.startsWith('/experience/') ||
+    pathname.startsWith('/discovery/') ||
+    pathname.startsWith('/plan') ||
+    pathname.startsWith('/route') ||
+    pathname === '/walk' ||
+    pathname === '/arrive' ||
+    pathname.startsWith('/mystery') ||
+    pathname === '/next'
 
   if (!onJourneyChrome) return null
 
@@ -141,22 +179,34 @@ function AppRoutes() {
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
-        <Route path="/setup" element={<Paid><LazySetupPage /></Paid>} />
+        <Route path="/setup" element={<AppShell><LazySetupPage /></AppShell>} />
         <Route path="/access/confirmed" element={<Paid><LazyAccessConfirmedPage /></Paid>} />
         <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
         <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
-        <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
-        <Route path="/home" element={<Paid><LazyHomePage /></Paid>} />
+        <Route path="/context" element={<AppShell><LazyContextPage /></AppShell>} />
+        <Route path="/begin" element={<AppShell><LazyBeginPage /></AppShell>} />
+        <Route path="/home" element={<AppShell requireOnboardedGuest><LazyHomePage /></AppShell>} />
+        <Route path="/explore" element={<AppShell requireOnboardedGuest><LazyExplorePage /></AppShell>} />
+        <Route path="/experience/:heroId" element={<AppShell requireOnboardedGuest><LazyExperiencePage /></AppShell>} />
+        <Route path="/discovery/:discoveryId" element={<AppShell requireOnboardedGuest><LazyDiscoveryPage /></AppShell>} />
+        <Route path="/next" element={<AppShell requireOnboardedGuest><LazyBestNextPage /></AppShell>} />
+        <Route path="/plan" element={<AppShell requireOnboardedGuest><LazyPlanPage /></AppShell>} />
+        <Route path="/route" element={<AppShell requireOnboardedGuest><LazyActiveRoutePage /></AppShell>} />
+        <Route path="/route/adjust" element={<AppShell requireOnboardedGuest><LazyAdjustPlanPage /></AppShell>} />
+        <Route path="/walk" element={<AppShell requireOnboardedGuest><LazyWalkPage /></AppShell>} />
+        <Route path="/arrive" element={<AppShell requireOnboardedGuest><LazyArrivalPage /></AppShell>} />
+        <Route path="/mystery" element={<AppShell requireOnboardedGuest><LazyMysteryPage /></AppShell>} />
+        <Route path="/mystery/:routeItemId" element={<AppShell requireOnboardedGuest><LazyMysteryPage /></AppShell>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
-        <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
-        <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />
+        <Route path="/journey" element={<AppShell requireOnboardedGuest><LazyJourneyPage /></AppShell>} />
+        <Route path="/map" element={<AppShell requireOnboardedGuest><LazyMapPage /></AppShell>} />
         <Route path="/stops" element={<Paid><Navigate to="/tour" replace /></Paid>} />
-        <Route path="/journal" element={<Paid><LazyJournalPage /></Paid>} />
-        <Route path="/journal/:waypointId" element={<Paid><LazyMemoryDetailPage /></Paid>} />
+        <Route path="/journal" element={<AppShell requireOnboardedGuest><LazyJournalPage /></AppShell>} />
+        <Route path="/journal/:waypointId" element={<AppShell requireOnboardedGuest><LazyMemoryDetailPage /></AppShell>} />
         <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />
-        <Route path="/settings" element={<Paid><LazySettingsPage /></Paid>} />
+        <Route path="/settings" element={<AppShell requireOnboardedGuest><LazySettingsPage /></AppShell>} />
         <Route path="/walk-together" element={<Paid><LazyWalkTogetherPage /></Paid>} />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
@@ -201,6 +251,9 @@ function AppRouter() {
     // the homepage mounts then throws again (lazyWithRecovery clears it on success).
     clearBootPending()
     clearSkipSwOnce()
+    if (import.meta.env.DEV) {
+      void import('../lib/qa/productFixtures.js').then((mod) => mod.installProductFixtureApi())
+    }
     // Drop one-shot cache-bust param from stale-shell recovery navigations.
     try {
       const url = new URL(window.location.href)

@@ -35,6 +35,10 @@ import { ROME_ACTS } from '../../data/romePacing.js'
 import { resolveStepTranscript } from '../../content/chapterMeta.js'
 import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
+import { canAccessHero } from '../../lib/contentAccess.js'
+import { shouldTrackFreeExperienceComplete } from '../../lib/heroExperience.js'
+import { isNativeIOS } from '../../lib/platform.js'
+import { completeRouteContent, hasLiveRoute } from '../../lib/route/complete.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
 import {
@@ -112,7 +116,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     manifest,
     context.path,
     context.currentSequenceIndex,
-    context.promotedOptionalIds
+    context.promotedOptionalIds,
+    context,
   )
 
   const visitedStopCount = useMemo(() => {
@@ -1148,6 +1153,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
       if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
         track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
       }
+      if (shouldTrackFreeExperienceComplete(step.id, context)) {
+        track(TRACK_EVENTS.FREE_EXPERIENCE_COMPLETED, { hero_id: step.id })
+      }
       return true
     }
 
@@ -1158,6 +1166,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           context.path,
           context.currentSequenceIndex + 1,
           context.promotedOptionalIds,
+          context,
         )) ||
       `after:${step.id}`
     void requestAdvanceToWaypoint(nextStepId, runComplete)
@@ -1200,6 +1209,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           context.path,
           context.currentSequenceIndex + 1,
           context.promotedOptionalIds,
+          context,
         )) ||
       'day-break-next'
 
@@ -1245,6 +1255,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           context.path,
           context.currentSequenceIndex + 1,
           context.promotedOptionalIds,
+          context,
         )) ||
       `after:${transitId}`
     void requestAdvanceToWaypoint(nextStepId, runAdvance)
@@ -1280,6 +1291,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           context.path,
           context.currentSequenceIndex + 1,
           context.promotedOptionalIds,
+          context,
         )) ||
       `after:${step.id}`
     void requestAdvanceToWaypoint(nextStepId, runResume)
@@ -1310,6 +1322,15 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (state === JOURNEY_STATES.IDLE) {
     return <Navigate to="/home" replace />
+  }
+
+  if (
+    isNativeIOS() &&
+    step?.type === 'waypoint' &&
+    step.id &&
+    !canAccessHero(step.id)
+  ) {
+    return <Navigate to={`/experience/${step.id}`} replace />
   }
 
   const interruptionBanner =
@@ -1470,6 +1491,15 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   if (state === JOURNEY_STATES.COMPLETE || step?.done) {
+    if (isNativeIOS()) {
+      const completedId = context?.customWaypointIds?.[0] || step?.id || ''
+      if (hasLiveRoute()) {
+        completeRouteContent(completedId || step?.id)
+        return <Navigate to="/next" replace />
+      }
+      const search = completedId ? `?exclude=${encodeURIComponent(completedId)}` : ''
+      return <Navigate to={`/next${search}`} replace />
+    }
     if (variant === 'redesign') {
       const moment = getJourneyCompleteMoment(manifest)
       return withInterruptionBanner(
@@ -1587,7 +1617,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     manifest,
     context.path,
     context.currentSequenceIndex,
-    context.promotedOptionalIds
+    context.promotedOptionalIds,
+    context,
   )
 
   const liveWalkDistanceM = sanitizeWalkDistanceM(geo.distance)

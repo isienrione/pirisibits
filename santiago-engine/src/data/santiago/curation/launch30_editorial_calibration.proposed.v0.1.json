@@ -1,0 +1,4697 @@
+{
+  "schemaVersion": "santiago-launch30-editorial-calibration.proposed.v0.1",
+  "gate": "2A.1R-ADD-01R",
+  "status": "FOUNDER_SEED_PLUS_EXTENSION_PLUS_AI_PROPOSED_UNVERIFIED",
+  "curatorApproved": false,
+  "canonicalTaxonomy": [
+    "T1A",
+    "T1B",
+    "T2",
+    "T3",
+    "T4",
+    "T5",
+    "T6",
+    "T7",
+    "T8",
+    "T9"
+  ],
+  "sourceDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+  "founderExtensionsArtifact": "src/data/santiago/source/santiago_founder_extensions.v0.1.json",
+  "identityCorrectionsArtifact": "src/data/santiago/curation/santiago_founder_identity_corrections.v0.1.json",
+  "canonicalSemanticArtifact": "src/data/santiago/santiago_semantic_calibration.v0.1.json",
+  "normalizationCorpus": "SANTIAGO_LAUNCH30_V0_1",
+  "notes": [
+    "Active launch/review corpus remains exactly 30 (STGO_23 removed from active set; STGO_104 added).",
+    "STGO_33 restored with corrected identity; founder source calibration preserved.",
+    "STGO_104 founder-added; semantic UNKNOWNs require founder calibration before approval.",
+    "ChronoWorth / visitTime / most M-mode values remain AI_PROPOSED_UNVERIFIED where previously proposed.",
+    "STGO_104 ChronoWorth UNAVAILABLE until all four structural metrics are founder-supplied."
+  ],
+  "chronoWorthFormula": {
+    "expression": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+    "inputs": "FOUNDER_PRECALIBRATED structural_metrics (or founder-supplied for STGO_104)",
+    "forbiddenInputs": [
+      "physicalCentrality",
+      "edgeDegree",
+      "metroProximity",
+      "googlePopularity",
+      "mapboxRelevance",
+      "travelerInterests",
+      "pois.ts",
+      "binaryThemeExpansion"
+    ]
+  },
+  "recordCount": 30,
+  "activeLaunchIds": [
+    "STGO_01",
+    "STGO_02",
+    "STGO_03",
+    "STGO_04",
+    "STGO_05",
+    "STGO_06",
+    "STGO_07",
+    "STGO_10",
+    "STGO_11",
+    "STGO_16",
+    "STGO_18",
+    "STGO_19",
+    "STGO_20",
+    "STGO_21",
+    "STGO_22",
+    "STGO_24",
+    "STGO_25",
+    "STGO_26",
+    "STGO_27",
+    "STGO_28",
+    "STGO_29",
+    "STGO_30",
+    "STGO_32",
+    "STGO_33",
+    "STGO_34",
+    "STGO_35",
+    "STGO_48",
+    "STGO_91",
+    "STGO_92",
+    "STGO_104"
+  ],
+  "records": [
+    {
+      "stgoId": "STGO_01",
+      "displayName": "Plaza de Armas",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "anchor",
+      "thematicVector": {
+        "T1A": 0.8,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.95,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.2,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.8,
+        "heritage_depth": 0.95,
+        "micro_reveal": 0.2,
+        "polish": 0.5
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 69,
+        "approved": null,
+        "effective": 69,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.95,
+          "anchor_density": 0.8,
+          "micro_reveal": 0.2,
+          "polish": 0.5,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.625,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.77,
+        "recomputedChronoWorth0_100": 69
+      }
+    },
+    {
+      "stgoId": "STGO_02",
+      "displayName": "Catedral Metropolitana",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.95,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.9,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.85
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.95,
+        "micro_reveal": 0.1,
+        "polish": 0.7
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T9"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 71,
+        "approved": null,
+        "effective": 71,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.95,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.1,
+          "polish": 0.7,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 7,
+        "typical": 10,
+        "max": 16,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.914,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.535,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.8,
+        "recomputedChronoWorth0_100": 71
+      }
+    },
+    {
+      "stgoId": "STGO_03",
+      "displayName": "Palacio de La Moneda",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.95,
+        "T1B": 0.95,
+        "T2": 0.0,
+        "T3": 0.85,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.95,
+        "heritage_depth": 0.95,
+        "micro_reveal": 0.15,
+        "polish": 0.8
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T1B",
+        "T3"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 77,
+        "approved": null,
+        "effective": 77,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.95,
+          "anchor_density": 0.95,
+          "micro_reveal": 0.15,
+          "polish": 0.8,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 15,
+        "max": 24,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.771,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.79,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.84,
+        "recomputedChronoWorth0_100": 77
+      }
+    },
+    {
+      "stgoId": "STGO_04",
+      "displayName": "Morandé 80 (President's Door)",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "anchor",
+      "thematicVector": {
+        "T1A": 0.9,
+        "T1B": 0.98,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.95,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.3,
+        "heritage_depth": 0.98,
+        "micro_reveal": 0.95,
+        "polish": 0.6
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T1B",
+        "T6"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 71,
+        "approved": null,
+        "effective": 71,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.98,
+          "anchor_density": 0.3,
+          "micro_reveal": 0.95,
+          "polish": 0.6,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 19,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.35,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.68,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": true,
+        "status": "PRESENT",
+        "provenance": "FOUNDER_PRECALIBRATED",
+        "note": "Explicit flag only; not inferred from T1B"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "is_sensitive_memory",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.78,
+        "recomputedChronoWorth0_100": 71
+      }
+    },
+    {
+      "stgoId": "STGO_05",
+      "displayName": "Cerro Santa Lucía & Terraza Neptuno",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.9,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.95,
+        "T4": 0.0,
+        "T5": 0.75,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.3,
+        "polish": 0.65
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T5"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 73,
+        "approved": null,
+        "effective": 73,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.3,
+          "polish": 0.65,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 13,
+        "typical": 18,
+        "max": 29,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.686,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.508,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.81,
+        "recomputedChronoWorth0_100": 73
+      }
+    },
+    {
+      "stgoId": "STGO_06",
+      "displayName": "Barrio Paris-Londres",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.9,
+        "T4": 0.0,
+        "T5": 0.7,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.6,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.5,
+        "polish": 0.7
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T5"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 68,
+        "approved": null,
+        "effective": 68,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.6,
+          "micro_reveal": 0.5,
+          "polish": 0.7,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 6,
+        "typical": 10,
+        "max": 16,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.914,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.535,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.73,
+        "recomputedChronoWorth0_100": 68
+      }
+    },
+    {
+      "stgoId": "STGO_07",
+      "displayName": "Londres 38 Memorial",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 1.0,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.7,
+        "T5": 0.0,
+        "T6": 0.95,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.25,
+        "heritage_depth": 1.0,
+        "micro_reveal": 0.9,
+        "polish": 0.5
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        }
+      },
+      "derivedThemeTags": [
+        "T1B",
+        "T4",
+        "T6"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 68,
+        "approved": null,
+        "effective": 68,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 1.0,
+          "anchor_density": 0.25,
+          "micro_reveal": 0.9,
+          "polish": 0.5,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.35,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.625,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": true,
+        "status": "PRESENT",
+        "provenance": "FOUNDER_PRECALIBRATED",
+        "note": "Explicit flag only; not inferred from T1B"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "is_sensitive_memory",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.76,
+        "recomputedChronoWorth0_100": 68
+      }
+    },
+    {
+      "stgoId": "STGO_10",
+      "displayName": "Palacio Pereira",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.85,
+        "T4": 0.8,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.6,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.4,
+        "polish": 0.85
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T4"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 68,
+        "approved": null,
+        "effective": 68,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.6,
+          "micro_reveal": 0.4,
+          "polish": 0.85,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 19,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.818,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.72,
+        "recomputedChronoWorth0_100": 68
+      }
+    },
+    {
+      "stgoId": "STGO_11",
+      "displayName": "Barrio Yungay & Plaza Roto Chileno",
+      "commune": "Yungay",
+      "islandId": "ISLAND_01_PONIENTE",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.8,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.95,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.85,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.5,
+        "heritage_depth": 0.8,
+        "micro_reveal": 0.6,
+        "polish": 0.45
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 62,
+        "approved": null,
+        "effective": 62,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.8,
+          "anchor_density": 0.5,
+          "micro_reveal": 0.6,
+          "polish": 0.45,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 19,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.398,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.69,
+        "recomputedChronoWorth0_100": 62
+      }
+    },
+    {
+      "stgoId": "STGO_16",
+      "displayName": "Pasaje Matte & Hidden Ballroom",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.8,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.7,
+        "T7": 0.85,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.35,
+        "heritage_depth": 0.8,
+        "micro_reveal": 0.95,
+        "polish": 0.6
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T6",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 66,
+        "approved": null,
+        "effective": 66,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.8,
+          "anchor_density": 0.35,
+          "micro_reveal": 0.95,
+          "polish": 0.6,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.68,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.71,
+        "recomputedChronoWorth0_100": 66
+      }
+    },
+    {
+      "stgoId": "STGO_18",
+      "displayName": "Edificio Ariztía (Flat-Iron)",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.95,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.7
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.4,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.9,
+        "polish": 0.7
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T9"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 70,
+        "approved": null,
+        "effective": 70,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.4,
+          "micro_reveal": 0.9,
+          "polish": 0.7,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 6,
+        "typical": 10,
+        "max": 16,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.914,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.735,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.76,
+        "recomputedChronoWorth0_100": 70
+      }
+    },
+    {
+      "stgoId": "STGO_19",
+      "displayName": "Seguro Obrero Bullet Scars (Correo)",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.9,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.92,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.2,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.98,
+        "polish": 0.5
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T1B",
+        "T6"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 65,
+        "approved": null,
+        "effective": 65,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.2,
+          "micro_reveal": 0.98,
+          "polish": 0.5,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.625,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.72,
+        "recomputedChronoWorth0_100": 65
+      }
+    },
+    {
+      "stgoId": "STGO_20",
+      "displayName": "La Piojera",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_MAPOCHO",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.85,
+        "T3": 0.0,
+        "T4": 0.85,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.95,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.5,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.4,
+        "polish": 0.2
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T2",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 56,
+        "approved": null,
+        "effective": 56,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.5,
+          "micro_reveal": 0.4,
+          "polish": 0.2,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 22,
+        "max": 40,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.0,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "exclude_for_m5",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.65,
+        "recomputedChronoWorth0_100": 56
+      }
+    },
+    {
+      "stgoId": "STGO_21",
+      "displayName": "Confitería Torres (1879)",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.9,
+        "T1B": 0.0,
+        "T2": 0.9,
+        "T3": 0.0,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.8
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.55,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.3,
+        "polish": 0.85
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T2",
+        "T9"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 67,
+        "approved": null,
+        "effective": 67,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.55,
+          "micro_reveal": 0.3,
+          "polish": 0.85,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 22,
+        "max": 40,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.818,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.72,
+        "recomputedChronoWorth0_100": 67
+      }
+    },
+    {
+      "stgoId": "STGO_22",
+      "displayName": "Museo Chileno Arte Precolombino",
+      "commune": "Centro",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "civic",
+      "thematicVector": {
+        "T1A": 0.95,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.8,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.75
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.95,
+        "micro_reveal": 0.2,
+        "polish": 0.9
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T4",
+        "T9"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 76,
+        "approved": null,
+        "effective": 76,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.95,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.2,
+          "polish": 0.9,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 20,
+        "max": 30,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.629,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.845,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.83,
+        "recomputedChronoWorth0_100": 76
+      }
+    },
+    {
+      "stgoId": "STGO_24",
+      "displayName": "Barrio Lastarria Corridor",
+      "commune": "Lastarria",
+      "islandId": "ISLAND_02_LASTARRIA",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "museum",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.85,
+        "T3": 0.85,
+        "T4": 0.9,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.7,
+        "heritage_depth": 0.8,
+        "micro_reveal": 0.4,
+        "polish": 0.8
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 69,
+        "approved": null,
+        "effective": 69,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.8,
+          "anchor_density": 0.7,
+          "micro_reveal": 0.4,
+          "polish": 0.8,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.79,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.74,
+        "recomputedChronoWorth0_100": 69
+      }
+    },
+    {
+      "stgoId": "STGO_25",
+      "displayName": "GAM (Centro Gabriela Mistral)",
+      "commune": "Lastarria",
+      "islandId": "ISLAND_02_LASTARRIA",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "architecture",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.85,
+        "T2": 0.0,
+        "T3": 0.8,
+        "T4": 0.95,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.8,
+        "micro_reveal": 0.3,
+        "polish": 0.85
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1B",
+        "T3",
+        "T4"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 72,
+        "approved": null,
+        "effective": 72,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.8,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.3,
+          "polish": 0.85,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 19,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.818,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.8,
+        "recomputedChronoWorth0_100": 72
+      }
+    },
+    {
+      "stgoId": "STGO_26",
+      "displayName": "MNBA & Parque Forestal",
+      "commune": "Lastarria",
+      "islandId": "ISLAND_02_LASTARRIA",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "memory",
+      "thematicVector": {
+        "T1A": 0.9,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.95,
+        "T4": 0.0,
+        "T5": 0.8,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.9,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.2,
+        "polish": 0.8
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T5"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 74,
+        "approved": null,
+        "effective": 74,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.9,
+          "micro_reveal": 0.2,
+          "polish": 0.8,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 7,
+        "typical": 10,
+        "max": 16,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.914,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.59,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.82,
+        "recomputedChronoWorth0_100": 74
+      }
+    },
+    {
+      "stgoId": "STGO_27",
+      "displayName": "Taller Castillo Kulczewski",
+      "commune": "Lastarria",
+      "islandId": "ISLAND_02_LASTARRIA",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "plaza",
+      "thematicVector": {
+        "T1A": 0.75,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.9,
+        "T4": 0.85,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.3,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.9,
+        "polish": 0.7
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T4"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 67,
+        "approved": null,
+        "effective": 67,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.3,
+          "micro_reveal": 0.9,
+          "polish": 0.7,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 20,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.535,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.73,
+        "recomputedChronoWorth0_100": 67
+      }
+    },
+    {
+      "stgoId": "STGO_28",
+      "displayName": "Bocanáriz & Chipe Libre",
+      "commune": "Lastarria",
+      "islandId": "ISLAND_02_LASTARRIA",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "memory",
+      "thematicVector": {
+        "T1A": 0.8,
+        "T1B": 0.0,
+        "T2": 0.95,
+        "T3": 0.75,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.6,
+        "heritage_depth": 0.5,
+        "micro_reveal": 0.4,
+        "polish": 0.9
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T2",
+        "T3"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 57,
+        "approved": null,
+        "effective": 57,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.5,
+          "anchor_density": 0.6,
+          "micro_reveal": 0.4,
+          "polish": 0.9,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 22,
+        "max": 40,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.845,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.65,
+        "recomputedChronoWorth0_100": 57
+      }
+    },
+    {
+      "stgoId": "STGO_29",
+      "displayName": "La Chascona (Neruda House)",
+      "commune": "Bellavista",
+      "islandId": "ISLAND_03_BELLAVISTA",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "culture",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.9,
+        "T4": 0.98,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.3,
+        "polish": 0.75
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T4"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 73,
+        "approved": null,
+        "effective": 73,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.3,
+          "polish": 0.75,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 11,
+        "typical": 16,
+        "max": 26,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.743,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.562,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.82,
+        "recomputedChronoWorth0_100": 73
+      }
+    },
+    {
+      "stgoId": "STGO_30",
+      "displayName": "Bellavista Mural Corridors",
+      "commune": "Bellavista",
+      "islandId": "ISLAND_03_BELLAVISTA",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "architecture",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.9,
+        "T4": 0.98,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.8,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.5,
+        "heritage_depth": 0.6,
+        "micro_reveal": 0.7,
+        "polish": 0.5
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T3",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 57,
+        "approved": null,
+        "effective": 57,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.6,
+          "anchor_density": 0.5,
+          "micro_reveal": 0.7,
+          "polish": 0.5,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 14,
+        "max": 22,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.8,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.275,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "exclude_for_m5",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.67,
+        "recomputedChronoWorth0_100": 57
+      }
+    },
+    {
+      "stgoId": "STGO_32",
+      "displayName": "Cerro San Cristóbal Funicular",
+      "commune": "San Cristóbal",
+      "islandId": "ISLAND_03_SAN_CRISTOBAL",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "plaza",
+      "thematicVector": {
+        "T1A": 0.85,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.95,
+        "T4": 0.0,
+        "T5": 0.8,
+        "T6": 0.0,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.9,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.2,
+        "polish": 0.8
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T5"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 74,
+        "approved": null,
+        "effective": 74,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.9,
+          "micro_reveal": 0.2,
+          "polish": 0.8,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 14,
+        "typical": 20,
+        "max": 32,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.629,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.59,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "curbside_hub",
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_STAGED",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.82,
+        "recomputedChronoWorth0_100": 74
+      }
+    },
+    {
+      "stgoId": "STGO_33",
+      "displayName": "Gárgola de Luciano K",
+      "commune": "Bellavista",
+      "islandId": "ISLAND_03_SAN_CRISTOBAL",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.75,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.85,
+        "T4": 0.0,
+        "T5": 0.0,
+        "T6": 0.9,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.3,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.95,
+        "polish": 0.6
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T1A",
+        "T3",
+        "T6"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 67,
+        "approved": null,
+        "effective": 67,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.3,
+          "micro_reveal": 0.95,
+          "polish": 0.6,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 6,
+        "typical": 10,
+        "max": 16,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.914,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.48,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
+      "physicalRouteGenerationEligible": false,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.73,
+        "recomputedChronoWorth0_100": 67
+      },
+      "canonicalName": "Gárgola de Luciano K",
+      "physicalStatus": "PHYSICAL_ELIGIBLE_PENDING_REGRESSION",
+      "founderNodeBadges": [
+        "FOUNDER_SEMANTIC_CORRECTION",
+        "LEGACY_NAME_DEPRECATED"
+      ],
+      "aliases": [
+        "Kulczewski Funicular Gargoyle"
+      ],
+      "legacyAlias": {
+        "alias": "Kulczewski Funicular Gargoyle",
+        "status": "deprecated_alias"
+      },
+      "identityCorrection": {
+        "gate": "2A.1R-ADD-01R",
+        "oldName": "Kulczewski Funicular Gargoyle",
+        "newName": "Gárgola de Luciano K",
+        "provenance": "FOUNDER_SEMANTIC_CORRECTION"
+      }
+    },
+    {
+      "stgoId": "STGO_34",
+      "displayName": "La Vega Central",
+      "commune": "Recoleta",
+      "islandId": "ISLAND_04_RECOLETA_VEGA",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.98,
+        "T3": 0.0,
+        "T4": 0.75,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.95,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.85,
+        "heritage_depth": 0.85,
+        "micro_reveal": 0.4,
+        "polish": 0.35
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T2",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 68,
+        "approved": null,
+        "effective": 68,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.85,
+          "anchor_density": 0.85,
+          "micro_reveal": 0.4,
+          "polish": 0.35,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 22,
+        "max": 40,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.65,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.342,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.79,
+        "recomputedChronoWorth0_100": 68
+      }
+    },
+    {
+      "stgoId": "STGO_35",
+      "displayName": "Mercado Tirso de Molina",
+      "commune": "Recoleta",
+      "islandId": "ISLAND_04_RECOLETA_VEGA",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "micro",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.92,
+        "T3": 0.0,
+        "T4": 0.7,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.9,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.65,
+        "heritage_depth": 0.7,
+        "micro_reveal": 0.5,
+        "polish": 0.5
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T2",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 61,
+        "approved": null,
+        "effective": 61,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.7,
+          "anchor_density": 0.65,
+          "micro_reveal": 0.5,
+          "polish": 0.5,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 12,
+        "typical": 22,
+        "max": 40,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.625,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.69,
+        "recomputedChronoWorth0_100": 61
+      }
+    },
+    {
+      "stgoId": "STGO_48",
+      "displayName": "Museo de la Memoria y DDHH",
+      "commune": "Qta Normal",
+      "islandId": "ISLAND_08_MATUCANA",
+      "tier": "canonical_anchor",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "pocket",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 1.0,
+        "T2": 0.0,
+        "T3": 0.0,
+        "T4": 0.75,
+        "T5": 0.0,
+        "T6": 0.85,
+        "T7": 0.0,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.9,
+        "heritage_depth": 0.9,
+        "micro_reveal": 0.2,
+        "polish": 0.9
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        }
+      },
+      "derivedThemeTags": [
+        "T1B",
+        "T4",
+        "T6"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 76,
+        "approved": null,
+        "effective": 76,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.9,
+          "anchor_density": 0.9,
+          "micro_reveal": 0.2,
+          "polish": 0.9,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 15,
+        "typical": 22,
+        "max": 35,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.571,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.35,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.845,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": true,
+        "status": "PRESENT",
+        "provenance": "FOUNDER_PRECALIBRATED",
+        "note": "Explicit flag only; not inferred from T1B"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "is_sensitive_memory",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.84,
+        "recomputedChronoWorth0_100": 76
+      }
+    },
+    {
+      "stgoId": "STGO_91",
+      "displayName": "Patronato Textile & Culture Corridor",
+      "commune": "Recoleta",
+      "islandId": "ISLAND_04_RECOLETA",
+      "tier": "thematic_pocket",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "architecture",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.85,
+        "T3": 0.0,
+        "T4": 0.88,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.8,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.65,
+        "heritage_depth": 0.5,
+        "micro_reveal": 0.6,
+        "polish": 0.45
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T2",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 56,
+        "approved": null,
+        "effective": 56,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.5,
+          "anchor_density": 0.65,
+          "micro_reveal": 0.6,
+          "polish": 0.45,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 10,
+        "typical": 15,
+        "max": 25,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.771,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.15,
+          "status": "KNOWN_NOT_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.1,
+          "status": "DAYLIGHT_ONLY",
+          "provenance": "FOUNDER_PRECALIBRATED:daylight_only"
+        },
+        "M5": {
+          "value": 0.398,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_NOT_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "DAYLIGHT_ONLY",
+        "daylightOnly": true,
+        "provenance": "FOUNDER_PRECALIBRATED"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.64,
+        "recomputedChronoWorth0_100": 56
+      }
+    },
+    {
+      "stgoId": "STGO_92",
+      "displayName": "Paseo Bandera Urban Art Corridor",
+      "commune": "Santiago",
+      "islandId": "ISLAND_01_CENTRO_CIVICO",
+      "tier": "micro_reveal",
+      "tierProvenance": "FOUNDER_PRECALIBRATED",
+      "editorialRole": "plaza",
+      "thematicVector": {
+        "T1A": 0.0,
+        "T1B": 0.0,
+        "T2": 0.0,
+        "T3": 0.85,
+        "T4": 0.9,
+        "T5": 0.0,
+        "T6": 0.0,
+        "T7": 0.7,
+        "T8": 0.0,
+        "T9": 0.0
+      },
+      "thematicVectorProvenance": "FOUNDER_PRECALIBRATED",
+      "structuralMetrics": {
+        "anchor_density": 0.4,
+        "heritage_depth": 0.4,
+        "micro_reveal": 0.9,
+        "polish": 0.7
+      },
+      "structuralMetricsProvenance": "FOUNDER_PRECALIBRATED",
+      "flags": {
+        "daylight_only": {
+          "value": false,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "step_free": {
+          "value": true,
+          "status": "PRESENT",
+          "provenance": "FOUNDER_PRECALIBRATED"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+          "sourceDictValueIgnored": false
+        }
+      },
+      "derivedThemeTags": [
+        "T3",
+        "T4",
+        "T7"
+      ],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": 55,
+        "approved": null,
+        "effective": 55,
+        "provenance": "AI_PROPOSED_UNVERIFIED",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "contributions": {
+          "heritage_depth": 0.4,
+          "anchor_density": 0.4,
+          "micro_reveal": 0.9,
+          "polish": 0.7,
+          "weights": {
+            "heritage": 0.35,
+            "anchor": 0.3,
+            "micro": 0.2,
+            "polish": 0.15
+          }
+        },
+        "note": "Recomputed from FOUNDER_PRECALIBRATED structural_metrics; source ai_proposals.chronoworth is QA-only"
+      },
+      "visitTime": {
+        "min": 8,
+        "typical": 12,
+        "max": 20,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "AI_PROPOSED_UNVERIFIED_PRESERVED_FROM_GATE_2A1",
+        "source": "prior Gate 2A.1 AI proposal (not founder seed)"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": 0.857,
+          "provenance": "AI_PROPOSED_FROM_VISIT_TIME"
+        },
+        "M2": {
+          "value": 0.85,
+          "status": "KNOWN_STEP_FREE",
+          "provenance": "FOUNDER_PRECALIBRATED:step_free"
+        },
+        "M3": {
+          "value": 0.55,
+          "provenance": "AI_PROPOSED_ROLE_HEURISTIC"
+        },
+        "M4": {
+          "value": 0.45,
+          "status": "HOURS_REQUIRED_UNKNOWN",
+          "provenance": "AI_PROPOSED_UNVERIFIED"
+        },
+        "M5": {
+          "value": 0.735,
+          "provenance": "AI_PROPOSED_FROM_POLISH_AND_FLAGS"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN_ABSENT_FROM_SOURCE_PRESENT_FLAG_KEYS",
+        "note": "Absence is not false; eligibility treats only PRESENT+true as explicit sensitive"
+      },
+      "accessibility": {
+        "status": "KNOWN_STEP_FREE",
+        "provenance": "FOUNDER_PRECALIBRATED:step_free"
+      },
+      "operational": {
+        "classification": "HOURS_REQUIRED_UNKNOWN",
+        "daylightOnly": false,
+        "provenance": "FOUNDER_PRECALIBRATED:daylight_only=false"
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_PRECALIBRATED",
+        "dataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "SANTIAGO_ENGINE_DATASET_V0.1",
+        "source": "user-provided 103-node pre-calibrated master inventory",
+        "source_fields_are_frozen_input": true,
+        "derived_fields_are_ai_proposals": true,
+        "source_present_flag_keys": [
+          "daylight_only",
+          "step_free"
+        ]
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "RUNTIME_READY",
+      "physicalRouteGenerationEligible": true,
+      "qaCompare": {
+        "sourceAiChronoWorth01": 0.63,
+        "recomputedChronoWorth0_100": 55
+      }
+    },
+    {
+      "stgoId": "STGO_104",
+      "displayName": "Edificio de la Bolsa de Comercio de Santiago",
+      "shortName": "Bolsa de Comercio de Santiago",
+      "canonicalName": "Edificio de la Bolsa de Comercio de Santiago",
+      "commune": null,
+      "islandId": null,
+      "city": "Santiago",
+      "country": "Chile",
+      "tier": null,
+      "tierProvenance": "UNKNOWN",
+      "editorialRole": null,
+      "thematicVector": {
+        "T1A": null,
+        "T1B": null,
+        "T2": null,
+        "T3": null,
+        "T4": null,
+        "T5": null,
+        "T6": null,
+        "T7": null,
+        "T8": null,
+        "T9": null
+      },
+      "thematicVectorProvenance": "UNKNOWN",
+      "structuralMetrics": {
+        "anchor_density": null,
+        "heritage_depth": null,
+        "micro_reveal": null,
+        "polish": null
+      },
+      "structuralMetricsProvenance": "UNKNOWN",
+      "flags": {
+        "daylight_only": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "step_free": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "curbside_hub": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "exclude_for_m5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        },
+        "is_sensitive_memory": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN_NO_FOUNDER_CALIBRATION_YET"
+        }
+      },
+      "derivedThemeTags": [],
+      "themeTagThreshold": 0.45,
+      "chronoWorth": {
+        "proposed": null,
+        "approved": null,
+        "effective": null,
+        "status": "UNAVAILABLE",
+        "provenance": "UNAVAILABLE_UNTIL_FOUNDER_STRUCTURAL_METRICS",
+        "formula": "100*(0.35*heritage_depth + 0.30*anchor_density + 0.20*micro_reveal + 0.15*polish)",
+        "note": "ChronoWorth unavailable until founder supplies all four structural metrics. UNKNOWN must not become 0."
+      },
+      "visitTime": {
+        "min": null,
+        "typical": null,
+        "max": null,
+        "unit": "minutes",
+        "includesTravelTime": false,
+        "approved": null,
+        "provenance": "UNKNOWN",
+        "source": "no AI proposal — founder-added node requires curation"
+      },
+      "structuralSuitability": {
+        "M1": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M2": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M3": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M4": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        },
+        "M5": {
+          "value": null,
+          "status": "UNKNOWN",
+          "provenance": "UNKNOWN"
+        }
+      },
+      "sensitiveMemory": {
+        "value": null,
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN",
+        "note": "Absence is not false; no sensitive-memory claim invented for STGO_104."
+      },
+      "accessibility": {
+        "status": "UNKNOWN",
+        "provenance": "UNKNOWN"
+      },
+      "operational": {
+        "classification": "UNKNOWN",
+        "daylightOnly": null,
+        "openingHours": null,
+        "provenance": "UNKNOWN"
+      },
+      "coordinates": {
+        "poiCoordinate": {
+          "lat": -33.4423866,
+          "lng": -70.6517565,
+          "provenance": "FOUNDER_SUPPLIED_GOOGLE_MAPS"
+        },
+        "experiencePoint": {
+          "lat": -33.4421764,
+          "lng": -70.6517853,
+          "headingDegrees": 155.14,
+          "provenance": "FOUNDER_SUPPLIED"
+        },
+        "entranceCoordinate": null,
+        "entranceStatus": "UNKNOWN",
+        "note": "poi_coordinate ≠ entrance/access ≠ experience_point; entrance not inferred."
+      },
+      "sourceProvenance": {
+        "priority": "FOUNDER_ADDED_POST_SEED",
+        "dataset": "src/data/santiago/source/santiago_founder_extensions.v0.1.json",
+        "baseSeedDataset": "src/data/santiago/source/SANTIAGO_ENGINE_DATASET_V0.1.json",
+        "schemaVersion": "santiago-founder-extensions.v0.1",
+        "source": "Founder-added after frozen SANTIAGO_ENGINE_DATASET_V0.1 103-node seed.",
+        "source_fields_are_frozen_input": false,
+        "requiresFounderCalibrationBeforeApproval": true
+      },
+      "launchCorpus": true,
+      "launchRuntimeDisposition": "ACTIVE_LAUNCH",
+      "physicalStatus": "PHYSICAL_PENDING_EDGE_ENRICHMENT",
+      "physicalRouteGenerationEligible": false,
+      "founderNodeBadges": [
+        "NEW_FOUNDER_NODE",
+        "NOT_IN_ORIGINAL_103_NODE_SEED"
+      ],
+      "qaCompare": null,
+      "legacySlug": null,
+      "demoPoiIdMatched": null,
+      "sources": [
+        "src/data/santiago/source/santiago_founder_extensions.v0.1.json"
+      ]
+    }
+  ]
+}

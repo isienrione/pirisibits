@@ -1,5 +1,6 @@
 import { NAV_ITEMS, NAV_TABS } from '../components/navigation/navConfig.jsx'
 import { t } from '../i18n/t.js'
+import { JOURNEY_STATES } from '../state/journey.js'
 
 /**
  * Companion tabs: Home is the hub (progress + manage);
@@ -14,39 +15,86 @@ export const SHELL_TAB_ORDER = [
   NAV_TABS.JOURNAL,
 ]
 
+export const NATIVE_SHELL_TAB_ORDER = [
+  NAV_TABS.HOME,
+  NAV_TABS.MAP,
+  NAV_TABS.JOURNAL,
+  NAV_TABS.SETTINGS,
+]
+
 export const SHELL_TAB_META = {
   [NAV_TABS.HOME]: { to: '/home', labelKey: 'shell.tab.home' },
   [NAV_TABS.WALK]: { to: '/journey', labelKey: 'shell.tab.walk' },
   [NAV_TABS.TOUR]: { to: '/tour', labelKey: 'shell.tab.tour' },
   [NAV_TABS.MAP]: { to: '/map', labelKey: 'shell.tab.map' },
   [NAV_TABS.JOURNAL]: { to: '/journal', labelKey: 'shell.tab.journal' },
+  [NAV_TABS.SETTINGS]: { to: '/settings', labelKey: 'shell.tab.settings' },
 }
 
 export const SHELL_COMPANION_PATHS = [
   ...SHELL_TAB_ORDER.map((id) => SHELL_TAB_META[id].to),
-  '/stops', // legacy deep links redirect to /tour but keep the bar visible
+  '/stops',
+  '/settings',
+  '/explore',
+  '/plan',
+  '/route',
+  '/walk',
+  '/arrive',
+  '/next',
 ]
 
-export function getShellTabs() {
-  const byId = Object.fromEntries(NAV_ITEMS.map((item) => [item.id, item]))
+export function isWalkTabVisible(state) {
+  return Boolean(state) && state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
+}
 
-  return SHELL_TAB_ORDER.map((id) => {
-    const meta = SHELL_TAB_META[id]
-    return {
-      id,
-      to: meta.to,
-      label: t(meta.labelKey),
-      labelKey: meta.labelKey,
-      Icon: byId[id]?.Icon,
-    }
-  }).filter((tab) => tab.Icon)
+/**
+ * @param {{ native?: boolean, walkActive?: boolean }} [options]
+ * Default (no options) keeps Home · Walk · Tour · Map · Journal for web/legacy tests.
+ */
+export function getShellTabs({ native = false, walkActive = false } = {}) {
+  const byId = Object.fromEntries(NAV_ITEMS.map((item) => [item.id, item]))
+  // Native persistent tabs never include Walk. An active route uses NativeRoutePill.
+  const order = native ? NATIVE_SHELL_TAB_ORDER : SHELL_TAB_ORDER
+  void walkActive
+
+  return order
+    .map((id) => {
+      const meta = SHELL_TAB_META[id]
+      if (!meta) return null
+      let labelKey = meta.labelKey
+      if (native && id === NAV_TABS.HOME) labelKey = 'shell.tab.discover'
+      if (native && id === NAV_TABS.JOURNAL) labelKey = 'shell.tab.saved'
+      return {
+        id,
+        to: meta.to,
+        label: t(labelKey),
+        labelKey,
+        Icon: byId[id]?.Icon,
+      }
+    })
+    .filter((tab) => tab?.Icon)
+}
+
+export function isCompanionShellPath(pathname) {
+  if (SHELL_COMPANION_PATHS.includes(pathname)) return true
+  if (pathname === '/journey') return true
+  if (pathname?.startsWith('/experience/')) return true
+  if (pathname?.startsWith('/discovery/')) return true
+  if (pathname === '/next') return true
+  if (pathname === '/plan' || pathname === '/walk' || pathname === '/arrive') return true
+  if (pathname?.startsWith('/route')) return true
+  if (pathname?.startsWith('/mystery')) return true
+  return false
 }
 
 /** Which shell tab should highlight for the current pathname. */
 export function isShellTabActive(tabTo, pathname) {
-  if (tabTo === '/home') return pathname === '/home'
+  if (tabTo === '/home') {
+    return pathname === '/home' || pathname === '/explore' || pathname === '/next' || pathname === '/plan' || pathname === '/route' || pathname === '/walk' || pathname === '/arrive' || Boolean(pathname?.startsWith('/experience/')) || Boolean(pathname?.startsWith('/discovery/')) || Boolean(pathname?.startsWith('/route')) || Boolean(pathname?.startsWith('/mystery'))
+  }
   if (tabTo === '/journey') return pathname === '/journey'
   if (tabTo === '/tour') return pathname === '/tour' || pathname === '/stops'
+  if (tabTo === '/settings') return pathname === '/settings'
   return pathname === tabTo
 }
 

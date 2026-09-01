@@ -1,0 +1,1024 @@
+{
+  "gate": "1B.4.1",
+  "osmStationCount": 126,
+  "gtfsNormalizedStationCount": 126,
+  "matched": [
+    {
+      "gtfsStationId": "METRO_GTFS_AG",
+      "gtfsName": "Camino Agrícola",
+      "osmStationId": "METRO_OSM_253295175",
+      "osmName": "Camino Agrícola",
+      "distanceM": 14.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_AH",
+      "gtfsName": "San Alberto Hurtado",
+      "osmStationId": "METRO_OSM_253282358",
+      "osmName": "San Alberto Hurtado",
+      "distanceM": 1.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_AL",
+      "gtfsName": "Alcántara",
+      "osmStationId": "METRO_OSM_252527592",
+      "osmName": "Alcántara",
+      "distanceM": 30.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_AN-NA",
+      "gtfsName": "Santa Ana",
+      "osmStationId": "METRO_OSM_477827069",
+      "osmName": "Santa Ana",
+      "distanceM": 15.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_AV",
+      "gtfsName": "Vespucio Norte",
+      "osmStationId": "METRO_OSM_267078399",
+      "osmName": "Vespucio Norte",
+      "distanceM": 28.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BA-BQ",
+      "gtfsName": "Baquedano",
+      "osmStationId": "METRO_OSM_1157168087",
+      "osmName": "Baquedano",
+      "distanceM": 74.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BE",
+      "gtfsName": "Bellas Artes",
+      "osmStationId": "METRO_OSM_253281389",
+      "osmName": "Bellas Artes",
+      "distanceM": 23.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BIL",
+      "gtfsName": "Francisco Bilbao",
+      "osmStationId": "METRO_OSM_252981531",
+      "osmName": "Francisco Bilbao",
+      "distanceM": 25.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BIO",
+      "gtfsName": "Bío Bío",
+      "osmStationId": "METRO_OSM_601280944",
+      "osmName": "Bío Bío",
+      "distanceM": 17.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BL",
+      "gtfsName": "Blanqueado",
+      "osmStationId": "METRO_OSM_475498009",
+      "osmName": "Blanqueado",
+      "distanceM": 31.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_BR",
+      "gtfsName": "Barrancas",
+      "osmStationId": "METRO_OSM_391007642",
+      "osmName": "Barrancas",
+      "distanceM": 59.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CA-PCA",
+      "gtfsName": "Puente Cal y Canto",
+      "osmStationId": "METRO_OSM_6506316370",
+      "osmName": "Puente Cal y Canto",
+      "distanceM": 17.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CAR",
+      "gtfsName": "Cardenal Caro",
+      "osmStationId": "METRO_OSM_6228531487",
+      "osmName": "Cardenal Caro",
+      "distanceM": 7.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CB",
+      "gtfsName": "Cerro Blanco",
+      "osmStationId": "METRO_OSM_944490442",
+      "osmName": "Cerro Blanco",
+      "distanceM": 17.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CCH",
+      "gtfsName": "Conchalí",
+      "osmStationId": "METRO_OSM_6228531283",
+      "osmName": "Conchalí",
+      "distanceM": 40.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CE",
+      "gtfsName": "Cementerios",
+      "osmStationId": "METRO_OSM_265684316",
+      "osmName": "Cementerios",
+      "distanceM": 25.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CER",
+      "gtfsName": "Cerrillos",
+      "osmStationId": "METRO_OSM_2776463407",
+      "osmName": "Cerrillos",
+      "distanceM": 75.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CH-UCH",
+      "gtfsName": "Universidad de Chile",
+      "osmStationId": "METRO_OSM_5227884069",
+      "osmName": "Universidad de Chile",
+      "distanceM": 35.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CM",
+      "gtfsName": "Copa Lo Martinez",
+      "osmStationId": "METRO_OSM_4530419352",
+      "osmName": "Copa Lo Martínez",
+      "distanceM": 35.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CN",
+      "gtfsName": "Ciudad del Niño",
+      "osmStationId": "METRO_OSM_301699834",
+      "osmName": "Ciudad del Niño",
+      "distanceM": 7.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_COL",
+      "gtfsName": "Cristóbal Colón",
+      "osmStationId": "METRO_OSM_252981526",
+      "osmName": "Cristóbal Colón",
+      "distanceM": 35.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_CV",
+      "gtfsName": "Carlos Valdovinos",
+      "osmStationId": "METRO_OSM_253295179",
+      "osmName": "Carlos Valdovinos",
+      "distanceM": 24.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_DE",
+      "gtfsName": "Departamental",
+      "osmStationId": "METRO_OSM_301699773",
+      "osmName": "Departamental",
+      "distanceM": 7.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_DO",
+      "gtfsName": "Dorsal",
+      "osmStationId": "METRO_OSM_267077543",
+      "osmName": "Dorsal",
+      "distanceM": 33.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_DS",
+      "gtfsName": "Del Sol",
+      "osmStationId": "METRO_OSM_549216801",
+      "osmName": "Del Sol",
+      "distanceM": 48.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EB",
+      "gtfsName": "El Bosque",
+      "osmStationId": "METRO_OSM_4530413430",
+      "osmName": "El Bosque",
+      "distanceM": 27.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EC",
+      "gtfsName": "Ecuador",
+      "osmStationId": "METRO_OSM_253282361",
+      "osmName": "Ecuador",
+      "distanceM": 8.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_ECO",
+      "gtfsName": "Elisa Correa",
+      "osmStationId": "METRO_OSM_256378408",
+      "osmName": "Elisa Correa",
+      "distanceM": 35.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EI",
+      "gtfsName": "Einstein",
+      "osmStationId": "METRO_OSM_944490452",
+      "osmName": "Einstein",
+      "distanceM": 48.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EL",
+      "gtfsName": "Estación Central",
+      "osmStationId": "METRO_OSM_252528391",
+      "osmName": "Estación Central",
+      "distanceM": 26.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EM",
+      "gtfsName": "Escuela Militar",
+      "osmStationId": "METRO_OSM_252527589",
+      "osmName": "Escuela Militar",
+      "distanceM": 76.6,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_EP",
+      "gtfsName": "El Parrón",
+      "osmStationId": "METRO_OSM_301699913",
+      "osmName": "El Parrón",
+      "distanceM": 1.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_ESN",
+      "gtfsName": "Estadio Nacional",
+      "osmStationId": "METRO_OSM_3932022758",
+      "osmName": "Estadio Nacional",
+      "distanceM": 71.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_ESP",
+      "gtfsName": "Chile España",
+      "osmStationId": "METRO_OSM_1894898784",
+      "osmName": "Chile España",
+      "distanceM": 69.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_FCV",
+      "gtfsName": "Fernando Castillo Velasco",
+      "osmStationId": "METRO_OSM_6512675039",
+      "osmName": "Fernando Castillo Velasco",
+      "distanceM": 25.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_FER",
+      "gtfsName": "Ferrocarril",
+      "osmStationId": "METRO_OSM_4530436046",
+      "osmName": "Ferrocarril",
+      "distanceM": 50.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_FRA-FR",
+      "gtfsName": "Franklin",
+      "osmStationId": "METRO_OSM_4519756994",
+      "osmName": "Franklin",
+      "distanceM": 47.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_GL",
+      "gtfsName": "Gruta de Lourdes",
+      "osmStationId": "METRO_OSM_475498004",
+      "osmName": "Gruta de Lourdes",
+      "distanceM": 30.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_GO",
+      "gtfsName": "El Golf",
+      "osmStationId": "METRO_OSM_252527596",
+      "osmName": "El Golf",
+      "distanceM": 44.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_HM",
+      "gtfsName": "Hernando de Magallanes",
+      "osmStationId": "METRO_OSM_390998425",
+      "osmName": "Hernando de Magallanes",
+      "distanceM": 38.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_HOS",
+      "gtfsName": "Hospitales",
+      "osmStationId": "METRO_OSM_6228531279",
+      "osmName": "Hospitales",
+      "distanceM": 41.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_HSR",
+      "gtfsName": "Hospital Sótero del Río",
+      "osmStationId": "METRO_OSM_256378595",
+      "osmName": "Hospital Sótero del Río",
+      "distanceM": 16.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_IRA-IR",
+      "gtfsName": "Irarrázaval",
+      "osmStationId": "METRO_OSM_6506316374",
+      "osmName": "Irarrázaval",
+      "distanceM": 195.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_ISU",
+      "gtfsName": "Inés de Suárez",
+      "osmStationId": "METRO_OSM_601294862",
+      "osmName": "Inés de Suárez",
+      "distanceM": 65.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LA",
+      "gtfsName": "Unión Latinoamericana",
+      "osmStationId": "METRO_OSM_252528387",
+      "osmName": "Unión Latinoamericana",
+      "distanceM": 7.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LC-LCI",
+      "gtfsName": "La Cisterna",
+      "osmStationId": "METRO_OSM_5564321725",
+      "osmName": "La Cisterna",
+      "distanceM": 34.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LCR",
+      "gtfsName": "Lo Cruzat",
+      "osmStationId": "METRO_OSM_4530436047",
+      "osmName": "Lo Cruzat",
+      "distanceM": 78.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LD",
+      "gtfsName": "Los Dominicos",
+      "osmStationId": "METRO_OSM_390998430",
+      "osmName": "Los Dominicos",
+      "distanceM": 14.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LE-LEN",
+      "gtfsName": "Los Leones",
+      "osmStationId": "METRO_OSM_5227884071",
+      "osmName": "Los Leones",
+      "distanceM": 77.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LF",
+      "gtfsName": "Bellavista de La Florida",
+      "osmStationId": "METRO_OSM_256999811",
+      "osmName": "Bellavista de La Florida",
+      "distanceM": 22.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LGR",
+      "gtfsName": "La Granja",
+      "osmStationId": "METRO_OSM_301703223",
+      "osmName": "La Granja",
+      "distanceM": 2.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LH-HE",
+      "gtfsName": "Los Héroes",
+      "osmStationId": "METRO_OSM_2307244234",
+      "osmName": "Los Héroes",
+      "distanceM": 99.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LIB",
+      "gtfsName": "Los Libertadores",
+      "osmStationId": "METRO_OSM_2390287915",
+      "osmName": "Los Libertadores",
+      "distanceM": 123.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LL",
+      "gtfsName": "El Llano",
+      "osmStationId": "METRO_OSM_301699361",
+      "osmName": "El Llano",
+      "distanceM": 10.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LM",
+      "gtfsName": "La Moneda",
+      "osmStationId": "METRO_OSM_3391796062",
+      "osmName": "La Moneda",
+      "distanceM": 29.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LME",
+      "gtfsName": "Las Mercedes",
+      "osmStationId": "METRO_OSM_463165229",
+      "osmName": "Las Mercedes",
+      "distanceM": 3.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LO",
+      "gtfsName": "Lo Ovalle",
+      "osmStationId": "METRO_OSM_301699842",
+      "osmName": "Lo Ovalle",
+      "distanceM": 3.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LOR",
+      "gtfsName": "Los Orientales",
+      "osmStationId": "METRO_OSM_256372838",
+      "osmName": "Los Orientales",
+      "distanceM": 21.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LP",
+      "gtfsName": "Las Parcelas",
+      "osmStationId": "METRO_OSM_463084774",
+      "osmName": "Las Parcelas",
+      "distanceM": 47.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LPR",
+      "gtfsName": "Los Presidentes",
+      "osmStationId": "METRO_OSM_256373484",
+      "osmName": "Los Presidentes",
+      "distanceM": 25.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LQU",
+      "gtfsName": "Los Quillayes",
+      "osmStationId": "METRO_OSM_256377970",
+      "osmName": "Los Quillayes",
+      "distanceM": 38.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LR",
+      "gtfsName": "Las Rejas",
+      "osmStationId": "METRO_OSM_253282379",
+      "osmName": "Las Rejas",
+      "distanceM": 14.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LS",
+      "gtfsName": "Laguna Sur",
+      "osmStationId": "METRO_OSM_391008466",
+      "osmName": "Laguna Sur",
+      "distanceM": 32.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LTO",
+      "gtfsName": "Las Torres",
+      "osmStationId": "METRO_OSM_256374120",
+      "osmName": "Las Torres",
+      "distanceM": 37.6,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LV",
+      "gtfsName": "Lo Vial",
+      "osmStationId": "METRO_OSM_301699645",
+      "osmName": "Lo Vial",
+      "distanceM": 2.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_LVA",
+      "gtfsName": "Lo Valledor",
+      "osmStationId": "METRO_OSM_3670590083",
+      "osmName": "Lo Valledor",
+      "distanceM": 79.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MA",
+      "gtfsName": "Mirador",
+      "osmStationId": "METRO_OSM_253295159",
+      "osmName": "Mirador",
+      "distanceM": 36.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MAC",
+      "gtfsName": "Macul",
+      "osmStationId": "METRO_OSM_256374127",
+      "osmName": "Macul",
+      "distanceM": 16.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MAT",
+      "gtfsName": "Matta",
+      "osmStationId": "METRO_OSM_6228531275",
+      "osmName": "Matta",
+      "distanceM": 35.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MEY",
+      "gtfsName": "Monseñor Eyzaguirre",
+      "osmStationId": "METRO_OSM_1363217828",
+      "osmName": "Monseñor Eyzaguirre",
+      "distanceM": 31.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MM",
+      "gtfsName": "Manuel Montt",
+      "osmStationId": "METRO_OSM_252527600",
+      "osmName": "Manuel Montt",
+      "distanceM": 11.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MQ",
+      "gtfsName": "Manquehue",
+      "osmStationId": "METRO_OSM_390998417",
+      "osmName": "Manquehue",
+      "distanceM": 80.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_MT",
+      "gtfsName": "Monte Tabor",
+      "osmStationId": "METRO_OSM_463084780",
+      "osmName": "Monte Tabor",
+      "distanceM": 41.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_NP",
+      "gtfsName": "Neptuno",
+      "osmStationId": "METRO_OSM_4519746485",
+      "osmName": "Neptuno",
+      "distanceM": 12.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_NU-NUB",
+      "gtfsName": "Ñuble",
+      "osmStationId": "METRO_OSM_615092336",
+      "osmName": "Ñuble",
+      "distanceM": 81.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_NUN-NUO",
+      "gtfsName": "Ñuñoa",
+      "osmStationId": "METRO_OSM_6506316376",
+      "osmName": "Ñuñoa",
+      "distanceM": 29.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_OB",
+      "gtfsName": "Observatorio",
+      "osmStationId": "METRO_OSM_4530419351",
+      "osmName": "Observatorio",
+      "distanceM": 23.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PAC",
+      "gtfsName": "Presidente Pedro Aguirre Cerda",
+      "osmStationId": "METRO_OSM_601268662",
+      "osmName": "Presidente Pedro Aguirre Cerda",
+      "distanceM": 30.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PAL",
+      "gtfsName": "Parque Almagro",
+      "osmStationId": "METRO_OSM_4550281347",
+      "osmName": "Parque Almagro",
+      "distanceM": 10.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PB",
+      "gtfsName": "Parque Bustamante",
+      "osmStationId": "METRO_OSM_475497992",
+      "osmName": "Parque Bustamante",
+      "distanceM": 11.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PDG",
+      "gtfsName": "Príncipe de Gales",
+      "osmStationId": "METRO_OSM_252981541",
+      "osmName": "Príncipe de Gales",
+      "distanceM": 34.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PE",
+      "gtfsName": "Pedrero",
+      "osmStationId": "METRO_OSM_253295163",
+      "osmName": "Pedrero",
+      "distanceM": 15.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PEG-PZE",
+      "gtfsName": "Plaza Egaña",
+      "osmStationId": "METRO_OSM_6506316379",
+      "osmName": "Plaza Egaña",
+      "distanceM": 28.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PI",
+      "gtfsName": "Hospital El Pino",
+      "osmStationId": "METRO_OSM_4530419353",
+      "osmName": "Hospital El Pino",
+      "distanceM": 22.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PIN",
+      "gtfsName": "Protectora de la Infancia",
+      "osmStationId": "METRO_OSM_256379524",
+      "osmName": "Protectora de la Infancia",
+      "distanceM": 35.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PJ",
+      "gtfsName": "Pajaritos",
+      "osmStationId": "METRO_OSM_253282383",
+      "osmName": "Pajaritos",
+      "distanceM": 21.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PM",
+      "gtfsName": "Plaza de Maipú",
+      "osmStationId": "METRO_OSM_3587889955",
+      "osmName": "Plaza de Maipú",
+      "distanceM": 32.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PPA",
+      "gtfsName": "Plaza de Puente Alto",
+      "osmStationId": "METRO_OSM_491641302",
+      "osmName": "Plaza de Puente Alto",
+      "distanceM": 22.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PQ",
+      "gtfsName": "Parque O'Higgins",
+      "osmStationId": "METRO_OSM_253360557",
+      "osmName": "Parque O'Higgins",
+      "distanceM": 16.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PQU",
+      "gtfsName": "Plaza Quilicura",
+      "osmStationId": "METRO_OSM_4530436048",
+      "osmName": "Plaza Quilicura",
+      "distanceM": 46.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PR",
+      "gtfsName": "Lo Prado",
+      "osmStationId": "METRO_OSM_476909750",
+      "osmName": "Lo Prado",
+      "distanceM": 25.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PT",
+      "gtfsName": "Patronato",
+      "osmStationId": "METRO_OSM_944490419",
+      "osmName": "Patronato",
+      "distanceM": 27.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PU",
+      "gtfsName": "Pudahuel",
+      "osmStationId": "METRO_OSM_475498017",
+      "osmName": "Pudahuel",
+      "distanceM": 23.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PV",
+      "gtfsName": "Pedro de Valdivia",
+      "osmStationId": "METRO_OSM_252527599",
+      "osmName": "Pedro de Valdivia",
+      "distanceM": 28.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PZ-PZA",
+      "gtfsName": "Plaza de Armas",
+      "osmStationId": "METRO_OSM_6231367141",
+      "osmName": "Plaza de Armas",
+      "distanceM": 27.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_PZC",
+      "gtfsName": "Plaza Chacabuco",
+      "osmStationId": "METRO_OSM_6228531280",
+      "osmName": "Plaza Chacabuco",
+      "distanceM": 38.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_QN",
+      "gtfsName": "Quinta Normal",
+      "osmStationId": "METRO_OSM_254343697",
+      "osmName": "Quinta Normal",
+      "distanceM": 14.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RA",
+      "gtfsName": "Rodrigo de Araya",
+      "osmStationId": "METRO_OSM_253295184",
+      "osmName": "Rodrigo de Araya",
+      "distanceM": 29.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RC",
+      "gtfsName": "Cumming",
+      "osmStationId": "METRO_OSM_253281419",
+      "osmName": "Cumming",
+      "distanceM": 19.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RGR",
+      "gtfsName": "Grecia",
+      "osmStationId": "METRO_OSM_256372848",
+      "osmName": "Grecia",
+      "distanceM": 45.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RMA",
+      "gtfsName": "Rojas Magallanes",
+      "osmStationId": "METRO_OSM_256377241",
+      "osmName": "Rojas Magallanes",
+      "distanceM": 42.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RO",
+      "gtfsName": "Rondizzoni",
+      "osmStationId": "METRO_OSM_227926453",
+      "osmName": "Rondizzoni",
+      "distanceM": 58.6,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RP",
+      "gtfsName": "República",
+      "osmStationId": "METRO_OSM_252528383",
+      "osmName": "República",
+      "distanceM": 37.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_RQU",
+      "gtfsName": "Quilín",
+      "osmStationId": "METRO_OSM_256374109",
+      "osmName": "Quilín",
+      "distanceM": 15.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SA",
+      "gtfsName": "Salvador",
+      "osmStationId": "METRO_OSM_520459156",
+      "osmName": "Salvador",
+      "distanceM": 18.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SB",
+      "gtfsName": "Santiago Bueras",
+      "osmStationId": "METRO_OSM_476917797",
+      "osmName": "Santiago Bueras",
+      "distanceM": 61.0,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SBO",
+      "gtfsName": "Simón Bolívar",
+      "osmStationId": "METRO_OSM_252981546",
+      "osmName": "Simón Bolívar",
+      "distanceM": 10.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SI",
+      "gtfsName": "Santa Isabel",
+      "osmStationId": "METRO_OSM_253294531",
+      "osmName": "Santa Isabel",
+      "distanceM": 18.9,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SJ",
+      "gtfsName": "San Joaquín",
+      "osmStationId": "METRO_OSM_4593692288",
+      "osmName": "San Joaquín",
+      "distanceM": 56.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SJE",
+      "gtfsName": "San José de la Estrella",
+      "osmStationId": "METRO_OSM_470378182",
+      "osmName": "San José de la Estrella",
+      "distanceM": 39.8,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SJU",
+      "gtfsName": "Santa Julia",
+      "osmStationId": "METRO_OSM_301703081",
+      "osmName": "Santa Julia",
+      "distanceM": 0.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SL",
+      "gtfsName": "Santa Lucía",
+      "osmStationId": "METRO_OSM_252527604",
+      "osmName": "Santa Lucía",
+      "distanceM": 29.2,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SM",
+      "gtfsName": "San Miguel",
+      "osmStationId": "METRO_OSM_301699379",
+      "osmName": "San Miguel",
+      "distanceM": 3.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SP-SO",
+      "gtfsName": "San Pablo",
+      "osmStationId": "METRO_OSM_668141380",
+      "osmName": "San Pablo",
+      "distanceM": 74.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SRA",
+      "gtfsName": "San Ramón",
+      "osmStationId": "METRO_OSM_301704116",
+      "osmName": "San Ramón",
+      "distanceM": 9.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_SRO",
+      "gtfsName": "Santa Rosa",
+      "osmStationId": "METRO_OSM_301703484",
+      "osmName": "Santa Rosa",
+      "distanceM": 3.5,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_TB-TOB",
+      "gtfsName": "Tobalaba",
+      "osmStationId": "METRO_OSM_252527597",
+      "osmName": "Tobalaba",
+      "distanceM": 42.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_TO",
+      "gtfsName": "Toesca",
+      "osmStationId": "METRO_OSM_141096340",
+      "osmName": "Toesca",
+      "distanceM": 0.4,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_TRI",
+      "gtfsName": "Trinidad",
+      "osmStationId": "METRO_OSM_256377430",
+      "osmName": "Trinidad",
+      "distanceM": 75.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_UC",
+      "gtfsName": "Universidad Católica",
+      "osmStationId": "METRO_OSM_252527603",
+      "osmName": "Universidad Católica",
+      "distanceM": 14.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_US",
+      "gtfsName": "Universidad de Santiago",
+      "osmStationId": "METRO_OSM_253282351",
+      "osmName": "Universidad de Santiago",
+      "distanceM": 37.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_VFR",
+      "gtfsName": "Villa Frei",
+      "osmStationId": "METRO_OSM_1894900066",
+      "osmName": "Villa Frei",
+      "distanceM": 125.1,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_VIV",
+      "gtfsName": "Vivaceta",
+      "osmStationId": "METRO_OSM_6228531486",
+      "osmName": "Vivaceta",
+      "distanceM": 31.3,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_VMA-VIM",
+      "gtfsName": "Vicuña Mackenna",
+      "osmStationId": "METRO_OSM_6514765510",
+      "osmName": "Vicuña Mackenna",
+      "distanceM": 6.7,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_VVA-VV",
+      "gtfsName": "Vicente Valdés",
+      "osmStationId": "METRO_OSM_6514737770",
+      "osmName": "Vicente Valdés",
+      "distanceM": 6.6,
+      "nameExact": true
+    },
+    {
+      "gtfsStationId": "METRO_GTFS_ZA",
+      "gtfsName": "Zapadores",
+      "osmStationId": "METRO_OSM_265684322",
+      "osmName": "Zapadores",
+      "distanceM": 42.7,
+      "nameExact": true
+    }
+  ],
+  "matchedCount": 126,
+  "gtfsOnly": [],
+  "gtfsOnlyCount": 0,
+  "osmOnly": [],
+  "osmOnlyCount": 0,
+  "ambiguous": [],
+  "ambiguousCount": 0,
+  "osmRole": "supplemental_qa_reference_only",
+  "canonicalRuntimeSource": "dtpm_gtfs"
+}

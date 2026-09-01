@@ -1,0 +1,18 @@
+{
+  "gate": "2A.1",
+  "structuralMetricsInventory": "NOT_FOUND_IN_REPOSITORY",
+  "searchedFields": [
+    "anchor_density",
+    "heritage_depth",
+    "micro_reveal",
+    "polish",
+    "exclude_for_m5",
+    "curbside_hub"
+  ],
+  "binaryThemeSource": "scripts/physical-graph/build_santiago_engine_nodes.py KIND_THEMES",
+  "continuousDemoSource": "src/data/pois.ts thematicVector (old T1/T2 encoding)",
+  "legacySlugWarning": "Gate 1B.2A curation reassigned display names; do not use legacySlug alone",
+  "demoPoiCountParsed": 21,
+  "launchDemoNameMatches": 15,
+  "output": "src/data/santiago/curation/launch30_editorial_calibration.proposed.v0.1.json"
+}
