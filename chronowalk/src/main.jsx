@@ -15,6 +15,10 @@ import {
   installLcpSlowPageWatcher,
 } from './lib/errorVisibility.js'
 import { IS_IOS } from './lib/platform.js'
+import {
+  bootstrapNativeShell,
+  hideNativeSplash,
+} from './native/bootstrapNativeShell.js'
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
@@ -54,6 +58,7 @@ if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   if (IS_IOS) {
     document.documentElement.classList.add('cw-ios-native')
+    void bootstrapNativeShell()
   }
   initMobileViewportChrome()
 
@@ -73,6 +78,13 @@ createRoot(document.getElementById('root')).render(
     <AppRouter />
   </StrictMode>,
 )
+
+if (IS_IOS) {
+  // Hide splash once React has painted.
+  window.requestAnimationFrame(() => {
+    void hideNativeSplash()
+  })
+}
 
 // Register the service worker only after the UI is up - never during module
 // evaluation, which raced poisoned controllers and blocked first paint.

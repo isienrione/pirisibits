@@ -2,6 +2,8 @@ import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import { IS_IOS } from '../../lib/platform.js'
+import { openAppleMapsWalk } from '../../lib/openExternal.js'
 
 /**
  * Arrival - photo fills leftover space; cream card hugs copy + CTAs so there
@@ -18,6 +20,8 @@ export default function C4ArrivalMoment({
   onTranscript,
   onViewImages,
   busy = false,
+  lat = null,
+  lng = null,
 }) {
   const t = useT()
   const resolvedDescription = description ?? t('arrival.fallback')
@@ -106,6 +110,23 @@ export default function C4ArrivalMoment({
               }}
             >
               {t('arrival.images')}
+            </button>
+          ) : null}
+
+          {IS_IOS && lat != null && lng != null ? (
+            <button
+              type="button"
+              data-testid="ios-apple-maps-walk"
+              disabled={busy}
+              onClick={() => void openAppleMapsWalk(lat, lng)}
+              className="cw-arrival-moment__secondary"
+              style={{
+                borderColor: `${T.muted}55`,
+                color: T.ink,
+                fontFamily: F.body,
+              }}
+            >
+              Walk here in Apple Maps
             </button>
           ) : null}
         </div>

@@ -30,6 +30,8 @@ import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
 import { resetJourney } from '../../state/journey.js'
+import { openExternalUrl } from '../../lib/openExternal.js'
+import { IS_IOS } from '../../lib/platform.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />

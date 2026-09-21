@@ -8,6 +8,8 @@ import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../u
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
 import { trackSampleImageInteract } from '../lib/analytics.ts';
+import { IS_IOS } from '../lib/platform.js';
+import { shareRevealComposite } from '../lib/shareReveal.js';
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
 
@@ -380,9 +382,31 @@ const BeforeAfterSlider = ({
 
     if (snapped != null && snapped !== lastSnapRef.current) {
       lastSnapRef.current = snapped;
-      triggerHaptic(HAPTIC_KIND.SELECTION);
+      // itemTwo = ancient (Then) at position 100 — light impact when fully Then.
+      if (snapped === 100) {
+        triggerHaptic(HAPTIC_KIND.SOFT_TAP);
+      } else {
+        triggerHaptic(HAPTIC_KIND.SELECTION);
+      }
     }
   }, []);
+
+  const [shareBusy, setShareBusy] = useState(false);
+  const handleShareReveal = useCallback(async () => {
+    if (shareBusy) return;
+    setShareBusy(true);
+    try {
+      await shareRevealComposite({
+        thenSrc: historicImg || ancientPosterUrl,
+        nowSrc: modernImg || modernPosterUrl,
+        stopName,
+      });
+    } catch (err) {
+      console.warn('[shareReveal]', err);
+    } finally {
+      setShareBusy(false);
+    }
+  }, [ancientPosterUrl, historicImg, modernImg, modernPosterUrl, shareBusy, stopName]);
 
   useEffect(() => {
     const frame = frameRef.current;
@@ -949,6 +973,23 @@ const BeforeAfterSlider = ({
       )}
 
       <div className={immersive ? 'flex min-h-0 flex-1 flex-col' : ''}>{renderSliderFrame()}</div>
+
+      {IS_IOS && ancientLayerActive && !alignmentMode ? (
+        <div className="border-t border-ink800 bg-bone px-4 py-3">
+          <button
+            type="button"
+            data-testid="ios-save-share-reveal"
+            onClick={() => void handleShareReveal()}
+            disabled={shareBusy}
+            className={cn(
+              'flex min-h-11 w-full items-center justify-center rounded-full border border-ink800 bg-ink900 px-4 text-sm font-semibold text-bone',
+              focusRing
+            )}
+          >
+            {shareBusy ? 'Preparing…' : 'Save / Share'}
+          </button>
+        </div>
+      ) : null}
 
       <p className="border-t border-ink800 bg-bone px-4 py-3 text-center text-sm leading-relaxed text-muted">
         {renderCaption()}

@@ -183,10 +183,14 @@ export class AudioEngine {
 
     updateMediaSession({
       title: this.resolveActiveTitle(),
-      artist: 'ChronoWalk',
-      album: this.manifest?.tour?.title || this.manifest?.meta?.title || 'ChronoWalk',
+      artist: 'ChronoWalk Rome',
+      album: this.manifest?.tour?.title || this.manifest?.meta?.title || 'ChronoWalk Rome',
       playing: this.narrationPlaying && !this.session.paused,
-      artwork: [{ src: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }],
+      artwork: [
+        { src: '/pwa/icon-512.png', type: 'image/png', sizes: '512x512' },
+        { src: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' },
+        { src: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      ],
     })
   }
 
