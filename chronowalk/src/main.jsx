@@ -14,6 +14,7 @@ import {
   installGlobalErrorHandlers,
   installLcpSlowPageWatcher,
 } from './lib/errorVisibility.js'
+import { IS_IOS } from './lib/platform.js'
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
@@ -25,18 +26,25 @@ if (import.meta.env.DEV) {
 recoverInterruptedBoot()
 
 // First-touch attribution before React / hash replaceState can drop query params.
-captureAttribution()
+// iOS App Store build collects no attribution / marketing data.
+if (!IS_IOS) {
+  captureAttribution()
+}
 
 // Global JS / promise errors + LCP slow_page (events no-op until PostHog ready).
-installGlobalErrorHandlers()
-installLcpSlowPageWatcher()
+if (!IS_IOS) {
+  installGlobalErrorHandlers()
+  installLcpSlowPageWatcher()
+}
 
 // Home Screen / standalone partitions often miss the tab that redeemed access.
 // Hydrate from cw_h query or handoff cookie before any RequireAccess gate runs.
-try {
-  consumeAccessHandoff()
-} catch {
-  /* ignore */
+if (!IS_IOS) {
+  try {
+    consumeAccessHandoff()
+  } catch {
+    /* ignore */
+  }
 }
 
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
@@ -44,6 +52,9 @@ try {
 // variable can boot an older generation of the app.
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
+  if (IS_IOS) {
+    document.documentElement.classList.add('cw-ios-native')
+  }
   initMobileViewportChrome()
 
   const motionQuery =
@@ -66,7 +77,8 @@ createRoot(document.getElementById('root')).render(
 // Register the service worker only after the UI is up - never during module
 // evaluation, which raced poisoned controllers and blocked first paint.
 // Currently disabled entirely via SERVICE_WORKER_BOOT_DISABLED.
-if (typeof window !== 'undefined') {
+// iOS App Store build never registers a service worker.
+if (typeof window !== 'undefined' && !IS_IOS) {
   window.setTimeout(() => {
     void startPwaRegistration()
   }, 5000)

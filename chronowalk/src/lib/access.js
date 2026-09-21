@@ -8,6 +8,7 @@ import {
   writeDeviceCredential,
 } from './accessSession.js'
 import { purchaseTourProduct } from '../services/tourEntitlements.js'
+import { IS_IOS } from './platform.js'
 
 const PURCHASED_TIER_KEY = 'cw_purchased_tier_v1'
 
@@ -168,6 +169,18 @@ export async function validateDeviceAccess(
   credential = readDeviceCredential(),
   deviceBinding = getDeviceId(),
 ) {
+  if (IS_IOS) {
+    return {
+      ok: true,
+      source: 'ios',
+      productId: 'rome-complete',
+      purchasedProductId: 'rome-complete',
+      contentProductId: 'rome-complete',
+      seatLimit: 1,
+      role: 'solo',
+    }
+  }
+
   if (!credential) {
     return { ok: false, reason: 'missing_credential' }
   }

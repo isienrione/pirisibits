@@ -25,6 +25,7 @@ import {
 } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import { RequireAccess } from '../lib/requireAccess.jsx'
+import { IS_IOS } from '../lib/platform.js'
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
@@ -76,7 +77,9 @@ if (import.meta.env.DEV) {
 // Apex chronowalk.com serves the public marketing homepage directly.
 // Purchasers reach setup only via /access and post-purchase routes - not a
 // silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
+// iOS App Store: skip marketing landing — start at the tour home.
 function PublicLandingRoute() {
+  if (IS_IOS) return <Navigate to="/home" replace />
   return <LazyLandingPage />
 }
 
@@ -135,18 +138,45 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<PublicLandingRoute />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
-        <Route path="/free-pantheon" element={<LazyFreePantheonPage />} />
-        <Route path="/ancient-rome" element={<LazyAncientRomePage />} />
-        <Route path="/how-it-works" element={<LazyHowItWorksPage />} />
-        <Route path="/preview" element={<LazyPreviewPage />} />
-        <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
-        <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
+        {IS_IOS ? (
+          <>
+            <Route path="/free-pantheon" element={<Navigate to="/home" replace />} />
+            <Route path="/ancient-rome" element={<Navigate to="/home" replace />} />
+            <Route path="/how-it-works" element={<Navigate to="/home" replace />} />
+            <Route path="/preview" element={<Navigate to="/home" replace />} />
+            <Route path="/preview/colosseum" element={<Navigate to="/home" replace />} />
+            <Route path="/preview/waypoint/:waypointId" element={<Navigate to="/home" replace />} />
+            <Route path="/purchase" element={<Navigate to="/home" replace />} />
+            <Route path="/checkout" element={<Navigate to="/home" replace />} />
+            <Route path="/no-ticket" element={<Navigate to="/home" replace />} />
+            <Route path="/welcome" element={<Navigate to="/home" replace />} />
+            <Route path="/access" element={<Navigate to="/home" replace />} />
+            <Route path="/invite" element={<Navigate to="/home" replace />} />
+            <Route path="/credits" element={<Navigate to="/home" replace />} />
+            <Route path="/legal/terms" element={<Navigate to="/legal/privacy" replace />} />
+            <Route path="/legal/refund" element={<Navigate to="/legal/privacy" replace />} />
+          </>
+        ) : (
+          <>
+            <Route path="/free-pantheon" element={<LazyFreePantheonPage />} />
+            <Route path="/ancient-rome" element={<LazyAncientRomePage />} />
+            <Route path="/how-it-works" element={<LazyHowItWorksPage />} />
+            <Route path="/preview" element={<LazyPreviewPage />} />
+            <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
+            <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
+            <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
+            <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
+            <Route path="/no-ticket" element={<LazyNoTicketPage />} />
+            <Route path="/welcome" element={<LazyWelcomePage />} />
+            <Route path="/access" element={<LazyAccessPage />} />
+            <Route path="/invite" element={<LazyInvitePage />} />
+            <Route path="/credits" element={<LazyCreditsPage />} />
+            <Route path="/legal/terms" element={<LazyLegalTermsPage />} />
+            <Route path="/legal/refund" element={<LazyLegalRefundPage />} />
+          </>
+        )}
         <Route path="/setup" element={<Paid><LazySetupPage /></Paid>} />
         <Route path="/access/confirmed" element={<Paid><LazyAccessConfirmedPage /></Paid>} />
-        <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
-        <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
-        <Route path="/no-ticket" element={<LazyNoTicketPage />} />
-        <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
         <Route path="/home" element={<Paid><LazyHomePage /></Paid>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
@@ -158,18 +188,13 @@ function AppRoutes() {
         <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />
         <Route path="/settings" element={<Paid><LazySettingsPage /></Paid>} />
         <Route path="/walk-together" element={<Paid><LazyWalkTogetherPage /></Paid>} />
-        <Route path="/credits" element={<LazyCreditsPage />} />
-        <Route path="/access" element={<LazyAccessPage />} />
-        <Route path="/invite" element={<LazyInvitePage />} />
-        <Route path="/legal/terms" element={<LazyLegalTermsPage />} />
         <Route path="/legal/privacy" element={<LazyLegalPrivacyPage />} />
-        <Route path="/legal/refund" element={<LazyLegalRefundPage />} />
         <Route path="/contact" element={<LazyContactPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to={IS_IOS ? '/home' : '/'} replace />} />
       </Routes>
       <JourneyChrome />
       <ShellTabBar />
-      <PwaUpdatePrompt />
+      {!IS_IOS ? <PwaUpdatePrompt /> : null}
       <TourDebugBootstrap />
       {import.meta.env.DEV && LazyUxRegressionTester ? (
         <Suspense fallback={null}>
@@ -189,13 +214,18 @@ function AccessRevalidationBootstrap() {
 function AppRouter() {
   // Product analytics starts immediately (legitimate interest). Marketing cookies
   // remain behind AnalyticsConsentBanner / preferences.
-  initAnalytics()
+  // iOS App Store build collects no analytics data.
+  if (!IS_IOS) {
+    initAnalytics()
+  }
 
   useEffect(() => {
     captureHostFromUrl()
-    initAnalytics()
-    warnPaddleAtStartup()
-    const cleanupLifecycle = installPageLifecycleDiagnostics()
+    if (!IS_IOS) {
+      initAnalytics()
+      warnPaddleAtStartup()
+    }
+    const cleanupLifecycle = IS_IOS ? null : installPageLifecycleDiagnostics()
     // Successful React mount - clear mid-boot sentinel / one-boot SW skip.
     // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
     // the homepage mounts then throws again (lazyWithRecovery clears it on success).
@@ -262,7 +292,7 @@ function AppRouter() {
                 <AccessRevalidationBootstrap />
                 <DocumentSeo />
                 <AppRoutes />
-                <AnalyticsConsentBanner />
+                {!IS_IOS ? <AnalyticsConsentBanner /> : null}
               </SharedWalkGuardProvider>
             </FamilyWalkProvider>
           </SettingsSheetProvider>

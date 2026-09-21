@@ -9,6 +9,7 @@ import {
 } from './accessSession.js'
 import { applyPurchaseUnlock } from './pendingPurchase.js'
 import { isBundleSku } from './launchSkus.js'
+import { IS_IOS } from './platform.js'
 
 const MEMBERSHIP_KEY = 'cw_family_membership_v1'
 
@@ -196,6 +197,7 @@ function rpcError(error) {
 }
 
 async function tryRpc(name, args) {
+  if (IS_IOS) return { ok: false, reason: 'ios_local_only' }
   if (!isSupabaseConfigured()) return { ok: false, reason: 'not_configured' }
   const { data, error } = await supabase.rpc(name, args)
   if (error) return { ok: false, reason: 'rpc', error }

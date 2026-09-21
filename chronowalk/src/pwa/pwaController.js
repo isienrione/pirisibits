@@ -4,6 +4,7 @@ import { ensureWalkingUiFresh } from './walkingUiMigration.js'
 import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
 import { shouldSkipServiceWorkerRegistration } from './staleChunkRecovery.js'
+import { IS_IOS } from '../lib/platform.js'
 
 const devStub = registerAppServiceWorker(registerSW, { isProd: false })
 
@@ -26,6 +27,8 @@ export let pwaController = devStub
  */
 export async function startPwaRegistration() {
   if (typeof window === 'undefined') return devStub
+  // Capacitor iOS shell must never register a web service worker.
+  if (IS_IOS) return devStub
   if (SERVICE_WORKER_BOOT_DISABLED) return devStub
   if (shouldSkipServiceWorkerRegistration()) return devStub
 

@@ -16,6 +16,7 @@ import {
   LAUNCH_CATALOG_PRODUCTS,
 } from './generated/launchCatalog.gen.js'
 import { getAbVariantCents } from './config.js'
+import { IS_IOS } from './platform.js'
 import {
   centsToPriceEur,
   getLastCtaLocation,
@@ -420,6 +421,7 @@ export function showCheckoutUnavailableFallback({ tier = null, errorMessage = ''
  * Safe to call before or after PostHog init (events no-op until ready).
  */
 export function warnPaddleAtStartup() {
+  if (IS_IOS) return
   if (typeof window === 'undefined' || paddleStartupWarned) return
   paddleStartupWarned = true
 
@@ -436,6 +438,7 @@ export function warnPaddleAtStartup() {
  * @returns {Promise<import('@paddle/paddle-js').Paddle | null>}
  */
 export function ensurePaddle() {
+  if (IS_IOS) return Promise.resolve(null)
   if (typeof window === 'undefined') return Promise.resolve(null)
   if (paddleSingleton) return Promise.resolve(paddleSingleton)
   if (paddleInitPromise) return paddleInitPromise
@@ -487,6 +490,10 @@ export async function openPaddleCheckout({
   tierId = null,
   discountId = null,
 } = {}) {
+  if (IS_IOS) {
+    return { ok: false, reason: 'ios_native' }
+  }
+
   if (!priceId) {
     const message = 'missing_price_id'
     trackCheckoutOpenFailed({ tier: tierId || undefined, errorMessage: message })

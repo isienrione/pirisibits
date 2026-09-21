@@ -4,6 +4,7 @@ import {
   hasValidLocalAccess,
   writeAccessEntitlement,
 } from './accessSession.js'
+import { IS_IOS } from './platform.js'
 
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
@@ -59,6 +60,16 @@ function pickAbVariant(config) {
 
 export async function loadAppConfig() {
   if (cachedConfig) return cachedConfig
+
+  // iOS App Store build: never fetch remote config (no Supabase network).
+  if (IS_IOS) {
+    cachedConfig = {
+      ...FALLBACK_CONFIG,
+      checkout_ready: false,
+      abVariantCents: FALLBACK_CONFIG.price.cents,
+    }
+    return cachedConfig
+  }
 
   const url = import.meta.env.VITE_SUPABASE_URL
   const key = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -127,6 +138,7 @@ export function formatConfigPrice(cents, currency = 'EUR') {
  * non-expired offline lease / entitlement - never a bare cw_access boolean.
  */
 export function hasAccess() {
+  if (IS_IOS) return true
   return hasValidLocalAccess()
 }
 

@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { isIosDevice, isStandaloneMode } from '../utils/pwaInstall'
+import { IS_IOS } from '../lib/platform.js'
 
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [installed, setInstalled] = useState(() => isStandaloneMode())
 
   useEffect(() => {
+    // Native iOS app — never show Add to Home Screen.
+    if (IS_IOS) return undefined
+
     setInstalled(isStandaloneMode())
 
     const onBeforeInstall = (event) => {
@@ -54,12 +58,12 @@ export function usePwaInstall() {
     return { ok: outcome === 'accepted', outcome }
   }, [deferredPrompt])
 
-  const canPromptInstall = Boolean(deferredPrompt)
-  const showIosInstructions = !installed && isIosDevice()
-  const showInstallOption = !installed
+  const canPromptInstall = !IS_IOS && Boolean(deferredPrompt)
+  const showIosInstructions = !IS_IOS && !installed && isIosDevice()
+  const showInstallOption = !IS_IOS && !installed
 
   return {
-    installed,
+    installed: IS_IOS ? true : installed,
     canPromptInstall,
     showIosInstructions,
     showInstallOption,

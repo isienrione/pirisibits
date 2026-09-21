@@ -11,6 +11,8 @@
  *   VITE_GOOGLE_ADS_CHECKOUT_OPENED_LABEL  label for secondary checkout_opened
  */
 
+import { IS_IOS } from './platform.js'
+
 const CONSENT_DEFAULT = Object.freeze({
   ad_storage: 'denied',
   ad_user_data: 'denied',
@@ -84,6 +86,7 @@ export function updateGoogleAdsConsent(marketingAccepted) {
  * No-ops when VITE_GOOGLE_ADS_ID is unset (local/dev).
  */
 export function initGoogleAds({ marketingConsent = null } = {}) {
+  if (IS_IOS) return false
   if (typeof window === 'undefined') return false
   const adsId = readAdsId()
   if (!adsId) return false

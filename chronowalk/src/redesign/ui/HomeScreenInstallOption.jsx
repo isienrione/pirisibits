@@ -5,6 +5,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion.js'
 import { isIosDevice } from '../../utils/pwaInstall.js'
 import { syncAccessHandoff } from '../../lib/accessHandoff.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import { IS_IOS } from '../../lib/platform.js'
 
 /** Real ChronoWalk home-screen icon used in the install how-to. */
 export const CHRONOWALK_HOME_ICON = '/pwa/icon-192.png'
@@ -218,6 +219,9 @@ export default function HomeScreenInstallOption({
       setHoverOpen(false)
     }
   }, [installed])
+
+  // Native iOS shell — never show Add to Home Screen.
+  if (IS_IOS) return null
 
   if (installed) {
     return (

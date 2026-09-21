@@ -5,6 +5,7 @@ import { validateDeviceAccess, readDeviceCredential } from './access.js'
 import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
 import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
 import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
+import { IS_IOS } from './platform.js'
 
 /**
  * Gate paid tour surfaces.
@@ -14,14 +15,27 @@ import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
  * shell to paint while revalidation runs (avoids Home Screen → paste-code flash).
  * Home Screen relaunches: if access is missing, try auto-redeeming the last
  * `/invite?code=` before redirecting to `/access`.
+ *
+ * iOS App Store build: every Rome tour is unlocked — no access codes, email,
+ * or purchase-pending flows.
  */
 export function RequireAccess({ children, redirectTo = '/access' }) {
   const [allowed, setAllowed] = useState(
-    () => hasValidLocalAccess() || Boolean(readDeviceCredential()) || consumeAccessHandoff(),
+    () =>
+      IS_IOS ||
+      hasValidLocalAccess() ||
+      Boolean(readDeviceCredential()) ||
+      consumeAccessHandoff(),
   )
-  const [checking, setChecking] = useState(true)
+  const [checking, setChecking] = useState(!IS_IOS)
 
   useEffect(() => {
+    if (IS_IOS) {
+      setAllowed(true)
+      setChecking(false)
+      return undefined
+    }
+
     let cancelled = false
 
     async function run() {
@@ -94,6 +108,10 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
       cancelled = true
     }
   }, [])
+
+  if (IS_IOS) {
+    return children
+  }
 
   if (checking) {
     // Soft paint when we already have a credential/lease.

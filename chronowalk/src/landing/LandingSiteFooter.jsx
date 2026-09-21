@@ -3,6 +3,7 @@ import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import AnalyticsPreferencesControl from '../components/analytics/AnalyticsPreferencesControl.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 import { useT } from '../i18n/I18nProvider.jsx'
+import { IS_IOS } from '../lib/platform.js'
 import '../components/legal/legal.css'
 
 const SUPPORT_EMAIL = 'support@chronowalk.com'
@@ -25,6 +26,8 @@ export default function LandingSiteFooter({
   content = LANDING_CONTENT.footer,
 }) {
   const t = useT()
+  if (IS_IOS) return null
+
   const { tagline, nav, credit, accessHref, accessLinkLabel } = content
   const legalLinks = [
     { label: t('landing.footer.home'), to: '/' },
