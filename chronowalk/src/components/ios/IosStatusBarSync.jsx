@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { IS_IOS } from '../lib/platform.js'
-import { setNativeStatusBarStyle } from '../native/bootstrapNativeShell.js'
+import { IS_IOS } from '../../lib/platform.js'
+import { setNativeStatusBarStyle } from '../../native/bootstrapNativeShell.js'
 
 /** Light surfaces (home, legal) vs dark immersive journey chrome. */
 const LIGHT_PATHS = new Set([
