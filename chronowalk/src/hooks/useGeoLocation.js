@@ -1,49 +1,49 @@
-import { useState, useEffect, useCallback } from 'react';
-import { getDistance } from '../utils/distance';
-import { COLOSSEUM } from '../data/colosseum';
-import { isDebugGeo } from '../config/env';
+import { useState, useEffect, useCallback } from 'react'
+import { getDistance } from '../utils/distance'
+import { COLOSSEUM } from '../data/colosseum'
+import { isDebugGeo } from '../config/env'
+import { watchPosition } from '../lib/nativeGeolocation.js'
+import { IS_IOS } from '../lib/platform.js'
 
 export const JOURNEY_STATE = {
   TRANSIT: 'TRANSIT',
   ARRIVAL: 'ARRIVAL',
-};
+}
 
 export const LOCATION_STATUS = {
   WAITING: 'waiting',
   GRANTED: 'granted',
   DENIED: 'denied',
   UNAVAILABLE: 'unavailable',
-};
+}
 
-const emptyJourney = { lat: null, lng: null, distance: null, status: null };
+const emptyJourney = { lat: null, lng: null, distance: null, status: null }
 
 const mapGeoError = (err) => {
-  if (!err) return LOCATION_STATUS.UNAVAILABLE;
+  if (!err) return LOCATION_STATUS.UNAVAILABLE
   switch (err.code) {
     case 1:
-      return LOCATION_STATUS.DENIED;
+      return LOCATION_STATUS.DENIED
     case 2:
-      return LOCATION_STATUS.UNAVAILABLE;
+      return LOCATION_STATUS.UNAVAILABLE
     case 3:
-      return LOCATION_STATUS.WAITING;
+      return LOCATION_STATUS.WAITING
     default:
-      return LOCATION_STATUS.UNAVAILABLE;
+      return LOCATION_STATUS.UNAVAILABLE
   }
-};
+}
 
 const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
   if (lat == null || lng == null || !target) {
-    return emptyJourney;
+    return emptyJourney
   }
 
-  const distance = getDistance(lat, lng, target.lat, target.lng);
+  const distance = getDistance(lat, lng, target.lat, target.lng)
   const status =
-    distance > geofenceThresholdM
-      ? JOURNEY_STATE.TRANSIT
-      : JOURNEY_STATE.ARRIVAL;
+    distance > geofenceThresholdM ? JOURNEY_STATE.TRANSIT : JOURNEY_STATE.ARRIVAL
 
-  return { lat, lng, distance, status };
-};
+  return { lat, lng, distance, status }
+}
 
 export const useGeoLocation = ({
   debugMode = isDebugGeo(),
@@ -54,93 +54,86 @@ export const useGeoLocation = ({
 } = {}) => {
   const debugPos =
     debugPosition ??
-    (simulateAtTarget && target ? { lat: target.lat, lng: target.lng } : null);
+    (simulateAtTarget && target ? { lat: target.lat, lng: target.lng } : null)
 
-  const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
+  const [state, setState] = useState(JOURNEY_STATE.TRANSIT)
   const [locationStatus, setLocationStatus] = useState(() =>
-    debugMode ? LOCATION_STATUS.GRANTED : LOCATION_STATUS.WAITING
-  );
+    debugMode ? LOCATION_STATUS.GRANTED : LOCATION_STATUS.WAITING,
+  )
   // Radius of uncertainty in metres (null when unknown / simulated).
-  const [accuracy, setAccuracy] = useState(null);
-  const [watchKey, setWatchKey] = useState(0);
+  const [accuracy, setAccuracy] = useState(null)
+  const [watchKey, setWatchKey] = useState(0)
   const [journey, setJourney] = useState(() =>
     debugMode && debugPos
-      ? resolveJourneyState(
-          debugPos.lat,
-          debugPos.lng,
-          target,
-          geofenceThresholdM
-        )
-      : emptyJourney
-  );
+      ? resolveJourneyState(debugPos.lat, debugPos.lng, target, geofenceThresholdM)
+      : emptyJourney,
+  )
 
   const retryLocation = useCallback(() => {
-    setLocationStatus(LOCATION_STATUS.WAITING);
-    setWatchKey((current) => current + 1);
-  }, []);
+    setLocationStatus(LOCATION_STATUS.WAITING)
+    setWatchKey((current) => current + 1)
+  }, [])
 
   useEffect(() => {
     if (simulateAtTarget && target) {
-      setLocationStatus(LOCATION_STATUS.GRANTED);
-      setJourney(
-        resolveJourneyState(target.lat, target.lng, target, geofenceThresholdM)
-      );
-      return;
+      setLocationStatus(LOCATION_STATUS.GRANTED)
+      setJourney(resolveJourneyState(target.lat, target.lng, target, geofenceThresholdM))
+      return undefined
     }
 
     if (debugMode) {
-      setLocationStatus(LOCATION_STATUS.GRANTED);
+      setLocationStatus(LOCATION_STATUS.GRANTED)
       if (debugPos?.lat != null && debugPos?.lng != null) {
         setJourney(
-          resolveJourneyState(
-            debugPos.lat,
-            debugPos.lng,
-            target,
-            geofenceThresholdM
-          )
-        );
+          resolveJourneyState(debugPos.lat, debugPos.lng, target, geofenceThresholdM),
+        )
       }
-      return;
+      return undefined
     }
 
-    if (!navigator.geolocation) {
-      setLocationStatus(LOCATION_STATUS.UNAVAILABLE);
-      return;
+    // Web without geolocation and not Capacitor iOS → unavailable.
+    if (!IS_IOS && (typeof navigator === 'undefined' || !navigator.geolocation)) {
+      setLocationStatus(LOCATION_STATUS.UNAVAILABLE)
+      return undefined
     }
 
-    const watcher = navigator.geolocation.watchPosition(
+    const cancel = watchPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
+        const lat = pos.lat
+        const lng = pos.lng
 
-        setLocationStatus(LOCATION_STATUS.GRANTED);
-        setAccuracy(
-          typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null
-        );
-        setJourney(resolveJourneyState(lat, lng, target, geofenceThresholdM));
+        setLocationStatus(LOCATION_STATUS.GRANTED)
+        setAccuracy(pos.accuracy)
+        setJourney(resolveJourneyState(lat, lng, target, geofenceThresholdM))
 
-        const dist = getDistance(lat, lng, target.lat, target.lng);
+        const dist = getDistance(lat, lng, target.lat, target.lng)
         const newState =
-          dist <= geofenceThresholdM
-            ? JOURNEY_STATE.ARRIVAL
-            : JOURNEY_STATE.TRANSIT;
+          dist <= geofenceThresholdM ? JOURNEY_STATE.ARRIVAL : JOURNEY_STATE.TRANSIT
 
-        setState(newState);
+        setState(newState)
       },
       (err) => {
-        console.error(err);
-        setLocationStatus(mapGeoError(err));
+        console.error(err)
+        setLocationStatus(mapGeoError(err))
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+    )
 
-    return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, debugPos?.lat, debugPos?.lng, simulateAtTarget, target, geofenceThresholdM, watchKey]);
+    return () => cancel()
+  }, [
+    debugMode,
+    debugPos?.lat,
+    debugPos?.lng,
+    simulateAtTarget,
+    target,
+    geofenceThresholdM,
+    watchKey,
+  ])
 
   useEffect(() => {
-    if (!journey.status) return;
-    setState(journey.status);
-  }, [journey.status]);
+    if (!journey.status) return
+    setState(journey.status)
+  }, [journey.status])
 
   return {
     position: { lat: journey.lat, lng: journey.lng },
@@ -149,5 +142,5 @@ export const useGeoLocation = ({
     accuracy,
     locationStatus,
     retryLocation,
-  };
-};
+  }
+}

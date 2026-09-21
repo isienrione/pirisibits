@@ -1,8 +1,12 @@
-import { getTourIdsForProduct } from '../data/tourProducts'
+import { getTourIdsForProduct, TOUR_PRODUCT_LIST } from '../data/tourProducts'
 import { isUnlockAllTours } from '../config/env'
+import { IS_IOS } from '../lib/platform.js'
 
 const ENTITLEMENTS_KEY = 'chronowalk-owned-tours'
 const PURCHASES_KEY = 'chronowalk-purchases'
+
+/** Every shipping Rome tour product id — used when the iOS build unlocks all content. */
+const ALL_ROME_PRODUCT_IDS = TOUR_PRODUCT_LIST.map((product) => product.id)
 
 const TOUR_ID_ALIASES = {
   'rome-forum-cluster': 'roman-forum',
@@ -39,7 +43,8 @@ const writeJson = (key, value) => {
 }
 
 export const readOwnedTourIds = () => {
-  if (isUnlockAllTours()) {
+  // iOS App Store build: all Rome tours unlocked (no access codes / purchases).
+  if (IS_IOS || isUnlockAllTours()) {
     return null
   }
   const stored = readJson(ENTITLEMENTS_KEY, [])
@@ -48,6 +53,9 @@ export const readOwnedTourIds = () => {
 }
 
 export const readPurchasedProductIds = () => {
+  if (IS_IOS) {
+    return [...ALL_ROME_PRODUCT_IDS]
+  }
   const stored = readJson(PURCHASES_KEY, [])
   if (!Array.isArray(stored)) return []
   return [...new Set(stored.filter(Boolean).map(normalizeProductId))]

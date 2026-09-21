@@ -1,6 +1,7 @@
 import { supabase, isSupabaseConfigured } from './supabase.js'
 import { readAccessToken } from './access.js'
 import { getDeviceId } from './deviceId.js'
+import { IS_IOS } from './platform.js'
 
 const PUSH_DEBOUNCE_MS = 1200
 let pushTimer = null
@@ -9,8 +10,10 @@ let lastPushedJson = null
 /**
  * Pull cloud journey progress for a purchase token.
  * Returns a journey snapshot `{ state, context }` or null.
+ * iOS App Store build stays fully local — no network.
  */
 export async function pullJourneyProgress(token = readAccessToken()) {
+  if (IS_IOS) return null
   if (!token || !isSupabaseConfigured()) return null
 
   try {
@@ -30,6 +33,7 @@ export async function pullJourneyProgress(token = readAccessToken()) {
 
 /** Push journey snapshot to the cloud (fire-and-forget safe). */
 export async function pushJourneyProgress(snapshot, token = readAccessToken()) {
+  if (IS_IOS) return { ok: false, reason: 'ios_local_only' }
   if (!token || !snapshot || !isSupabaseConfigured()) return { ok: false }
 
   try {
@@ -48,6 +52,7 @@ export async function pushJourneyProgress(snapshot, token = readAccessToken()) {
 
 /** Debounced cloud sync after local journey writes. */
 export function scheduleJourneyCloudPush(snapshot) {
+  if (IS_IOS) return
   if (typeof window === 'undefined') return
   if (!readAccessToken()) return
 

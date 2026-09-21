@@ -1,0 +1,11 @@
+ChronoWalk Rome — App Store Review Notes
+
+Thank you for reviewing ChronoWalk Rome.
+
+Demo without visiting Rome: On the first Home screen, tap “Preview the walk from anywhere.” This enters a simulated-location mode so you can step through every stop with Next / Previous. Audio narration, Then/Now reveals, and stop content unlock exactly as they would on site. The same button appears if Location is denied or you are more than 5 km from the route. For Xcode location simulation, add ios-assets/rome-route.gpx (Debug → Simulate Location).
+
+Why location: GPS unlocks each story only when you reach that stop in Rome.
+
+Why background audio: Walkers keep listening with the screen locked; lock-screen / Dynamic Island controls (play, pause, next, previous) stay available.
+
+Native features: All tour media is bundled for offline use; background audio with lock-screen controls; GPS-triggered stories; haptics on arrival and Then/Now; Save / Share of Then+Now images to Photos; “Walk here in Apple Maps” walking directions.

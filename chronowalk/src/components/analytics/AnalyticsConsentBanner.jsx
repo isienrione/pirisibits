@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAnalyticsConsent } from './useAnalyticsConsent.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import { IS_IOS } from '../../lib/platform.js'
 import './analyticsConsent.css'
 
 /**
@@ -12,6 +13,8 @@ export default function AnalyticsConsentBanner() {
   const t = useT()
   const { isUnknown, accept, decline } = useAnalyticsConsent()
 
+  // iOS App Store build collects no cookies / analytics — never show the banner.
+  if (IS_IOS) return null
   if (!isUnknown) return null
 
   return (

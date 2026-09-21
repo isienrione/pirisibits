@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getTourProduct } from '../data/tourProducts'
+import { IS_IOS } from '../lib/platform.js'
 import {
   ownsAnyTour,
   ownsTour,
@@ -58,10 +59,10 @@ export function useTourEntitlements() {
   return {
     ownedTourIds: ownedTourIds ?? [],
     purchasedProductIds,
-    ownsAllTours: ownedTourIds === null,
-    hasAnyTour: ownsAnyTour(ownedTourIds),
-    ownsTour: (tourId) => ownsTour(tourId, ownedTourIds),
-    ownsProduct,
+    ownsAllTours: IS_IOS || ownedTourIds === null,
+    hasAnyTour: IS_IOS || ownsAnyTour(ownedTourIds),
+    ownsTour: (tourId) => IS_IOS || ownsTour(tourId, ownedTourIds),
+    ownsProduct: (productId) => IS_IOS || ownsProduct(productId),
     purchaseProduct,
     refresh,
   }

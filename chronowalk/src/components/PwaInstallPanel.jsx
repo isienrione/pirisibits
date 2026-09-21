@@ -1,4 +1,5 @@
 import { Button, StatusBadge, cn } from './ui'
+import { IS_IOS } from '../lib/platform.js'
 
 function AppIconPreview({ className }) {
   return (
@@ -23,6 +24,9 @@ export function PwaInstallPanel({
   compact = false,
   className,
 }) {
+  // Native iOS shell never prompts Add to Home Screen.
+  if (IS_IOS) return null
+
   if (!showInstallOption && !installed) {
     return null
   }

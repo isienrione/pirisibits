@@ -1,13 +1,17 @@
 import { useEffect } from 'react'
 import { validateDeviceAccess } from '../lib/access.js'
 import { hasValidLocalAccess, readDeviceCredential } from '../lib/accessSession.js'
+import { IS_IOS } from '../lib/platform.js'
 
 /**
  * While online, revalidate the device credential on app startup, foreground,
  * and network reconnection. Clears local access when the server rejects.
+ * iOS App Store build: no network revalidation (all content unlocked locally).
  */
 export function useAccessRevalidation() {
   useEffect(() => {
+    if (IS_IOS) return undefined
+
     let cancelled = false
 
     async function revalidate(reason) {

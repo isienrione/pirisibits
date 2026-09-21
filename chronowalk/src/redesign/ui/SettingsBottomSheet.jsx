@@ -30,6 +30,8 @@ import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
 import { resetJourney } from '../../state/journey.js'
+import { openExternalUrl } from '../../lib/openExternal.js'
+import { IS_IOS } from '../../lib/platform.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -233,11 +235,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
   }
 
   const handleHelp = () => {
-    window.open(SETTINGS_LINKS.help, '_blank', 'noopener,noreferrer')
+    void openExternalUrl(SETTINGS_LINKS.help)
   }
 
   const handleAbout = () => {
     onClose()
+    if (IS_IOS) {
+      navigate('/contact')
+      return
+    }
     navigate('/credits')
   }
 

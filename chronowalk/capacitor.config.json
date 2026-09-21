@@ -1,0 +1,26 @@
+{
+  "appId": "com.chronowalk.rome",
+  "appName": "ChronoWalk Rome",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "chronowalk"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "preferredContentMode": "mobile",
+    "scheme": "ChronoWalk Rome",
+    "limitsNavigationsToAppBoundDomains": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#16130F",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#16130F"
+    }
+  }
+}

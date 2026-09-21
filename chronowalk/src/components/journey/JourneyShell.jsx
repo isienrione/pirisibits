@@ -37,6 +37,7 @@ import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
+import { IosDemoStepControls } from '../ios/IosDemoModeControls.jsx'
 import {
   estimateDistanceBetweenStops,
   resolveJourneyProgressPct,
@@ -1442,6 +1443,25 @@ export default function JourneyShell({ variant = 'legacy' }) {
         </div>
       ) : null}
       {content}
+      {geoDebug?.iosDemoMode ? (
+        <div
+          style={{
+            position: 'fixed',
+            left: 12,
+            right: 12,
+            bottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+            zIndex: 55,
+          }}
+        >
+          <IosDemoStepControls
+            currentWaypointId={
+              step?.type === 'waypoint'
+                ? step.record?.id
+                : step?.targetWaypoint?.id ?? null
+            }
+          />
+        </div>
+      ) : null}
       {floatingPlayer}
       {DebugPanelHost ? (
         <Suspense fallback={null}>
@@ -1776,6 +1796,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
           onBeginListening={handleBeginStory}
           onTranscript={handleTranscript}
           busy={busy}
+          lat={step.record.geofence?.lat ?? null}
+          lng={step.record.geofence?.lng ?? null}
         />
       )
     }
@@ -1786,6 +1808,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
         beginLabel={step.record.scripted_rest ? 'Begin rest' : 'Begin story'}
         onBeginStory={handleBeginStory}
         busy={busy}
+        lat={step.record.geofence?.lat ?? null}
+        lng={step.record.geofence?.lng ?? null}
       />
     )
   }
@@ -1957,35 +1981,41 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const act4 = ROME_ACTS.find((act) => act.id === 'act4')
     if (variant === 'redesign') {
       return withInterruptionBanner(
-        <C8cActComplete
-          actTitle={
-            act4
-              ? t('actComplete.actTitle', {
-                  numeral: act4.numeral,
-                  title: String(act4.title ?? '').toUpperCase(),
-                })
-              : t('actComplete.defaultAct')
-          }
-          closingLine={act4?.promise ?? t('actComplete.defaultClosing')}
-          stats={[
-            t('actComplete.stops', { count: context.completedWaypointIds.length }),
-            t('actComplete.distance'),
-            t('actComplete.centuries'),
-          ]}
-          accent={ACT_COLORS.IV ?? T.actIV}
-          onContinue={handleContinueClassicDay}
-          onSavePlace={() => transition(JOURNEY_STATES.PAUSED)}
-          busy={busy}
-        />
+        <>
+          <C8cActComplete
+            actTitle={
+              act4
+                ? t('actComplete.actTitle', {
+                    numeral: act4.numeral,
+                    title: String(act4.title ?? '').toUpperCase(),
+                  })
+                : t('actComplete.defaultAct')
+            }
+            closingLine={act4?.promise ?? t('actComplete.defaultClosing')}
+            stats={[
+              t('actComplete.stops', { count: context.completedWaypointIds.length }),
+              t('actComplete.distance'),
+              t('actComplete.centuries'),
+            ]}
+            accent={ACT_COLORS.IV ?? T.actIV}
+            onContinue={handleContinueClassicDay}
+            onSavePlace={() => transition(JOURNEY_STATES.PAUSED)}
+            busy={busy}
+          />
+          <ReviewPrompt active />
+        </>
       )
     }
     return withInterruptionBanner(
-      <DayCompleteScreen
-        actTitle={act4 ? `Act ${act4.numeral} · ${act4.title}` : null}
-        actPromise={act4?.promise}
-        onContinue={handleContinueClassicDay}
-        busy={busy}
-      />
+      <>
+        <DayCompleteScreen
+          actTitle={act4 ? `Act ${act4.numeral} · ${act4.title}` : null}
+          actPromise={act4?.promise}
+          onContinue={handleContinueClassicDay}
+          busy={busy}
+        />
+        <ReviewPrompt active />
+      </>
     )
   }
 

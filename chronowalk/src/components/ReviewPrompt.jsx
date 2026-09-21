@@ -7,12 +7,16 @@ import {
   hasSeenReviewPrompt,
   markReviewPromptSeen,
 } from '../lib/reviewPromptStorage.js'
+import { IS_IOS } from '../lib/platform.js'
+import { requestNativeReviewIfDue } from '../lib/nativeReview.js'
+import { openExternalUrl } from '../lib/openExternal.js'
 import './ReviewPrompt.css'
 
 /**
- * One-time Trustpilot ask after journey completion.
+ * One-time review ask after journey / act completion.
  * Arming happens when the journey enters COMPLETE (due time persisted), so the
  * 4s delay survives navigation to the letter screen.
+ * iOS: uses StoreKit in-app review instead of Trustpilot.
  */
 export default function ReviewPrompt({ active = false }) {
   const titleId = useId()
@@ -32,7 +36,12 @@ export default function ReviewPrompt({ active = false }) {
     if (remaining == null) return undefined
 
     const timer = window.setTimeout(() => {
-      if (!hasSeenReviewPrompt()) setVisible(true)
+      if (hasSeenReviewPrompt()) return
+      if (IS_IOS) {
+        void requestNativeReviewIfDue()
+        return
+      }
+      setVisible(true)
     }, remaining)
 
     return () => window.clearTimeout(timer)
@@ -55,6 +64,7 @@ export default function ReviewPrompt({ active = false }) {
       provider: 'trustpilot',
     })
     setVisible(false)
+    void openExternalUrl(TRUSTPILOT_REVIEW_URL)
   }
 
   if (!visible) return null
@@ -84,16 +94,14 @@ export default function ReviewPrompt({ active = false }) {
           and it helps more than you&apos;d think.
         </p>
         <div className="cw-review-prompt__actions">
-          <a
+          <button
+            type="button"
             className="cw-review-prompt__btn cw-review-prompt__btn--primary"
-            href={TRUSTPILOT_REVIEW_URL}
-            target="_blank"
-            rel="noopener noreferrer"
             data-testid="review-prompt-leave"
             onClick={handleReviewClick}
           >
             Leave a review
-          </a>
+          </button>
           <button
             type="button"
             className="cw-review-prompt__btn cw-review-prompt__btn--secondary"

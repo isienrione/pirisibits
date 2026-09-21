@@ -212,6 +212,12 @@ export function OfflineRouteMap({
                 ? `${distanceLabel} away · cached overview`
                 : 'Cached route overview'}
           </p>
+          <p
+            className="mt-1 px-1 text-center text-[11px] font-semibold leading-snug text-ember"
+            data-testid="offline-tour-note"
+          >
+            You&apos;re offline — the full tour still works.
+          </p>
         </div>
       </div>
     )

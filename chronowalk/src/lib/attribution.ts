@@ -9,6 +9,7 @@
  * `history.replaceState(null, '', '#tier')`, which drops the query string.
  */
 import posthog from 'posthog-js'
+import { IS_IOS } from './platform.js'
 
 export const ATTRIBUTION_STORAGE_KEY = 'cw_attribution'
 /** First-touch window: do not overwrite an existing record within 30 days. */
@@ -197,6 +198,10 @@ export function getAttribution(): AttributionRecord | null {
  * @returns The active attribution record (existing first-touch or newly captured).
  */
 export function captureAttribution(now = Date.now()): AttributionRecord {
+  if (IS_IOS) {
+    return emptyAttribution(now)
+  }
+
   const existing = readStoredAttribution()
   if (existing && isFresh(existing, now)) {
     registerAttributionWithPosthog(existing)

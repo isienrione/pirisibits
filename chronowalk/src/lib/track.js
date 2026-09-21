@@ -13,6 +13,7 @@ import {
   initGoogleAds,
   updateGoogleAdsConsent,
 } from './googleAds.js'
+import { IS_IOS } from './platform.js'
 
 /** Marketing / advertising cookies only — does not gate product analytics. */
 const MARKETING_CONSENT_KEY = 'cw_marketing_consent'
@@ -118,6 +119,8 @@ export function subscribeAnalyticsConsent(listener) {
  */
 export function initAnalytics() {
   if (initialized || typeof window === 'undefined') return
+  // iOS App Store build collects no analytics / ads data.
+  if (IS_IOS) return
 
   // Capture before any landing hash navigation can strip ?utm_* params.
   captureAttribution()
@@ -205,6 +208,7 @@ export function getAnalyticsConsent() {
  * @param {Record<string, unknown>} [properties]
  */
 export function track(event, properties = {}) {
+  if (IS_IOS) return false
   if (!initialized) return false
   return analyticsTrack(event, { host: getHost(), ...properties })
 }

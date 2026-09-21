@@ -4,6 +4,7 @@ import { track, TRACK_EVENTS } from './track.js'
 import { trackCheckoutError } from './analytics.ts'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { ROME_BUNDLES, ROME_TIERS } from '../landing/landingData.js'
+import { IS_IOS } from './platform.js'
 import {
   applyLaunchOfferToOffer,
   getEffectivePriceCents,
@@ -79,6 +80,10 @@ export function buildTierCheckoutUrl() {
  * >}
  */
 export async function openCheckout({ tierId, source = 'app', mode, email, consentVersion } = {}) {
+  if (IS_IOS) {
+    return { ok: false, reason: 'ios_native' }
+  }
+
   const config = await loadAppConfig()
 
   if (tierId && !isCanonicalCheckoutProduct(tierId)) {

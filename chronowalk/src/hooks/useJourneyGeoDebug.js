@@ -10,6 +10,7 @@ import {
   getSimulatedRomePosition,
   SIMULATED_ROME_ORIGIN,
 } from '../dev/romeLocationSimulation.js'
+import { isIosDemoMode, subscribeIosDemoMode } from '../lib/iosDemoMode.js'
 
 /** Offset north so debug geo can mimic walking vs arrival. */
 export function offsetDebugPosition(target, radiusM = 40, placement = 'arrived') {
@@ -60,6 +61,7 @@ export function useJourneyGeoDebugOptions(target, { geofenceRadiusM = 40 } = {})
   const simulateRomeTrack = isSimulateRomeTrack()
   const trackPosition = useSimulatedRomeTrackPosition(simulateRomeTrack)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
+  const [iosDemo, setIosDemo] = useState(() => isIosDemoMode())
 
   useEffect(() => {
     const sync = () => setDevSimulateGps(readDevSimulateGps())
@@ -68,15 +70,22 @@ export function useJourneyGeoDebugOptions(target, { geofenceRadiusM = 40 } = {})
     return () => window.removeEventListener(DEV_TOOLS_CHANGED, sync)
   }, [])
 
+  useEffect(() => subscribeIosDemoMode(setIosDemo), [])
+
   const placement = debugGeo ? getDebugGeoPlacement() : 'arrived'
 
   // Rome simulation must never pin GPS to the active stop - that collapses
   // walking routes into "already at this landmark" and blocks Directions QA.
+  // iOS App Store demo mode intentionally pins at the active stop so every
+  // stop's audio / reveal works as if the reviewer were physically there.
   const simulateAtTarget =
-    !simulateRome && ((debugGeo && placement === 'arrived') || devSimulateGps)
+    iosDemo ||
+    (!simulateRome && ((debugGeo && placement === 'arrived') || devSimulateGps))
 
   let debugPosition = null
-  if (simulateRomeTrack && trackPosition) {
+  if (iosDemo && target) {
+    debugPosition = offsetDebugPosition(target, geofenceRadiusM, 'arrived')
+  } else if (simulateRomeTrack && trackPosition) {
     debugPosition = trackPosition
   } else if (simulateRome) {
     debugPosition = { ...SIMULATED_ROME_ORIGIN }
@@ -86,11 +95,12 @@ export function useJourneyGeoDebugOptions(target, { geofenceRadiusM = 40 } = {})
 
   return {
     debugGeo,
-    debugMode: debugGeo || simulateRome,
+    debugMode: debugGeo || simulateRome || iosDemo,
     simulateAtTarget,
     debugPosition,
-    placement: simulateRome ? 'rome' : placement,
+    placement: iosDemo ? 'arrived' : simulateRome ? 'rome' : placement,
     simulatedRome: simulateRome,
     devSimulateGps,
+    iosDemoMode: iosDemo,
   }
 }
