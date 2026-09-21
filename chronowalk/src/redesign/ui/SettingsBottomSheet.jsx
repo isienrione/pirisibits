@@ -235,11 +235,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
   }
 
   const handleHelp = () => {
-    window.open(SETTINGS_LINKS.help, '_blank', 'noopener,noreferrer')
+    void openExternalUrl(SETTINGS_LINKS.help)
   }
 
   const handleAbout = () => {
     onClose()
+    if (IS_IOS) {
+      navigate('/contact')
+      return
+    }
     navigate('/credits')
   }
 

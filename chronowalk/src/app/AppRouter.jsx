@@ -60,6 +60,7 @@ import {
 import { DocumentSeo } from '../seo/useDocumentSeo.js'
 import { I18nProvider } from '../i18n/I18nProvider.jsx'
 import { useT } from '../i18n/I18nProvider.jsx'
+import IosStatusBarSync from '../components/ios/IosStatusBarSync.jsx'
 
 function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
@@ -291,6 +292,7 @@ function AppRouter() {
               <SharedWalkGuardProvider>
                 <AccessRevalidationBootstrap />
                 <DocumentSeo />
+                {IS_IOS ? <IosStatusBarSync /> : null}
                 <AppRoutes />
                 {!IS_IOS ? <AnalyticsConsentBanner /> : null}
               </SharedWalkGuardProvider>
