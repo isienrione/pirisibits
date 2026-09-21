@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   BookOpen,
@@ -39,6 +39,13 @@ import {
   findSequenceIndexForWaypoint,
 } from '../content/myTourPlan.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
+import { IosDemoPreviewButton } from '../components/ios/IosDemoModeControls.jsx'
+import { IS_IOS } from '../lib/platform.js'
+import {
+  distanceToNearestRouteStopM,
+  IOS_DEMO_FAR_FROM_ROUTE_M,
+} from '../lib/iosDemoMode.js'
+import { resolveCurrentPosition } from '../lib/startFromNearestStop.js'
 
 function DashCard({ children, onClick, testId, ariaLabel, style = {} }) {
   const Tag = onClick ? 'button' : 'div'
@@ -145,6 +152,31 @@ export default function RedesignHomeScreen() {
   const [tutorialOpen, setTutorialOpen] = useState(false)
   const [startOverOpen, setStartOverOpen] = useState(false)
   const [resumeOpen, setResumeOpen] = useState(false)
+  const [iosDemoHint, setIosDemoHint] = useState({
+    locationDenied: false,
+    distanceFromRouteM: null,
+  })
+
+  useEffect(() => {
+    if (!IS_IOS || !manifest) return undefined
+    let cancelled = false
+    ;(async () => {
+      const position = await resolveCurrentPosition({ timeoutMs: 8000 })
+      if (cancelled) return
+      if (!position) {
+        setIosDemoHint({ locationDenied: true, distanceFromRouteM: null })
+        return
+      }
+      const distanceM = distanceToNearestRouteStopM(manifest, context, position)
+      setIosDemoHint({
+        locationDenied: false,
+        distanceFromRouteM: distanceM,
+      })
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [manifest, context])
 
   const acts = useMemo(
     () => (manifest ? buildMyTourActs(manifest, context) : []),
@@ -432,6 +464,31 @@ export default function RedesignHomeScreen() {
         </header>
       </HomeStopHero>
 
+      {IS_IOS ? (
+        <div style={{ padding: '10px 14px 0', flexShrink: 0, position: 'relative', zIndex: 3 }}>
+          <IosDemoPreviewButton
+            locationDenied={iosDemoHint.locationDenied}
+            distanceFromRouteM={iosDemoHint.distanceFromRouteM}
+          />
+          {iosDemoHint.locationDenied ||
+          (typeof iosDemoHint.distanceFromRouteM === 'number' &&
+            iosDemoHint.distanceFromRouteM > IOS_DEMO_FAR_FROM_ROUTE_M) ? (
+            <p
+              style={{
+                margin: '8px 2px 0',
+                fontSize: 12,
+                color: T.muted,
+                lineHeight: 1.45,
+              }}
+            >
+              {iosDemoHint.locationDenied
+                ? 'Location unavailable — preview every stop from here.'
+                : 'You appear far from the Rome route — preview the walk from anywhere.'}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       <div
         data-testid="home-widgets"
         style={{
@@ -440,7 +497,7 @@ export default function RedesignHomeScreen() {
           flexDirection: 'column',
           gap: 9,
           padding: '0 14px 10px',
-          marginTop: -18,
+          marginTop: IS_IOS ? 10 : -18,
           position: 'relative',
           zIndex: 2,
         }}

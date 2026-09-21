@@ -37,6 +37,7 @@ import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
+import { IosDemoStepControls } from '../ios/IosDemoModeControls.jsx'
 import {
   estimateDistanceBetweenStops,
   resolveJourneyProgressPct,
@@ -1442,6 +1443,25 @@ export default function JourneyShell({ variant = 'legacy' }) {
         </div>
       ) : null}
       {content}
+      {geoDebug?.iosDemoMode ? (
+        <div
+          style={{
+            position: 'fixed',
+            left: 12,
+            right: 12,
+            bottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+            zIndex: 55,
+          }}
+        >
+          <IosDemoStepControls
+            currentWaypointId={
+              step?.type === 'waypoint'
+                ? step.record?.id
+                : step?.targetWaypoint?.id ?? null
+            }
+          />
+        </div>
+      ) : null}
       {floatingPlayer}
       {DebugPanelHost ? (
         <Suspense fallback={null}>
