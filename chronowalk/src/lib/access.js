@@ -40,6 +40,22 @@ export function parseAccessToken(search = '') {
 // Viator manual codes: RM + 6 alphanumerics (e.g. RMA389F7)
 export const VIATOR_CODE_RE = /^RM[A-Z0-9]{6}$/i
 
+/** Strip the `#` and spaces that people copy from vouchers and receipts. */
+export function normalizeAccessCode(input) {
+  return String(input ?? '').replace(/[#\s]/g, '')
+}
+
+/** Coarse, non-identifying shape of a code, for analytics on rejected entries. */
+export function describeAccessCodeShape(input) {
+  const code = normalizeAccessCode(input)
+  if (!code) return 'empty'
+  if (/^RM/i.test(code)) return 'rm_prefix'
+  if (/^\d+$/.test(code)) return 'digits'
+  if (/^[A-Z]+\d+$/i.test(code)) return 'letters_then_digits'
+  if (/^[A-Z0-9]+$/i.test(code)) return 'alphanumeric'
+  return 'other'
+}
+
 export function isAccessTokenFormat(token) {
   if (!token) return false
   const t = String(token).trim()
@@ -249,7 +265,7 @@ export async function validateDeviceAccess(
  * Legacy get_purchase_for_token / validate_access_token paths are not used for grant.
  */
 export async function validateAccessToken(token) {
-  const raw = String(token ?? '').trim()
+  const raw = normalizeAccessCode(token)
   if (!isAccessTokenFormat(raw)) {
     return { ok: false, reason: 'invalid_format' }
   }

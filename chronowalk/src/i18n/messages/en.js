@@ -435,6 +435,9 @@ export const enMessages = Object.freeze({
   'access.error.title': 'This link is not valid.',
   'access.error.body':
     'Open the access link from your purchase confirmation email, or paste your token below.',
+  'access.error.format.title': 'This is not a ChronoWalk code.',
+  'access.error.format.body':
+    'Your code starts with RM, for example RMA389F7. Find it in your Viator voucher. Your Viator booking number does not work here. If you bought on chronowalk.com, open the link in your purchase email.',
   'access.idle.body':
     'After purchase, open the personal link from your email on this phone - or paste it below. This screen is for returning buyers only, not checkout.',
   'access.code.label': 'Enter the access code from your email',
@@ -443,6 +446,8 @@ export const enMessages = Object.freeze({
   'access.resend.title': "Didn't get your access email?",
   'access.resend.body':
     'Use the same email as your Paddle receipt and the order id that starts with txn_. Check Junk / Other on Microsoft addresses.',
+  'access.resend.viator':
+    'Bought on Viator? You do not need this form. Your code starts with RM and is in your Viator voucher. Enter it above.',
   'access.resend.email': 'Purchase email',
   'access.resend.order': 'Paddle order id',
   'access.resend.sending': 'Sending…',
