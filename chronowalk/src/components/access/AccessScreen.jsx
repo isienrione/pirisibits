@@ -106,13 +106,14 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
         return
       }
 
+      const reason = result.reason ?? 'invalid'
       track(TRACK_EVENTS.ACCESS_CODE_REJECTED, {
-        reason: result.reason ?? 'invalid',
+        reason,
         entry: claim.entry,
         code_shape: describeAccessCodeShape(token),
         code_length: normalizeAccessCode(token).length,
       })
-      setOutcome({ id: claim.id, status: 'error', reason: result.reason ?? null })
+      setOutcome({ id: claim.id, status: 'error', reason })
     })
 
     return () => {
@@ -136,12 +137,16 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
 
   const handleManualSubmit = (event) => {
     event.preventDefault()
-    const code = normalizeAccessCode(manualToken)
-    if (!code) return
-    setClaim((prev) => ({ id: (prev?.id ?? 0) + 1, token: code, entry: 'manual' }))
+    const trimmed = manualToken.trim()
+    if (!trimmed) return
+    setClaim((prev) => ({ id: (prev?.id ?? 0) + 1, token: trimmed, entry: 'manual' }))
   }
 
-  const formatError = outcome?.reason === 'invalid_format'
+  // A broken email link also fails the format check; only typed codes get RM guidance.
+  const errorKey =
+    claim?.entry === 'manual' && outcome?.reason === 'invalid_format'
+      ? 'access.error.format'
+      : 'access.error'
 
   const handleResendSubmit = async (event) => {
     event.preventDefault()
@@ -202,8 +207,8 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
       {status === 'error' ? (
         <StatusMessage
           tone="error"
-          title={t(formatError ? 'access.error.format.title' : 'access.error.title')}
-          body={t(formatError ? 'access.error.format.body' : 'access.error.body')}
+          title={t(`${errorKey}.title`)}
+          body={t(`${errorKey}.body`)}
         />
       ) : null}
 

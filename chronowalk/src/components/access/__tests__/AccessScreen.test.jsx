@@ -55,13 +55,7 @@ describe('AccessScreen', () => {
   })
 
   it('shows restore instructions without a token', () => {
-    render(
-      <MemoryRouter initialEntries={['/access']}>
-        <Routes>
-          <Route path="/access" element={<AccessScreen />} />
-        </Routes>
-      </MemoryRouter>
-    )
+    renderAccess()
 
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
     expect(screen.getByText(/personal link/i)).toBeInTheDocument()
@@ -82,19 +76,9 @@ describe('AccessScreen', () => {
     expect(screen.getByRole('link', { name: /hear the pantheon/i })).toHaveAttribute('href', '/preview')
   })
 
-  it('submits a pasted token to the access route', async () => {
-    render(
-      <MemoryRouter initialEntries={['/access']}>
-        <Routes>
-          <Route path="/access" element={<AccessScreen />} />
-        </Routes>
-      </MemoryRouter>
-    )
-
-    fireEvent.change(screen.getByLabelText(/enter the access code from your email/i), {
-      target: { value: 'dev' },
-    })
-    fireEvent.click(screen.getByRole('button', { name: /enter rome/i }))
+  it('validates a pasted code', async () => {
+    renderAccess()
+    submitCode('dev')
 
     await waitFor(() => {
       expect(screen.getByText(/confirming your purchase/i)).toBeInTheDocument()
@@ -107,7 +91,7 @@ describe('AccessScreen', () => {
 
     expect(await screen.findByText(/this is not a chronowalk code/i)).toBeInTheDocument()
     expect(screen.getByText(/find it in your viator voucher/i)).toBeInTheDocument()
-    expect(validateAccessToken).toHaveBeenCalledWith('1234567890')
+    expect(validateAccessToken).toHaveBeenCalledWith('#1234567890')
     expect(track).toHaveBeenCalledWith('access_code_rejected', {
       reason: 'invalid_format',
       entry: 'manual',
@@ -126,13 +110,13 @@ describe('AccessScreen', () => {
     expect(await screen.findByText(/this is not a chronowalk code/i)).toBeInTheDocument()
   })
 
-  it('removes a rejected link token from the URL and keeps the error', async () => {
+  it('removes a rejected link token from the URL and keeps the link error', async () => {
     renderAccess('/access?token=1234567890&utm_source=voucher')
 
     await waitFor(() =>
       expect(screen.getByTestId('location')).toHaveTextContent(/^\/access\?utm_source=voucher$/),
     )
-    expect(screen.getByText(/this is not a chronowalk code/i)).toBeInTheDocument()
+    expect(screen.getByText(/this link is not valid/i)).toBeInTheDocument()
   })
 
   it('tells Viator buyers that the resend form is not for them', () => {
