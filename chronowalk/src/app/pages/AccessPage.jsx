@@ -13,6 +13,10 @@ export function AccessPage() {
   const [searchParams] = useSearchParams()
   const urlToken = parseAccessToken(`?${searchParams.toString()}`)
   const [restoring, setRestoring] = useState(false)
+  // AccessScreen removes a rejected token from the URL. Keep showing its error
+  // instead of redirecting owners who already have unrelated local access.
+  const [tokenPresented, setTokenPresented] = useState(Boolean(urlToken))
+  if (urlToken && !tokenPresented) setTokenPresented(true)
 
   const handleValidated = useCallback(async () => {
     setRestoring(true)
@@ -33,7 +37,7 @@ export function AccessPage() {
     return <AccessScreen onValidated={handleValidated} forceValidateToken={urlToken} />
   }
 
-  if (hasAccess() && !restoring) {
+  if (hasAccess() && !restoring && !tokenPresented) {
     return <Navigate to={getAccessDestination()} replace />
   }
 

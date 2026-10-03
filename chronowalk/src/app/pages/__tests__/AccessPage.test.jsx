@@ -155,7 +155,7 @@ describe('AccessPage', () => {
 
     renderAccessPage('/access?token=bad-token')
 
-    expect(await screen.findByText(/this link is not valid/i)).toBeInTheDocument()
+    expect(await screen.findByText(/this is not a chronowalk code/i)).toBeInTheDocument()
     expect(hasValidLocalAccess()).toBe(false)
   })
 })

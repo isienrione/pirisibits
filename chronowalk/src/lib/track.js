@@ -36,6 +36,7 @@ export const TRACK_EVENTS = {
   THRESHOLD_DEMO: 'threshold_demo',
   CHECKOUT_OPEN: 'checkout_open',
   PURCHASE: 'purchase',
+  ACCESS_CODE_REJECTED: 'access_code_rejected',
   JOURNEY_BEGIN: 'journey_begin',
   WAYPOINT_ARRIVED: 'waypoint_arrived',
   STORY_COMPLETE: 'story_complete',

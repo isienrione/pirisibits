@@ -1,6 +1,8 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
+  describeAccessCodeShape,
   isAccessTokenFormat,
+  normalizeAccessCode,
   parseAccessToken,
   redeemPurchaseClaim,
   validateAccessToken,
@@ -44,6 +46,34 @@ describe('access', () => {
     expect(isAccessTokenFormat('00000000-0000-4000-8000-000000000000')).toBe(true)
     expect(isAccessTokenFormat('dev')).toBe(true)
     expect(isAccessTokenFormat('a'.repeat(64))).toBe(true)
+  })
+
+  it('strips # and spaces from typed codes', () => {
+    expect(normalizeAccessCode(' #RMA 389F7 ')).toBe('RMA389F7')
+    expect(normalizeAccessCode(null)).toBe('')
+  })
+
+  it('describes rejected code shapes without the code itself', () => {
+    expect(describeAccessCodeShape('1234567890')).toBe('digits')
+    expect(describeAccessCodeShape('#BR-123456')).toBe('other')
+    expect(describeAccessCodeShape('A12345678')).toBe('letters_then_digits')
+    expect(describeAccessCodeShape('rm12345')).toBe('rm_prefix')
+    expect(describeAccessCodeShape('')).toBe('empty')
+  })
+
+  it('redeems a Viator code typed with # and spaces', async () => {
+    rpcMock.mockResolvedValue({ data: { ok: false, reason: 'invalid' }, error: null })
+    await validateAccessToken('#rma 389f7')
+    expect(rpcMock).toHaveBeenCalledWith('redeem_purchase_claim', {
+      p_claim: 'RMA389F7',
+      p_device_binding: 'test-device-binding',
+    })
+  })
+
+  it('rejects a booking number locally without a network call', async () => {
+    const result = await validateAccessToken('1234567890')
+    expect(result).toEqual({ ok: false, reason: 'invalid_format' })
+    expect(rpcMock).not.toHaveBeenCalled()
   })
 
   it('redeems a one-time claim into a distinct device credential', async () => {

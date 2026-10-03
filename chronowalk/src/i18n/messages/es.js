@@ -437,6 +437,9 @@ export const esMessages = Object.freeze({
   'access.error.title': 'Este enlace no es válido.',
   'access.error.body':
     'Abre el enlace de acceso del correo de confirmación de compra o pega tu código a continuación.',
+  'access.error.format.title': 'Este no es un código de ChronoWalk.',
+  'access.error.format.body':
+    'Tu código empieza por RM, por ejemplo RMA389F7. Lo encontrarás en tu bono de Viator. Tu número de reserva de Viator no sirve aquí. Si compraste en chronowalk.com, abre el enlace de tu correo de compra.',
   'access.idle.body':
     'Después de comprar, abre en este teléfono el enlace personal que recibiste por correo o pégalo a continuación. Esta pantalla es solo para quienes ya compraron, no para pagar.',
   'access.code.label': 'Introduce el código de acceso de tu correo',
@@ -445,6 +448,8 @@ export const esMessages = Object.freeze({
   'access.resend.title': '¿No recibiste el correo de acceso?',
   'access.resend.body':
     'Usa el mismo correo de tu recibo de Paddle y el identificador del pedido que empieza por txn_. En cuentas de Microsoft, revisa Correo no deseado y Otros.',
+  'access.resend.viator':
+    '¿Compraste en Viator? No necesitas este formulario. Tu código empieza por RM y está en tu bono de Viator. Introdúcelo arriba.',
   'access.resend.email': 'Correo de compra',
   'access.resend.order': 'Identificador del pedido de Paddle',
   'access.resend.sending': 'Enviando…',

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { parseAccessToken, validateAccessToken } from '../../lib/access'
+import { Link, useSearchParams } from 'react-router-dom'
+import {
+  describeAccessCodeShape,
+  normalizeAccessCode,
+  parseAccessToken,
+  validateAccessToken,
+} from '../../lib/access'
 import { applyPurchaseUnlock } from '../../lib/pendingPurchase.js'
 import { requestAccessEmail } from '../../lib/requestAccessEmail.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
@@ -46,31 +51,35 @@ function StatusMessage({ title, body, tone = 'muted' }) {
 
 export default function AccessScreen({ onValidated, forceValidateToken = null }) {
   const t = useT()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const token = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const urlToken = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
   const [manualToken, setManualToken] = useState('')
   const [resendEmail, setResendEmail] = useState('')
   const [resendOrderId, setResendOrderId] = useState('')
   const [resendBusy, setResendBusy] = useState(false)
   const [resendMessage, setResendMessage] = useState(null)
-  // Async claim outcome only - idle/validating are derived from token presence.
+  // Each submit gets a new id, so a repeated code is validated again.
+  const [claim, setClaim] = useState(() =>
+    urlToken ? { id: 0, token: urlToken, entry: 'link' } : null,
+  )
+  const [claimForUrlToken, setClaimForUrlToken] = useState(urlToken)
+  // Async claim outcome only - idle/validating are derived from the claim.
   const [outcome, setOutcome] = useState(null)
-  const [outcomeForToken, setOutcomeForToken] = useState(token)
 
-  // When the claim token identity changes, clear the prior outcome during render
-  // (React-recommended prop→state sync) instead of syncing inside an effect.
-  if (outcomeForToken !== token) {
-    setOutcomeForToken(token)
-    setOutcome(null)
+  // A new URL token starts a new claim (React-recommended prop→state sync).
+  // Clearing the token from the URL keeps the current claim and its error.
+  if (claimForUrlToken !== urlToken) {
+    setClaimForUrlToken(urlToken)
+    if (urlToken) setClaim({ id: (claim?.id ?? 0) + 1, token: urlToken, entry: 'link' })
   }
 
-  const status = !token ? 'idle' : outcome == null ? 'validating' : outcome
+  const status = !claim ? 'idle' : outcome?.id !== claim.id ? 'validating' : outcome.status
 
   useEffect(() => {
-    if (!token) return undefined
+    if (!claim) return undefined
 
     let cancelled = false
+    const { token } = claim
 
     // Always validate the presented URL/manual claim - unrelated local cw_access
     // state must never short-circuit an invalid/rotated token.
@@ -92,25 +101,47 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
           source: result.source ?? 'token',
           tier: unlock.tier,
         })
-        setOutcome('success')
+        setOutcome({ id: claim.id, status: 'success' })
         onValidated?.({ token, productId: unlock.tier })
         return
       }
 
-      setOutcome('error')
+      track(TRACK_EVENTS.ACCESS_CODE_REJECTED, {
+        reason: result.reason ?? 'invalid',
+        entry: claim.entry,
+        code_shape: describeAccessCodeShape(token),
+        code_length: normalizeAccessCode(token).length,
+      })
+      setOutcome({ id: claim.id, status: 'error', reason: result.reason ?? null })
     })
 
     return () => {
       cancelled = true
     }
-  }, [token, onValidated])
+  }, [claim, onValidated])
+
+  // A reload must not replay a bad token from the URL.
+  const failedLinkClaim = status === 'error' && claim.entry === 'link'
+  useEffect(() => {
+    if (!failedLinkClaim || !urlToken) return
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.delete('token')
+        return next
+      },
+      { replace: true },
+    )
+  }, [failedLinkClaim, urlToken, setSearchParams])
 
   const handleManualSubmit = (event) => {
     event.preventDefault()
-    const trimmed = manualToken.trim()
-    if (!trimmed) return
-    navigate(`/access?token=${encodeURIComponent(trimmed)}`, { replace: true })
+    const code = normalizeAccessCode(manualToken)
+    if (!code) return
+    setClaim((prev) => ({ id: (prev?.id ?? 0) + 1, token: code, entry: 'manual' }))
   }
+
+  const formatError = outcome?.reason === 'invalid_format'
 
   const handleResendSubmit = async (event) => {
     event.preventDefault()
@@ -171,8 +202,8 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
       {status === 'error' ? (
         <StatusMessage
           tone="error"
-          title={t('access.error.title')}
-          body={t('access.error.body')}
+          title={t(formatError ? 'access.error.format.title' : 'access.error.title')}
+          body={t(formatError ? 'access.error.format.body' : 'access.error.body')}
         />
       ) : null}
 
@@ -264,6 +295,16 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
               }}
             >
               {t('access.resend.body')}
+            </p>
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: 'var(--fs-secondary)',
+                lineHeight: 1.55,
+                color: 'var(--muted-warm)',
+              }}
+            >
+              {t('access.resend.viator')}
             </p>
             <form onSubmit={handleResendSubmit} style={{ marginTop: 20 }}>
               <label
