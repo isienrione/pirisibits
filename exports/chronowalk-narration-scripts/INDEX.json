@@ -1,0 +1,750 @@
+{
+  "en": {
+    "stops": [
+      {
+        "id": "w01__w01",
+        "stop": "w01",
+        "title": "The Colosseum",
+        "chapter": "Colosseum Exterior",
+        "audio": "w01.mp3",
+        "file": "en/stops/w01/w01.md"
+      },
+      {
+        "id": "w02__w02_ch1",
+        "stop": "w02",
+        "title": "Colosseum interior",
+        "chapter": "Colosseum Interior I - The Underneath",
+        "audio": "w02_ch1.mp3",
+        "file": "en/stops/w02/w02_ch1.md"
+      },
+      {
+        "id": "w02__w02_ch2",
+        "stop": "w02",
+        "title": "Colosseum interior",
+        "chapter": "Colosseum Interior II - The Business of Survival",
+        "audio": "w02_ch2.mp3",
+        "file": "en/stops/w02/w02_ch2.md"
+      },
+      {
+        "id": "w03__w03_ch1",
+        "stop": "w03",
+        "title": "Arch of Titus",
+        "chapter": "Arch of Titus I - The Long Way Around",
+        "audio": "w03_ch1.mp3",
+        "file": "en/stops/w03/w03_ch1.md"
+      },
+      {
+        "id": "w03__w03_ch2",
+        "stop": "w03",
+        "title": "Arch of Titus",
+        "chapter": "Arch of Titus II - The Man Who Watched It Twice",
+        "audio": "w03_ch2.mp3",
+        "file": "en/stops/w03/w03_ch2.md"
+      },
+      {
+        "id": "w04__w04_ch1",
+        "stop": "w04",
+        "title": "The Palatine",
+        "chapter": "Palatine - The Hill of the Word",
+        "audio": "w04_ch1.mp3",
+        "file": "en/stops/w04/w04_ch1.md"
+      },
+      {
+        "id": "w04__w04_ch2",
+        "stop": "w04",
+        "title": "The Palatine",
+        "chapter": "Circus Maximus",
+        "audio": "w04_ch2.mp3",
+        "file": "en/stops/w04/w04_ch2.md"
+      },
+      {
+        "id": "w04__forum_intro_above",
+        "stop": "w04",
+        "title": "The Palatine",
+        "chapter": "The Forum from the Emperor's Railing",
+        "audio": "forum_intro_above.mp3",
+        "file": "en/stops/w04/forum_intro_above.md"
+      },
+      {
+        "id": "w06__w06",
+        "stop": "w06",
+        "title": "Basilica of Maxentius",
+        "chapter": "Basilica of Maxentius",
+        "audio": "w06.mp3",
+        "file": "en/stops/w06/w06.md"
+      },
+      {
+        "id": "w07__w07",
+        "stop": "w07",
+        "title": "Via Sacra",
+        "chapter": "Via Sacra",
+        "audio": "w07.mp3",
+        "file": "en/stops/w07/w07.md"
+      },
+      {
+        "id": "w08__w08",
+        "stop": "w08",
+        "title": "Temple of Vesta",
+        "chapter": "Temple of Vesta",
+        "audio": "w08.mp3",
+        "file": "en/stops/w08/w08.md"
+      },
+      {
+        "id": "pause__pause",
+        "stop": "pause",
+        "title": "Forum rest",
+        "chapter": "THE PAUSE",
+        "audio": "pause.mp3",
+        "file": "en/stops/pause/pause.md"
+      },
+      {
+        "id": "w10__w10",
+        "stop": "w10",
+        "title": "The Rostra",
+        "chapter": "The Rostra",
+        "audio": "w10.mp3",
+        "file": "en/stops/w10/w10.md"
+      },
+      {
+        "id": "w11_12__w1112_b1",
+        "stop": "w11_12",
+        "title": "Arch of Septimius Severus",
+        "chapter": "Arch of Septimius Severus - The Holes",
+        "audio": "w1112_b1.mp3",
+        "file": "en/stops/w11_12/w1112_b1.md"
+      },
+      {
+        "id": "w11_12__w1112_b2",
+        "stop": "w11_12",
+        "title": "Arch of Septimius Severus",
+        "chapter": "Curia Julia - House of the Senate",
+        "audio": "w1112_b2.mp3",
+        "file": "en/stops/w11_12/w1112_b2.md"
+      },
+      {
+        "id": "w13__w13",
+        "stop": "w13",
+        "title": "Capitoline Hill",
+        "chapter": "Capitoline Hill",
+        "audio": "w13.mp3",
+        "file": "en/stops/w13/w13.md"
+      },
+      {
+        "id": "w14__w14",
+        "stop": "w14",
+        "title": "Trajan's Market",
+        "chapter": "Trajan's Market",
+        "audio": "w14.mp3",
+        "file": "en/stops/w14/w14.md"
+      },
+      {
+        "id": "w15__w15",
+        "stop": "w15",
+        "title": "Spanish Steps",
+        "chapter": "Spanish Steps",
+        "audio": "w15.mp3",
+        "file": "en/stops/w15/w15.md"
+      },
+      {
+        "id": "w16__w16",
+        "stop": "w16",
+        "title": "Fontana di Trevi",
+        "chapter": "Fontana di Trevi",
+        "audio": "w16.mp3",
+        "file": "en/stops/w16/w16.md"
+      },
+      {
+        "id": "w17__w17_ch1",
+        "stop": "w17",
+        "title": "The Pantheon",
+        "chapter": "The Pantheon - Exterior",
+        "audio": "w17_ch1.mp3",
+        "file": "en/stops/w17/w17_ch1.md"
+      },
+      {
+        "id": "w23__w17_ch2",
+        "stop": "w23",
+        "title": "Pantheon interior",
+        "chapter": "Pantheon interior - Dome",
+        "audio": "w17_ch2.mp3",
+        "file": "en/stops/w23/w17_ch2.md"
+      },
+      {
+        "id": "w23__w17_ch3",
+        "stop": "w23",
+        "title": "Pantheon interior",
+        "chapter": "Pantheon interior - The Empire under your feet",
+        "audio": "w17_ch3.mp3",
+        "file": "en/stops/w23/w17_ch3.md"
+      },
+      {
+        "id": "w23__w17_ch4",
+        "stop": "w23",
+        "title": "Pantheon interior",
+        "chapter": "the tombs",
+        "audio": "w17_ch4.mp3",
+        "file": "en/stops/w23/w17_ch4.md"
+      },
+      {
+        "id": "w18__w18",
+        "stop": "w18",
+        "title": "Piazza Navona",
+        "chapter": "Piazza Navona",
+        "audio": "w18.mp3",
+        "file": "en/stops/w18/w18.md"
+      },
+      {
+        "id": "w19__w19",
+        "stop": "w19",
+        "title": "Campo de' Fiori",
+        "chapter": "Campo de' Fiori",
+        "audio": "w19.mp3",
+        "file": "en/stops/w19/w19.md"
+      },
+      {
+        "id": "w20__w20",
+        "stop": "w20",
+        "title": "Largo di Torre Argentina",
+        "chapter": "Largo di Torre Argentina",
+        "audio": "w20.mp3",
+        "file": "en/stops/w20/w20.md"
+      },
+      {
+        "id": "w21__w21",
+        "stop": "w21",
+        "title": "Castel Sant'Angelo",
+        "chapter": "Castel Sant'Angelo - finale",
+        "audio": "w21.mp3",
+        "file": "en/stops/w21/w21.md"
+      },
+      {
+        "id": "w22__w22",
+        "stop": "w22",
+        "title": "Optional Encore › Via Appia Antica",
+        "chapter": "Via Appia",
+        "audio": "w22.mp3",
+        "file": "en/stops/w22/w22.md"
+      }
+    ],
+    "transits": [
+      {
+        "id": "t01_a",
+        "title": "t01 (a)",
+        "audio": "t01_a.mp3",
+        "file": "en/transits/t01_a.md"
+      },
+      {
+        "id": "t01_b",
+        "title": "t01 (b)",
+        "audio": "t01_b.mp3",
+        "file": "en/transits/t01_b.md"
+      },
+      {
+        "id": "t04",
+        "title": "Into the Forum → Basilica",
+        "audio": "t04_forum.mp3",
+        "file": "en/transits/t04_forum.md"
+      },
+      {
+        "id": "t05",
+        "title": "→ Via Sacra",
+        "audio": "t05.mp3",
+        "file": "en/transits/t05.md"
+      },
+      {
+        "id": "t06",
+        "title": "→ Temple of Vesta",
+        "audio": "t06.mp3",
+        "file": "en/transits/t06.md"
+      },
+      {
+        "id": "t07",
+        "title": "→ Rostra",
+        "audio": "t07.mp3",
+        "file": "en/transits/t07.md"
+      },
+      {
+        "id": "t08",
+        "title": "→ Arch of Septimius Severus",
+        "audio": "t08.mp3",
+        "file": "en/transits/t08.md"
+      },
+      {
+        "id": "t09",
+        "title": "→ Capitoline climb",
+        "audio": "t09.mp3",
+        "file": "en/transits/t09.md"
+      },
+      {
+        "id": "t10",
+        "title": "→ Trajan's Market",
+        "audio": "t10.mp3",
+        "file": "en/transits/t10.md"
+      },
+      {
+        "id": "t15",
+        "title": "→ Fontana di Trevi",
+        "audio": "t15.mp3",
+        "file": "en/transits/t15.md"
+      },
+      {
+        "id": "t12",
+        "title": "→ Pantheon",
+        "audio": "t12.mp3",
+        "file": "en/transits/t12.md"
+      },
+      {
+        "id": "t13",
+        "title": "→ Piazza Navona",
+        "audio": "t13.mp3",
+        "file": "en/transits/t13.md"
+      },
+      {
+        "id": "t16",
+        "title": "→ Castel Sant'Angelo",
+        "audio": "t16.mp3",
+        "file": "en/transits/t16.md"
+      },
+      {
+        "id": "t22",
+        "title": "Optional Encore › Via Appia Antica",
+        "audio": "t22.mp3",
+        "file": "en/transits/t22.md"
+      },
+      {
+        "id": "t03_b",
+        "title": "t03 (b)",
+        "audio": "t03_b.mp3",
+        "file": "en/transits/t03_b.md"
+      }
+    ],
+    "other": [
+      {
+        "id": "ins_whopaid",
+        "type": "insert",
+        "audio": "ins_whopaid.mp3",
+        "file": "en/other/insert/ins_whopaid.md"
+      },
+      {
+        "id": "ins_window",
+        "type": "insert",
+        "audio": "ins_window.mp3",
+        "file": "en/other/insert/ins_window.md"
+      },
+      {
+        "id": "ins_jerusalem",
+        "type": "insert",
+        "audio": "ins_jerusalem.mp3",
+        "file": "en/other/insert/ins_jerusalem.md"
+      },
+      {
+        "id": "ins_fire",
+        "type": "insert",
+        "audio": "ins_fire.mp3",
+        "file": "en/other/insert/ins_fire.md"
+      },
+      {
+        "id": "ins_caesar_tease",
+        "type": "insert",
+        "audio": "ins_caesar_tease.mp3",
+        "file": "en/other/insert/ins_caesar_tease.md"
+      },
+      {
+        "id": "ins_water_trevi",
+        "type": "insert",
+        "audio": "ins_water_trevi.mp3",
+        "file": "en/other/insert/ins_water_trevi.md"
+      },
+      {
+        "id": "ins_agrippa",
+        "type": "insert",
+        "audio": "ins_agrippa.mp3",
+        "file": "en/other/insert/ins_agrippa.md"
+      },
+      {
+        "id": "ins_constantine",
+        "type": "insert",
+        "audio": "ins_constantine.mp3",
+        "file": "en/other/insert/ins_constantine.md"
+      },
+      {
+        "id": "w21_alt_bruno",
+        "type": "insert",
+        "audio": "w21_alt_bruno.mp3",
+        "file": "en/other/insert/w21_alt_bruno.md"
+      }
+    ]
+  },
+  "es": {
+    "stops": [
+      {
+        "id": "w01__w01",
+        "stop": "w01",
+        "title": "El Coliseo",
+        "chapter": "Exterior del Coliseo",
+        "audio": "w01.mp3",
+        "file": "es/stops/w01/w01.md"
+      },
+      {
+        "id": "w02__w02_ch1",
+        "stop": "w02",
+        "title": "Interior del Coliseo",
+        "chapter": "Interior del Coliseo I: Lo que había debajo",
+        "audio": "w02_ch1.mp3",
+        "file": "es/stops/w02/w02_ch1.md"
+      },
+      {
+        "id": "w02__w02_ch2",
+        "stop": "w02",
+        "title": "Interior del Coliseo",
+        "chapter": "Interior del Coliseo II: El negocio de sobrevivir",
+        "audio": "w02_ch2.mp3",
+        "file": "es/stops/w02/w02_ch2.md"
+      },
+      {
+        "id": "w03__w03_ch1",
+        "stop": "w03",
+        "title": "Arco de Tito",
+        "chapter": "Arco de Tito I: El camino largo",
+        "audio": "w03_ch1.mp3",
+        "file": "es/stops/w03/w03_ch1.md"
+      },
+      {
+        "id": "w03__w03_ch2",
+        "stop": "w03",
+        "title": "Arco de Tito",
+        "chapter": "Arco de Tito II: El hombre que lo vio dos veces",
+        "audio": "w03_ch2.mp3",
+        "file": "es/stops/w03/w03_ch2.md"
+      },
+      {
+        "id": "w04__w04_ch1",
+        "stop": "w04",
+        "title": "El Palatino",
+        "chapter": "Palatino: La colina de la palabra",
+        "audio": "w04_ch1.mp3",
+        "file": "es/stops/w04/w04_ch1.md"
+      },
+      {
+        "id": "w04__w04_ch2",
+        "stop": "w04",
+        "title": "El Palatino",
+        "chapter": "Circo Máximo",
+        "audio": "w04_ch2.mp3",
+        "file": "es/stops/w04/w04_ch2.md"
+      },
+      {
+        "id": "w04__forum_intro_above",
+        "stop": "w04",
+        "title": "El Palatino",
+        "chapter": "El Foro desde la baranda del emperador",
+        "audio": "forum_intro_above.mp3",
+        "file": "es/stops/w04/forum_intro_above.md"
+      },
+      {
+        "id": "w06__w06",
+        "stop": "w06",
+        "title": "Basílica de Majencio",
+        "chapter": "Basílica de Majencio",
+        "audio": "w06.mp3",
+        "file": "es/stops/w06/w06.md"
+      },
+      {
+        "id": "w07__w07",
+        "stop": "w07",
+        "title": "Vía Sacra",
+        "chapter": "Vía Sacra",
+        "audio": "w07.mp3",
+        "file": "es/stops/w07/w07.md"
+      },
+      {
+        "id": "w08__w08",
+        "stop": "w08",
+        "title": "Templo de Vesta",
+        "chapter": "Templo de Vesta",
+        "audio": "w08.mp3",
+        "file": "es/stops/w08/w08.md"
+      },
+      {
+        "id": "pause__pause",
+        "stop": "pause",
+        "title": "Descanso en el Foro",
+        "chapter": "LA PAUSA",
+        "audio": "pause.mp3",
+        "file": "es/stops/pause/pause.md"
+      },
+      {
+        "id": "w10__w10",
+        "stop": "w10",
+        "title": "La Rostra",
+        "chapter": "La Rostra",
+        "audio": "w10.mp3",
+        "file": "es/stops/w10/w10.md"
+      },
+      {
+        "id": "w11_12__w1112_b1",
+        "stop": "w11_12",
+        "title": "Arco de Septimio Severo",
+        "chapter": "Arco de Septimio Severo: Los agujeros",
+        "audio": "w1112_b1.mp3",
+        "file": "es/stops/w11_12/w1112_b1.md"
+      },
+      {
+        "id": "w11_12__w1112_b2",
+        "stop": "w11_12",
+        "title": "Arco de Septimio Severo",
+        "chapter": "Curia Julia: Sede del Senado",
+        "audio": "w1112_b2.mp3",
+        "file": "es/stops/w11_12/w1112_b2.md"
+      },
+      {
+        "id": "w13__w13",
+        "stop": "w13",
+        "title": "Colina Capitolina",
+        "chapter": "Colina Capitolina",
+        "audio": "w13.mp3",
+        "file": "es/stops/w13/w13.md"
+      },
+      {
+        "id": "w14__w14",
+        "stop": "w14",
+        "title": "Mercado de Trajano",
+        "chapter": "Mercado de Trajano",
+        "audio": "w14.mp3",
+        "file": "es/stops/w14/w14.md"
+      },
+      {
+        "id": "w15__w15",
+        "stop": "w15",
+        "title": "Escalinata de España",
+        "chapter": "Escalinata de España",
+        "audio": "w15.mp3",
+        "file": "es/stops/w15/w15.md"
+      },
+      {
+        "id": "w16__w16",
+        "stop": "w16",
+        "title": "Fontana di Trevi",
+        "chapter": "Fontana di Trevi",
+        "audio": "w16.mp3",
+        "file": "es/stops/w16/w16.md"
+      },
+      {
+        "id": "w17__w17_ch1",
+        "stop": "w17",
+        "title": "El Panteón",
+        "chapter": "El Panteón: Exterior",
+        "audio": "w17_ch1.mp3",
+        "file": "es/stops/w17/w17_ch1.md"
+      },
+      {
+        "id": "w23__w17_ch2",
+        "stop": "w23",
+        "title": "Interior del Panteón",
+        "chapter": "Interior del Panteón: La cúpula",
+        "audio": "w17_ch2.mp3",
+        "file": "es/stops/w23/w17_ch2.md"
+      },
+      {
+        "id": "w23__w17_ch3",
+        "stop": "w23",
+        "title": "Interior del Panteón",
+        "chapter": "Interior del Panteón: El imperio bajo tus pies",
+        "audio": "w17_ch3.mp3",
+        "file": "es/stops/w23/w17_ch3.md"
+      },
+      {
+        "id": "w23__w17_ch4",
+        "stop": "w23",
+        "title": "Interior del Panteón",
+        "chapter": "Las tumbas",
+        "audio": "w17_ch4.mp3",
+        "file": "es/stops/w23/w17_ch4.md"
+      },
+      {
+        "id": "w18__w18",
+        "stop": "w18",
+        "title": "Piazza Navona",
+        "chapter": "Piazza Navona",
+        "audio": "w18.mp3",
+        "file": "es/stops/w18/w18.md"
+      },
+      {
+        "id": "w19__w19",
+        "stop": "w19",
+        "title": "Campo de' Fiori",
+        "chapter": "Campo de' Fiori",
+        "audio": "w19.mp3",
+        "file": "es/stops/w19/w19.md"
+      },
+      {
+        "id": "w20__w20",
+        "stop": "w20",
+        "title": "Largo di Torre Argentina",
+        "chapter": "Largo di Torre Argentina",
+        "audio": "w20.mp3",
+        "file": "es/stops/w20/w20.md"
+      },
+      {
+        "id": "w21__w21",
+        "stop": "w21",
+        "title": "Castel Sant'Angelo",
+        "chapter": "Castel Sant'Angelo: Final",
+        "audio": "w21.mp3",
+        "file": "es/stops/w21/w21.md"
+      },
+      {
+        "id": "enc_circus__enc_circus",
+        "stop": "enc_circus",
+        "title": "Vista del Circo Máximo",
+        "chapter": "Vista del Circo Máximo",
+        "audio": "enc_circus.mp3",
+        "file": "es/stops/enc_circus/enc_circus.md"
+      },
+      {
+        "id": "w22__w22",
+        "stop": "w22",
+        "title": "Bis opcional › Vía Apia Antigua",
+        "chapter": "Vía Apia",
+        "audio": "w22.mp3",
+        "file": "es/stops/w22/w22.md"
+      }
+    ],
+    "transits": [
+      {
+        "id": "t01_a",
+        "title": "t01 (a)",
+        "audio": "t01_a.mp3",
+        "file": "es/transits/t01_a.md"
+      },
+      {
+        "id": "t01_b",
+        "title": "t01 (b)",
+        "audio": "t01_b.mp3",
+        "file": "es/transits/t01_b.md"
+      },
+      {
+        "id": "t02",
+        "title": "Arco de Tito → mirador del Palatino",
+        "audio": "t02.mp3",
+        "file": "es/transits/t02.md"
+      },
+      {
+        "id": "t03_b",
+        "title": "t03 (b)",
+        "audio": "t03_b.mp3",
+        "file": "es/transits/t03_b.md"
+      },
+      {
+        "id": "t04",
+        "title": "Entrada al Foro",
+        "audio": "t04.mp3",
+        "file": "es/transits/t04.md"
+      },
+      {
+        "id": "t05",
+        "title": "Lo que quedó",
+        "audio": "t05.mp3",
+        "file": "es/transits/t05.md"
+      },
+      {
+        "id": "t06",
+        "title": "Acercamiento a la Casa de las Vestales",
+        "audio": "t06.mp3",
+        "file": "es/transits/t06.md"
+      },
+      {
+        "id": "t07",
+        "title": "Templo de César, Saturno y la tribuna",
+        "audio": "t07.mp3",
+        "file": "es/transits/t07.md"
+      },
+      {
+        "id": "t08",
+        "title": "Treinta pasos",
+        "audio": "t08.mp3",
+        "file": "es/transits/t08.md"
+      },
+      {
+        "id": "t09",
+        "title": "Subida al Capitolio",
+        "audio": "t09.mp3",
+        "file": "es/transits/t09.md"
+      },
+      {
+        "id": "t10",
+        "title": "De la ceremonia al comercio",
+        "audio": "t10.mp3",
+        "file": "es/transits/t10.md"
+      },
+      {
+        "id": "t15",
+        "title": "Sigue el sonido del agua",
+        "audio": "t15.mp3",
+        "file": "es/transits/t15.md"
+      },
+      {
+        "id": "t12",
+        "title": "Las calles se estrechan",
+        "audio": "t12.mp3",
+        "file": "es/transits/t12.md"
+      },
+      {
+        "id": "t13",
+        "title": "El cielo se abre",
+        "audio": "t13.mp3",
+        "file": "es/transits/t13.md"
+      },
+      {
+        "id": "t18",
+        "title": "Dos minutos hacia el sur",
+        "audio": "t18.mp3",
+        "file": "es/transits/t18.md"
+      },
+      {
+        "id": "t19",
+        "title": "Por Via dei Giubbonari",
+        "audio": "t19.mp3",
+        "file": "es/transits/t19.md"
+      },
+      {
+        "id": "t16",
+        "title": "La última caminata hacia el río",
+        "audio": "t16.mp3",
+        "file": "es/transits/t16.md"
+      },
+      {
+        "id": "t22",
+        "title": "Bis opcional › Vía Apia Antigua",
+        "audio": "t22.mp3",
+        "file": "es/transits/t22.md"
+      }
+    ],
+    "other": [
+      {
+        "id": "system_no_ticket_1",
+        "type": "system",
+        "audio": "system_no_ticket_1.mp3",
+        "file": "es/other/system/system_no_ticket_1.md"
+      },
+      {
+        "id": "system_no_ticket_2",
+        "type": "system",
+        "audio": "system_no_ticket_2.mp3",
+        "file": "es/other/system/system_no_ticket_2.md"
+      },
+      {
+        "id": "system_resume_same_day",
+        "type": "system",
+        "audio": "system_resume_same_day.mp3",
+        "file": "es/other/system/system_resume_same_day.md"
+      },
+      {
+        "id": "system_resume_new_day",
+        "type": "system",
+        "audio": "system_resume_new_day.mp3",
+        "file": "es/other/system/system_resume_new_day.md"
+      }
+    ]
+  }
+}
